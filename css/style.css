@@ -29,6 +29,22 @@ header.top .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding
 .legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;
   vertical-align:-1px}
 .btn.nhe{border-color:var(--vang)}
+/* ===== NHÀ MÁY AI: sơ đồ dây chuyền 7 trạm ===== */
+.nm-flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin-top:12px}
+.nm-tram{flex:1 1 120px;min-width:118px;background:var(--nen2);border:2px solid var(--vien);
+  border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;position:relative;
+  transition:border-color 200ms ease, transform 200ms ease, background 200ms ease;font-family:inherit;color:inherit}
+.nm-tram:hover{border-color:var(--nhan);transform:translateY(-2px)}
+.nm-tram:focus-visible{outline:3px solid var(--nhan);outline-offset:2px}
+.nm-tram .so{display:block;font-size:11px;color:var(--chu2);letter-spacing:.5px}
+.nm-tram .ten{display:block;font-weight:700;font-size:13.5px;line-height:1.25;margin:3px 0}
+.nm-tram .an-duy{display:block;font-size:11px;color:var(--chu2)}
+.nm-tram.dang-mo{border-color:#7C3AED;background:#f3eeff}
+.nm-tram.xong{border-color:#15803D}
+.nm-tram.xong .an-duy{color:#15803D}
+/* mũi tên nối giữa các trạm */
+.nm-mui{align-self:center;color:var(--chu2);font-size:18px;flex:0 0 auto}
+@media (max-width:640px){ .nm-mui{display:none} .nm-tram{flex:1 1 45%} }
 @media (prefers-reduced-motion: reduce){ .scene canvas{display:none} }
 .tagline{color:var(--chu2);font-size:13px}
 .spacer{flex:1}

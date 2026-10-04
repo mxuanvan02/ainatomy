@@ -42,6 +42,10 @@
     </div>
 
     <div class="grid g3">
+      <button class="btn menu-o" id="btn-nhamay" style="border-color:var(--primary,#7C3AED)">
+        <b>🏭 NHÀ MÁY AI — đi hết dây chuyền</b>
+        <span class="chu2">7 trạm từ nguyên liệu đến thành phẩm: nhập liệu → dán nhãn → huấn luyện → mô hình → kiểm định → <b>ứng dụng (em dùng AI thật)</b> → con người kiểm. Trạm nào cũng mở nắp ra xem được.</span>
+      </button>
       <button class="btn menu-o" id="btn-lab">
         <b>🧪 Tầng 1 — Xưởng huấn luyện AI</b>
         <span class="chu2">Tự huấn luyện một mô hình AI, rồi tìm ra vì sao nó thiên vị.</span>
@@ -388,6 +392,71 @@
     </div>
   </section>
 
+  <!-- ===== NHÀ MÁY AI — DÂY CHUYỀN 7 TRẠM ===== -->
+  <section id="v-nhamay" style="display:none">
+    <div class="card">
+      <h2>🏭 Nhà máy AI — đi hết dây chuyền sản xuất</h2>
+      <p class="chu2">Trí tuệ nhân tạo không phải một chiếc hộp đen. Nó là một <b>dây chuyền</b>:
+        nguyên liệu đi vào, thành phẩm đi ra, và mỗi trạm đều có thể <b>mở nắp để xem</b>.
+        Em đi lần lượt từ trái sang phải. Trạm nào em cũng tự tay làm một việc,
+        và hệ thống tự ghi nhận vì đáp án đã biết trước từ lúc thiết kế.</p>
+
+      <!-- sơ đồ dây chuyền -->
+      <div id="nm-so-do" class="nm-flow"></div>
+
+      <div class="legend" style="margin-top:10px">
+        <span><i style="background:#B45309"></i>chưa làm</span>
+        <span><i style="background:#7C3AED"></i>đang mở</span>
+        <span><i style="background:#15803D"></i>đã xong</span>
+        <span class="nho chu2">Dữ liệu mới từ Trạm 6 quay vòng về Trạm 0 — đó là vòng phản hồi</span>
+      </div>
+    </div>
+
+    <div class="card" id="nm-bang-dieu-khien">
+      <h3 id="nm-ten-tram">Chọn một trạm để bắt đầu</h3>
+      <p class="tagline" id="nm-yccd"></p>
+      <div id="nm-noi-dung"></div>
+    </div>
+
+    <!-- ===== TRẠM 5: ỨNG DỤNG — bảng điều khiển thật ===== -->
+    <div class="card" id="nm-tram5" style="display:none">
+      <h3>Trạm 5 · ỨNG DỤNG — em dùng một hệ AI thật, chạy ngay trong máy này</h3>
+      <p class="chu2">Hệ này <b>không gọi ra Internet</b> và <b>không cần tài khoản</b>.
+        Nó học từ một bộ ngữ liệu nhỏ nằm sẵn trong ứng dụng, rồi sinh câu trả lời
+        theo xác suất. Vì chính hệ quyết định ngữ liệu nên hệ <b>biết trước</b> câu nào
+        có căn cứ và câu nào là bịa — nhờ đó chấm được mà không cần thầy cô.</p>
+
+      <div class="card" style="background:var(--nen2)" id="nm-thong-tin-may"></div>
+
+      <label for="nm-prompt">Em hãy hỏi hệ một câu:</label>
+      <textarea id="nm-prompt" rows="3" placeholder="Ví dụ: Hãy liệt kê 3 ứng dụng AI trong nông nghiệp ở Việt Nam, trình bày dạng bảng"></textarea>
+      <div class="chips" id="nm-goi-y"></div>
+      <p>
+        <button class="btn chinh" id="nm-sinh">⚙️ Đưa vào dây chuyền — sinh câu trả lời</button>
+        <button class="btn" id="nm-xoa5">↻ Làm lại</button>
+      </p>
+
+      <div id="nm-rubric"></div>
+
+      <div id="nm-dau-ra" style="display:none">
+        <h3>Đầu ra của hệ AI</h3>
+        <div class="ai-box" id="nm-van-ban"></div>
+        <p class="nho chu2" id="nm-chan-doan"></p>
+
+        <div class="card" style="background:var(--nen2)">
+          <b>❓ Bây giờ em làm người kiểm định.</b>
+          <p class="chu2">Câu trả lời trên <b>có căn cứ</b> trong dữ liệu mà hệ đã được học,
+             hay là hệ <b>bịa ra</b>? (Hệ bịa rất trôi chảy — đó chính là điểm nguy hiểm.)</p>
+          <div class="chips">
+            <button class="chip" id="nm-can-cu">✅ Có căn cứ trong dữ liệu đã học</button>
+            <button class="chip" id="nm-bia">🚫 Hệ bịa ra</button>
+          </div>
+          <div id="nm-kq5"></div>
+        </div>
+      </div>
+    </div>
+  </section>
+
   <!-- ===== GIỚI THIỆU ===== -->
   <section id="v-gioithieu" style="display:none">
     <div class="card">
@@ -444,6 +513,9 @@
 <script src="js/lab.js"></script>
 <script src="js/logic.js"></script>
 <script src="js/kienthuc.js"></script>
+<!-- Trạm 5 NHÀ MÁY: máy sinh văn bản n-gram chạy trong trình duyệt (0 MB, không mạng).
+     Nạp TRƯỚC app.js vì giao diện trạm ứng dụng gọi window.MX_NHAMAY_TEXT. -->
+<script src="js/nhamay_text.js"></script>
 <!-- 3D: three.js r137.5 bản UMD (KHÔNG phải ES module — ES module bị CORS chặn trên file://)
      được vendor trong repo để chạy được khi trường mất mạng. Phải nạp TRƯỚC scene3d.js. -->
 <script src="vendor/three/three.min.js"></script>

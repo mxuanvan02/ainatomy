@@ -14,7 +14,7 @@
 
   /* ================= ĐIỀU HƯỚNG ================= */
   const CAC_VIEW = ["v-home","v-nhap","v-lab","v-dautruong","v-baocao","v-logic",
-                    "v-kienthuc","v-lab3d","v-pipe3d","v-gioithieu"];
+                    "v-kienthuc","v-lab3d","v-pipe3d","v-nhamay","v-gioithieu"];
   function hien(view){
     CAC_VIEW.forEach(id=>{
       const el = $(id); if(el) el.style.display = (id===view) ? "" : "none";
@@ -574,6 +574,209 @@
       : "";
   }
 
+  /* ================= NHÀ MÁY AI — DÂY CHUYỀN 7 TRẠM =================
+   * Kiến trúc: các module đã có không bị bỏ đi mà trở thành TRẠM của dây chuyền.
+   * Trạm 5 (ỨNG DỤNG) là trạm mới, dùng MX_NHAMAY_TEXT — máy sinh văn bản n-gram
+   * huấn luyện ngay trong trình duyệt (đo thật: train 2.7 ms, 0 MB, 0.59 ms/câu).
+   *
+   * NGUYÊN TẮC GIỮ NGUYÊN: mọi trạm chấm được bằng nhãn hệ biết trước.
+   * Ở trạm 5, hệ biết trước chủ đề nào có trong ngữ liệu nên biết trước câu trả lời
+   * nào có căn cứ và câu nào là bịa — không cần giáo viên, không cần người kiểm chứng. */
+  const NM_TRAM = [
+    { id:0, so:"TRẠM 0", ten:"NHẬP LIỆU", anDuy:"nguyên liệu thô",
+      moTa:"Ba dạng dữ liệu: ảnh (hệ tự vẽ), văn bản, và tín hiệu số. Đây là nguyên liệu đầu vào của cả dây chuyền.",
+      yccd:"10.C4.MR1 · 10.C2.1", view:null, trangThai:"chua" },
+    { id:1, so:"TRẠM 1", ten:"DÁN NHÃN", anDuy:"sơ chế",
+      moTa:"Dữ liệu phải được gắn nhãn đúng thì mô hình mới học được. Nhãn sai thì mô hình học sai một cách có hệ thống.",
+      yccd:"10.C4.1", view:null, trangThai:"chua" },
+    { id:2, so:"TRẠM 2", ten:"HUẤN LUYỆN", anDuy:"dây chuyền sản xuất",
+      moTa:"Mô hình so dự đoán với nhãn đúng, đo lỗi, rồi tự chỉnh trọng số. Lặp lại nhiều vòng.",
+      yccd:"10.C4.1 · 10.C5", view:"v-lab", trangThai:"co" },
+    { id:3, so:"TRẠM 3", ten:"MÔ HÌNH", anDuy:"thành phẩm bán thành",
+      moTa:"Mở nắp mô hình: xem trọng số thật trong không gian 3 chiều và mặt phẳng quyết định nó vừa học được.",
+      yccd:"10.D2.1 · 10.C5", view:"v-lab3d", trangThai:"co" },
+    { id:4, so:"TRẠM 4", ten:"KIỂM ĐỊNH", anDuy:"KCS — kiểm tra chất lượng",
+      moTa:"Thử mô hình trên bộ dữ liệu MỚI mà nó chưa từng học. Tách riêng ban ngày và ban đêm để thấy thiên kiến.",
+      yccd:"10.D2.2 · 10.C4.1", view:"v-lab3d", trangThai:"co" },
+    { id:5, so:"TRẠM 5", ten:"ỨNG DỤNG", anDuy:"xuất xưởng — em dùng AI thật",
+      moTa:"Em đặt câu hỏi cho một hệ AI chạy ngay trong máy này, rồi tự kiểm định xem nó nói có căn cứ hay bịa.",
+      yccd:"10.C2.MR2 · 10.C3.1 · 10.C3.2 · 10.B2.MR1", view:"nhamay5", trangThai:"co" },
+    { id:6, so:"TRẠM 6", ten:"CON NGƯỜI KIỂM", anDuy:"KCS cuối + vòng phản hồi",
+      moTa:"Con người rà soát đầu ra và chịu trách nhiệm. Dữ liệu mới từ đây quay vòng về Trạm 0.",
+      yccd:"10.A1.2 · 10.D1.1 · 10.D2.1", view:"v-pipe3d", trangThai:"co" }
+  ];
+  let nmTramDaMo = null;
+
+  function nmVeSoDo(){
+    const box = $("nm-so-do");
+    if(!box) return;
+    /* Dùng createElement + textContent (không innerHTML) cho sơ đồ dây chuyền
+     * vì đây là nội dung sinh từ dữ liệu, dù dữ liệu là hằng số trong file này. */
+    box.innerHTML = "";
+    NM_TRAM.forEach((t, i) => {
+      if(i > 0){
+        const mui = document.createElement("span");
+        mui.className = "nm-mui"; mui.setAttribute("aria-hidden", "true");
+        mui.textContent = "→";
+        box.appendChild(mui);
+      }
+      const b = document.createElement("button");
+      b.className = "nm-tram" + (nmTramDaMo === t.id ? " dang-mo" : "")
+                  + (t.trangThai === "xong" ? " xong" : "");
+      b.type = "button";
+      const so = document.createElement("span"); so.className = "so"; so.textContent = t.so;
+      const ten = document.createElement("span"); ten.className = "ten"; ten.textContent = t.ten;
+      const ad = document.createElement("span"); ad.className = "an-duy"; ad.textContent = t.anDuy;
+      b.append(so, ten, ad);
+      b.onclick = () => nmMoTram(t.id);
+      box.appendChild(b);
+    });
+  }
+
+  function nmMoTram(id){
+    const t = NM_TRAM.find(x => x.id === id);
+    if(!t) return;
+    nmTramDaMo = id;
+    nmVeSoDo();
+    $("nm-ten-tram").textContent = `${t.so} · ${t.ten} — ${t.anDuy}`;
+    $("nm-yccd").textContent = "Yêu cầu cần đạt: " + t.yccd;
+
+    const nd = $("nm-noi-dung");
+    nd.textContent = "";
+    const p = document.createElement("p"); p.className = "chu2"; p.textContent = t.moTa;
+    nd.appendChild(p);
+
+    // chỉ hiện bảng điều khiển trạm 5 khi mở trạm 5
+    $("nm-tram5").style.display = (t.view === "nhamay5") ? "" : "none";
+
+    if(!t.view){
+      const canh = document.createElement("p");
+      canh.className = "nho chu2";
+      canh.textContent = "Trạm này đang được xây dựng. Em có thể sang các trạm đã hoàn thành để xem cơ chế hoạt động.";
+      nd.appendChild(canh);
+      return;
+    }
+    if(t.view === "nhamay5"){ nmKhoiDongTram5(); return; }
+
+    const b = document.createElement("button");
+    b.className = "btn chinh"; b.type = "button";
+    b.textContent = "Mở trạm này →";
+    b.onclick = () => {
+      if(t.view === "v-lab")   { hien("v-lab"); labBuoc(1); }
+      if(t.view === "v-lab3d") lab3dMo();
+      if(t.view === "v-pipe3d") pipe3dMo();
+    };
+    nd.appendChild(b);
+  }
+
+  function nmKhoiDongTram5(){
+    const N = window.MX_NHAMAY_TEXT;
+    if(!N){ $("nm-tram5").style.display = "none"; return; }
+
+    // thông tin máy: minh bạch theo yêu cầu của Khung (nói rõ AI làm gì, chạy ở đâu)
+    const info = N.thongTin();
+    $("nm-thong-tin-may").innerHTML =
+      `<b>🔎 Mở nắp máy — đây là cách nó hoạt động</b><br>` +
+      `<span class="nho">Loại mô hình: <b>${esc(info.loai)}</b> · bậc n = ${info.n} · ` +
+      `số ngữ cảnh học được: <b>${info.soNguoiCanh}</b> · độ dài ngữ liệu: ${info.doDaiNguLieu} kí tự · ` +
+      `số chủ đề đã học: <b>${info.soChuDeHoc}</b> · tải về: <b>${esc(info.taiVe)}</b> · ` +
+      `cần mạng: <b>${info.canMang ? "có" : "không"}</b></span><br>` +
+      `<span class="nho chu2">Các chủ đề máy ĐÃ học: ${esc(N.tenChuDe.join(" · "))}. ` +
+      `Hỏi ngoài các chủ đề này, máy vẫn trả lời trôi chảy — nhưng đó là bịa.</span>`;
+
+    // nút gợi ý: 2 câu trong ngữ liệu + 1 câu ngoài ngữ liệu (để HS tự khám phá)
+    const goiY = [
+      "Hãy liệt kê 3 ứng dụng AI trong nông nghiệp ở Việt Nam, trình bày dạng bảng",
+      "Bác sĩ dùng AI chẩn đoán bệnh như thế nào?",
+      "Cho tôi biết giá vàng hôm nay là bao nhiêu?"
+    ];
+    const chips = $("nm-goi-y"); chips.innerHTML = "";
+    goiY.forEach(q => {
+      const b = document.createElement("button");
+      b.className = "chip"; b.type = "button"; b.textContent = q;
+      b.onclick = () => { $("nm-prompt").value = q; nmDanhGiaPrompt(); };
+      chips.appendChild(b);
+    });
+
+    $("nm-prompt").oninput = nmDanhGiaPrompt;
+    nmDanhGiaPrompt();
+  }
+
+  /* Chấm chất lượng prompt theo rubric (10.C3.1) — tất định, không cần LLM */
+  function nmDanhGiaPrompt(){
+    const N = window.MX_NHAMAY_TEXT;
+    const p = $("nm-prompt").value.trim();
+    const box = $("nm-rubric");
+    if(!p){ box.innerHTML = ""; return; }
+    const r = N.danhGiaPrompt(p);
+    box.innerHTML =
+      `<div class="card" style="background:var(--nen2)">
+         <b>Prompt của em đạt ${r.diem}/${r.tong} tiêu chí — ${esc(r.muc)}</b><br>
+         <span class="nho">Đạt: ${esc(r.dat.join(", ") || "chưa có")} ·
+         Thiếu: ${esc(r.thieu.join(", ") || "không")}</span><br>
+         <span class="nho chu2">Một prompt tốt nêu rõ <b>mục tiêu</b>, có <b>ngữ cảnh</b>,
+         và yêu cầu <b>định dạng đầu ra</b>. (Yêu cầu cần đạt 10.C3.1)</span>
+       </div>`;
+  }
+
+  let nmItem = null;
+  function nmSinh(){
+    const N = window.MX_NHAMAY_TEXT;
+    const p = $("nm-prompt").value.trim();
+    if(!p){ alert("Em hãy viết câu hỏi trước đã."); return; }
+    const t0 = performance.now();
+    nmItem = N.ungDung(p, { seed: (Date.now() % 99991) + 1 });
+    const ms = (performance.now() - t0);
+
+    // Dùng textContent cho nội dung máy sinh ra — TUYỆT ĐỐI không innerHTML,
+    // vì đây là chuỗi do mô hình sinh, không phải hằng số của nhà phát triển.
+    $("nm-van-ban").textContent = nmItem.vanBan;
+    $("nm-chan-doan").textContent =
+      `Máy sinh câu này trong ${ms.toFixed(2)} ms · seed ${nmItem.seed} (cùng seed sẽ cho cùng kết quả) · `
+      + `chủ đề máy nhận ra: ${nmItem.chuDe || "không nằm trong ngữ liệu đã học"}`;
+    $("nm-dau-ra").style.display = "";
+    $("nm-kq5").innerHTML = "";
+    $("nm-can-cu").classList.remove("chon"); $("nm-bia").classList.remove("chon");
+    if(ENG) ENG.logSuKien(maHS, { loai:"nhamay", suKien:"ungDung", prompt:p,
+      chuDe: nmItem.maChuDe, trongNguLieu: nmItem.trongNguLieu, ms: +ms.toFixed(2) });
+  }
+
+  function nmPhanQuyet(coCanCu){
+    if(!nmItem){ alert("Em hãy sinh câu trả lời trước đã."); return; }
+    const N = window.MX_NHAMAY_TEXT;
+    const kq = N.chamUngDung(nmItem, { coCanCu });
+    (coCanCu ? $("nm-can-cu") : $("nm-bia")).classList.add("chon");
+
+    /* AN TOÀN innerHTML: nmItem.chuDe đến từ hằng số CHU_DE trong nhamay_text.js;
+     * văn bản máy sinh KHÔNG được chèn vào đây (đã hiển thị bằng textContent ở trên). */
+    const box = $("nm-kq5");
+    box.className = "phanhoi " + (kq.dung ? "dung" : "sai");
+    box.innerHTML = kq.dung
+      ? `<p>✅ <b>Chính xác.</b> ${nmItem.trongNguLieu
+          ? `Chủ đề <b>${esc(nmItem.chuDe)}</b> CÓ trong ngữ liệu máy đã học, nên câu trả lời có căn cứ.`
+          : `Chủ đề em hỏi <b>không có</b> trong ngữ liệu máy đã học, nên đây là lời bịa.`}</p>`
+      : `<p>❌ <b>Chưa đúng.</b> ${nmItem.trongNguLieu
+          ? `Thật ra câu này CÓ căn cứ: chủ đề <b>${esc(nmItem.chuDe)}</b> nằm trong ngữ liệu máy đã học.`
+          : `Thật ra đây là lời bịa: chủ đề em hỏi không có trong ngữ liệu, máy chỉ ghép chữ nghe cho xuôi.`}</p>`;
+    box.innerHTML +=
+      `<p class="chu2"><b>Bài học của trạm này:</b> một hệ AI có thể trả lời rất trôi chảy về một chủ đề
+       mà nó chưa từng được học. Giọng điệu tự tin không phải là bằng chứng. Cách kiểm tra là
+       <b>hỏi xem nó học từ đâu</b> và <b>đối chiếu với nguồn thật</b>.</p>`
+      + `<p class="nho chu2">Yêu cầu cần đạt 10.B2.MR1: nhận biết dấu hiệu của nội dung do AI tạo sinh
+         và nhận xét mức độ minh bạch. · 10.C2.MR2: sử dụng được một số ứng dụng AI trong học tập.</p>`;
+
+    if(ENG) ENG.logSuKien(maHS, { loai:"nhamay", suKien:"phanQuyet",
+      kq:{ diem: kq.dung ? 1 : 0, dung: kq.dung, mach:"C", unesco:"C2",
+           dapAn: nmItem.trongNguLieu ? "coCanCu" : "bia", chon: coCanCu ? "coCanCu" : "bia" },
+      boSot: !!kq.boSot, baoDong: !!kq.baoDong });
+    nmTramXong(5);
+  }
+
+  function nmTramXong(id){
+    const t = NM_TRAM.find(x => x.id === id);
+    if(t && t.trangThai !== "xong"){ t.trangThai = "xong"; nmVeSoDo(); }
+  }
+
   /* ================= KHỞI ĐỘNG ================= */
   window.addEventListener("DOMContentLoaded", ()=>{
     // Gộp ngân hàng mở rộng (nếu có) vào ngân hàng chính — 1 lần duy nhất
@@ -593,6 +796,14 @@
     $("btn-kienthuc").onclick = ()=>{ hien("v-kienthuc"); window.MX_KIEN_THUC.init(maHS); };
     $("btn-lab3d").onclick = ()=> lab3dMo();
     $("btn-pipe3d").onclick = ()=> pipe3dMo();
+    /* NHÀ MÁY AI — dây chuyền 7 trạm (điều hướng chính mới) */
+    $("btn-nhamay").onclick = ()=>{ hien("v-nhamay"); nmVeSoDo(); nmMoTram(2); };
+    $("nm-sinh").onclick  = ()=> nmSinh();
+    $("nm-xoa5").onclick  = ()=>{ nmItem = null; $("nm-prompt").value = "";
+      $("nm-dau-ra").style.display = "none"; $("nm-rubric").innerHTML = "";
+      $("nm-kq5").innerHTML = ""; $("nm-van-ban").textContent = ""; };
+    $("nm-can-cu").onclick = ()=> nmPhanQuyet(true);
+    $("nm-bia").onclick    = ()=> nmPhanQuyet(false);
     $("pipe3d-hong").onclick = ()=> pipe3dHong();
     $("pipe3d-reset").onclick = ()=>{ window.MX_PIPE3D.datLai(); $("pipe3d-doan").style.display="none";
       $("pipe3d-chitiet").innerHTML=""; $("pipe3d-note").innerHTML="Đã đặt lại. Bấm <b>Làm hỏng một trạm</b> để chơi lượt mới."; pipe3dHud(); };
