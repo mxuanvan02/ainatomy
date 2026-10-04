@@ -35,6 +35,15 @@
       ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
   }
 
+  /* Trả về chuỗi SVG nội tuyến trỏ tới một symbol trong sprite của index.html.
+   * CHUỖI TĨNH — tên icon do chính mã nguồn này chỉ định, không ghép dữ liệu người
+   * dùng, nên dùng bên trong innerHTML là an toàn.
+   * Tồn tại để thay emoji: MASTER.md cấm dùng emoji làm biểu tượng vì chúng render
+   * khác nhau giữa Windows/macOS/Android và mất nét khi phóng to trên máy chiếu. */
+  function svgIco(ten){
+    return '<svg class="ic" aria-hidden="true"><use href="#i-' + ten + '"/></svg>';
+  }
+
   /* ====================== NHÓM 1 — RỦI RO CỦA SẢN PHẨM AI (10.A2.1, 10.A2.MR1) ===== */
   const NHOM_RUI_RO = [
     { id:"rr-01", yccd:"10.A2.1", chuDe:"A2", mach:"A",
@@ -46,7 +55,7 @@
         {id:"c", text:"Rủi ro duy nhất là bệnh viện tốn thêm tiền bảo trì."},
         {id:"d", text:"Rủi ro là bác sĩ sẽ thất nghiệp ngay lập tức."}],
       dapAn:"b",
-      giaiThich:"Đây là rủi ro về công bằng: hệ hoạt động kém với đúng nhóm yếu thế nhất, và lỗi lặp lại có hệ thống chứ không ngẫu nhiên. Rủi ro không nằm ở việc máy hỏng mà ở việc máy vẫn chạy trơn tru trong khi cho kết quả sai với một nhóm người.",
+      giaiThich:"Đây là rủi ro về công bằng. Hệ hoạt động kém với đúng nhóm yếu thế nhất, và lỗi lặp lại có hệ thống chứ không ngẫu nhiên. Rủi ro không nằm ở việc máy hỏng mà ở việc máy vẫn chạy trơn tru trong khi cho kết quả sai với một nhóm người.",
       bienPhap:"Yêu cầu nhà cung cấp công bố dữ liệu huấn luyện theo nhóm tuổi; kiểm tra độ chính xác tách riêng cho trẻ em TRƯỚC khi triển khai; giữ bác sĩ là người quyết định cuối cùng."},
 
     { id:"rr-02", yccd:"10.A2.1", chuDe:"A2", mach:"A",
@@ -58,11 +67,11 @@
         {id:"c", text:"Máy ảnh có thể bị hỏng do thời tiết."},
         {id:"d", text:"Không có rủi ro vì trường là nơi an toàn."}],
       dapAn:"b",
-      giaiThich:"Rủi ro xã hội ở đây là sự mất cân xứng quyền lực: người bị thu thập dữ liệu không phải người quyết định. Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 đặt dữ liệu trẻ em dưới sự bảo vệ chặt hơn và cần sự đồng ý của cha mẹ hoặc người giám hộ.",
+      giaiThich:"Rủi ro xã hội ở đây là sự mất cân xứng quyền lực. Người bị thu thập dữ liệu không phải người quyết định. Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 đặt dữ liệu trẻ em dưới sự bảo vệ chặt hơn và cần sự đồng ý của cha mẹ hoặc người giám hộ.",
       bienPhap:"Chỉ dùng mã ẩn danh thay cho dữ liệu sinh trắc học; nếu buộc phải dùng thì có văn bản đồng ý của cha mẹ, công bố thời hạn lưu và cách xoá; luôn có phương án điểm danh thủ công."},
 
     { id:"rr-03", yccd:"10.A2.MR1", chuDe:"A2", mach:"A",
-      tinhHuong:"Nhóm em được giao làm một dự án sáng tạo: ứng dụng AI gợi ý ngành học cho học sinh lớp 12 dựa trên bài trắc nghiệm sở thích.",
+      tinhHuong:"Nhóm em được giao làm một dự án sáng tạo — ứng dụng AI gợi ý ngành học cho học sinh lớp 12 dựa trên bài trắc nghiệm sở thích.",
       cauHoi:"Biện pháp hạn chế rủi ro nào là QUAN TRỌNG NHẤT và phải làm ngay từ lúc thiết kế?",
       luaChon:[
         {id:"a", text:"Làm giao diện thật đẹp để học sinh tin tưởng kết quả."},
@@ -70,7 +79,7 @@
         {id:"c", text:"Chạy thật nhiều vòng huấn luyện để độ chính xác cao nhất có thể."},
         {id:"d", text:"Không cho học sinh biết đây là hệ AI để tránh lo lắng."}],
       dapAn:"b",
-      giaiThich:"Minh bạch là biện pháp hạn chế rủi ro hiệu quả nhất vì nó trao lại quyền kiểm soát cho người dùng: họ biết hệ dựa vào đâu, và biết mình vẫn là người quyết định. Phương án (d) là che giấu, làm rủi ro tăng lên chứ không giảm. Độ chính xác cao (c) không thay thế được minh bạch — một hệ rất chính xác nhưng không giải thích được vẫn gây hại khi nó sai.",
+      giaiThich:"Minh bạch là biện pháp hạn chế rủi ro hiệu quả nhất vì nó trao lại quyền kiểm soát cho người dùng. Họ biết hệ dựa vào đâu, và biết mình vẫn là người quyết định. Phương án (d) là che giấu, làm rủi ro tăng lên chứ không giảm. Độ chính xác cao (c) không thay thế được minh bạch — một hệ rất chính xác nhưng không giải thích được vẫn gây hại khi nó sai.",
       bienPhap:"Ghi trong sản phẩm: nguồn dữ liệu, cách hệ suy ra gợi ý, phạm vi áp dụng, và nút để người dùng tự quyết định khác với gợi ý."},
 
     { id:"rr-04", yccd:"10.A2.MR1", chuDe:"A2", mach:"A",
@@ -82,7 +91,7 @@
         {id:"c", text:"Bỏ hẳn vùng sâu khỏi kế hoạch vì thu thập dữ liệu ở đó tốn công."},
         {id:"d", text:"Tăng số vòng huấn luyện để mô hình tự suy ra đặc điểm vùng sâu."}],
       dapAn:"b",
-      giaiThich:"Mô hình không thể tự suy ra đặc điểm của nhóm mà nó chưa từng thấy dữ liệu, nên (d) vô ích. (c) là loại trừ chính nhóm cần được phục vụ nhất. (a) là hình thức của minh bạch nhưng không bảo vệ ai cả. Biện pháp đúng gồm ba phần: nói rõ phạm vi, sửa dữ liệu, và có người thật làm chỗ dựa trong lúc chưa sửa xong.",
+      giaiThich:"Mô hình không thể tự suy ra đặc điểm của nhóm mà nó chưa từng thấy dữ liệu, nên (d) vô ích. (c) là loại trừ chính nhóm cần được phục vụ nhất. (a) là hình thức của minh bạch nhưng không bảo vệ ai cả. Biện pháp đúng gồm ba phần — nói rõ phạm vi, sửa dữ liệu, và có người thật làm chỗ dựa trong lúc chưa sửa xong.",
       bienPhap:"Ghi phạm vi áp dụng ngay trên màn hình kết quả; lập kế hoạch thu dữ liệu vùng sâu; nêu rõ kênh kiểm chứng thay thế."}
   ];
 
@@ -97,7 +106,7 @@
         {id:"c", text:"Chỉ vi phạm nếu bị giám thị phát hiện."},
         {id:"d", text:"Vi phạm Luật Trí tuệ nhân tạo vì học sinh chưa đủ tuổi dùng AI."}],
       dapAn:"b",
-      giaiThich:"Hành vi này có hai lớp vi phạm: lớp thứ nhất là nội quy nhà trường về kiểm tra; lớp thứ hai là nguyên tắc trung thực học thuật — Khung 2422 yêu cầu học sinh nêu được công cụ, mục đích và phạm vi AI hỗ trợ cùng phần việc do chính mình thực hiện. Phương án (c) sai vì vi phạm không phụ thuộc vào việc có bị phát hiện hay không. Không có quy định nào cấm học sinh dùng AI theo độ tuổi, nên (d) sai.",
+      giaiThich:"Hành vi này có hai lớp vi phạm. Lớp thứ nhất là nội quy nhà trường về kiểm tra; lớp thứ hai là nguyên tắc trung thực học thuật — Khung 2422 yêu cầu học sinh nêu được công cụ, mục đích và phạm vi AI hỗ trợ cùng phần việc do chính mình thực hiện. Phương án (c) sai vì vi phạm không phụ thuộc vào việc có bị phát hiện hay không. Không có quy định nào cấm học sinh dùng AI theo độ tuổi, nên (d) sai.",
       bienPhap:""},
 
     { id:"vp-02", yccd:"10.B2.1", chuDe:"B2", mach:"B",
@@ -105,7 +114,7 @@
       cauHoi:"Hành vi này vi phạm điều gì?",
       luaChon:[
         {id:"a", text:"Không vi phạm, vì công cụ đó miễn phí và học sinh chỉ muốn làm việc tốt cho lớp."},
-        {id:"b", text:"Vi phạm quy định về bảo vệ dữ liệu cá nhân: dữ liệu của trẻ em là dữ liệu nhạy cảm, cần sự đồng ý của cha mẹ hoặc người giám hộ, và học sinh không có quyền đưa dữ liệu của các bạn cho bên thứ ba."},
+        {id:"b", text:"Vi phạm quy định về bảo vệ dữ liệu cá nhân. Dữ liệu của trẻ em là dữ liệu nhạy cảm, cần sự đồng ý của cha mẹ hoặc người giám hộ, và học sinh không có quyền đưa dữ liệu của các bạn cho bên thứ ba."},
         {id:"c", text:"Chỉ vi phạm nếu công cụ đó bán dữ liệu cho người khác."},
         {id:"d", text:"Vi phạm nội quy vì dùng điện thoại trong giờ học."}],
       dapAn:"b",
@@ -121,7 +130,7 @@
         {id:"c", text:"Vi phạm bản quyền vì AI đã dùng ảnh có sẵn trên mạng."},
         {id:"d", text:"Không vi phạm vì ảnh là do AI tạo ra, không phải ảnh thật."}],
       dapAn:"b",
-      giaiThich:"Việc ảnh do AI tạo ra không làm giảm hậu quả với người bị ghép mặt — thiệt hại về danh dự và tâm lí là thật. Luật An ninh mạng 24/2018/QH14 (được sửa đổi, bổ sung bởi 116/2025/QH15) điều chỉnh hành vi trên không gian mạng. Phương án (d) là ngụy biện phổ biến nhất: công cụ tạo ra sản phẩm không làm người sử dụng thoát trách nhiệm.",
+      giaiThich:"Việc ảnh do AI tạo ra không làm giảm hậu quả với người bị ghép mặt — thiệt hại về danh dự và tâm lí là thật. Luật An ninh mạng 24/2018/QH14 (được sửa đổi, bổ sung bởi 116/2025/QH15) điều chỉnh hành vi trên không gian mạng. Phương án (d) là ngụy biện phổ biến nhất. Công cụ tạo ra sản phẩm không làm người sử dụng thoát trách nhiệm.",
       bienPhap:""},
 
     { id:"vp-04", yccd:"10.B2.1", chuDe:"B2", mach:"B",
@@ -129,18 +138,18 @@
       cauHoi:"Vấn đề cốt lõi của hành vi này là gì?",
       luaChon:[
         {id:"a", text:"Bài văn có thể bị sai chính tả nên chất lượng không đảm bảo."},
-        {id:"b", text:"Đây là gian lận trong học tập: người học khai báo sai về tác giả của sản phẩm, làm mất ý nghĩa của việc đánh giá năng lực và khiến giáo viên nhận được minh chứng giả về sự tiến bộ."},
+        {id:"b", text:"Đây là gian lận trong học tập. Người học khai báo sai về tác giả của sản phẩm, làm mất ý nghĩa của việc đánh giá năng lực và khiến giáo viên nhận được minh chứng giả về sự tiến bộ."},
         {id:"c", text:"Không có vấn đề gì vì AI viết hay hơn học sinh thì nên dùng."},
         {id:"d", text:"Chỉ vi phạm nếu giáo viên phát hiện ra."}],
       dapAn:"b",
-      giaiThich:"Vấn đề cốt lõi không nằm ở chất lượng bài văn mà ở tính trung thực của minh chứng. Đánh giá trong giáo dục dựa trên giả định rằng sản phẩm phản ánh năng lực của người nộp; khi giả định đó bị phá vỡ thì mọi kết quả đánh giá đều vô nghĩa. Đây cũng là lí do sản phẩm SOI AI có phiếu khai báo sử dụng AI: khai báo không phải để trừ điểm mà để minh chứng còn giá trị.",
+      giaiThich:"Vấn đề cốt lõi không nằm ở chất lượng bài văn mà ở tính trung thực của minh chứng. Đánh giá trong giáo dục dựa trên giả định rằng sản phẩm phản ánh năng lực của người nộp; khi giả định đó bị phá vỡ thì mọi kết quả đánh giá đều vô nghĩa. Đây cũng là lí do sản phẩm SOI AI có phiếu khai báo sử dụng AI. Khai báo không phải để trừ điểm mà để minh chứng còn giá trị.",
       bienPhap:""}
   ];
 
   /* ============ NHÓM 3 — YÊU CẦU KHI ỨNG DỤNG AI (10.C2.MR1) VÀ CÔNG NGHỆ (10.C3.MR1) ============ */
   const NHOM_YEU_CAU = [
     { id:"yc-01", yccd:"10.C2.MR1", chuDe:"C2", mach:"C",
-      tinhHuong:"Nhà trường muốn ứng dụng AI để tự động phân loại thư góp ý của phụ huynh thành ba nhóm: cơ sở vật chất, chương trình học, và các vấn đề khác.",
+      tinhHuong:"Nhà trường muốn ứng dụng AI để tự động phân loại thư góp ý của phụ huynh thành ba nhóm — cơ sở vật chất, chương trình học, và các vấn đề khác.",
       cauHoi:"Yêu cầu nào KHÔNG phải là điều kiện cần có để ứng dụng này chạy được?",
       luaChon:[
         {id:"a", text:"Một tập dữ liệu thư góp ý đã được phân loại sẵn để huấn luyện và kiểm tra."},
@@ -148,7 +157,7 @@
         {id:"c", text:"Người rà soát kết quả trước khi nhà trường dùng nó để trả lời phụ huynh."},
         {id:"d", text:"Một mô hình ngôn ngữ lớn chạy trên máy chủ có card đồ họa mạnh."}],
       dapAn:"d",
-      giaiThich:"Ba yêu cầu đầu là điều kiện cần cho bất kì ứng dụng phân loại nào: có dữ liệu, có tiêu chí, và có con người rà soát. Yêu cầu về phần cứng thì không: bài toán ba nhóm với văn bản ngắn có thể giải bằng mô hình đơn giản, và Khung 2422 nêu rõ việc triển khai không phụ thuộc vào phần cứng, phần mềm hay nền tảng công nghệ cụ thể.",
+      giaiThich:"Ba yêu cầu đầu là điều kiện cần cho bất kì ứng dụng phân loại nào — có dữ liệu, có tiêu chí, và có con người rà soát. Yêu cầu về phần cứng thì không. Bài toán ba nhóm với văn bản ngắn có thể giải bằng mô hình đơn giản, và Khung 2422 nêu rõ việc triển khai không phụ thuộc vào phần cứng, phần mềm hay nền tảng công nghệ cụ thể.",
       bienPhap:""},
 
     { id:"yc-02", yccd:"10.C2.MR1", chuDe:"C2", mach:"C",
@@ -160,7 +169,7 @@
         {id:"c", text:"Thiết kế logo và tên ứng dụng cho hấp dẫn."},
         {id:"d", text:"Tìm mô hình AI mạnh nhất hiện nay để dùng cho chắc."}],
       dapAn:"b",
-      giaiThich:"Đây chính là nội dung của yêu cầu 10.D1.1: xác định nhiệm vụ hoặc mục tiêu cụ thể và nêu mối liên hệ giữa mục tiêu đó với các thành phần chính của hệ thống. Phần lớn dự án AI của học sinh thất bại không phải vì thiếu công nghệ mà vì dữ liệu đầu vào không thu được trên thực tế.",
+      giaiThich:"Đây chính là nội dung của yêu cầu 10.D1.1 — xác định nhiệm vụ hoặc mục tiêu cụ thể và nêu mối liên hệ giữa mục tiêu đó với các thành phần chính của hệ thống. Phần lớn dự án AI của học sinh thất bại không phải vì thiếu công nghệ mà vì dữ liệu đầu vào không thu được trên thực tế.",
       bienPhap:""},
 
     { id:"yc-03", yccd:"10.C3.MR1", chuDe:"C3", mach:"C",
@@ -172,7 +181,7 @@
         {id:"c", text:"Dùng mô hình ngôn ngữ lớn đã tải sẵn; cái giá là máy phải có card đồ họa."},
         {id:"d", text:"Không có công nghệ nào làm được việc đó."}],
       dapAn:"b",
-      giaiThich:"Trong SOI AI, mô hình là một perceptron bốn đặc trưng: tỉ lệ điểm ảnh rất sáng, tỉ lệ điểm ảnh sáng vừa, độ sáng vùng đầu và tỉ lệ điểm tối. Bốn đặc trưng này được tính từ ảnh vẽ bằng canvas, rồi trọng số được cập nhật ngay trong trình duyệt. Đổi lại sự đơn giản đó là hai lợi ích quyết định cho trường học: không cần mạng và học sinh nhìn thấy toàn bộ trọng số — mô hình càng đơn giản thì bài học về thiên kiến càng rõ.",
+      giaiThich:"Trong SOI AI, mô hình là một perceptron bốn đặc trưng — tỉ lệ điểm ảnh rất sáng, tỉ lệ điểm ảnh sáng vừa, độ sáng vùng đầu và tỉ lệ điểm tối. Bốn đặc trưng này được tính từ ảnh vẽ bằng canvas, rồi trọng số được cập nhật ngay trong trình duyệt. Đổi lại sự đơn giản đó là hai lợi ích quyết định cho trường học — không cần mạng và học sinh nhìn thấy toàn bộ trọng số — mô hình càng đơn giản thì bài học về thiên kiến càng rõ.",
       bienPhap:""},
 
     { id:"yc-04", yccd:"10.C3.MR1", chuDe:"C3", mach:"C",
@@ -184,7 +193,7 @@
         {id:"c", text:"Vì không cần viết mã nguồn cho mô hình nhỏ."},
         {id:"d", text:"Vì mô hình ngôn ngữ lớn không bao giờ bịa thông tin."}],
       dapAn:"b",
-      giaiThich:"Đây là ví dụ về việc chọn công nghệ theo ràng buộc sư phạm thay vì theo sức mạnh. Điều kiện thể lệ yêu cầu sản phẩm đã triển khai trong lớp học và hệ thống tự đánh giá được; một mô hình lớn trên mạng không đáp ứng được cả hai điều đó ở trường vùng khó. Phương án (d) sai về bản chất: bịa thông tin là vấn đề cố hữu của mô hình sinh nội dung, không phụ thuộc kích thước.",
+      giaiThich:"Đây là ví dụ về việc chọn công nghệ theo ràng buộc sư phạm thay vì theo sức mạnh. Điều kiện thể lệ yêu cầu sản phẩm đã triển khai trong lớp học và hệ thống tự đánh giá được; một mô hình lớn trên mạng không đáp ứng được cả hai điều đó ở trường vùng khó. Phương án (d) sai về bản chất. Bịa thông tin là vấn đề cố hữu của mô hình sinh nội dung, không phụ thuộc kích thước.",
       bienPhap:""}
   ];
 
@@ -232,7 +241,10 @@
           /* KHÔNG dùng chữ "đúng/sai" làm nhãn năng lực: Khung 2422 phần VI quy định
            * không xác lập đầu điểm riêng cho nội dung giáo dục AI. Phản hồi ở đây là
            * xác nhận đáp án của một câu hỏi kiến thức, không phải điểm của học sinh. */
-          b1.textContent = dapUng ? "✅ Đáp án đúng. " : "❌ Chưa phải đáp án đúng. ";
+          /* Chuỗi hoàn toàn tĩnh nên đổi sang innerHTML là an toàn; phần giải thích động
+           * vẫn được thêm bằng textNode riêng ở dòng dưới, không đi qua innerHTML. */
+          b1.innerHTML = dapUng ? svgIco("check") + " Đáp án đúng. "
+                                 : svgIco("x") + " Chưa phải đáp án đúng. ";
           p1.appendChild(b1);
           p1.appendChild(document.createTextNode(q.giaiThich));
           fb.appendChild(p1);

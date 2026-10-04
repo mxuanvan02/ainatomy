@@ -209,3 +209,177 @@ code{background:var(--nen2);border:1px solid var(--vienNhat);border-radius:5px;p
   padding:2px 6px;border-radius:99px;background:#FFFFFF;border:1px solid var(--vien);color:var(--chu)}
 
 @media print{body{background:#fff;color:#000}.card{border-color:#999;box-shadow:none}}
+
+/* ============================================================================
+   KỊCH BẢN "HÀNH TRÌNH CỦA MỘT BỨC ẢNH" (js/kichban.js) — 9 cảnh, 110s
+   ----------------------------------------------------------------------------
+   Yêu cầu của anh Văn 04/10: ít chữ, hiệu ứng dạng video, có đầu có đuôi có
+   kịch bản, bố cục chuẩn chỉnh. Khối CSS này phục vụ đúng yêu cầu đó.
+
+   NGUYÊN TẮC:
+   * Chỉ dùng biến màu đã có trong :root của MASTER.md (--nen, --the, --chu,
+     --primary, --dung, --sai, --vang, ...). KHÔNG khai báo màu mới ở đây, vì
+     màu mới chưa qua phép đo tương phản WCAG của tools/nghiem_thu.py G1.
+   * Toàn bộ animation bị TẮT khi người dùng bật prefers-reduced-motion, nhưng
+     nội dung vẫn hiện đủ (không ẩn bằng opacity:0 vĩnh viễn).
+   * .kb-tre phải dùng animation-fill-mode:both — nếu không, phần tử sẽ hiện
+     sớm rồi mới chạy hiệu ứng, làm lộ thứ đáng lẽ xuất hiện sau.
+   ========================================================================== */
+
+.kb-wrap{background:var(--the);border:1px solid var(--vien);border-radius:14px;
+  overflow:hidden;box-shadow:0 1px 3px rgba(15,23,42,.06)}
+.kb-top{display:flex;align-items:center;justify-content:space-between;gap:12px;
+  padding:10px 16px;border-bottom:1px solid var(--nen2);background:var(--nen)}
+.kb-ten-canh{font-size:12px;font-weight:700;letter-spacing:.04em;text-transform:uppercase;
+  color:var(--chu2)}
+.kb-thoigian{font-size:12px;font-variant-numeric:tabular-nums;color:var(--chu2)}
+
+/* ---- sân khấu: nơi hiệu ứng chạy ---- */
+.kb-san-khau{position:relative;min-height:320px;display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:18px;padding:26px 20px;
+  background:radial-gradient(circle at 50% 0%,var(--nen) 0%,var(--the) 70%);overflow:hidden}
+.kb-san-khau.kb-giua{justify-content:center;text-align:center}
+.kb-wrap.kb-hieu-ung .kb-san-khau{animation:kbDoiCanh .55s ease-out}
+@keyframes kbDoiCanh{from{opacity:0;transform:translateY(10px)}to{opacity:1;transform:none}}
+
+/* ---- chữ: caption to, phụ đề nhỏ. Đây là toàn bộ chữ học sinh phải đọc ---- */
+.kb-chu{padding:16px 20px 4px;text-align:center;border-top:1px solid var(--nen2)}
+.kb-caption{font-size:20px;line-height:1.4;font-weight:700;color:var(--chu);margin:0 0 6px}
+.kb-sub{font-size:14px;line-height:1.5;color:var(--chu2);margin:0}
+
+/* ---- thanh tiến độ: chia đoạn theo thời lượng từng cảnh ---- */
+.kb-tiendo{position:relative;display:flex;gap:2px;height:7px;background:var(--nen2)}
+.kb-tiendo>i{flex-grow:1;background:var(--nen2);transition:background .3s}
+.kb-tiendo>i.xong{background:var(--vienNhat)}
+.kb-tiendo>i.dang{background:var(--primary)}
+.kb-tiendo-canhh{position:absolute;left:0;top:0;bottom:0;width:0;
+  background:var(--primary);opacity:.85;pointer-events:none}
+
+/* ---- điều khiển ---- */
+.kb-dieu-khien{display:flex;align-items:center;gap:8px;padding:12px 16px;flex-wrap:wrap}
+.kb-dieu-khien .ic{width:18px;height:18px}
+.kb-play{min-width:46px}
+.kb-cham-wrap{display:flex;gap:5px;margin-left:auto}
+.kb-cham{width:11px;height:11px;padding:0;border-radius:50%;cursor:pointer;
+  border:1px solid var(--vien);background:var(--the);transition:transform .15s,background .15s}
+.kb-cham:hover{transform:scale(1.25)}
+.kb-cham.on{background:var(--primary);border-color:var(--primary)}
+.kb-wrap.kb-dung .kb-san-khau *{animation-play-state:paused}
+
+/* ---- hiệu ứng dùng chung ---- */
+.kb-hien{animation:kbVao .7s ease-out both}
+.kb-tre{animation:kbVao .7s ease-out both}
+@keyframes kbVao{from{opacity:0;transform:translateY(14px)}to{opacity:1;transform:none}}
+.ic-kb{color:var(--primary)}
+
+/* ---- cảnh MỞ / KẾT ---- */
+.kb-logo{display:flex;align-items:center;gap:12px;font-size:30px;font-weight:800;
+  letter-spacing:.02em;color:var(--chu)}
+.kb-logo .ic{width:34px;height:34px;color:var(--primary)}
+.kb-logo-soi{font-size:14px;color:var(--chu2);letter-spacing:.16em;text-transform:uppercase}
+.kb-ket{display:flex;flex-direction:column;gap:10px;align-items:center}
+.kb-ket-lon{font-size:26px;font-weight:800;color:var(--chu);text-align:center}
+.kb-ket-nho{font-size:13px;color:var(--chu2);text-align:center}
+
+/* ---- cảnh NHẬP LIỆU: ảnh -> 4 con số ---- */
+.kb-day{display:flex;align-items:center;gap:18px;flex-wrap:wrap;justify-content:center}
+.kb-anh{position:relative;width:150px;height:150px;border-radius:12px;border:1px solid var(--vien);
+  background:linear-gradient(160deg,var(--nenChon),var(--the));display:flex;flex-direction:column;
+  align-items:center;justify-content:center;gap:8px}
+.kb-anh-to{width:190px;height:190px}
+.kb-mu{display:flex;align-items:center;justify-content:center}
+.kb-anh-nhan{font-size:11px;color:var(--chu2);text-align:center;padding:0 8px}
+.kb-muiten{color:#5B6478;display:flex;align-items:center;animation:kbTruot 1.6s ease-in-out infinite}
+/* MÀU MŨI TÊN — LỖI EM GÂY RA RỒI TỰ SỬA (04/10): bản đầu dùng color:var(--vien)
+   tức #8B90A8, chỉ 3.16:1 trên nền thẻ nên bị G1f2 bắt. Mũi tên là ĐỒ HOẠ nên về
+   nguyên tắc chỉ cần 3.0:1 và nó đạt; nhưng thay vì nới phép kiểm để hợp thức hoá,
+   em đổi sang #5B6478 = 5.93:1 để đạt luôn cả chuẩn chữ, không còn gì phải bàn.
+   Đây là màu hardcode vì nó không trùng biến nào có sẵn; đã đo bằng công thức
+   tương phản, không ước lượng.
+   LƯU Ý KHI KIỂM TRA: tìm chuỗi "color:var(--vien)" sẽ KHỚP LUÔN ghi chú này,
+   tức báo dương tính giả. Muốn biết thật còn dùng ở đâu thì phải bỏ comment
+   trước khi grep — em đã bị chính ghi chú của mình đánh lừa một lần. */
+.kb-muiten .ic{width:30px;height:30px}
+@keyframes kbTruot{0%,100%{transform:translateX(-4px);opacity:.5}50%{transform:translateX(4px);opacity:1}}
+.kb-so{display:flex;flex-direction:column;gap:7px}
+.kb-chip-so{font-size:12px;font-variant-numeric:tabular-nums;padding:6px 12px;border-radius:99px;
+  border:1px solid var(--vienNhat);background:var(--nen);color:var(--chu)}
+
+/* ---- cảnh DÁN NHÃN: tem đóng xuống ---- */
+.kb-tem{font-size:22px;font-weight:800;letter-spacing:.08em;padding:10px 22px;border-radius:8px;
+  border:3px solid var(--dung);color:var(--dung);background:var(--nenDung);
+  animation:kbDongDau .5s cubic-bezier(.2,1.6,.4,1) 1.1s both}
+.kb-tem-sai{font-size:13px;padding:7px 14px;border-radius:8px;border:2px dashed var(--sai);
+  color:var(--sai);background:var(--nenSai)}
+@keyframes kbDongDau{0%{opacity:0;transform:scale(2.1) rotate(-9deg)}
+  60%{opacity:1;transform:scale(.94) rotate(2deg)}100%{opacity:1;transform:scale(1) rotate(0)}}
+
+/* ---- cảnh HUẤN LUYỆN: 4 trọng số thật, thanh chạy từ vạch giữa ---- */
+.kb-trong-so{display:flex;flex-direction:column;gap:9px;width:min(430px,100%)}
+.kb-hang-ts{display:grid;grid-template-columns:104px 1fr 62px;align-items:center;gap:10px}
+.kb-ten-ts{font-size:12px;color:var(--chu2);text-align:right}
+.kb-gia-tri{font-size:12px;font-variant-numeric:tabular-nums;font-weight:700;color:var(--chu)}
+.kb-vach{position:relative;height:9px;border-radius:99px;background:var(--nen2)}
+.kb-vach::before{content:"";position:absolute;left:50%;top:-3px;bottom:-3px;width:1px;background:var(--vien)}
+.kb-vach>i{position:absolute;left:var(--l,50%);top:0;bottom:0;width:0;border-radius:99px;
+  background:var(--primary);animation:kbTrongSo 1.5s cubic-bezier(.2,.8,.2,1) both}
+/* Trọng số ÂM dùng màu cảnh báo để phân biệt hướng, không phải để nói "sai".
+   --w luôn >= 0 nên không còn hiện tượng width âm bị CSS loại (xem ghi chú trong JS). */
+.kb-vach>i.am{background:var(--vang)}
+@keyframes kbTrongSo{to{width:var(--w,0%)}}
+.kb-vong{font-size:12px;font-variant-numeric:tabular-nums;color:var(--chu2);
+  padding:5px 12px;border-radius:99px;border:1px solid var(--vienNhat);background:var(--nen)}
+
+/* ---- cảnh KIỂM ĐỊNH: hai cột ngày/đêm ---- */
+.kb-cot{display:flex;gap:34px;align-items:flex-end;justify-content:center}
+.kb-cot-1{display:flex;flex-direction:column;align-items:center;gap:8px}
+.kb-so-cot{font-size:20px;font-weight:800;font-variant-numeric:tabular-nums;color:var(--chu)}
+.kb-than{width:74px;height:170px;border-radius:8px 8px 4px 4px;background:var(--nen2);
+  display:flex;align-items:flex-end;overflow:hidden;border:1px solid var(--vien)}
+.kb-than>i{display:block;width:100%}
+.kb-than>i.ngay{background:var(--dung)}
+.kb-than>i.dem{background:var(--vang)}
+.kb-nhan-cot{font-size:12px;color:var(--chu2)}
+.kb-canh-bao{font-size:13px;font-weight:700;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--vang);color:var(--vang);background:var(--nen);animation:kbNhay 1.4s ease-in-out infinite}
+@keyframes kbNhay{0%,100%{opacity:1}50%{opacity:.45}}
+
+/* ---- cảnh ỨNG DỤNG: hỏi -> máy trả lời (chữ gõ dần) -> tem "máy bịa" ---- */
+.kb-hoi{font-size:15px;padding:9px 16px;border-radius:99px;border:1px solid var(--vien);
+  background:var(--nen);color:var(--chu)}
+.kb-tra-loi{min-height:58px;width:min(520px,100%);font-size:14px;line-height:1.6;color:var(--chu2);
+  padding:12px 16px;border-radius:10px;border:1px dashed var(--vien);background:var(--the);
+  text-align:left;white-space:pre-wrap}
+.kb-tra-loi::after{content:"";display:inline-block;width:7px;height:15px;margin-left:2px;
+  background:var(--primary);vertical-align:-2px;animation:kbNhapNhay .9s step-end infinite}
+@keyframes kbNhapNhay{50%{opacity:0}}
+.kb-tem-bia{font-size:13px;font-weight:700;padding:7px 14px;border-radius:8px;
+  border:2px solid var(--sai);color:var(--sai);background:var(--nenSai)}
+
+/* ---- cảnh CON NGƯỜI KIỂM: dòng đầu ra bị chặn ---- */
+.kb-chan{display:flex;align-items:center;gap:14px;flex-wrap:wrap;justify-content:center}
+.kb-dong-chay{font-size:12px;padding:7px 14px;border-radius:8px;border:1px solid var(--vienNhat);
+  background:var(--nen);color:var(--chu2)}
+.kb-tay-chan{display:flex;align-items:center;justify-content:center;width:44px;height:44px;
+  border-radius:50%;border:2px solid var(--nhan);color:var(--nhan);background:var(--nenChon)}
+.kb-tay-chan .ic{width:20px;height:20px}
+.kb-dong-dung{font-size:12px;font-weight:700;padding:7px 14px;border-radius:8px;
+  border:1px solid var(--dung);background:var(--nenDung);color:var(--dung)}
+
+/* ---- cảnh VÒNG LẶP: 5 nút quay vòng ---- */
+.kb-vong-lap{display:flex;align-items:center;gap:8px;flex-wrap:wrap;justify-content:center}
+.kb-nut-vong{font-size:12px;padding:8px 14px;border-radius:99px;border:1px solid var(--vien);
+  background:var(--the);color:var(--chu)}
+.kb-nut-vong:first-child{border-color:var(--primary);color:var(--primary);font-weight:700}
+
+/* ---- tắt hiệu ứng nhưng GIỮ nội dung ---- */
+@media (prefers-reduced-motion: reduce){
+  .kb-san-khau *,.kb-wrap.kb-hieu-ung .kb-san-khau{animation:none !important;transition:none !important}
+  .kb-hien,.kb-tre,.kb-tem,.kb-chip-so,.kb-nut-vong,.kb-tra-loi::after{opacity:1 !important;transform:none !important}
+  .kb-vach>i{width:var(--w,0%)}
+  .kb-than>i{height:var(--cot,0%)}
+}
+@media (max-width:640px){
+  .kb-caption{font-size:17px}.kb-san-khau{min-height:270px;padding:20px 14px}
+  .kb-hang-ts{grid-template-columns:84px 1fr 56px}.kb-cot{gap:20px}.kb-than{height:130px;width:60px}
+}

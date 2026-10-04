@@ -37,6 +37,8 @@
   <symbol id="i-search" viewBox="0 0 24 24"><circle cx="11" cy="11" r="8" /> <path d="m21 21-4.3-4.3" /></symbol>
   <symbol id="i-x" viewBox="0 0 24 24"><path d="M18 6 6 18" /> <path d="m6 6 12 12" /></symbol>
   <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol>
+  <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3" /></symbol>
+  <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <polyline points="7 10 12 15 17 10" /> <line x1="12" x2="12" y1="15" y2="3" /></symbol>
 </svg>
 
 <header class="top">
@@ -72,6 +74,11 @@
     </div>
 
     <div class="grid g3">
+      <button class="btn menu-o" id="btn-kichban" style="border-color:var(--primary)">
+        <svg class="ic to" aria-hidden="true"><use href="#i-play"/></svg>
+        <div><b>XEM KỊCH BẢN — hành trình của một bức ảnh</b>
+        <span class="chu2">9 cảnh tự chạy, ít chữ. Ảnh → số → nhãn → trọng số → kiểm định → máy bịa → con người chặn → vòng lặp.</span></div>
+      </button>
       <button class="btn menu-o" id="btn-nhamay" style="border-color:var(--primary,#7C3AED)">
         <svg class="ic to" aria-hidden="true"><use href="#i-factory"/></svg>
         <div><b>NHÀ MÁY AI — đi hết dây chuyền</b>
@@ -542,7 +549,7 @@
         <p class="nho chu2" id="nm-chan-doan"></p>
 
         <div class="card" style="background:var(--nen2)">
-          <b>❓ Bây giờ em làm người kiểm định.</b>
+          <b><svg class="ic" aria-hidden="true"><use href="#i-circle-help"/></svg> Bây giờ em làm người kiểm định.</b>
           <p class="chu2">Câu trả lời trên <b>có căn cứ</b> trong dữ liệu mà hệ đã được học,
              hay là hệ <b>bịa ra</b>? (Hệ bịa rất trôi chảy — đó chính là điểm nguy hiểm.)</p>
           <div class="chips">
@@ -569,6 +576,19 @@
       <p class="nho chu2">Kết quả được ghi vào nhật ký lớp để làm minh chứng quá trình.
         Đây là <b>nhận xét</b>, không phải điểm số và không dùng để xếp loại
         (theo phần VI của Khung 2422/QĐ-BGDĐT).</p>
+    </div>
+  </section>
+
+  <!-- ===== KỊCH BẢN: hành trình của một bức ảnh =====
+       Anh Văn 04/10 yêu cầu: ít chữ, hiệu ứng dạng video, có đầu có đuôi có kịch bản.
+       Section này cố tình GẦN NHƯ TRỐNG: toàn bộ nội dung do js/kichban.js dựng bằng
+       createElement + textContent để chạy được trên file:// (innerHTML với chuỗi động
+       sẽ rủi ro XSS). Chữ học sinh đọc chỉ là caption <= 14 từ mỗi cảnh. -->
+  <section id="v-kichban" style="display:none">
+    <div class="card">
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-play"/></svg> Hành trình của một bức ảnh</h2>
+      <p class="nho chu2">9 cảnh tự chạy · không cần mạng · thời gian hiện ở góc phải</p>
+      <div id="kb-host"></div>
     </div>
   </section>
 
@@ -611,7 +631,7 @@
   </section>
 
   <div class="footer">
-    🔍 <b>SOI AI</b> · <i>Soi AI để hiểu AI</i> · chạy được khi không có Internet · không tài khoản · không thu phí · dữ liệu học sinh chỉ là mã ẩn danh, lưu cục bộ
+    <svg class="ic" aria-hidden="true"><use href="#i-search"/></svg> <b>SOI AI</b> · <i>Soi AI để hiểu AI</i> · chạy được khi không có Internet · không tài khoản · không thu phí · dữ liệu học sinh chỉ là mã ẩn danh, lưu cục bộ
     · <button class="btn nho" id="btn-gioithieu">Giới thiệu &amp; căn cứ chương trình</button>
   </div>
 </div>
@@ -643,6 +663,9 @@
 <script src="js/scene3d.js"></script>
 <script src="js/lab3d.js"></script>
 <script src="js/pipeline3d.js"></script>
+<!-- KỊCH BẢN 9 cảnh "hành trình của một bức ảnh". Nạp TRƯỚC app.js vì app.js gọi
+     window.MX_KICHBAN.init() khi người học bấm nút xem. -->
+<script src="js/kichban.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

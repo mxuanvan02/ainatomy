@@ -39,7 +39,7 @@ window.MX_BANK = [
       "Nếu một con số quan trọng, hãy kiểm tra xem nó được lấy từ đâu.",
       "Không nên chép nguyên văn nội dung tìm được mà hãy đọc hiểu rồi viết lại bằng lời của mình."
     ],
-    giaiThich: "Câu này KHÔNG có lỗi: đây là lời khuyên đúng về tư duy phản biện và kiểm chứng thông tin — đúng tinh thần Khung 2422."
+    giaiThich: "Câu này KHÔNG có lỗi. Đây là lời khuyên đúng về tư duy phản biện và kiểm chứng thông tin — đúng tinh thần Khung 2422."
   },
 
   /* ===== LOẠI 2: NGUỒN/VĂN BẢN KHÔNG TỒN TẠI ===== */
@@ -71,7 +71,7 @@ window.MX_BANK = [
       "Dữ liệu được chia thành phần để huấn luyện và phần để kiểm thử.",
       "Mô hình học từ dữ liệu huấn luyện, rồi được đánh giá bằng dữ liệu kiểm thử chưa từng thấy."
     ],
-    giaiThich: "Câu này KHÔNG có lỗi: mô tả đúng quy trình huấn luyện – kiểm thử cơ bản của học máy."
+    giaiThich: "Câu này KHÔNG có lỗi. Mô tả đúng quy trình huấn luyện – kiểm thử cơ bản của học máy."
   },
 
   /* ===== LOẠI 3: THIÊN KIẾN, ĐỊNH KIẾN ===== */
@@ -83,7 +83,7 @@ window.MX_BANK = [
       "Tuy nhiên, là học sinh nữ nên em phù hợp với các ngành nhẹ nhàng như sư phạm mầm non hơn là kĩ thuật hay công nghệ.",
       "Em có thể làm bài trắc nghiệm hướng nghiệp để hiểu rõ hơn điểm mạnh của mình."
     ],
-    giaiThich: "Đây là thiên kiến giới: gán ngành nghề theo giới tính thay vì theo năng lực, sở thích của cá nhân. AI đã học định kiến này từ dữ liệu lệch. Không có cơ sở nào nói nữ kém phù hợp với kĩ thuật/công nghệ."
+    giaiThich: "Đây là thiên kiến giới. Gán ngành nghề theo giới tính thay vì theo năng lực, sở thích của cá nhân. AI đã học định kiến này từ dữ liệu lệch. Không có cơ sở nào nói nữ kém phù hợp với kĩ thuật/công nghệ."
   },
   {
     id: "tk-02", mach: "A", unesco: "A1", loai: "co_loi", loaiLoi: "thien_kien", claimLoi: 2,
@@ -93,7 +93,7 @@ window.MX_BANK = [
       "Độ chính xác phụ thuộc vào chất lượng ảnh và dữ liệu đã dùng để huấn luyện.",
       "Hệ thống này nhận diện kém với người có làn da sẫm màu, nên các trường ở vùng dân tộc thiểu số tốt nhất không nên dùng công nghệ này."
     ],
-    giaiThich: "Hai phần đầu đúng, nhưng phần cuối là thiên kiến: biến một hạn chế kĩ thuật (do dữ liệu huấn luyện lệch) thành kết luận loại trừ cả một nhóm người. Cách đúng: bổ sung dữ liệu đa dạng để cải thiện mô hình, không phải loại bỏ người dùng."
+    giaiThich: "Hai phần đầu đúng, nhưng phần cuối là thiên kiến, vì nó biến một hạn chế kĩ thuật (do dữ liệu huấn luyện lệch) thành kết luận loại trừ cả một nhóm người. Cách đúng là bổ sung dữ liệu đa dạng để cải thiện mô hình, không phải loại bỏ người dùng."
   },
   {
     id: "tk-03", mach: "B", unesco: "B1", loai: "dung", claimLoi: -1,
@@ -103,7 +103,7 @@ window.MX_BANK = [
       "Hiện tượng này gọi là thiên kiến của AI (AI bias).",
       "Vì vậy cần thu thập dữ liệu đa dạng, đại diện cho nhiều nhóm khác nhau."
     ],
-    giaiThich: "Câu này KHÔNG có lỗi: giải thích đúng và trung lập về thiên kiến dữ liệu, không nhắm vào nhóm người cụ thể nào."
+    giaiThich: "Câu này KHÔNG có lỗi. Giải thích đúng và trung lập về thiên kiến dữ liệu, không nhắm vào nhóm người cụ thể nào."
   },
 
   /* ===== LOẠI 4: SUY LUẬN SAI ===== */
@@ -135,7 +135,7 @@ window.MX_BANK = [
       "Nếu mô hình trả lời đúng cả trên ví dụ mới, đó là dấu hiệu nó học được quy luật chung.",
       "Nếu chỉ đúng trên dữ liệu đã học mà sai trên dữ liệu mới, mô hình có thể đã 'học vẹt'."
     ],
-    giaiThich: "Câu này KHÔNG có lỗi: mô tả đúng cách đánh giá khả năng tổng quát hóa của mô hình (tránh học vẹt/overfitting)."
+    giaiThich: "Câu này KHÔNG có lỗi. Mô tả đúng cách đánh giá khả năng tổng quát hóa của mô hình (tránh học vẹt/overfitting)."
   },
 
   /* ===== LOẠI 5: XUI LỘ DỮ LIỆU CÁ NHÂN ===== */
@@ -167,7 +167,7 @@ window.MX_BANK = [
       "Nếu ai đó hỏi thông tin cá nhân của em hoặc của bạn bè, hãy hỏi ý kiến thầy cô hoặc bố mẹ trước.",
       "Một thông tin đã đưa lên mạng thì rất khó xóa hoàn toàn, nên hãy cân nhắc trước khi đăng."
     ],
-    giaiThich: "Câu này KHÔNG có lỗi: đây là những nguyên tắc bảo vệ dữ liệu cá nhân đúng đắn."
+    giaiThich: "Câu này KHÔNG có lỗi. Đây là những nguyên tắc bảo vệ dữ liệu cá nhân đúng đắn."
   },
 
   /* ===== THÊM CÂU ĐÚNG + CÂU LỖI để cân bằng tỉ lệ (giảm đoán mò) ===== */
@@ -179,7 +179,7 @@ window.MX_BANK = [
       "Có nhiều công cụ miễn phí để vẽ sơ đồ tư duy.",
       "Theo báo cáo chính thức, công cụ này đã giúp 100% học sinh Việt Nam tăng điểm môn Toán thêm đúng 5,0 điểm chỉ sau một tuần."
     ],
-    giaiThich: "Con số '100% học sinh' + 'tăng đúng 5,0 điểm' + 'chỉ sau một tuần' là bịa: quá tuyệt đối, quá đẹp, không nguồn. Kết quả giáo dục thật không bao giờ đồng loạt và tức thời như vậy."
+    giaiThich: "Con số '100% học sinh' + 'tăng đúng 5,0 điểm' + 'chỉ sau một tuần' là bịa, vì quá tuyệt đối, quá đẹp, không nguồn. Kết quả giáo dục thật không bao giờ đồng loạt và tức thời như vậy."
   },
   {
     id: "tk-04", mach: "B", unesco: "B2", loai: "co_loi", loaiLoi: "thien_kien", claimLoi: 1,
@@ -199,7 +199,7 @@ window.MX_BANK = [
       "Nhưng những quyết định quan trọng liên quan đến con người thì vẫn cần con người cân nhắc và chịu trách nhiệm.",
       "Việc có dùng AI hay không nên dựa trên mục đích, nhu cầu và sự an toàn."
     ],
-    giaiThich: "Câu này KHÔNG có lỗi: thể hiện đúng tư duy 'lấy con người làm trung tâm' — AI hỗ trợ, con người quyết định và chịu trách nhiệm."
+    giaiThich: "Câu này KHÔNG có lỗi. Thể hiện đúng tư duy 'lấy con người làm trung tâm' — AI hỗ trợ, con người quyết định và chịu trách nhiệm."
   },
   {
     id: "ngk-04", mach: "B", unesco: "B1", loai: "co_loi", loaiLoi: "nguon_khong_ton_tai", claimLoi: 0,
@@ -219,7 +219,7 @@ window.MX_BANK = [
       "Chỉ nên nói về chủ đề học tập, không cần kể thông tin riêng tư của gia đình cho trợ lí ảo.",
       "Ghi âm luyện tập có thể lưu lại để nghe và so sánh sự tiến bộ của chính mình."
     ],
-    giaiThich: "Câu này KHÔNG có lỗi: dùng AI hợp lí mà vẫn giữ ranh giới không chia sẻ thông tin riêng tư."
+    giaiThich: "Câu này KHÔNG có lỗi. Dùng AI hợp lí mà vẫn giữ ranh giới không chia sẻ thông tin riêng tư."
   },
   {
     id: "slb-05", mach: "D", unesco: "D3", loai: "co_loi", loaiLoi: "suy_luan_sai", claimLoi: 2,
@@ -229,7 +229,7 @@ window.MX_BANK = [
       "Em cần thu thập ảnh các loại rác để huấn luyện mô hình.",
       "Vì rác hữu cơ thường có màu xanh nên em cứ lập trình cho AI hễ thấy vật màu xanh là xếp vào rác hữu cơ, như vậy là đủ chính xác."
     ],
-    giaiThich: "Suy luận sai (khái quát hóa vội): 'màu xanh = rác hữu cơ' là quy tắc nông cạn, sẽ sai với rất nhiều trường hợp (túi nilon xanh, chai nhựa xanh...). Đây là ví dụ về việc gán một đặc điểm bề ngoài làm quy luật — đúng loại lỗi mà AI thật cũng hay mắc nếu huấn luyện ẩu."
+    giaiThich: "Suy luận sai vì khái quát hóa vội. 'Màu xanh = rác hữu cơ' là quy tắc nông cạn, sẽ sai với rất nhiều trường hợp (túi nilon xanh, chai nhựa xanh...). Đây là ví dụ về việc gán một đặc điểm bề ngoài làm quy luật — đúng loại lỗi mà AI thật cũng hay mắc nếu huấn luyện ẩu."
   },
   {
     id: "tk-05", mach: "A", unesco: "A3", loai: "dung", claimLoi: -1,
@@ -239,7 +239,7 @@ window.MX_BANK = [
       "Nên kiểm tra xem dữ liệu huấn luyện có đại diện công bằng cho các nhóm người khác nhau không.",
       "Cần có cách để con người xem xét và điều chỉnh khi hệ thống đưa ra kết quả bất lợi cho ai đó."
     ],
-    giaiThich: "Câu này KHÔNG có lỗi: đây là các bước thiết kế AI có trách nhiệm, lấy con người làm trung tâm — đúng tinh thần mạch A và B của QĐ 2422."
+    giaiThich: "Câu này KHÔNG có lỗi. Đây là các bước thiết kế AI có trách nhiệm, lấy con người làm trung tâm — đúng tinh thần mạch A và B của QĐ 2422."
   }
 ];
 

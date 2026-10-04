@@ -40,6 +40,15 @@
       ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
   }
 
+  /* Trả về chuỗi SVG nội tuyến trỏ tới một symbol trong sprite của index.html.
+   * CHUỖI TĨNH — tên icon do chính mã nguồn này chỉ định, không ghép dữ liệu người
+   * dùng, nên dùng bên trong innerHTML là an toàn.
+   * Tồn tại để thay emoji: MASTER.md cấm dùng emoji làm biểu tượng vì chúng render
+   * khác nhau giữa Windows/macOS/Android và mất nét khi phóng to trên máy chiếu. */
+  function svgIco(ten){
+    return '<svg class="ic" aria-hidden="true"><use href="#i-' + ten + '"/></svg>';
+  }
+
   /* ---------------- chuẩn hoá đặc trưng về [-3,3] ---------------- */
   function boChuanHoa(ds){
     const min = [Infinity, Infinity, Infinity], max = [-Infinity, -Infinity, -Infinity];
@@ -99,7 +108,7 @@
        * nội dung từ ngân hàng câu hỏi chảy vào đây. */
       if(root) root.innerHTML =
         `<div class="card" style="border-left:4px solid var(--vang)">
-           <b>⚠️ Máy này không chạy được đồ hoạ 3D</b> <span class="nho chu2">(${esc(k.liDo)})</span><br>
+           <b>${svgIco("triangle-alert")} Máy này không chạy được đồ hoạ 3D</b> <span class="nho chu2">(${esc(k.liDo)})</span><br>
            <span class="chu2">Không sao — <b>nội dung bài học không đổi</b>. Em hãy dùng
            <b>Tầng 1 — Xưởng huấn luyện</b> ở trang chủ: cùng một mô hình, cùng bộ dữ liệu
            và cùng con số, chỉ hiển thị dạng 2D. Mọi kết quả vẫn được ghi vào nhật ký lớp.</span>

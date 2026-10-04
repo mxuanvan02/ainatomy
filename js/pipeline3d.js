@@ -38,14 +38,14 @@
      Mọi giá trị được tools/nghiem_thu.py phép G1i kiểm tra tự động, không ước lượng. */
   const TRAM = [
     { id:"dulieu", ten:"DỮ LIỆU", mau:0xA16207, yccd:"10.C4.1",
-      moTa:"Nơi thu thập và chuẩn bị dữ liệu huấn luyện: ảnh, âm thanh, văn bản, số liệu.",
+      moTa:"Nơi thu thập và chuẩn bị dữ liệu huấn luyện — ảnh, âm thanh, văn bản, số liệu.",
       vaiTro:"Mô hình chỉ học được những gì có trong dữ liệu. Dữ liệu lệch thì mô hình lệch.",
       khiHong:"AI chưa từng thấy trường hợp này trong dữ liệu → nó đoán mò và sai có HỆ THỐNG với đúng nhóm bị thiếu.",
       viDu:"Bộ ảnh nhận diện mũ bảo hiểm có 92% là ảnh ban ngày → ban đêm AI sai gần một nửa." },
     { id:"huanluyen", ten:"HUẤN LUYỆN", mau:0x1D4ED8, yccd:"10.C5",
-      moTa:"Thuật toán lặp đi lặp lại: so dự đoán với nhãn đúng, đo lỗi, chỉnh trọng số.",
+      moTa:"Thuật toán lặp đi lặp lại — so dự đoán với nhãn đúng, đo lỗi, chỉnh trọng số.",
       vaiTro:"Đây là chỗ mô hình thật sự 'học'. Không có bước này thì chỉ là một hàm số do người viết sẵn.",
-      khiHong:"Trọng số không hội tụ: mô hình đoán gần như ngẫu nhiên dù dữ liệu tốt. Độ chính xác dao động, không ổn định.",
+      khiHong:"Trọng số không hội tụ. Mô hình đoán gần như ngẫu nhiên dù dữ liệu tốt. Độ chính xác dao động, không ổn định.",
       viDu:"Học mãi trên đúng bộ dữ liệu lệch không sửa được thiên kiến — nó chỉ củng cố thêm thiên kiến." },
     { id:"mohinh", ten:"MÔ HÌNH", mau:0x9333EA, yccd:"10.D2.1",
       moTa:"Bộ trọng số đã học được — chính là 'kiến thức' mà AI mang theo.",
@@ -53,14 +53,14 @@
       khiHong:"Mô hình quá đơn giản so với bài toán → bỏ sót mẫu phức tạp; hoặc quá phức tạp → học thuộc lòng dữ liệu cũ, gặp dữ liệu mới là sai.",
       viDu:"Một đường thẳng không thể phân biệt được ảnh mũ bảo hiểm chụp nghiêng." },
     { id:"daura", ten:"ĐẦU RA", mau:0x15803D, yccd:"10.B2.MR1",
-      moTa:"Kết quả AI đưa cho người dùng: nhãn, con số, đoạn văn, hình ảnh, lời khuyên.",
+      moTa:"Kết quả AI đưa cho người dùng — nhãn, con số, đoạn văn, hình ảnh, lời khuyên.",
       vaiTro:"Đây là thứ người dùng nhìn thấy và tin. Đầu ra trôi chảy CHƯA chắc đã đúng.",
       khiHong:"AI tạo ra nội dung nghe rất tự tin nhưng bịa số liệu, bịa nguồn trích dẫn, hoặc khuyên lộ thông tin cá nhân.",
       viDu:"AI trích 'Nghị định 999/2024/NĐ-CP' — văn bản này không tồn tại." },
     { id:"connguoi", ten:"CON NGƯỜI KIỂM", mau:0xE11D48, yccd:"10.A1.2",
       moTa:"Con người rà soát, phản hồi và chịu trách nhiệm về quyết định cuối cùng.",
       vaiTro:"Trạm duy nhất có thể CHẶN lỗi trước khi nó gây hại. Đây cũng là 'phản hồi' trong YCCĐ 10.D2.1.",
-      khiHong:"Lỗi đi THẲNG tới người dùng: tin giả lan đi, quyết định sai ảnh hưởng tới người thật, và không ai chịu trách nhiệm.",
+      khiHong:"Lỗi đi THẲNG tới người dùng. Tin giả lan đi, quyết định sai ảnh hưởng tới người thật, và không ai chịu trách nhiệm.",
       viDu:"Điểm số học sinh bị hạ vì AI chấm sai mà không có giáo viên nào xem lại." }
   ];
 
@@ -69,6 +69,15 @@
   function esc(s){
     return String(s == null ? "" : s).replace(/[&<>"]/g, c =>
       ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
+  }
+
+  /* Trả về chuỗi SVG nội tuyến trỏ tới một symbol trong sprite của index.html.
+   * CHUỖI TĨNH — tên icon do chính mã nguồn này chỉ định, không ghép dữ liệu người
+   * dùng, nên dùng bên trong innerHTML là an toàn.
+   * Tồn tại để thay emoji: MASTER.md cấm dùng emoji làm biểu tượng vì chúng render
+   * khác nhau giữa Windows/macOS/Android và mất nét khi phóng to trên máy chiếu. */
+  function svgIco(ten){
+    return '<svg class="ic" aria-hidden="true"><use href="#i-' + ten + '"/></svg>';
   }
 
   function init(opts){
@@ -82,7 +91,7 @@
        * và đã escape bằng esc(). Không có dữ liệu người dùng nào chảy vào. */
       if(root) root.innerHTML =
         `<div class="card" style="border-left:4px solid var(--vang)">
-           <b>⚠️ Máy này không chạy được đồ hoạ 3D</b> <span class="nho chu2">(${esc(k.liDo)})</span><br>
+           <b>${svgIco("triangle-alert")} Máy này không chạy được đồ hoạ 3D</b> <span class="nho chu2">(${esc(k.liDo)})</span><br>
            <span class="chu2">Nội dung bài học vẫn còn nguyên ở dạng chữ ngay bên dưới.</span>
          </div>` + bangTinh();
       return { ok:false, liDo:k.liDo, vanHocDuoc:true };

@@ -28,7 +28,7 @@ window.MX_KT = {
       ten: "Luật Dữ liệu",
       so: "60/2024/QH15",
       ngay: "Quốc hội thông qua 30/11/2024, hiệu lực 01/7/2025",
-      baoVe: "Đạo luật đầu tiên quy định toàn diện về dữ liệu số (5 chương, 46 điều): xây dựng, phát triển, bảo vệ, quản trị, xử lí và sử dụng dữ liệu; Cơ sở dữ liệu tổng hợp quốc gia.",
+      baoVe: "Đạo luật đầu tiên quy định toàn diện về dữ liệu số (5 chương, 46 điều), bao gồm xây dựng, phát triển, bảo vệ, quản trị, xử lí và sử dụng dữ liệu; Cơ sở dữ liệu tổng hợp quốc gia.",
       lienHe: "Dữ liệu em tạo ra khi học (bài làm, nhật ký học tập) cũng là dữ liệu số và được luật điều chỉnh.",
       nguon: "luatvietnam.vn; vnetwork.vn; hcmussh.edu.vn; congan.camau.gov.vn — đồng nhất về số hiệu và ngày hiệu lực."
     },
@@ -90,7 +90,7 @@ window.MX_KT = {
       id: "p-01",
       ten: "Yêu cầu AI giải thích một khái niệm Tin học",
       tinhHuong: "Em muốn nhờ trợ lý AI giải thích khái niệm 'thiên kiến dữ liệu' (data bias) để hiểu trước khi vào bài học, sao cho một bạn lớp 10 chưa biết gì về AI cũng hiểu được.",
-      goiY: "Hãy viết prompt có đủ: việc cần làm, đối tượng đọc, độ dài, định dạng, và điều phải tránh.",
+      goiY: "Hãy viết prompt có đủ việc cần làm, đối tượng đọc, độ dài, định dạng, và điều phải tránh.",
       /* tiêu chí BẮT BUỘC phải có mặt trong prompt của HS (từ khoá chấp nhận được) */
       batBuoc: ["muc_tieu", "boi_canh", "dinh_dang"],
       tuKhoa: {
@@ -107,7 +107,7 @@ window.MX_KT = {
       id: "p-02",
       ten: "Yêu cầu AI xử lí dữ liệu lớp học (không bịa)",
       tinhHuong: "Lớp em có bảng điểm 40 bạn (điểm giữa kì môn Tin). Em muốn AI gợi ý bạn nào cần được hỗ trợ thêm và lí do, nhưng KHÔNG được bịa số và không được tiết lộ thông tin cá nhân.",
-      goiY: "Hãy viết prompt đảm bảo: có dữ liệu thật, có ràng buộc chống bịa đặt, và bảo vệ dữ liệu cá nhân.",
+      goiY: "Hãy viết prompt đảm bảo có dữ liệu thật, có ràng buộc chống bịa đặt, và bảo vệ dữ liệu cá nhân.",
       batBuoc: ["muc_tieu", "du_lieu", "rang_buoc"],
       tuKhoa: {
         muc_tieu: ["gợi ý", "xác định", "tìm", "liệt kê", "chỉ ra", "phân tích", "đề xuất"],
@@ -117,12 +117,12 @@ window.MX_KT = {
         rang_buoc: ["không bịa", "không được", "không", "tránh", "ẩn danh", "mã", "không nêu tên", "chỉ dùng", "dựa trên"],
         kiem_chung: ["giải thích", "căn cứ", "dựa vào", "nguồn", "nếu không đủ"]
       },
-      giaiThich: "Đây là bài tập gắn với Luật Bảo vệ dữ liệu cá nhân (91/2025/QH15): khi đưa dữ liệu học sinh cho một công cụ AI, em phải ẨN DANH trước (dùng mã thay vì họ tên) và phải ràng buộc để AI không suy diễn ngoài dữ liệu. Prompt tốt = prompt có ràng buộc."
+      giaiThich: "Đây là bài tập gắn với Luật Bảo vệ dữ liệu cá nhân (91/2025/QH15). Khi đưa dữ liệu học sinh cho một công cụ AI, em phải ẨN DANH trước (dùng mã thay vì họ tên) và phải ràng buộc để AI không suy diễn ngoài dữ liệu. Prompt tốt = prompt có ràng buộc."
     },
     {
       id: "p-03",
       ten: "Yêu cầu AI giúp kiểm tra một thông tin đáng ngờ",
-      tinhHuong: "Em đọc được trên mạng: '97,3% học sinh Việt Nam từng bị đánh cắp tài khoản trong năm 2025'. Em muốn nhờ AI giúp kiểm tra thông tin này có đáng tin không.",
+      tinhHuong: "Em đọc được trên mạng câu này — '97,3% học sinh Việt Nam từng bị đánh cắp tài khoản trong năm 2025'. Em muốn nhờ AI giúp kiểm tra thông tin này có đáng tin không.",
       goiY: "Hãy viết prompt khiến AI phải nêu rõ mức độ chắc chắn và cách em tự kiểm chứng, thay vì khẳng định bừa.",
       batBuoc: ["muc_tieu", "kiem_chung", "rang_buoc"],
       tuKhoa: {
@@ -161,7 +161,7 @@ window.MX_KT = {
         { id: "d", text: "Chỉ doanh nghiệp lớn mới được phát triển AI." }
       ],
       dapAn: "b",
-      giaiThich: "Nguyên tắc 'AI phục vụ con người, không thay thế thẩm quyền và trách nhiệm của con người' là nền tảng của Luật Trí tuệ nhân tạo 134/2025/QH15 (hiệu lực 01/3/2026), và cũng là tinh thần mạch A 'Tư duy lấy con người làm trung tâm' của Khung QĐ 2422. Trong đánh giá học sinh, điều này nghĩa là: AI có thể gợi ý, nhưng giáo viên là người chịu trách nhiệm về kết quả."
+      giaiThich: "Nguyên tắc 'AI phục vụ con người, không thay thế thẩm quyền và trách nhiệm của con người' là nền tảng của Luật Trí tuệ nhân tạo 134/2025/QH15 (hiệu lực 01/3/2026), và cũng là tinh thần mạch A 'Tư duy lấy con người làm trung tâm' của Khung QĐ 2422. Trong đánh giá học sinh, điều này nghĩa là AI có thể gợi ý, nhưng giáo viên là người chịu trách nhiệm về kết quả."
     },
     {
       id: "kt-03", mach: "C", unesco: "C2", yccd: "10.C2.2",
@@ -189,7 +189,7 @@ window.MX_KT = {
     },
     {
       id: "kt-05", mach: "C", unesco: "C2", yccd: "10.C3.1",
-      cauHoi: "Prompt nào dưới đây đáp ứng ĐẦY ĐỦ nhất các yêu cầu: mục tiêu, bối cảnh, định dạng và ràng buộc?",
+      cauHoi: "Prompt nào dưới đây đáp ứng ĐẦY ĐỦ nhất các yêu cầu về mục tiêu, bối cảnh, định dạng và ràng buộc?",
       luaChon: [
         { id: "a", text: "'Nói về AI đi.'" },
         { id: "b", text: "'Giải thích trí tuệ nhân tạo.'" },
@@ -209,7 +209,7 @@ window.MX_KT = {
         { id: "d", text: "Chụp ảnh bảng điểm gốc cho rõ." }
       ],
       dapAn: "b",
-      giaiThich: "Ẩn danh hoá là bước bắt buộc: dữ liệu cá nhân của trẻ em được Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 bảo vệ, và CV 5588/BGDĐT-GDPT yêu cầu không tạo rủi ro dữ liệu cho học sinh. Điểm số vẫn cần giữ vì đó là dữ liệu để phân tích; họ tên thì không cần cho việc này."
+      giaiThich: "Ẩn danh hoá là bước bắt buộc, vì dữ liệu cá nhân của trẻ em được Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 bảo vệ, và CV 5588/BGDĐT-GDPT yêu cầu không tạo rủi ro dữ liệu cho học sinh. Điểm số vẫn cần giữ vì đó là dữ liệu để phân tích; họ tên thì không cần cho việc này."
     }
   ]
 };

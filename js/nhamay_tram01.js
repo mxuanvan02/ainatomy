@@ -31,6 +31,15 @@
     return String(s == null ? "" : s).replace(/[&<>"]/g, c =>
       ({ "&":"&amp;", "<":"&lt;", ">":"&gt;", '"':"&quot;" }[c]));
   }
+
+  /* Trả về chuỗi SVG nội tuyến trỏ tới một symbol trong sprite của index.html.
+   * CHUỖI TĨNH — tên icon do chính mã nguồn chỉ định, không ghép dữ liệu người dùng,
+   * nên dùng bên trong innerHTML là an toàn. Dữ liệu động vẫn đi qua esc().
+   * Tồn tại để thay emoji: MASTER.md cấm dùng emoji làm biểu tượng vì chúng render
+   * khác nhau giữa Windows/macOS/Android và mất nét khi phóng to trên máy chiếu. */
+  function svgIco(ten){
+    return '<svg class="ic" aria-hidden="true"><use href="#i-' + ten + '"/></svg>';
+  }
   const $ = id => document.getElementById(id);
 
   /* ======================================================================
@@ -47,7 +56,7 @@
         {id:"c", text:"Nó tra cứu trên Internet xem ảnh này chụp ở đâu."},
         {id:"d", text:"Nó đọc chú thích ảnh do người chụp viết."}],
       dapAn:"b",
-      giaiThich:"Đúng. Ảnh với máy chỉ là các con số. Ở trạm này em thấy tận mắt bốn đặc trưng được trích từ mỗi ảnh: tỉ lệ điểm ảnh RẤT SÁNG, tỉ lệ điểm ảnh SÁNG VỪA, độ sáng vùng đầu, và tỉ lệ điểm tối. Toàn bộ việc học diễn ra trên bốn con số đó, không có 'cái nhìn' nào cả."},
+      giaiThich:"Đúng. Ảnh với máy chỉ là các con số. Ở trạm này em thấy tận mắt bốn đặc trưng được trích từ mỗi ảnh — tỉ lệ điểm ảnh RẤT SÁNG, tỉ lệ điểm ảnh SÁNG VỪA, độ sáng vùng đầu, và tỉ lệ điểm tối. Toàn bộ việc học diễn ra trên bốn con số đó, không có 'cái nhìn' nào cả."},
     { id:"t0-2", mach:"C", chuDe:"C4", yccd:"10.C4.MR1",
       cau:"Ba dạng dữ liệu dưới đây, dạng nào KHÔNG dùng được để huấn luyện một mô hình nhận diện mũ bảo hiểm từ ảnh?",
       luaChon:[
@@ -56,7 +65,7 @@
         {id:"c", text:"Bản nhạc nền của video quay cảnh giao thông."},
         {id:"d", text:"Nhãn 'có mũ' hoặc 'không mũ' gắn cho từng ảnh."}],
       dapAn:"c",
-      giaiThich:"Đúng. Âm thanh là một dạng dữ liệu huấn luyện AI hợp lệ nói chung (nhận diện tiếng nói, phân loại âm thanh), nhưng nó không mang thông tin gì về việc có đội mũ hay không. Chọn dữ liệu là một quyết định của con người, và chọn sai thì mô hình không thể học được điều cần học — đây là mạch A: tư duy lấy con người làm trung tâm."},
+      giaiThich:"Đúng. Âm thanh là một dạng dữ liệu huấn luyện AI hợp lệ nói chung (nhận diện tiếng nói, phân loại âm thanh), nhưng nó không mang thông tin gì về việc có đội mũ hay không. Chọn dữ liệu là một quyết định của con người, và chọn sai thì mô hình không thể học được điều cần học — đây là mạch A, tư duy lấy con người làm trung tâm."},
     { id:"t0-3", mach:"C", chuDe:"C2", yccd:"10.C2.1",
       cau:"Theo yêu cầu cần đạt 10.C2.1, khi chọn vấn đề thực tế để ứng dụng AI thì nên ưu tiên điều gì?",
       luaChon:[
@@ -65,7 +74,7 @@
         {id:"c", text:"Vấn đề nào dễ làm nhất để nhanh có sản phẩm."},
         {id:"d", text:"Vấn đề do nước ngoài đặt hàng."}],
       dapAn:"b",
-      giaiThich:"Đúng, đây là nguyên văn của Khung: ưu tiên các vấn đề gần gũi, cần thiết trong bối cảnh Việt Nam, chẳng hạn sản xuất nông nghiệp, các vấn đề liên quan đến các cộng đồng thiểu số. Nhà máy này chọn bài toán mũ bảo hiểm xe máy vì đó là vấn đề thật của giao thông Việt Nam."},
+      giaiThich:"Đúng, đây là nguyên văn của Khung — ưu tiên các vấn đề gần gũi, cần thiết trong bối cảnh Việt Nam, chẳng hạn sản xuất nông nghiệp, các vấn đề liên quan đến các cộng đồng thiểu số. Nhà máy này chọn bài toán mũ bảo hiểm xe máy vì đó là vấn đề thật của giao thông Việt Nam."},
     { id:"t0-4", mach:"C", chuDe:"C4", yccd:"10.C4.1",
       cau:"Bộ dữ liệu có 92% ảnh chụp ban ngày và 8% ảnh ban đêm. Điều gì sẽ xảy ra với mô hình?",
       luaChon:[
@@ -74,7 +83,7 @@
         {id:"c", text:"Mô hình sẽ từ chối dự đoán với ảnh ban đêm."},
         {id:"d", text:"Mô hình chỉ học được ban đêm vì đó là phần khó."}],
       dapAn:"b",
-      giaiThich:"Đúng. Đặc trưng của ảnh ban đêm (điểm ảnh SÁNG VỪA, tín hiệu của mũ màu xám) hầu như không xuất hiện trong dữ liệu, nên trọng số tương ứng không được cập nhật. Em sẽ thấy tận mắt điều này ở Trạm 2 và Trạm 4: đúng 100% ban ngày, 59% ban đêm."},
+      giaiThich:"Đúng. Đặc trưng của ảnh ban đêm (điểm ảnh SÁNG VỪA, tín hiệu của mũ màu xám) hầu như không xuất hiện trong dữ liệu, nên trọng số tương ứng không được cập nhật. Em sẽ thấy tận mắt điều này ở Trạm 2 và Trạm 4 — đúng 100% ban ngày, 59% ban đêm."},
     { id:"t0-5", mach:"D", chuDe:"D2", yccd:"10.D2.1",
       cau:"Trong sơ đồ hệ thống AI, khâu NHẬP LIỆU nằm ở đâu và vì sao nó quan trọng?",
       luaChon:[
@@ -198,7 +207,7 @@
           const dung = (l.id === q.dapAn);
           const fb = $("t0-fb-" + qi);
           fb.className = "phanhoi " + (dung ? "dung" : "sai");
-          fb.innerHTML = `<p>${dung ? "✅ <b>Chính xác.</b>" : "❌ <b>Chưa đúng.</b>"} ${esc(q.giaiThich)}</p>`;
+          fb.innerHTML = `<p>${dung ? svgIco("check") + " <b>Chính xác.</b>" : svgIco("x") + " <b>Chưa đúng.</b>"} ${esc(q.giaiThich)}</p>`;
           [...chips.children].forEach(c => c.disabled = true);
           b.classList.add("chon");
           if(onCham) onCham(q, l.id, dung);
@@ -259,7 +268,7 @@
 
   function capNhatTienDoT1(){
     /* BUG ĐÃ SỬA — ghi lại vì loại lỗi này mắt thường KHÔNG thấy được:
-     * bản đầu viết $("t1-tiendо") với chữ 'о' là KÍ TỰ CYRILLIC (U+043E) chứ không
+     * bản đầu viết $("t1-tiend" + U+043E), tức chữ o cuối là KÍ TỰ CYRILLIC chứ không
      * phải chữ 'o' Latin (U+006F). Selector trông y hệt nhưng không khớp id nào,
      * nên hàm trả về sớm và nút "Chấm nhãn" vĩnh viễn disabled — hỏng cả Trạm 1
      * mà không báo lỗi. Sửa bằng cách chỉ dùng MỘT id thuần ASCII và bỏ nhánh dự phòng. */
@@ -335,8 +344,8 @@
        </table>
        <div class="phanhoi ${r.nhanSai===0?'dung':'sai'}">
          <p><b>${r.nhanSai === 0
-            ? "✅ Em dán nhãn đúng toàn bộ."
-            : `❌ Em dán sai ${r.nhanSai} nhãn (ở các ảnh số ${r.viTriSai.map(i=>i+1).join(", ")}).`}</b></p>
+            ? svgIco("check") + " Em dán nhãn đúng toàn bộ."
+            : `${svgIco("x")} Em dán sai ${r.nhanSai} nhãn (ở các ảnh số ${r.viTriSai.map(i=>i+1).join(", ")}).`}</b></p>
          <p class="chu2">${r.nhanSai === 0
             ? "Hai mô hình A và B học từ cùng một bộ nhãn nên cho kết quả như nhau. Hãy thử dán sai vài nhãn rồi chấm lại để thấy hậu quả."
             : `Mô hình A học từ nhãn của em nên mất ${p(r.thietHai)} độ chính xác so với mô hình B học từ nhãn đúng. `

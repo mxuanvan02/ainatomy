@@ -12,6 +12,15 @@
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
 
+  /* Trả về chuỗi SVG nội tuyến trỏ tới một symbol trong sprite của index.html.
+   * CHUỖI TĨNH — tên icon do chính mã nguồn này chỉ định, không ghép dữ liệu người
+   * dùng, nên dùng bên trong innerHTML là an toàn.
+   * Tồn tại để thay emoji: MASTER.md cấm dùng emoji làm biểu tượng vì chúng render
+   * khác nhau giữa Windows/macOS/Android và mất nét khi phóng to trên máy chiếu. */
+  function svgIco(ten){
+    return '<svg class="ic" aria-hidden="true"><use href="#i-' + ten + '"/></svg>';
+  }
+
   function normalize(s){
     return String(s).toLowerCase()
       .normalize("NFD").replace(/[\u0300-\u036f]/g, "")   // bỏ dấu để khớp "giai thich" ~ "giải thích"
@@ -49,7 +58,7 @@
         <h3 style="margin-top:0">${esc(l.ten)} <span class="tagline">${esc(l.so)}</span></h3>
         <p class="nho chu2">${esc(l.ngay)}</p>
         <p>${esc(l.baoVe)}</p>
-        <p class="vang nho">💡 Liên hệ với em: ${esc(l.lienHe)}</p>
+        <p class="vang nho">${svgIco("lightbulb")} Liên hệ với em: ${esc(l.lienHe)}</p>
         <p class="nho chu2">Nguồn tra cứu: ${esc(l.nguon)}</p>
       </div>`).join("");
   }
@@ -108,7 +117,7 @@
         const kqBox = c.querySelector(`#prompt-kq-${de.id}`);
         if(text.length < 20){
           kqBox.className = "phanhoi sai";
-          kqBox.innerHTML = "Prompt còn quá ngắn (dưới 20 kí tự). Hãy viết đầy đủ hơn: việc cần làm, cho ai, dạng kết quả, và điều phải tránh.";
+          kqBox.innerHTML = "Prompt còn quá ngắn (dưới 20 kí tự). Hãy viết đầy đủ hơn — việc cần làm, cho ai, dạng kết quả, và điều phải tránh.";
           return;
         }
         const kq = chamPrompt(de, text);
@@ -117,7 +126,7 @@
           const r = kq.ketQua[t.id];
           const batBuoc = de.batBuoc.includes(t.id);
           return `<tr><td>${esc(t.ten)} ${batBuoc?'<span class="vang">(bắt buộc)</span>':''}</td>
-            <td>${r && r.dat ? '<span class="ok">✔ có</span>' : '<span class="ko">✘ thiếu</span>'}</td>
+            <td>${r && r.dat ? svgIco("check") + '<span class="ok"> có</span>' : svgIco("x") + '<span class="ko"> thiếu</span>'}</td>
             <td class="nho chu2">${r && r.dat ? esc(r.tuKhoa.slice(0,4).join(", ")) : ""}</td></tr>`;
         }).join("");
         kqBox.className = "phanhoi " + (kq.diem >= 1 ? "dung" : "sai");
@@ -169,7 +178,8 @@
           });
           const fb = document.createElement("div");
           fb.className = "phanhoi " + (dung ? "dung" : "sai");
-          fb.innerHTML = (dung ? "✅ <b>Chính xác!</b> " : "❌ <b>Chưa đúng.</b> ") + esc(q.giaiThich);
+          fb.innerHTML = (dung ? svgIco("check") + " <b>Chính xác!</b> "
+                        : svgIco("x") + " <b>Chưa đúng.</b> ") + esc(q.giaiThich);
           c.querySelector(`#kt-fb-${q.id}`).appendChild(fb);
           window.MX_ENGINE.logSuKien(maHS, {
             loai: "lab",

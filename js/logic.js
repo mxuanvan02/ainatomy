@@ -20,7 +20,7 @@
   const opState = { a: true, b: false, n: true };
 
   function veDen(el, on){
-    el.textContent = on ? "🟢 TRUE (1)" : "🔴 FALSE (0)";
+    el.textContent = on ? "TRUE (1)" : "FALSE (0)";
     el.className = "den " + (on ? "on" : "off");
   }
 
@@ -181,7 +181,8 @@
           });
           const fb = document.createElement("div");
           fb.className = "phanhoi " + (dung ? "dung" : "sai");
-          fb.innerHTML = (dung ? "✅ <b>Chính xác!</b> " : "❌ <b>Chưa đúng.</b> ") + esc(bt.giaiThich);
+          fb.innerHTML = (dung ? svgIco("check") + " <b>Chính xác!</b> "
+                        : svgIco("x") + " <b>Chưa đúng.</b> ") + esc(bt.giaiThich);
           c.querySelector(`#bt-fb-${bt.id}`).appendChild(fb);
           // ghi log như một nhiệm vụ (dùng chung kênh 'lab' để vào bản đồ năng lực)
           window.MX_ENGINE.logSuKien(maHS, {
@@ -196,6 +197,15 @@
   }
 
   const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+  /* Trả về chuỗi SVG nội tuyến trỏ tới một symbol trong sprite của index.html.
+   * CHUỖI TĨNH — tên icon do chính mã nguồn này chỉ định, không ghép dữ liệu người
+   * dùng, nên dùng bên trong innerHTML là an toàn.
+   * Tồn tại để thay emoji: MASTER.md cấm dùng emoji làm biểu tượng vì chúng render
+   * khác nhau giữa Windows/macOS/Android và mất nét khi phóng to trên máy chiếu. */
+  function svgIco(ten){
+    return '<svg class="ic" aria-hidden="true"><use href="#i-' + ten + '"/></svg>';
+  }
 
   /* ============ KHỞI ĐỘNG MODULE ============ */
   window.MX_LOGIC = {

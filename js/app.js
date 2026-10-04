@@ -10,17 +10,29 @@
   let maHS = "", maLop = "";
   const $ = (id) => document.getElementById(id);
   const esc = (s) => String(s).replace(/[&<>"]/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;","\"":"&quot;"}[c]));
+
+  /* Trả về chuỗi SVG nội tuyến trỏ tới một symbol trong sprite của index.html.
+   * CHUỖI TĨNH — tên icon do chính mã nguồn này chỉ định, không ghép dữ liệu người
+   * dùng, nên dùng bên trong innerHTML là an toàn.
+   * Tồn tại để thay emoji: MASTER.md cấm dùng emoji làm biểu tượng vì chúng render
+   * khác nhau giữa Windows/macOS/Android và mất nét khi phóng to trên máy chiếu. */
+  function svgIco(ten){
+    return '<svg class="ic" aria-hidden="true"><use href="#i-' + ten + '"/></svg>';
+  }
   const pct = (x) => x===null||x===undefined ? "—" : Math.round(x*100) + "%";
 
   /* ================= ĐIỀU HƯỚNG ================= */
   const CAC_VIEW = ["v-home","v-nhap","v-lab","v-dautruong","v-baocao","v-logic",
-                    "v-kienthuc","v-tinhhuong","v-lab3d","v-pipe3d","v-nhamay","v-gioithieu"];
+                    "v-kienthuc","v-tinhhuong","v-lab3d","v-pipe3d","v-nhamay","v-kichban","v-gioithieu"];
   function hien(view){
     CAC_VIEW.forEach(id=>{
       const el = $(id); if(el) el.style.display = (id===view) ? "" : "none";
     });
     /* 3D tốn GPU: khi rời scene thì giải phóng, vào lại thì dựng mới.
      * Đây là lí do mỗi scene có init/huy riêng — tránh rò rỉ bộ nhớ khi đổi tab liên tục. */
+    /* Kịch bản có setTimeout + requestAnimationFrame: rời view thì phải tạm dừng, nếu
+     * không timer vẫn chạy ngầm, vừa tốn pin vừa làm cảnh tự chuyển khi quay lại. */
+    if(view !== "v-kichban" && kbDaNap){ try{ window.MX_KICHBAN.tamDung(); }catch(e){} }
     if(view !== "v-lab3d" && lab3dDaKhoiTao){ try{ window.MX_LAB3D.huy(); }catch(e){} lab3dDaKhoiTao = false; }
     if(view !== "v-pipe3d" && pipe3dDaKhoiTao){ try{ window.MX_PIPE3D.huy(); }catch(e){} pipe3dDaKhoiTao = false; }
     window.scrollTo(0,0);
@@ -126,7 +138,8 @@
           });
           const fb = c.querySelector(".fb") || (()=>{ const d=document.createElement("div"); d.className="fb"; c.querySelector("[id^=fb-]").appendChild(d); return d; })();
           fb.className = "phanhoi " + (kq.dung ? "dung" : "sai");
-          fb.innerHTML = (kq.dung ? "✅ <b>Chính xác!</b> " : "❌ <b>Chưa đúng.</b> ") + esc(nv.giaiThich);
+          fb.innerHTML = (kq.dung ? svgIco("check") + " <b>Chính xác!</b> "
+                            : svgIco("x") + " <b>Chưa đúng.</b> ") + esc(nv.giaiThich);
           ENG.logSuKien(maHS, { loai:"lab", nhiemVu:{id:nv.id, mach:nv.mach, unesco:nv.unesco}, kq });
         };
         chips.appendChild(b);
@@ -208,7 +221,8 @@
     $("dt-chips-verdict").innerHTML = "";
     ["co_loi","dung"].forEach(v=>{
       const b = document.createElement("button"); b.className="chip";
-      b.textContent = v==="co_loi" ? "⚠️ Có lỗi" : "✅ Không có lỗi";
+      b.innerHTML = v==="co_loi" ? svgIco("triangle-alert") + " Có lỗi"
+                                 : svgIco("check") + " Không có lỗi";
       b.onclick = ()=>{
         $("dt-chips-verdict").querySelectorAll(".chip").forEach(e=>e.classList.remove("chon"));
         b.classList.add("chon"); dt.traLoi.verdict = v;
@@ -246,13 +260,15 @@
     ENG.logSuKien(maHS, { loai:"dauTruong", kq });
     const box = $("dt-kq"); box.style.display="";
     box.className = "phanhoi " + (kq.diem ? "dung" : "sai");
-    let head = kq.diem ? "✅ <b>Chính xác!</b> " : "❌ <b>Chưa đúng.</b> ";
+    let head = kq.diem ? svgIco("check") + " <b>Chính xác!</b> "
+                       : svgIco("x") + " <b>Chưa đúng.</b> ";
     if(kq.batOan) head += "Câu này ĐÚNG — em đã 'bắt oan'. ";
     if(kq.boSot) head += "Câu này CÓ lỗi (" + META.loaiLoi[item.loaiLoi].ten + ") — em đã bỏ sót. ";
     box.innerHTML = head + esc(item.giaiThich);
     $("dt-nop").disabled = true;
     $("dt-tiep").style.display = "";
-    $("dt-tiep").textContent = (dt.i < dt.ds.length-1) ? "Câu tiếp theo →" : "Xem kết quả của em 🏁";
+    $("dt-tiep").innerHTML = (dt.i < dt.ds.length-1) ? "Câu tiếp theo →"
+                             : svgIco("flag") + " Xem kết quả của em";
   }
 
   function dtTiep(){
@@ -362,8 +378,8 @@
           <td>${r.phatHien}/${r.tongCoLoi}</td><td>${pct(r.tongCoLoi? r.phatHien/r.tongCoLoi : null)}</td><td>${r.batOan}</td></tr>`;
       }
       h2 += `</table>
-      <p><button class="btn" id="btn-csv">⬇ Xuất CSV nhật ký lớp (minh chứng)</button>
-         <button class="btn" id="btn-json">⬇ Xuất JSON đầy đủ</button>
+      <p><button class="btn" id="btn-csv">${svgIco("download")} Xuất CSV nhật ký lớp (minh chứng)</button>
+         <button class="btn" id="btn-json">${svgIco("download")} Xuất JSON đầy đủ</button>
          <button class="btn nho" id="btn-xoa" style="border-color:var(--sai)">Xóa dữ liệu trên máy này</button></p>`;
       bcL.innerHTML = h2; bcL.style.display="";
       $("btn-csv").onclick = ()=> taiFile(ENG.xuatCSV(maLop||null), `soiai_nhatky_${maLop||'lop'}_${Date.now()}.csv`, "text/csv");
@@ -392,7 +408,7 @@
     const r = window.MX_LAB3D.init({
       canvas: $("c-lab3d"), root: $("lab3d-fallback"), tiLeNgay: 92, seed: 20261004,
       onChonDiem: (d)=>{
-        $("lab3d-note").innerHTML = "🔎 " + esc(d.ten)
+        $("lab3d-note").innerHTML = svgIco("search") + " " + esc(d.ten)
           + " · đặc trưng: <code>" + esc(d.f.map(x=>x.toFixed(3)).join(", ")) + "</code>";
       }
     });
@@ -411,7 +427,7 @@
     $("lab3d-tao").onclick = ()=>{
       window.MX_LAB3D.doiTiLeNgay(parseInt($("lab3d-tile").value, 10));
       const n = window.MX_LAB3D.dungDuLieu(parseInt($("lab3d-so").value, 10));
-      $("lab3d-tao").textContent = "🖼️ Tạo lại bộ dữ liệu";
+      $("lab3d-tao").innerHTML = svgIco("image") + " Tạo lại bộ dữ liệu";
       $("lab3d-hoc").disabled = false;
       $("lab3d-danhgia").disabled = true;
       $("lab3d-kq").style.display = "none";
@@ -462,7 +478,7 @@
       else if(tile <= 15) gt = "Đảo ngược: giờ mô hình chỉ biết ban đêm và hỏng ở ban ngày. "
                              + "Vấn đề không nằm ở cái máy mà ở <b>người chọn dữ liệu</b>.";
       else                 gt = "Dữ liệu đã cân bằng nên mô hình học được cả hai nhóm. "
-                             + "Đây chính là <b>ý nghĩa của việc khắc phục</b> (YCCĐ 10.D2.2): sửa ở gốc là sửa dữ liệu.";
+                             + "Đây chính là <b>ý nghĩa của việc khắc phục</b> (YCCĐ 10.D2.2). Sửa ở gốc là sửa dữ liệu.";
       $("lab3d-giaithich").innerHTML = gt;
       $("lab3d-note").innerHTML = "Chấm <b>đỏ</b> = AI đoán sai. Nhìn xem chúng nằm ở cụm nào?";
 
@@ -482,7 +498,7 @@
       const r = window.MX_LAB3D.init({ canvas:$("c-lab3d"), root:$("lab3d-fallback"),
                                        tiLeNgay:parseInt($("lab3d-tile").value,10) || 92, nhe:true });
       lab3dDaKhoiTao = !!(r && r.ok);
-      $("lab3d-nhe").textContent = "⚡ Đã bật chế độ nhẹ — bấm để thử lại 3D đầy đủ";
+      $("lab3d-nhe").innerHTML = svgIco("zap") + " Đã bật chế độ nhẹ — bấm để thử lại 3D đầy đủ";
       lab3dHud();
     };
   }
@@ -542,8 +558,8 @@
     /* AN TOÀN innerHTML: r.doan/r.dungLa đến từ hằng số TRAM trong pipeline3d.js
      * (không phải dữ liệu người dùng); vẫn escape toàn bộ cho chắc. */
     hop.innerHTML = (r.dung
-        ? `<p>✅ <b>Chính xác!</b> Trạm <b>${esc(r.dungLa.ten)}</b> đang hỏng.</p>`
-        : `<p>❌ <b>Chưa đúng.</b> Em đoán <b>${esc(r.doan.ten)}</b>, nhưng trạm hỏng là <b>${esc(r.dungLa.ten)}</b>.</p>`)
+        ? `<p>${svgIco("check")} <b>Chính xác!</b> Trạm <b>${esc(r.dungLa.ten)}</b> đang hỏng.</p>`
+        : `<p>${svgIco("x")} <b>Chưa đúng.</b> Em đoán <b>${esc(r.doan.ten)}</b>, nhưng trạm hỏng là <b>${esc(r.dungLa.ten)}</b>.</p>`)
       + `<p class="chu2"><b>Vì sao hỏng trạm này lại gây ra hiện tượng đó:</b> ${esc(r.dungLa.khiHong)}</p>`
       + `<p class="nho chu2"><b>Ví dụ:</b> ${esc(r.dungLa.viDu)}</p>`
       + `<p class="nho chu2">YCCĐ liên quan: ${esc(r.dungLa.yccd)} · bấm vào từng trạm trong hình để xem vai trò của nó.</p>`;
@@ -578,6 +594,30 @@
    * 10.A2.1, 10.A2.MR1, 10.B2.1, 10.C2.MR1, 10.C3.MR1.
    * Danh sách chỉ dựng MỘT lần: dựng lại mỗi lần vào view sẽ xoá trạng thái đã trả lời
    * và cho phép học sinh bấm lại vô hạn để dò đáp án. */
+  /* --- KỊCH BẢN 9 CẢNH (js/kichban.js) ---
+   * Cờ kbDaNap giống thDaNap của tình huống: chỉ init MỘT lần, vào lại thì giữ trạng
+   * thái đang xem. Init lặp lại sẽ dựng chồng DOM và nhân đôi listener phím. */
+  let kbDaNap = false;
+  function kbMo(){
+    hien("v-kichban");
+    const M = window.MX_KICHBAN;
+    if(!M) return;
+    if(kbDaNap) { try{ M.tiepTuc(); }catch(e){} return; }
+    const host = $("kb-host");
+    if(!host) return;
+    M.init(host, {
+      /* Ghi nhật ký từng cảnh vào log lớp. Đây là MINH CHỨNG SỬ DỤNG THẬT cho hồ sơ
+       * dự thi (nút "Xuất CSV nhật ký lớp" đã có sẵn trong app). */
+      onCanh(i, c){
+        if(ENG && maHS) ENG.logSuKien(maHS, {
+          loai:"kichBan", suKien:"xemCanh",
+          kq:{ canh: i + 1, tenCanh: c.ten, giay: Math.round(c.dur / 1000) }
+        });
+      }
+    });
+    kbDaNap = true;
+  }
+
   let thDaNap = false;
   function thMo(){
     hien("v-tinhhuong");
@@ -803,7 +843,7 @@
     // thông tin máy: minh bạch theo yêu cầu của Khung (nói rõ AI làm gì, chạy ở đâu)
     const info = N.thongTin();
     $("nm-thong-tin-may").innerHTML =
-      `<b>🔎 Mở nắp máy — đây là cách nó hoạt động</b><br>` +
+      `<b>${svgIco("search")} Mở nắp máy — đây là cách nó hoạt động</b><br>` +
       `<span class="nho">Loại mô hình: <b>${esc(info.loai)}</b> · bậc n = ${info.n} · ` +
       `số ngữ cảnh học được: <b>${info.soNguoiCanh}</b> · độ dài ngữ liệu: ${info.doDaiNguLieu} kí tự · ` +
       `số chủ đề đã học: <b>${info.soChuDeHoc}</b> · tải về: <b>${esc(info.taiVe)}</b> · ` +
@@ -879,10 +919,10 @@
     const box = $("nm-kq5");
     box.className = "phanhoi " + (kq.dung ? "dung" : "sai");
     box.innerHTML = kq.dung
-      ? `<p>✅ <b>Chính xác.</b> ${nmItem.trongNguLieu
+      ? `<p>${svgIco("check")} <b>Chính xác.</b> ${nmItem.trongNguLieu
           ? `Chủ đề <b>${esc(nmItem.chuDe)}</b> CÓ trong ngữ liệu máy đã học, nên câu trả lời có căn cứ.`
           : `Chủ đề em hỏi <b>không có</b> trong ngữ liệu máy đã học, nên đây là lời bịa.`}</p>`
-      : `<p>❌ <b>Chưa đúng.</b> ${nmItem.trongNguLieu
+      : `<p>${svgIco("x")} <b>Chưa đúng.</b> ${nmItem.trongNguLieu
           ? `Thật ra câu này CÓ căn cứ: chủ đề <b>${esc(nmItem.chuDe)}</b> nằm trong ngữ liệu máy đã học.`
           : `Thật ra đây là lời bịa: chủ đề em hỏi không có trong ngữ liệu, máy chỉ ghép chữ nghe cho xuôi.`}</p>`;
     box.innerHTML +=
@@ -922,6 +962,10 @@
     $("btn-logic").onclick = ()=>{ hien("v-logic"); window.MX_LOGIC.init(maHS); };
     $("btn-kienthuc").onclick = ()=>{ hien("v-kienthuc"); window.MX_KIEN_THUC.init(maHS); };
     $("btn-tinhhuong").onclick = ()=> thMo();
+    /* Nút kịch bản có thể chưa tồn tại nếu index.html bị revert một phần, nên kiểm
+     * null thay vì gán thẳng như các nút cũ — gán thẳng sẽ ném lỗi và CHẶN toàn bộ
+     * đoạn nối nút phía sau. */
+    const _bKb = $("btn-kichban"); if(_bKb) _bKb.onclick = ()=> kbMo();
     $("btn-lab3d").onclick = ()=> lab3dMo();
     $("btn-pipe3d").onclick = ()=> pipe3dMo();
     /* NHÀ MÁY AI — dây chuyền 7 trạm (điều hướng chính mới) */
