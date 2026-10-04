@@ -13,6 +13,8 @@
      ở một số trình duyệt. Sinh tự động bằng tools/thay_emoji_bang_svg.py —
      KHÔNG sửa tay; sửa bằng cách chạy lại script. -->
 <svg width="0" height="0" style="position:absolute" aria-hidden="true" focusable="false">
+  <symbol id="i-shield-check" viewBox="0 0 24 24"><path d="M20 13c0 5-3.5 7.5-7.66 8.95a1 1 0 0 1-.67-.01C7.5 20.5 4 18 4 13V6a1 1 0 0 1 1-1c2 0 4.5-1.2 6.24-2.72a1.17 1.17 0 0 1 1.52 0C14.51 3.81 17 5 19 5a1 1 0 0 1 1 1z" /><path d="m9 12 2 2 4-4" /></symbol>
+  <symbol id="i-triangle-alert" viewBox="0 0 24 24"><path d="m21.73 18-8-14a2 2 0 0 0-3.48 0l-8 14A2 2 0 0 0 4 21h16a2 2 0 0 0 1.73-3" /><path d="M12 9v4" /><path d="M12 17h.01" /></symbol>
   <symbol id="i-book-open" viewBox="0 0 24 24"><path d="M12 7v14" /> <path d="M3 18a1 1 0 0 1-1-1V4a1 1 0 0 1 1-1h5a4 4 0 0 1 4 4 4 4 0 0 1 4-4h5a1 1 0 0 1 1 1v13a1 1 0 0 1-1 1h-6a3 3 0 0 0-3 3 3 3 0 0 0-3-3z" /></symbol>
   <symbol id="i-bot" viewBox="0 0 24 24"><path d="M12 8V4H8" /> <rect width="16" height="12" x="4" y="8" rx="2" /> <path d="M2 14h2" /> <path d="M20 14h2" /> <path d="M15 13v2" /> <path d="M9 13v2" /></symbol>
   <symbol id="i-box" viewBox="0 0 24 24"><path d="M21 8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16Z" /> <path d="m3.3 7 8.7 5 8.7-5" /> <path d="M12 22V12" /></symbol>
@@ -99,6 +101,11 @@
         <svg class="ic to" aria-hidden="true"><use href="#i-book-open"/></svg>
         <div><b>Kiến thức nền AI lớp 10</b>
         <span class="chu2">Luật bảo vệ người dùng · ứng dụng AI theo tính năng · AI tạo sinh vs phân loại · viết prompt đúng cách.</span></div>
+      </button>
+      <button class="btn menu-o" id="btn-tinhhuong" style="border-color:var(--sai)">
+        <svg class="ic to" aria-hidden="true"><use href="#i-shield-check"/></svg>
+        <div><b>Tình huống &amp; trách nhiệm — rủi ro, nội quy, pháp luật</b>
+        <span class="chu2">12 tình huống có thật ở trường Việt Nam: AI đọc X-quang, nhận diện khuôn mặt, ghép ảnh bạn học, dán bảng điểm lên mạng. Em chọn cách xử lí và xem giải thích kèm biện pháp hạn chế.</span></div>
       </button>
       <button class="btn menu-o" id="btn-lab3d" style="border-color:var(--nhan)">
         <svg class="ic to" aria-hidden="true"><use href="#i-box"/></svg>
@@ -548,6 +555,23 @@
     </div>
   </section>
 
+  <!-- ===== TÌNH HUỐNG & TRÁCH NHIỆM (phủ 5 YCCĐ còn trống) ===== -->
+  <section id="v-tinhhuong" style="display:none">
+    <div class="card">
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-shield-check"/></svg> Tình huống &amp; trách nhiệm</h2>
+      <p class="tagline">Phủ 5 yêu cầu cần đạt của lớp 10: 10.A2.1 · 10.A2.MR1 · 10.B2.1 · 10.C2.MR1 · 10.C3.MR1</p>
+      <p class="chu2">Mười hai tình huống lấy từ những việc đang xảy ra thật ở trường phổ thông Việt Nam:
+        hệ AI đọc X-quang chỉ học từ ảnh người lớn, camera nhận diện khuôn mặt học sinh,
+        ảnh ghép bằng AI, bảng điểm có họ tên bị dán lên công cụ trực tuyến.
+        Em chọn cách xử lí, hệ thống giải thích ngay và nêu biện pháp hạn chế rủi ro.</p>
+      <p class="nho chu2" id="th-thong-ke"></p>
+      <div id="th-danh-sach"></div>
+      <p class="nho chu2">Kết quả được ghi vào nhật ký lớp để làm minh chứng quá trình.
+        Đây là <b>nhận xét</b>, không phải điểm số và không dùng để xếp loại
+        (theo phần VI của Khung 2422/QĐ-BGDĐT).</p>
+    </div>
+  </section>
+
   <!-- ===== GIỚI THIỆU ===== -->
   <section id="v-gioithieu" style="display:none">
     <div class="card">
@@ -604,6 +628,9 @@
 <script src="js/lab.js"></script>
 <script src="js/logic.js"></script>
 <script src="js/kienthuc.js"></script>
+<!-- 12 tình huống phủ 5 YCCĐ còn trống: 10.A2.1, 10.A2.MR1, 10.B2.1, 10.C2.MR1, 10.C3.MR1.
+     Nạp TRƯỚC app.js. -->
+<script src="js/tinhhuong.js"></script>
 <!-- Trạm 5 NHÀ MÁY: máy sinh văn bản n-gram chạy trong trình duyệt (0 MB, không mạng).
      Nạp TRƯỚC app.js vì giao diện trạm ứng dụng gọi window.MX_NHAMAY_TEXT. -->
 <script src="js/nhamay_text.js"></script>

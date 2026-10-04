@@ -14,7 +14,7 @@
 
   /* ================= ĐIỀU HƯỚNG ================= */
   const CAC_VIEW = ["v-home","v-nhap","v-lab","v-dautruong","v-baocao","v-logic",
-                    "v-kienthuc","v-lab3d","v-pipe3d","v-nhamay","v-gioithieu"];
+                    "v-kienthuc","v-tinhhuong","v-lab3d","v-pipe3d","v-nhamay","v-gioithieu"];
   function hien(view){
     CAC_VIEW.forEach(id=>{
       const el = $(id); if(el) el.style.display = (id===view) ? "" : "none";
@@ -574,6 +574,34 @@
       : "";
   }
 
+  /* ============ TÌNH HUỐNG & TRÁCH NHIỆM — phủ 5 YCCĐ còn trống ============
+   * 10.A2.1, 10.A2.MR1, 10.B2.1, 10.C2.MR1, 10.C3.MR1.
+   * Danh sách chỉ dựng MỘT lần: dựng lại mỗi lần vào view sẽ xoá trạng thái đã trả lời
+   * và cho phép học sinh bấm lại vô hạn để dò đáp án. */
+  let thDaNap = false;
+  function thMo(){
+    hien("v-tinhhuong");
+    const M = window.MX_TINH_HUONG;
+    if(!M) return;
+    if(thDaNap) return;
+    M.veTinhHuong($("th-danh-sach"), (q, chon, dapUng) => {
+      /* Trường `diem` là TÊN TRƯỜNG NỘI BỘ mà engine.js dùng để tổng hợp
+       * (tongHop() đếm kq.diem). Giao diện KHÔNG hiển thị nó dưới dạng điểm số —
+       * chỉ hiện "đáp ứng / chưa đáp ứng" theo phần VI Khung 2422. */
+      if(ENG) ENG.logSuKien(maHS, {
+        loai:"tinhHuong", suKien:"traLoi",
+        kq:{ diem: dapUng?1:0, dung: dapUng, mach:q.mach, unesco:q.chuDe,
+             dapAn:q.dapAn, chon: chon },
+        yccd: q.yccd
+      });
+    });
+    const info = M.thongTin();
+    $("th-thong-ke").textContent =
+      info.soTinhHuong + " tình huống · phủ " + info.yccdPhu.length
+      + " yêu cầu cần đạt: " + info.yccdPhu.join(", ");
+    thDaNap = true;
+  }
+
   /* ================= NHÀ MÁY AI — DÂY CHUYỀN 7 TRẠM =================
    * Kiến trúc: các module đã có không bị bỏ đi mà trở thành TRẠM của dây chuyền.
    * Trạm 5 (ỨNG DỤNG) là trạm mới, dùng MX_NHAMAY_TEXT — máy sinh văn bản n-gram
@@ -893,6 +921,7 @@
     $("btn-baocao").onclick = ()=>{ hien("v-baocao"); veBaoCao(); };
     $("btn-logic").onclick = ()=>{ hien("v-logic"); window.MX_LOGIC.init(maHS); };
     $("btn-kienthuc").onclick = ()=>{ hien("v-kienthuc"); window.MX_KIEN_THUC.init(maHS); };
+    $("btn-tinhhuong").onclick = ()=> thMo();
     $("btn-lab3d").onclick = ()=> lab3dMo();
     $("btn-pipe3d").onclick = ()=> pipe3dMo();
     /* NHÀ MÁY AI — dây chuyền 7 trạm (điều hướng chính mới) */
