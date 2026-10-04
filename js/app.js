@@ -952,6 +952,30 @@
       Object.defineProperty(window.MX_BANK, "_merged", {value:true});
     }
     $("btn-vao").onclick = dangNhap;
+    /* --- CHẾ ĐỘ ÍT CHỮ ---
+     * Lưu trạng thái bằng localStorage để lần sau mở vẫn giữ nguyên lựa chọn.
+     * Quên bước này thì giáo viên phải bấm lại trên từng máy của lớp.
+     * KHÔNG xoá nội dung: chỉ thêm class lên <body> để CSS ẩn phụ chú. */
+    const IT_CHU_KEY = "***";
+    const itChuDat = (on) => {
+      document.body.classList.toggle("it-chu", on);
+      const b = $("btn-it-chu");
+      if(b){ b.setAttribute("aria-pressed", on ? "true" : "false"); }
+      const l = $("lbl-it-chu");
+      if(l) l.textContent = on ? "Đầy đủ chữ" : "Ít chữ";
+    };
+    let itChuBat = false;
+    try { itChuBat = localStorage.getItem(IT_CHU_KEY) === "1"; } catch(e){}
+    itChuDat(itChuBat);
+    const _bItChu = $("btn-it-chu");
+    if(_bItChu) _bItChu.onclick = () => {
+      itChuBat = !itChuBat;
+      itChuDat(itChuBat);
+      try { localStorage.setItem(IT_CHU_KEY, itChuBat ? "1" : "0"); } catch(e){}
+    };
+    /* để judge và test đọc được trạng thái */
+    window.MX_IT_CHU = { bat: () => itChuBat, dat: itChuDat };
+
     $("btn-ve-home").onclick = ()=>hien("v-home");
     $("btn-lab").onclick = ()=>{ hien("v-lab"); labBuoc(1); };
     $("btn-dautruong").onclick = ()=>{ hien("v-dautruong"); dtBatDau("luyen"); };

@@ -383,3 +383,35 @@ code{background:var(--nen2);border:1px solid var(--vienNhat);border-radius:5px;p
   .kb-caption{font-size:17px}.kb-san-khau{min-height:270px;padding:20px 14px}
   .kb-hang-ts{grid-template-columns:84px 1fr 56px}.kb-cot{gap:20px}.kb-than{height:130px;width:60px}
 }
+
+
+/* ============================================================================
+   CHẾ ĐỘ ÍT CHỮ (bật bằng nút trên thanh đầu, lưu trong localStorage)
+   ----------------------------------------------------------------------------
+   Anh Văn 04/10: "quá nhiều chữ, cái anh cần là ít chữ". Đo thật bằng innerText
+   trên từng view cho biết chữ nằm ở đâu, nên việc ẩn được quyết định bằng số liệu
+   chứ không bằng cảm giác:
+     Nhà máy trạm 0  1.094 từ  -> .chu2 274 + .nho.chu2 215 là phụ chú
+     Tình huống      1.739 từ  -> .chu2 424 + .nho.chu2 48  là phụ chú
+     Kiến thức       1.899 từ  -> .nho 149 + .chu2 139 + .vang.nho 94 + .nho.chu2 148
+
+   HAI THỨ TUYỆT ĐỐI KHÔNG ẨN, vì ẩn là phá bài học:
+   * .chip — đo được 1.024 từ trong view Tình huống. Đó không phải văn giải thích
+     mà là CÁC PHƯƠNG ÁN để học sinh chọn. Ẩn đi thì không còn gì để làm.
+   * .phanhoi và phần bên trong nó — là phản hồi sau khi học sinh trả lời. Ẩn thì
+     học sinh bấm mà không thấy gì, tưởng app hỏng.
+   Nên các selector dưới đây đều loại trừ .phanhoi một cách tường minh.
+
+   CHỈ ẨN BẰNG CSS, KHÔNG XOÁ DOM: chữ vẫn còn nguyên trong tài liệu, vẫn đọc được
+   bằng trình đọc màn hình, vẫn xuất ra khi in và khi xuất CSV nhật ký. Đây là dồn
+   bớt chữ chứ không cắt nội dung. */
+body.it-chu .chu2:not(.phanhoi .chu2),
+body.it-chu .nho:not(.phanhoi .nho),
+body.it-chu .tagline:not(.phanhoi .tagline),
+body.it-chu .legend,
+body.it-chu p.nho.chu2,
+body.it-chu .card > .chu2,
+body.it-chu .vang.nho:not(.phanhoi .vang.nho){display:none !important}
+
+/* Nút bật/tắt: phải đạt tương phản WCAG như mọi nút khác, không dùng màu mới */
+#btn-it-chu[aria-pressed="true"]{border-color:var(--primary);background:var(--nenChon)}

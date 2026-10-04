@@ -39,6 +39,7 @@
   <symbol id="i-zap" viewBox="0 0 24 24"><path d="M4 14a1 1 0 0 1-.78-1.63l9.9-10.2a.5.5 0 0 1 .86.46l-1.92 6.02A1 1 0 0 0 13 10h7a1 1 0 0 1 .78 1.63l-9.9 10.2a.5.5 0 0 1-.86-.46l1.92-6.02A1 1 0 0 0 11 14z" /></symbol>
   <symbol id="i-play" viewBox="0 0 24 24"><polygon points="6 3 20 12 6 21 6 3" /></symbol>
   <symbol id="i-download" viewBox="0 0 24 24"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4" /> <polyline points="7 10 12 15 17 10" /> <line x1="12" x2="12" y1="15" y2="3" /></symbol>
+  <symbol id="i-eye" viewBox="0 0 24 24"><path d="M2.062 12.348a1 1 0 0 1 0-.696 10.75 10.75 0 0 1 19.876 0 1 1 0 0 1 0 .696 10.75 10.75 0 0 1-19.876 0" /> <circle cx="12" cy="12" r="3" /></symbol>
 </svg>
 
 <header class="top">
@@ -47,6 +48,9 @@
     <div class="tagline">Soi AI để hiểu AI — học sinh không hỏi AI, học sinh <b>bắt lỗi AI</b> · bám Khung 2422/QĐ-BGDĐT</div>
     <div class="spacer"></div>
     <div id="lbl-user" class="tagline"></div>
+    <button class="btn nho" id="btn-it-chu" type="button" aria-pressed="false"
+            title="Ẩn các dòng phụ chú, chỉ giữ câu hỏi, phương án và phản hồi">
+      <svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg> <span id="lbl-it-chu">Ít chữ</span></button>
     <button class="btn nho" id="btn-ve-home"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg> Trang chủ</button>
   </div>
 </header>
