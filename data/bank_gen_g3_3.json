@@ -1,0 +1,218 @@
+{
+ "model": "glm-5.3-max",
+ "batch": 3,
+ "generated": 14,
+ "good": [
+  {
+   "id": "g3-01",
+   "mach": "B",
+   "unesco": "B1",
+   "loai": "co_loi",
+   "loaiLoi": "so_lieu_bia",
+   "claimLoi": 1,
+   "boiCanh": "Lớp 11 tổ chức buổi sinh hoạt về chủ đề 'Học sinh và AI', Minh hỏi trợ lí ảo để lấy một con số mở màn cho phần thuyết trình.",
+   "claims": [
+    "Hiện nay rất nhiều học sinh dùng AI để tra tài liệu và được gợi ý cách giải bài tập, nên chủ đề của lớp mình rất thời sự.",
+    "Theo khảo sát quốc gia vừa công bố, 83,7% học sinh THPT Việt Nam gửi trung bình 212,4 câu hỏi cho chatbot mỗi học kì — em có thể mở màn bằng con số ấn tượng này.",
+    "Nhớ nhắc cả lớp dùng AI một cách trung thực: nên dùng nó để hiểu bài sâu hơn, chứ không nên chép nguyên câu trả lời vào bài tập nhé."
+   ],
+   "giaiThich": "Câu thứ hai chứa số liệu bịa: không có khảo sát quốc gia nào công bố 83,7% hay 212,4 câu hỏi mỗi học kì như vậy. Dấu hiệu nhận biết: khi AI đưa ra thống kê rất cụ thể mà không dẫn nguồn kiểm chứng được, hãy tra cứu lại trước khi trích dẫn; con số càng 'lẻ' và càng có vẻ chính xác thì càng cần hoài nghi."
+  },
+  {
+   "id": "g3-02",
+   "mach": "C",
+   "unesco": "C1",
+   "loai": "co_loi",
+   "loaiLoi": "nguon_khong_ton_tai",
+   "claimLoi": 2,
+   "boiCanh": "Lan làm bài tập nhóm môn Tin học về lịch sử phát triển trí tuệ nhân tạo và hỏi trợ lí ảo để tìm tài liệu tham khảo.",
+   "claims": [
+    "Trí tuệ nhân tạo manh nha từ thập niên 1950, khi các nhà khoa học bắt đầu tìm cách cho máy tính mô phỏng một số khả năng của con người.",
+    "Hội nghị Dartmouth năm 1956 được coi là cột mốc khai sinh thuật ngữ 'artificial intelligence' trong lịch sử ngành.",
+    "Tài liệu tham khảo phù hợp nhất là 'Báo cáo Tổng quan Chuyển đổi số Giáo dục Việt Nam 2023' của Trung tâm Nghiên cứu Trí tuệ nhân tạo và Giáo dục — bộ tài liệu này tổng hợp đầy đủ mọi cột mốc AI trong giáo dục nước ta, nhóm cứ trích vào bài là chắc chắn được điểm cộng."
+   ],
+   "giaiThich": "Câu thứ ba nêu nguồn không tồn tại: tên báo cáo và tên trung tâm nghe rất 'chính thống' nhưng không tìm thấy khi tra cứu. Dấu hiệu nhận biết: hãy gõ chính xác tên tài liệu và tên tổ chức lên công cụ tìm kiếm để kiểm chứng; AI có thể 'ghép' những cái tên nghe hợp lý, nên nguồn chỉ do nó kể ra thì luôn phải tra lại trước khi trích dẫn."
+  },
+  {
+   "id": "g3-03",
+   "mach": "A",
+   "unesco": "A2",
+   "loai": "co_loi",
+   "loaiLoi": "thien_kien",
+   "claimLoi": 1,
+   "boiCanh": "Trong tiết hoạt động trải nghiệm về hướng nghiệp, Hồng (nữ, học lớp 11) hỏi trợ lí ảo liệu mình có nên chọn khối ngành kĩ thuật hay không.",
+   "claims": [
+    "Việc chọn ngành nên dựa trên sở thích, điểm mạnh và kế hoạch học tập của chính em, và khối kĩ thuật hiện có rất nhiều cơ hội việc làm.",
+    "Tuy vậy, con gái nên cân nhắc kĩ trước khi chọn cơ khí hay lập trình, vì tư duy logic của nữ giới vốn yếu hơn nam giới từ trước, nên học các ngành này các bạn nữ thường chật vật và khó theo nổi.",
+    "Thực tế có rất nhiều nữ kĩ sư, lập trình viên xuất sắc ở Việt Nam và trên thế giới, cho thấy năng lực kĩ thuật không phụ thuộc vào giới tính."
+   ],
+   "giaiThich": "Câu giữa mang định kiến giới rõ ràng: nó gán phẩm chất 'tư duy logic yếu hơn' cho toàn bộ nhóm con gái, dù không có bằng chứng khoa học nào như vậy, và mâu thuẫn với hai câu còn lại. Dấu hiệu nhận biết: mọi nhận xét kiểu 'nhóm X vốn kém khả năng Y' là định kiến — năng lực cá nhân không được quyết định bởi giới tính, vùng miền hay ngoại hình."
+  },
+  {
+   "id": "g3-04",
+   "mach": "D",
+   "unesco": "D1",
+   "loai": "co_loi",
+   "loaiLoi": "suy_luan_sai",
+   "claimLoi": 0,
+   "boiCanh": "Câu lạc bộ Tin học vừa hoàn thành chiếc chatbot trả lời thắc mắc về thư viện trường và nhờ trợ lí ảo nhận xét về sản phẩm.",
+   "claims": [
+    "Trước hết xin chúc mừng nhóm: hầu hết bạn bè khen chatbot trả lời hay, vậy là sản phẩm chắc chắn đã hoàn thiện, nhóm không cần kiểm thử thêm gì nữa.",
+    "Một chatbot tốt cần có bộ câu hỏi – câu trả lời được tổ chức rõ ràng và phủ hết các thắc mắc thường gặp của người dùng.",
+    "Nên giới hạn chủ đề của bot trong phạm vi thư viện, vì khi bị hỏi vượt ra khỏi dữ liệu đã chuẩn bị, chatbot dễ đưa ra câu trả lời sai hoặc tự bịa ra."
+   ],
+   "giaiThich": "Câu đầu mắc lỗi suy luận dựa vào số đông: 'hầu hết khen hay' không chứng minh sản phẩm chắc chắn hoàn thiện, và kết luận 'không cần kiểm thử' là tuyệt đối hoá từ lời khen. Dấu hiệu nhận biết: các cụm kiểu 'ai cũng khen nên chắc chắn tốt', 'không cần làm gì thêm' đi kèm kết luận vội là tín hiệu suy luận sai; chất lượng sản phẩm phải được kiểm thử thay vì phỏng đoán theo ý kiến số đông."
+  },
+  {
+   "id": "g3-05",
+   "mach": "B",
+   "unesco": "B2",
+   "loai": "co_loi",
+   "loaiLoi": "lo_du_lieu_ca_nhan",
+   "claimLoi": 2,
+   "boiCanh": "Trang đăng kí một ứng dụng AI để luyện nói tiếng Anh và hỏi trợ lí ảo làm thế nào để ứng dụng 'hiểu' mình hơn.",
+   "claims": [
+    "Em nên luyện đều đặn mỗi ngày khoảng 15–20 phút với các chủ đề gần gũi như trường lớp, sở thích để dễ áp dụng khi giao tiếp thực tế.",
+    "Trước mỗi buổi luyện, em thử nói một câu mẫu rồi nghe lại phần ghi âm của mình để nhận ra thường mắc lỗi phát âm ở những âm nào.",
+    "Mẹo quan trọng nhất: hãy điền đầy đủ họ tên thật, lớp, trường và cả số điện thoại của em vào phần thông tin cá nhân của ứng dụng — càng cung cấp nhiều thông tin cá nhân bao nhiêu, trợ lí càng 'hiểu' em và dạy càng chính xác bấy nhiêu."
+   ],
+   "giaiThich": "Câu cuối xui em lộ dữ liệu cá nhân: số điện thoại, họ tên thật, lớp trường không cần thiết để luyện nói và có thể bị lợi dụng nếu dữ liệu ứng dụng bị rò rỉ. Dấu hiệu nhận biết: khi trợ lí nào khuyên 'càng đưa nhiều thông tin cá nhân càng tốt', hãy dừng lại — nguyên tắc an toàn là chỉ cung cấp mức thông tin tối thiểu thực sự cần cho việc học."
+  },
+  {
+   "id": "g3-06",
+   "mach": "C",
+   "unesco": "C1",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Sau tiết Tin học về trí tuệ nhân tạo, Bình hỏi trợ lí ảo xem máy tính làm sao 'học' được mà nhận diện được ảnh.",
+   "claims": [
+    "Máy tính 'học' bằng cách nạp một lượng rất lớn dữ liệu ví dụ, rồi tự điều chỉnh dần các thông số bên trong mô hình để dự đoán ngày càng sát kết quả đúng.",
+    "Chẳng hạn, để phân biệt ảnh mèo và chó, hệ thống phải 'xem' hàng nghìn, hàng vạn ảnh đã gắn nhãn để tự rút ra đặc điểm phân biệt.",
+    "Chất lượng dữ liệu rất quan trọng: dữ liệu huấn luyện sai lệp thì mô hình học được cũng sẽ sai lệch theo."
+   ],
+   "giaiThich": "Cả ba câu đều đúng và phản ánh đúng nguyên lí học máy: mô hình học từ lượng lớn dữ liệu có nhãn, tự tinh chỉnh tham số, và 'rác vào thì rác ra'. Câu trả lời không có nguồn trích dẫn lạ, số liệu đáng ngờ hay kết luận tuyệt đối, nên an toàn để tham khảo — dù vậy em vẫn nên đối chiếu với sách giáo khoa để tự khẳng định."
+  },
+  {
+   "id": "g3-07",
+   "mach": "A",
+   "unesco": "A1",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Xem xong đoạn video về robot hành động giống người, nhóm của Dũng tranh luận 'máy móc sắp thay thế hết con người' và hỏi trợ lí ảo cho ý kiến.",
+   "claims": [
+    "Máy tính vượt trội con người về tốc độ xử lí các phép tính lặp lại và khối lượng dữ liệu khổng lồ.",
+    "Tuy nhiên, việc đặt mục đích, thấu hiểu ngữ cảnh xã hội và chịu trách nhiệm về quyết định vẫn là vai trò của con người — những điều AI hiện nay chưa thực sự làm được.",
+    "Vì vậy, thay vì lo bị thay thế, em hãy học cách phối hợp với AI: dùng nó hỗ trợ những việc tốn thời gian để dành sức cho phần sáng tạo của chính mình."
+   ],
+   "giaiThich": "Cả ba câu đều đúng và thể hiện tư duy lấy con người làm trung tâm: máy mạnh về tính toán nhưng mục đích và trách nhiệm thuộc về con người; lời khuyên phối hợp thay vì đối đầu cũng phù hợp. Không có định kiến, suy luận vội, số liệu bịa hay nguồn lạ trong câu trả lời này."
+  },
+  {
+   "id": "g3-08",
+   "mach": "D",
+   "unesco": "D2",
+   "loai": "co_loi",
+   "loaiLoi": "so_lieu_bia",
+   "claimLoi": 1,
+   "boiCanh": "Nhóm nghiên cứu khoa học của Quân xây dựng mô hình phát hiện tin nhắn rác và hỏi trợ lí ảo về cách đánh giá chất lượng mô hình.",
+   "claims": [
+    "Nhóm nên tách dữ liệu thành hai phần: phần để huấn luyện và phần để kiểm thử riêng, tránh việc mô hình 'học thuộc' dữ liệu rồi tự chấm điểm mình cao.",
+    "Theo số liệu tổng hợp toàn cầu mới nhất, các mô hình phát hiện tin nhắn rác đạt độ chính xác trung bình 98,73% và bỏ sót chỉ 0,137% — nhóm cứ đối chiếu với hai con số này là biết mình đã đạt chuẩn chưa.",
+    "Ngoài độ chính xác, nhóm nên xem thêm độ nhạy (recall), tức tỉ lệ tin rác thật sự bị chặn được, để đánh giá toàn diện hơn."
+   ],
+   "giaiThich": "Câu giữa chứa số liệu bịa: 98,73% và 0,137% là những con số 'lẻ' nghe rất chính xác nhưng không có báo cáo tổng hợp toàn cầu nào như vậy, và hiệu năng các mô hình thực tế rất khác nhau tùy dữ liệu. Dấu hiệu nhận biết: thống kê kiểu 'trung bình toàn cầu' không rõ nguồn luôn phải tra lại; hơn nữa, chất lượng mô hình phải đo trên dữ liệu của chính nhóm thay vì so với con số chung chung."
+  },
+  {
+   "id": "g3-09",
+   "mach": "B",
+   "unesco": "B2",
+   "loai": "co_loi",
+   "loaiLoi": "nguon_khong_ton_tai",
+   "claimLoi": 0,
+   "boiCanh": "Hội trường chuẩn bị cuộc tranh biện 'AI có nên chấm bài văn không', Đan nhờ trợ lí ảo tìm một dẫn chứng mở đầu thật ấn tượng.",
+   "claims": [
+    "Ý tưởng mở đầu ấn tượng: trích 'Hiến chương Minh bạch AI trong Giáo dục 2024' do Tổ chức Giáo dục AI Trách nhiệm (OEAI) phát động — văn bản này đã được hơn 120 quốc gia kí kết ủng hộ.",
+    "Một dẫn chứng vững chắc khác: AI chấm câu hỏi trắc nghiệm khách quan nhanh và nhất quán hơn chấm tay, vì đáp án đã cố định.",
+    "Riêng với bài văn, con người vẫn nên tham gia rà soát kết quả, vì AI có thể đánh giá lệch khi gặp cách diễn đạt mới lạ hoặc bất thường."
+   ],
+   "giaiThich": "Câu đầu nêu nguồn không tồn tại: 'Hiến chương' và tổ chức OEAI nghe rất giống văn bản quốc tế thật nhưng không hề có, chi tiết 'hơn 120 quốc gia kí kết' càng làm nó giống thật. Dấu hiệu nhận biết: dẫn chứng kèm con số tròn phóng đại mà tra cứu không ra bản gốc thì tuyệt đối không dùng; trong tranh biện, chỉ nên dẫn những bằng chứng mình kiểm chứng được."
+  },
+  {
+   "id": "g3-10",
+   "mach": "A",
+   "unesco": "A1",
+   "loai": "co_loi",
+   "loaiLoi": "thien_kien",
+   "claimLoi": 2,
+   "boiCanh": "Trường lập đội tuyển tham gia cuộc thi sáng tạo ứng dụng AI, thầy chủ nhiệm hỏi trợ lí ảo để tham khảo tiêu chí chọn học sinh.",
+   "claims": [
+    "Tiêu chí trước hết nên là hứng thú với công nghệ, khả năng hợp tác và tinh thần học hỏi, vì đội dự thi cần cả nhóm cùng tiến bộ.",
+    "Nên tuyển học sinh từ nhiều lớp, nhiều hoàn cảnh để đội có đa dạng góc nhìn — đội đa dạng thường đưa ra giải pháp sáng tạo hơn.",
+    "Tuy nhiên, nên hạn chế chọn học sinh từ miền núi hay nông thôn vào đội tuyển công nghệ, vì các em tiếp xúc máy tính muộn hơn nên chắc chắn sẽ tiếp thu chậm hơn các bạn thành phố."
+   ],
+   "giaiThich": "Câu cuối mang thiên kiến vùng miền: nó quy 'chắc chắn tiếp thu chậm' cho cả nhóm học sinh nông thôn, miền núi chỉ vì hoàn cảnh xuất phát, và mâu thuẫn với ý 'đa dạng hoàn cảnh' ở câu trước. Dấu hiệu nhận biết: câu nào khẳng định 'nhóm người X chắc chắn kém Y vì xuất thân' là định kiến, không phải lí lẽ — khả năng công nghệ phụ thuộc vào cơ hội được học, và nhiều bạn ít điều kiện vẫn rất giỏi khi được tạo cơ hội."
+  },
+  {
+   "id": "g3-11",
+   "mach": "A",
+   "unesco": "A2",
+   "loai": "co_loi",
+   "loaiLoi": "suy_luan_sai",
+   "claimLoi": 1,
+   "boiCanh": "Bình thấy nhóm bạn hay dùng AI ôn bài đều tiến bộ về điểm số và hỏi trợ lí ảo: 'Có phải chỉ cần bật AI lên là giỏi được?'",
+   "claims": [
+    "AI có thể giúp em ôn tập hiệu quả hơn: giải thích lại khái niệm khó, gợi ý bài luyện tập và đặt câu hỏi kiểm tra kĩ năng của em.",
+    "Vì các bạn dùng AI đều tăng điểm, ai muốn điểm cao chỉ cần mở trợ lí ảo mỗi ngày — dùng AI chính là nguyên nhân trực tiếp làm tăng học lực, không cần điều kiện gì thêm.",
+    "Thực tế, điểm số tăng hay không còn phụ thuộc vào việc em chủ động suy nghĩ khi học hay chỉ chép nhanh lời giải mà AI đưa ra."
+   ],
+   "giaiThich": "Câu giữa nhầm lẫn tương quan với nhân quả: 'các bạn dùng AI đều tăng điểm' chưa chứng minh AI là nguyên nhân — rất có thể các bạn ấy vốn học nghiêm túc và đầu tư thời gian hơn, hoặc chính sự chăm học khiến các bạn hay dùng AI. Dấu hiệu nhận biết: khi gặp kiểu 'ai làm X đều được Y, vậy X gây ra Y', hãy hỏi còn yếu tố nào khác giải thích không và có khả năng chiều nhân quả bị ngược lại hay không."
+  },
+  {
+   "id": "g3-12",
+   "mach": "D",
+   "unesco": "D3",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Dự án của nhóm Kỳ là trợ lí ảo phân loại rác tái chế cho phong trào xanh của trường, và nhóm hỏi trợ lí ảo về cách thiết kế cho an toàn.",
+   "claims": [
+    "Nhóm nên cho trợ lí 'từ chối đoán': khi không chắc về loại rác, nó nên trả lời 'mình chưa chắc, hãy kiểm tra thêm' thay vì đoán bừa.",
+    "Bộ dữ liệu huấn luyện nên chứa ảnh rác chụp ở nhiều điều kiện ánh sáng và góc chụp khác nhau để mô hình hoạt động ổn định ngoài thực tế.",
+    "Trước khi triển khai cho toàn trường, nhóm nên chạy thử với một nhóm nhỏ học sinh thật để thu thập phản hồi và kịp sửa lỗi sớm."
+   ],
+   "giaiThich": "Cả ba câu đều đúng và là các nguyên tắc thiết kế hệ thống AI bài bản: cho phép hệ thống thừa nhận sự không chắc chắn, huấn luyện trên dữ liệu đa điều kiện, và thử nghiệm theo giai đoạn trước khi mở rộng. Câu trả lời không có nguồn bịa, số liệu lạ hay lời khuyên rủi ro — đây là mẫu thiết kế đáng học theo."
+  },
+  {
+   "id": "g3-13",
+   "mach": "B",
+   "unesco": "B2",
+   "loai": "co_loi",
+   "loaiLoi": "lo_du_lieu_ca_nhan",
+   "claimLoi": 0,
+   "boiCanh": "Nam quên mật khẩu tài khoản học tập và hỏi trợ lí ảo cách đặt mật khẩu mới sao cho 'dễ nhớ mà dùng được cho nhiều tài khoản'.",
+   "claims": [
+    "Cách tiện nhất là chọn một mật khẩu thật dễ nhớ rồi dùng lại y nguyên cho tài khoản học tập, email và mạng xã hội — nhớ một cái là vào được hết, khỏi lo quên.",
+    "Mật khẩu nên kết hợp chữ hoa, chữ thường, chữ số và kí tự đặc biệt, đồng thời tránh dùng ngày sinh hay tên riêng vì dễ bị đoán.",
+    "Em cũng nên bật xác thực hai lớp cho các tài khoản quan trọng, để dù mật khẩu bị lộ thì người khác vẫn không đăng nhập được."
+   ],
+   "giaiThich": "Câu đầu xui em tạo rủi ro lộ dữ liệu cá nhân: dùng lại một mật khẩu cho mọi tài khoản nghĩa là chỉ cần một trang bị lộ là toàn bộ tài khoản khác 'mất trắng'. Dấu hiệu nhận biết: mọi lời khuyên 'dùng chung một mật khẩu cho tiện' đều mâu thuẫn với nguyên tắc bảo mật cơ bản; nếu sợ quên, hãy dùng trình quản lí mật khẩu thay vì trùng lặp mật khẩu giữa các tài khoản."
+  },
+  {
+   "id": "g3-14",
+   "mach": "C",
+   "unesco": "C2",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Yến được giao viết đoạn văn về ứng dụng AI trong đời sống và hỏi trợ lí ảo gợi ý ba ví dụ cụ thể để đưa vào bài.",
+   "claims": [
+    "Hệ thống gợi ý bài hát hay video mà em có thể thích, dựa trên lịch sử nghe và xem trước đó, là một ứng dụng AI rất quen thuộc.",
+    "Trong y tế, AI hỗ trợ bác sĩ phân tích ảnh chụp để phát hiện bệnh sớm hơn, giúp việc chẩn đoán nhanh hơn.",
+    "Ứng dụng dịch tự động ngày nay cũng dùng AI để dịch nhanh tài liệu — tuy vậy trước khi nộp bài, em vẫn nên tự đọc lại bản dịch vì đôi chỗ chưa tự nhiên."
+   ],
+   "giaiThich": "Cả ba câu đều đúng: gợi ý nội dung, hỗ trợ phân tích y tế và dịch tự động là những ứng dụng AI có thật trong đời sống, và câu cuối còn đúng khi nhắc em tự rà soát lại bản dịch. Câu trả lời không có số liệu bịa, nguồn không tồn tại hay suy luận vội vàng — em có thể yên tâm dùng làm ý tưởng cho bài viết."
+  }
+ ],
+ "bad": []
+}

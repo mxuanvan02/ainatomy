@@ -1,0 +1,218 @@
+{
+ "model": "qwen3.8-max-0902",
+ "batch": 2,
+ "generated": 14,
+ "good": [
+  {
+   "id": "g2-01",
+   "mach": "A",
+   "unesco": "A2",
+   "loai": "co_loi",
+   "loaiLoi": "so_lieu_bia",
+   "claimLoi": 0,
+   "boiCanh": "Một học sinh lớp 10 nhờ trợ lý AI tư vấn cách cân bằng thời gian học và sức khỏe khi chuẩn bị thi cuối học kì.",
+   "claims": [
+    "Một khảo sát về giấc ngủ ở học sinh THPT công bố năm 2025 cho thấy những bạn ngủ đúng 6 giờ 17 phút mỗi đêm đạt hiệu quả học tập cao nhất, vượt 23,9% so với các nhóm còn lại.",
+    "Bạn nên sắp xếp thời gian học hợp lí, xen kẽ nghỉ giải lao sau mỗi 45-50 phút và tránh học dồn sát giờ đi ngủ để não kịp củng cố kiến thức.",
+    "AI có thể giúp bạn nhắc lịch và gợi ý chủ đề cần ôn, nhưng quyết định nghỉ ngơi hay học thêm bao lâu cần dựa trên thể trạng thực tế của chính bạn."
+   ],
+   "giaiThich": "Claim thứ nhất là số liệu bịa: không có nghiên cứu uy tín nào kết luận giờ ngủ 'tối ưu' chính xác đến phút như 6 giờ 17 phút, và con số này trái với khuyến nghị đã được kiểm chứng rằng tuổi vị thành niên cần ngủ khoảng 8-10 tiếng mỗi đêm. Dấu hiệu nhận biết số liệu bịa là các con số lẻ chính xác đến vô lí, gắn với nguồn mơ hồ ('một khảo sát năm 2025') không thể kiểm chứng. Hai claim còn lại là lời khuyên hợp lí, cân bằng giữa việc học và sức khỏe."
+  },
+  {
+   "id": "g2-02",
+   "mach": "B",
+   "unesco": "B2",
+   "loai": "co_loi",
+   "loaiLoi": "thien_kien",
+   "claimLoi": 1,
+   "boiCanh": "Một học sinh hỏi trợ lý AI nên chọn tổ hợp môn học lựa chọn ở THPT như thế nào cho phù hợp.",
+   "claims": [
+    "Khi chọn môn học lựa chọn, bạn nên căn cứ vào sở thích, năng lực và định hướng nghề nghiệp của chính mình thay vì chỉ chọn theo bạn bè.",
+    "Nếu bạn là nữ thì nên ưu tiên nhóm Xã hội và Ngoại ngữ, vì con gái bẩm sinh chỉ giỏi giao tiếp chứ không có tư duy logic để theo Tin học hay các môn Tự nhiên.",
+    "Bạn có thể trao đổi thêm với giáo viên chủ nhiệm và gia đình về điểm mạnh của mình, sau đó đọc thử tài liệu của từng nhóm môn trước khi quyết định."
+   ],
+   "giaiThich": "Claim thứ hai chứa thiên kiến giới: nó gán việc chọn môn theo định kiến 'con gái bẩm sinh không có tư duy logic', trong khi khả năng tư duy của mỗi người không phụ thuộc vào giới tính và không có bằng chứng khoa học nào cho nhận định đó. Dấu hiệu nhận biết thiên kiến là những câu khẳng định chắc nịch về năng lực 'tự nhiên' của cả một nhóm người. Hai claim còn lại tôn trọng quyền tự quyết dựa trên sở thích và năng lực cá nhân."
+  },
+  {
+   "id": "g2-03",
+   "mach": "C",
+   "unesco": "C1",
+   "loai": "co_loi",
+   "loaiLoi": "nguon_khong_ton_tai",
+   "claimLoi": 2,
+   "boiCanh": "Một học sinh hỏi trợ lý AI về cách trí tuệ nhân tạo tạo sinh vẽ được ảnh từ mô tả bằng văn bản.",
+   "claims": [
+    "AI tạo sinh học từ hàng triệu cặp hình ảnh mẫu kèm câu mô tả, nhờ đó nắm được mối liên hệ giữa các khái niệm trong văn bản và chi tiết thị giác.",
+    "Khi bạn nhập câu lệnh, mô hình không 'chép lại' một bức ảnh có sẵn mà tổng hợp ảnh mới dựa trên các quy luật đã học trong quá trình huấn luyện.",
+    "Toàn bộ nguyên lí hoạt động này được trình bày chi tiết trong sách 'Nền tảng AI tạo sinh hình ảnh' do Viện Hàn lâm Ảnh số Việt Nam (VADI) xuất bản năm 2023."
+   ],
+   "giaiThich": "Claim thứ ba trích dẫn nguồn bịa: không hề tồn tại 'Viện Hàn lâm Ảnh số Việt Nam (VADI)' lẫn cuốn sách được nêu, dù tên gọi nghe rất giống một cơ quan thật. Đây là hiện tượng AI 'bịa' tham chiếu để câu trả lời trông đáng tin hơn; muốn kiểm tra, bạn hãy tìm tên tổ chức, tên sách hoặc mã ISBN trên internet và hệ thống thư viện. Hai claim đầu mô tả đúng nguyên lí học từ dữ liệu và tổng hợp ảnh mới của AI tạo sinh."
+  },
+  {
+   "id": "g2-04",
+   "mach": "D",
+   "unesco": "D2",
+   "loai": "co_loi",
+   "loaiLoi": "suy_luan_sai",
+   "claimLoi": 0,
+   "boiCanh": "Câu lạc bộ AI của trường làm một chatbot trả lời thắc mắc về phương pháp học tập và hỏi trợ lý ảo cách đánh giá chất lượng sản phẩm.",
+   "claims": [
+    "Nếu chatbot được nhiều học sinh trong trường sử dụng mỗi ngày thì chứng tỏ nó trả lời chính xác và đáng tin, không cần kiểm tra lại nội dung nữa.",
+    "Các bạn nên xây dựng một bộ câu hỏi kiểm thử có sẵn đáp án đúng, cho chatbot trả lời rồi đo tỉ lệ câu đúng để biết chất lượng thực sự.",
+    "Ngoài ra, hãy thu thập phản hồi của người dùng và ghi lại những tình huống chatbot trả lời sai để tiếp tục hoàn thiện dữ liệu và cách đặt câu lệnh."
+   ],
+   "giaiThich": "Claim thứ nhất mắc lỗi 'vin vào số đông': số người dùng chỉ phản ánh mức độ phổ biến, không phải bằng chứng cho tính chính xác, vì một chatbot vẫn có thể trả lời sai dù rất đông người dùng. Trong thiết kế hệ thống AI, chất lượng phải được đo bằng bộ kiểm thử có đáp án chuẩn và phản hồi người dùng như hai claim sau gợi ý đúng. Dấu hiệu nhận biết là kiểu suy luận 'nhiều người tin/dùng nên chắc chắn đúng'."
+  },
+  {
+   "id": "g2-05",
+   "mach": "B",
+   "unesco": "B3",
+   "loai": "co_loi",
+   "loaiLoi": "lo_du_lieu_ca_nhan",
+   "claimLoi": 1,
+   "boiCanh": "Lớp trưởng lớp 11 nhờ trợ lý AI tư vấn cách quản lí thông tin thành viên lớp khi tổ chức chuyến đi trải nghiệm ngoài nhà trường.",
+   "claims": [
+    "Bạn chỉ nên thu thập những thông tin tối thiểu cần thiết cho chuyến đi và thông báo rõ cho các bạn trong lớp biết mục đích sử dụng thông tin đó.",
+    "Để tiện quản lí, bạn hãy tạo một bảng tính công khai gồm họ tên, địa chỉ nhà, số điện thoại và số căn cước của tất cả thành viên, rồi dán toàn bộ bảng đó vào một công cụ AI bất kì trên mạng để nó tự sắp xếp nhóm.",
+    "Sau khi chuyến đi kết thúc, bạn nên xóa hoặc khóa tệp dữ liệu lại và chỉ chia sẻ cho giáo viên chủ nhiệm hay người có trách nhiệm liên quan."
+   ],
+   "giaiThich": "Claim thứ hai xúi lộ dữ liệu cá nhân: số căn cước, địa chỉ nhà, số điện thoại là dữ liệu nhạy cảm, việc đăng công khai rồi dán vào công cụ AI lạ có thể khiến thông tin bị lưu lại, rò rỉ hoặc bị kẻ xấu lợi dụng. Nguyên tắc an toàn là chỉ thu thập tối thiểu dữ liệu cần thiết, chỉ xử lí bằng công cụ đáng tin cậy và xóa sau khi hết mục đích sử dụng. Hai claim còn lại tuân thủ đúng nguyên tắc bảo vệ dữ liệu cá nhân này."
+  },
+  {
+   "id": "g2-06",
+   "mach": "A",
+   "unesco": "A1",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Một học sinh hỏi trợ lý AI rằng có nên tin tưởng hoàn toàn vào AI khi làm bài tập về nhà hay không.",
+   "claims": [
+    "AI là công cụ hỗ trợ: nó có thể giúp bạn giải thích bài học, gợi ý ý tưởng và kiểm tra lỗi chính tả, nhưng không thể thay thế quá trình tự học của bạn.",
+    "Vì AI có thể đưa ra câu trả lời sai hoặc bịa đặt thông tin, bạn luôn cần đối chiếu những nội dung quan trọng với sách giáo khoa, thầy cô hoặc nguồn chính thống.",
+    "Nếu bạn chép nguyên văn câu trả lời của AI và nộp như bài làm của mình, bạn sẽ không rèn được kĩ năng thật, đồng thời việc đó cũng vi phạm tính trung thực trong học tập."
+   ],
+   "giaiThich": "Cả ba claim đều đúng vì chúng đặt con người ở vị trí trung tâm: AI chỉ là công cụ hỗ trợ, còn việc học và quyết định cuối cùng thuộc về học sinh. Lời khuyên đối chiếu thông tin phản ánh đúng nguy cơ AI trả lời sai hoặc bịa đặt, còn nhắc nhở về trung thực học đường phù hợp với quy định của nhà trường. Câu trả lời cũng phân biệt rõ khả năng, giới hạn của AI và trách nhiệm của người dùng."
+  },
+  {
+   "id": "g2-07",
+   "mach": "C",
+   "unesco": "C2",
+   "loai": "co_loi",
+   "loaiLoi": "so_lieu_bia",
+   "claimLoi": 1,
+   "boiCanh": "Trong giờ Tin học, một học sinh hỏi trợ lý AI về khả năng thực tế của các hệ thống nhận dạng giọng nói hiện nay.",
+   "claims": [
+    "AI nhận dạng giọng nói chuyển đổi sóng âm thành văn bản nhờ được huấn luyện trên lượng dữ liệu âm thanh khổng lồ, kết hợp mô hình ngôn ngữ để đoán từ cho chính xác.",
+    "Hiện nay, các hệ thống nhận dạng giọng nói thương mại đều đạt độ chính xác 99,83% ngay cả trong môi trường ồn ào, đông người và nhiều âm thanh chồng lấn.",
+    "Trên thực tế, độ chính xác còn phụ thuộc nhiều vào điều kiện thu âm, chất giọng vùng miền và tiếng ồn nền, nên bạn cần kiểm tra lại bản gỡ băng trước khi sử dụng."
+   ],
+   "giaiThich": "Claim thứ hai là số liệu bịa: không hệ thống nhận dạng giọng nói nào hiện nay giữ được độ chính xác gần như tuyệt đối 99,83% trong môi trường ồn ào, đông người, vì nhiễu âm luôn làm tỉ lệ lỗi tăng rõ rệt, đúng như claim thứ ba đã lưu ý. Dấu hiệu nhận biết là con số lẻ chính xác đến hai chữ số thập phân đi kèm lời khẳng định trái với thực tế kĩ thuật đã biết. Hai claim còn lại mô tả đúng nguyên lí hoạt động và các yếu tố ảnh hưởng đến độ chính xác."
+  },
+  {
+   "id": "g2-08",
+   "mach": "D",
+   "unesco": "D1",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Một nhóm học sinh hỏi trợ lý AI về các bước xây dựng dự án AI đơn giản phân loại ảnh rác tái chế được cho hội thi khoa học kĩ thuật.",
+   "claims": [
+    "Các bạn cần chuẩn bị một tập dữ liệu ảnh đã được gán nhãn trước, vì AI học cách phân loại thông qua việc quan sát rất nhiều ảnh mẫu của từng loại rác.",
+    "Tập dữ liệu nên có đủ ảnh của cả hai nhóm, chụp ở nhiều góc và điều kiện sáng khác nhau, để mô hình học được khách quan và không thiên lệch về một phía.",
+    "Sau khi huấn luyện, hãy kiểm tra mô hình bằng những bức ảnh mới mà nó chưa từng thấy và ghi lại các trường hợp nhận dạng sai để biết độ chính xác thực sự."
+   ],
+   "giaiThich": "Cả ba claim đều đúng vì chúng mô tả chuẩn xác quy trình xây dựng một hệ thống phân loại ảnh: chuẩn bị dữ liệu có gán nhãn, đảm bảo dữ liệu cân bằng và đa dạng để tránh thiên lệch, rồi đánh giá mô hình trên dữ liệu kiểm tra mới. Việc ghi lại các trường hợp sai thể hiện đúng tư duy thiết kế là hệ thống AI luôn cần được đo lường và cải tiến liên tục. Câu trả lời không chứa số liệu bịa, nguồn giả hay nhận định thiếu căn cứ nào."
+  },
+  {
+   "id": "g2-09",
+   "mach": "B",
+   "unesco": "B2",
+   "loai": "co_loi",
+   "loaiLoi": "thien_kien",
+   "claimLoi": 2,
+   "boiCanh": "Một học sinh hỏi trợ lý AI xem người bạn mới chuyển từ tỉnh lên thành phố học có nên tham gia câu lạc bộ tiếng Anh của trường không.",
+   "claims": [
+    "Câu lạc bộ tiếng Anh là nơi dành cho mọi học sinh muốn luyện tập ngoại ngữ, bất kể các bạn đến từ đâu hay trình độ ban đầu thế nào.",
+    "Nếu bạn ấy còn ngại về phát âm hay từ vựng, bạn ấy có thể bắt đầu bằng việc nghe các buổi sinh hoạt, tham gia trò chơi từ vựng và luyện tập dần để tự tin hơn.",
+    "Nhưng nói thật thì học sinh ở quê thường kém tiếng Anh và tiếp thu chậm hơn do thiếu điều kiện, nên câu lạc bộ cũng cần cân nhắc kĩ trước khi nhận bạn ấy để khỏi ảnh hưởng cả nhóm."
+   ],
+   "giaiThich": "Claim thứ ba chứa thiên kiến vùng miền: nó chụp mũ 'học sinh ở quê' là một nhóm đồng nhất kém tiếng Anh, 'tiếp thu chậm' và gợi ý loại trừ, trong khi năng lực ngoại ngữ phụ thuộc vào nỗ lực và điều kiện học tập của từng cá nhân cụ thể chứ không do nơi xuất thân quyết định. Hãy cảnh giác khi AI đưa ra đánh giá chắc nịch về cả một nhóm người, kể cả khi nó ngụy trang bằng cụm từ 'nói thật thì'. Hai claim đầu đúng vì khuyến khích sự hòa nhập và đánh giá dựa trên từng cá nhân."
+  },
+  {
+   "id": "g2-10",
+   "mach": "C",
+   "unesco": "C3",
+   "loai": "co_loi",
+   "loaiLoi": "suy_luan_sai",
+   "claimLoi": 0,
+   "boiCanh": "Một học sinh làm dự án nghiên cứu khoa học nhờ trợ lý AI phân tích dữ liệu khảo sát 20 bạn trong lớp về tần suất sử dụng AI và điểm trung bình môn học.",
+   "claims": [
+    "Dữ liệu cho thấy những bạn dùng AI càng thường xuyên thì điểm trung bình càng thấp, nên muốn cải thiện kết quả học tập thì chỉ cần ngừng sử dụng AI là được.",
+    "Khi trình bày kết quả khảo sát, bạn nên dùng biểu đồ hoặc bảng số liệu kèm ghi chú rõ cỡ mẫu và cách thu thập để người đọc dễ dàng đánh giá.",
+    "Điểm số còn phụ thuộc vào nhiều yếu tố khác như phương pháp học, cách quản lí thời gian và sức khỏe, nên việc phân tích cần xem xét nhiều biến cùng lúc chứ không chỉ một yếu tố."
+   ],
+   "giaiThich": "Claim thứ nhất suy luận sai vì biến tương quan thành nhân quả: việc các bạn hay dùng AI có điểm thấp hơn không chứng minh AI gây ra kết quả đó, rất có thể những bạn đang học yếu mới phải dựa vào AI nhiều hơn, và giải pháp 'chỉ cần ngừng sử dụng AI' là suy diễn vô căn cứ. Ngoài ra, mẫu 20 học sinh trong một lớp là quá nhỏ để khái quát hóa thành kết luận chung. Dấu hiệu nhận biết là bước nhảy từ 'hai hiện tượng đi kèm nhau' sang 'hiện tượng này gây ra hiện tượng kia' mà bỏ qua các yếu tố khác."
+  },
+  {
+   "id": "g2-11",
+   "mach": "A",
+   "unesco": "A2",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Một học sinh lớp 12 băn khoăn nhờ trợ lý AI tư vấn chọn ngành học trước khi đăng kí xét tuyển đại học.",
+   "claims": [
+    "AI có thể gợi ý những ngành học phù hợp dựa trên sở thích, điểm mạnh và mục tiêu điểm số mà bạn cung cấp, giúp bạn nhìn ra nhiều lựa chọn mà bạn chưa nghĩ đến.",
+    "Tuy vậy, các gợi ý của AI chỉ mang tính tham khảo: bạn cùng gia đình và thầy cô nên là người đưa ra quyết định cuối cùng dựa trên hoàn cảnh và nguyện vọng thực tế.",
+    "Trước khi chốt ngành, bạn nên tìm hiểu thông tin tuyển sinh chính thức của các trường và trực tiếp trải nghiệm những hoạt động liên quan đến ngành học để có lựa chọn vững chắc."
+   ],
+   "giaiThich": "Cả ba claim đều đúng vì chúng thể hiện tư duy lấy con người làm trung tâm: AI giữ vai trò hỗ trợ mở rộng lựa chọn, còn quyết định quan trọng về tương lai thuộc về học sinh cùng gia đình và thầy cô. Lời khuyên tra cứu thông tin chính thức và trải nghiệm thực tế giúp giảm rủi ro khi AI có thể đưa ra thông tin chưa chính xác hoặc chưa cập nhật. Câu trả lời không phóng đại khả năng của AI và không chứa số liệu hay nguồn trích dẫn nào cần kiểm chứng."
+  },
+  {
+   "id": "g2-12",
+   "mach": "D",
+   "unesco": "D3",
+   "loai": "co_loi",
+   "loaiLoi": "nguon_khong_ton_tai",
+   "claimLoi": 2,
+   "boiCanh": "Một nhóm học sinh hỏi trợ lý AI về các chuẩn cần có khi thiết kế ứng dụng gợi ý kế hoạch học tập cá nhân hóa cho học sinh THPT.",
+   "claims": [
+    "Ứng dụng nên giải thích rõ cho người dùng biết gợi ý được tạo ra từ những thông tin nào mà họ đã nhập, như thời gian học hay mục tiêu điểm số, để họ hiểu và tin tưởng hệ thống.",
+    "Các bạn cần thiết kế cơ chế phản hồi, chẳng hạn nút bấm 'gợi ý này chưa phù hợp', để thu nhận ý kiến người dùng và giúp hệ thống điều chỉnh, cải tiến theo thời gian.",
+    "Để tăng độ tin cậy, nhóm có thể ghi trong phần giới thiệu rằng thiết kế này đạt 'Chuẩn hệ thống AI giáo dục 2024' do Hội đồng Quốc tế về Chuẩn AI Giáo dục (ICEAS) ban hành và đã giành Giải thưởng Nhà đổi mới EdTech Trẻ châu Á - Thái Bình Dương."
+   ],
+   "giaiThich": "Claim thứ ba trích dẫn nguồn bịa: không tồn tại 'Hội đồng Quốc tế về Chuẩn AI Giáo dục (ICEAS)', bộ chuẩn nói trên hay giải thưởng được nêu, dù cách đặt tên nghe rất giống các tổ chức và giải thưởng thật. AI có xu hướng 'sáng tác' tên tổ chức, văn bản, giải thưởng có vẻ uy tín để tăng sức thuyết phục, nên trước khi trích dẫn bất kì chuẩn hay giải thưởng nào, bạn phải xác minh tên cơ quan ban hành, năm công bố và trang thông tin chính thức. Hai claim đầu là các nguyên tắc thiết kế đúng đắn về tính minh bạch và vòng phản hồi người dùng."
+  },
+  {
+   "id": "g2-13",
+   "mach": "C",
+   "unesco": "C1",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Một học sinh mới tham gia câu lạc bộ Tin học hỏi trợ lý AI về cách các chatbot như ChatGPT tạo ra câu trả lời.",
+   "claims": [
+    "Chatbot tạo văn bản hoạt động theo nguyên tắc dự đoán từ tiếp theo có khả năng xuất hiện cao nhất, dựa trên các quy luật ngôn ngữ mà nó học được từ kho văn bản khổng lồ trong quá trình huấn luyện.",
+    "Vì chỉ dự đoán từ nghe hợp lí chứ không tra cứu sự thật từ một cơ sở dữ liệu đáng tin, chatbot có thể viết những câu rất trôi chảy nhưng lại chứa thông tin hoàn toàn sai.",
+    "Với các thông tin quan trọng như số liệu, sự kiện lịch sử hay lời khuyên sức khỏe, bạn nên đối chiếu thêm với nguồn chính thống thay vì chỉ dựa vào câu trả lời của chatbot."
+   ],
+   "giaiThich": "Cả ba claim đều đúng vì chúng mô tả chính xác nguyên lí hoạt động của mô hình ngôn ngữ lớn: dự đoán từ tiếp theo dựa trên mẫu thống kê học được, chứ không truy xuất sự thật từ cơ sở dữ liệu. Từ nguyên lí đó suy ra đúng hạn chế nổi tiếng của chatbot là 'ảo giác', tức trả lời sai một cách rất tự tin, nên việc đối chiếu thông tin quan trọng với nguồn chính thống là lời khuyên xác đáng. Câu trả lời không thổi phồng khả năng của AI và không chứa số liệu bịa."
+  },
+  {
+   "id": "g2-14",
+   "mach": "B",
+   "unesco": "B1",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Một học sinh nhờ trợ lý AI tư vấn cách bảo vệ an toàn cho tài khoản mạng xã hội cá nhân của mình.",
+   "claims": [
+    "Bạn nên đặt mật khẩu mạnh và riêng biệt cho từng tài khoản, gồm ít nhất 12 kí tự kết hợp chữ, số và kí hiệu đặc biệt, đồng thời không dùng lại một mật khẩu cho nhiều dịch vụ khác nhau.",
+    "Bạn hãy bật xác thực hai lớp để khi mật khẩu chẳng may bị lộ, người lạ vẫn khó đăng nhập được vào tài khoản của bạn vì còn thiếu lớp mã xác nhận thứ hai.",
+    "Bạn không nên đăng ảnh thẻ học sinh, vé máy bay, địa chỉ nhà hay thời khóa biểu chi tiết lên mạng xã hội, vì kẻ xấu có thể lợi dụng những thông tin đó để giả mạo hoặc lừa đảo."
+   ],
+   "giaiThich": "Cả ba claim đều đúng vì chúng bám sát các nguyên tắc bảo mật thông tin cơ bản: mật khẩu mạnh và duy nhất cho từng tài khoản để tránh bị mất dây chuyền, xác thực hai lớp để thêm một hàng rào bảo vệ, và không công khai dữ liệu nhạy cảm có thể bị lợi dụng. Quan trọng hơn, câu trả lời không hề xúi người dùng chia sẻ thông tin cá nhân với bất kì ai hay dán dữ liệu vào công cụ lạ, đúng chuẩn mực đạo đức số. Đây là ví dụ về một câu trả lời an toàn, hữu ích và đáng tin cậy cho học sinh."
+  }
+ ],
+ "bad": []
+}

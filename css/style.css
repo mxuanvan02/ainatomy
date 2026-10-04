@@ -1,0 +1,88 @@
+/* SOI AI — giao diện tiếng Việt, tối giản, chạy được trên máy cấu hình yếu */
+:root{
+  --nen:#0f1115; --nen2:#161a22; --the:#1d222c; --vien:#2b3240;
+  --chu:#e8ecf3; --chu2:#a4adbd; --nhan:#4dabf7; --dung:#51cf66; --sai:#ff6b6b;
+  --vang:#ffd43b;
+}
+*{box-sizing:border-box}
+body{margin:0;background:var(--nen);color:var(--chu);
+  font-family:"Segoe UI",system-ui,-apple-system,"DejaVu Sans",Arial,sans-serif;
+  font-size:16px;line-height:1.55}
+a{color:var(--nhan)}
+.wrap{max-width:1000px;margin:0 auto;padding:16px}
+header.top{background:var(--nen2);border-bottom:1px solid var(--vien);padding:10px 0;position:sticky;top:0;z-index:9}
+header.top .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-top:0;padding-bottom:0}
+.logo{font-weight:800;letter-spacing:.5px;font-size:18px}
+.logo span{color:var(--nhan)}
+/* tên sản phẩm trong nội dung trang */
+.logo-soi{color:var(--nhan);letter-spacing:.5px}
+/* khung chứa cảnh 3D */
+.scene{position:relative;width:100%;height:min(62vh,460px);background:var(--nen);
+  border:1px solid var(--vien);border-radius:12px;overflow:hidden}
+.scene canvas{display:block;width:100%;height:100%}
+.scene .hud{position:absolute;left:10px;top:10px;right:10px;pointer-events:none;
+  font-size:13px;color:var(--chu2);text-shadow:0 1px 3px #000}
+.scene .hud b{color:var(--chu)}
+.scene .note{position:absolute;left:10px;bottom:10px;right:10px;font-size:12.5px;
+  color:var(--chu2);background:rgba(15,17,21,.72);border-radius:8px;padding:6px 9px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--chu2);margin:8px 0}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;
+  vertical-align:-1px}
+.btn.nhe{border-color:var(--vang)}
+@media (prefers-reduced-motion: reduce){ .scene canvas{display:none} }
+.tagline{color:var(--chu2);font-size:13px}
+.spacer{flex:1}
+.btn{background:var(--the);color:var(--chu);border:1px solid var(--vien);border-radius:8px;
+  padding:9px 14px;font-size:15px;cursor:pointer;font-family:inherit}
+.btn:hover{border-color:var(--nhan)}
+.btn.chinh{background:var(--nhan);border-color:var(--nhan);color:#08131f;font-weight:700}
+.btn.nho{padding:5px 10px;font-size:13px}
+.btn:disabled{opacity:.45;cursor:not-allowed}
+.card{background:var(--the);border:1px solid var(--vien);border-radius:12px;padding:16px;margin:14px 0}
+.card h2{margin-top:0;font-size:20px}
+.card h3{font-size:17px;margin:14px 0 6px}
+.chu2{color:var(--chu2)}
+.nho{font-size:13px}
+.grid{display:grid;gap:12px}
+.g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
+.kpi{background:var(--nen2);border:1px solid var(--vien);border-radius:10px;padding:12px;text-align:center}
+.kpi .so{font-size:30px;font-weight:800;color:var(--nhan)}
+.kpi .nhan{font-size:12.5px;color:var(--chu2)}
+input,select,textarea{background:var(--nen2);color:var(--chu);border:1px solid var(--vien);
+  border-radius:8px;padding:9px 11px;font-size:15px;font-family:inherit;width:100%}
+label{display:block;font-size:13px;color:var(--chu2);margin:10px 0 4px}
+.ai-box{background:#11151d;border:1px solid var(--vien);border-left:4px solid var(--nhan);
+  border-radius:10px;padding:14px;margin:10px 0;white-space:pre-wrap}
+.claim{border-bottom:2px dotted var(--chu2);cursor:pointer;padding:1px 2px;border-radius:3px}
+.claim:hover{background:#243044}
+.claim.chon{background:#3b2b1a;border-bottom-color:var(--vang)}
+.chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
+.chip{border:1px solid var(--vien);background:var(--nen2);border-radius:999px;padding:7px 13px;
+  cursor:pointer;font-size:14px}
+.chip.chon{border-color:var(--nhan);background:#16324a;color:#cfe6ff;font-weight:700}
+.phanhoi{border-radius:10px;padding:12px;margin:12px 0;border:1px solid var(--vien)}
+.phanhoi.dung{background:#12291a;border-color:#2f6b3d}
+.phanhoi.sai{background:#2b1618;border-color:#7a3238}
+.bar{height:12px;background:var(--nen2);border-radius:99px;overflow:hidden;border:1px solid var(--vien)}
+.bar > i{display:block;height:100%;background:var(--nhan)}
+table{width:100%;border-collapse:collapse;font-size:14px}
+th,td{border:1px solid var(--vien);padding:7px 9px;text-align:left;vertical-align:top}
+th{background:var(--nen2);font-weight:700}
+canvas{background:#000;border-radius:10px;border:1px solid var(--vien);max-width:100%}
+.thumb{display:inline-block;margin:4px;text-align:center}
+.thumb canvas{width:88px;height:66px}
+.ok{color:var(--dung)}.ko{color:var(--sai)}.vang{color:var(--vang)}
+.steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
+.step{font-size:12.5px;color:var(--chu2);border:1px solid var(--vien);border-radius:999px;padding:4px 10px}
+.step.on{color:#08131f;background:var(--nhan);border-color:var(--nhan);font-weight:700}
+/* đèn giá trị chân lí (Bài 5 — dữ liệu lôgic) */
+.den{display:inline-block;padding:4px 9px;border-radius:999px;font-weight:700;font-size:14px;
+  border:1px solid var(--vien);background:var(--nen2);color:var(--chu2)}
+.den.on{background:#12291a;border-color:#2f6b3d;color:var(--dung)}
+.den.off{background:#2b1618;border-color:#7a3238;color:var(--sai)}
+code{background:var(--nen2);border:1px solid var(--vien);border-radius:5px;padding:1px 5px;
+  font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:14px;color:var(--vang)}
+.menu-o{display:block;text-align:left;padding:14px;margin:8px 0}
+.menu-o b{display:block;font-size:16px;margin-bottom:3px}
+.footer{color:var(--chu2);font-size:12.5px;padding:18px 0;border-top:1px solid var(--vien);margin-top:22px}
+@media print{body{background:#fff;color:#000}.card{border-color:#999}}

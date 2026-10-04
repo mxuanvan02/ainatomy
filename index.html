@@ -1,0 +1,341 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>SOI AI — Soi AI để hiểu AI · Phòng thí nghiệm AI cho học sinh phổ thông</title>
+<meta name="description" content="SOI AI — phần mềm dạy và kiểm định năng lực AI cho học sinh lớp 10, bám Khung 2422/QĐ-BGDĐT. Chạy được trên máy cũ, không cần Internet, không cần tài khoản, không thu phí.">
+<link rel="stylesheet" href="css/style.css">
+</head>
+<body>
+
+<header class="top">
+  <div class="wrap">
+    <div class="logo">🔍 SOI <span>AI</span></div>
+    <div class="tagline">Soi AI để hiểu AI — học sinh không hỏi AI, học sinh <b>bắt lỗi AI</b> · bám Khung 2422/QĐ-BGDĐT</div>
+    <div class="spacer"></div>
+    <div id="lbl-user" class="tagline"></div>
+    <button class="btn nho" id="btn-ve-home">🏠 Trang chủ</button>
+  </div>
+</header>
+
+<div class="wrap">
+
+  <!-- ===== TRANG CHỦ ===== -->
+  <section id="v-home">
+    <div class="card">
+      <h2>Chào mừng đến với <span class="logo-soi">SOI AI</span></h2>
+      <p><b>Soi AI để hiểu AI.</b> Ở đây em <b>không hỏi AI</b> — em <b>bắt lỗi AI</b>.</p>
+      <p class="chu2">Từ năm học 2026–2027, học sinh phổ thông cả nước học nội dung giáo dục AI
+      theo Quyết định 2422/QĐ-BGDĐT (12 tiết/lớp/năm học). Công cụ này giúp các tiết học đó
+      chạy được trên máy tính cũ, <b>không cần Internet, không cần tài khoản</b>,
+      và mọi kết quả đều được hệ thống tự chấm vì lỗi là do chính hệ thống cài vào.</p>
+
+      <button class="btn chinh" id="btn-dangnhap" style="display:none"></button>      <div class="card" style="background:var(--nen2)">
+        <label for="in-maHS">Mã của em (thầy/cô phát — ví dụ A001)</label>
+        <input id="in-maHS" placeholder="A001" maxlength="12" autocomplete="off">
+        <label for="in-maLop">Mã lớp (ví dụ 10A1)</label>
+        <input id="in-maLop" placeholder="10A1" maxlength="12" autocomplete="off">
+        <p class="nho chu2">🔒 Chỉ lưu mã trên máy này. Không thu họ tên, không gửi dữ liệu ra ngoài.</p>
+        <button class="btn chinh" id="btn-vao">Vào học →</button>
+      </div>
+    </div>
+
+    <div class="grid g3">
+      <button class="btn menu-o" id="btn-lab">
+        <b>🧪 Tầng 1 — Xưởng huấn luyện AI</b>
+        <span class="chu2">Tự huấn luyện một mô hình AI, rồi tìm ra vì sao nó thiên vị.</span>
+      </button>
+      <button class="btn menu-o" id="btn-dautruong">
+        <b>🕵️ Tầng 2 — Đấu trường bắt lỗi AI</b>
+        <span class="chu2">Đọc các câu trả lời của AI và tìm ra lỗi được cài sẵn.</span>
+      </button>
+      <button class="btn menu-o" id="btn-baocao">
+        <b>📊 Tầng 3 — Bản đồ năng lực của em</b>
+        <span class="chu2">Xem kết quả tự chấm theo 5 loại lỗi và 12 khối năng lực AI.</span>
+      </button>
+      <button class="btn menu-o" id="btn-logic" style="border-color:var(--vang)">
+        <b>🔀 Lôgic &amp; AI — nối với Bài 5 Tin học 10</b>
+        <span class="chu2">Dữ liệu lôgic, phép AND/OR/NOT, bảng chân lí — và bảng nhầm lẫn của chính em.</span>
+      </button>
+      <button class="btn menu-o" id="btn-kienthuc" style="border-color:var(--dung)">
+        <b>📚 Kiến thức nền AI lớp 10</b>
+        <span class="chu2">Luật bảo vệ người dùng · ứng dụng AI theo tính năng · AI tạo sinh vs phân loại · viết prompt đúng cách.</span>
+      </button>
+    </div>
+
+    <div class="card">
+      <h3>Vì sao công cụ này khác các ứng dụng AI khác?</h3>
+      <ul>
+        <li><b>Không cần mạng.</b> Chạy trực tiếp trên máy trường hoặc từ USB.</li>
+        <li><b>Không cần tài khoản.</b> Em vào bằng mã lớp, không phải đăng kí gì.</li>
+        <li><b>Tiếng Việt hoàn toàn.</b></li>
+        <li><b>Em là người kiểm định, không phải người tiêu dùng.</b> AI ở đây là đối tượng bị mổ xẻ.</li>
+        <li><b>Tự chấm bằng đáp án có sẵn.</b> Lỗi do hệ thống cố tình cài vào nên hệ thống biết trước đáp án — thầy/cô không phải chấm bài nào.</li>
+      </ul>
+    </div>
+  </section>
+
+  <!-- ===== NHẬP MÃ (dự phòng, ẩn) ===== -->
+  <section id="v-nhap" style="display:none"></section>
+
+  <!-- ===== TẦNG 1 ===== -->
+  <section id="v-lab" style="display:none">
+    <div class="card">
+      <h2>🧪 Tầng 1 — Xưởng huấn luyện AI giả lập</h2>
+      <div class="steps">
+        <span class="step on" id="st-1">1. Dữ liệu</span>
+        <span class="step" id="st-2">2. Huấn luyện</span>
+        <span class="step" id="st-3">3. Phát hiện thiên kiến</span>
+        <span class="step" id="st-4">4. Trả lời nhiệm vụ</span>
+      </div>
+
+      <div id="lab-b1">
+        <p><b>Bài toán:</b> xây dựng AI nhận diện người đi xe máy <b>có đội mũ bảo hiểm</b> hay không.</p>
+        <p class="chu2">Bấm nút dưới đây để hệ thống tạo một bộ dữ liệu ảnh mẫu (ảnh được vẽ tự động, không cần tải từ mạng).</p>
+        <button class="btn chinh" id="btn-tao-dulieu">Tạo bộ dữ liệu ảnh 🖼️</button>
+      </div>
+
+      <div id="lab-b2" style="display:none">
+        <h3>Bộ dữ liệu của em</h3>
+        <div id="lab-thongke" class="card" style="background:var(--nen2)"></div>
+        <div id="lab-thumbs"></div>
+        <p class="nho chu2">💡 Hãy quan sát kĩ: bộ dữ liệu này có "cân bằng" không?</p>
+        <button class="btn chinh" id="btn-huanluyen">Huấn luyện mô hình AI ▶</button>
+      </div>
+
+      <div id="lab-b3" style="display:none">
+        <h3>Kết quả huấn luyện</h3>
+        <div class="grid g3">
+          <div class="kpi"><div class="so" id="kq-train">—</div><div class="nhan">trên dữ liệu huấn luyện</div></div>
+          <div class="kpi"><div class="so ok" id="kq-ngay">—</div><div class="nhan">ảnh kiểm thử BAN NGÀY</div></div>
+          <div class="kpi"><div class="so ko" id="kq-dem">—</div><div class="nhan">ảnh kiểm thử BAN ĐÊM</div></div>
+        </div>
+        <p>Ban ngày: <span class="bar" style="display:inline-block;width:60%"><i id="bar-ngay" style="width:0"></i></span></p>
+        <p>Ban đêm: <span class="bar" style="display:inline-block;width:60%"><i id="bar-dem" style="width:0;background:var(--sai)"></i></span></p>
+        <p class="vang"><b>Mô hình báo "rất chính xác" nhưng lại sai gần hết vào ban đêm. Vì sao?</b></p>
+        <button class="btn" id="btn-sosanh">Thử lại với bộ dữ liệu CÂN BẰNG ngày/đêm ⚖</button>
+        <div id="lab-sosanh" style="display:none" class="card">
+          <h3>Sau khi bổ sung dữ liệu ban đêm</h3>
+          <p>Độ chính xác trên ảnh ban đêm: <b class="ok" id="kq-dem-c2">—</b>
+             <span class="bar" style="display:inline-block;width:50%"><i id="bar-dem2" style="width:0;background:var(--dung)"></i></span></p>
+          <p class="chu2">Cùng một mô hình, cùng một bài toán — chỉ khác ở <b>dữ liệu huấn luyện</b>.</p>
+          <button class="btn chinh" id="btn-lab-cauhoi">Làm nhiệm vụ phân tích →</button>
+        </div>
+      </div>
+
+      <div id="lab-b4" style="display:none">
+        <h3>Nhiệm vụ: em hãy làm người kiểm định AI</h3>
+        <p class="chu2">Trả lời các câu hỏi dưới đây. Hệ thống tự chấm và giải thích ngay.</p>
+        <div id="lab-cauhoi"></div>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== TẦNG 2 ===== -->
+  <section id="v-dautruong" style="display:none">
+    <div class="card">
+      <h2>🕵️ Tầng 2 — Đấu trường bắt lỗi AI</h2>
+      <p><b id="dt-mode" class="tagline">Luyện tập</b> · <span class="nho chu2">Mỗi phiên 12 câu: 2 câu cho mỗi loại lỗi + 4 câu đúng (mồi nhử).</span></p>
+      <p class="chips" style="margin:4px 0 10px">
+        <button class="btn nho" id="dt-btn-luyen">▶ Luyện tập</button>
+        <button class="btn nho" id="dt-btn-pre">📋 Pre-test (đầu vào)</button>
+        <button class="btn nho" id="dt-btn-post">🏁 Post-test (đầu ra)</button>
+      </p>
+      <p class="chu2">Dưới đây là các câu trả lời do một trợ lý AI tạo ra.
+      <b>Một số câu có lỗi được cố tình cài sẵn</b>, một số câu hoàn toàn đúng.
+      Nhiệm vụ của em: đọc kĩ, bấm vào câu em nghi là sai, rồi phán quyết.</p>
+      <p><span id="dt-tien-do" class="tagline"></span> · <span id="dt-boicanh" class="nho chu2"></span></p>
+
+      <div class="ai-box">
+        <div class="nho chu2" style="margin-bottom:8px">🤖 Trợ lý AI trả lời:</div>
+        <div id="dt-claims"></div>
+      </div>
+
+      <h3>Phán quyết của em</h3>
+      <div class="chips" id="dt-chips-verdict"></div>
+      <div class="chips" id="dt-chips-loai" style="display:none"></div>
+
+      <p>
+        <button class="btn chinh" id="dt-nop" disabled>Nộp phán quyết</button>
+        <button class="btn" id="dt-tiep" style="display:none"></button>
+      </p>
+      <div id="dt-kq" class="phanhoi" style="display:none"></div>
+    </div>
+  </section>
+
+  <!-- ===== TẦNG 3 ===== -->
+  <section id="v-baocao" style="display:none">
+    <div class="card">
+      <h2>📊 Tầng 3 — Bản đồ năng lực AI của em</h2>
+      <p class="chu2 nho">Hệ thống tự tổng hợp từ nhật ký làm bài của em. Không cần thầy/cô chấm.</p>
+      <div id="bc-noi-dung"></div>
+    </div>
+    <div class="card" id="bc-lop" style="display:none">
+      <h3>Báo cáo tổng hợp lớp (dành cho giáo viên)</h3>
+    </div>
+  </section>
+
+  <!-- ===== BÀI 5 TIN HỌC 10 — DỮ LIỆU LÔGIC ===== -->
+  <section id="v-logic" style="display:none">
+    <div class="card">
+      <h2>🔀 Lôgic &amp; AI</h2>
+      <p class="tagline">Kết nối trực tiếp với <b>Bài 5 — Dữ liệu lôgic</b>, Tin học 10 (Chủ đề 1: Máy tính và xã hội tri thức)</p>
+      <p class="chu2">Bài 5 dạy giá trị chân lí và các phép AND / OR / NOT. Ở trang này em sẽ thấy
+      <b>chính trò chơi em vừa chơi là một biểu thức lôgic</b> — và máy AI cũng quyết định bằng một phép so sánh lôgic.</p>
+    </div>
+
+    <div class="card">
+      <h3>1. Thử ba phép toán lôgic</h3>
+      <p class="chu2 nho">Bấm vào từng nút để đổi giá trị chân lí của các biến, rồi quan sát kết quả.</p>
+      <div class="grid g3">
+        <div class="kpi">
+          <div class="nhan">Biến A</div>
+          <button class="btn" id="sw-a" style="margin:6px 0">đổi A</button>
+          <div id="in-a" class="den on">TRUE (1)</div>
+        </div>
+        <div class="kpi">
+          <div class="nhan">Biến B</div>
+          <button class="btn" id="sw-b" style="margin:6px 0">đổi B</button>
+          <div id="in-b" class="den off">FALSE (0)</div>
+        </div>
+        <div class="kpi">
+          <div class="nhan">Biến N (cho phép NOT)</div>
+          <button class="btn" id="sw-n" style="margin:6px 0">đổi N</button>
+          <div id="in-n" class="den on">TRUE (1)</div>
+        </div>
+      </div>
+      <table style="margin-top:10px">
+        <tr><th>Phép toán</th><th>Biểu thức</th><th>Kết quả</th><th>Đèn</th></tr>
+        <tr><td><b>AND</b> — chỉ TRUE khi cả hai TRUE</td><td><code id="expr-and"></code></td><td><b id="out-and"></b></td><td><span class="den" id="lamp-and"></span></td></tr>
+        <tr><td><b>OR</b> — TRUE khi ít nhất một TRUE</td><td><code id="expr-or"></code></td><td><b id="out-or"></b></td><td><span class="den" id="lamp-or"></span></td></tr>
+        <tr><td><b>NOT</b> — đảo giá trị</td><td><code id="expr-not"></code></td><td><b id="out-not"></b></td><td><span class="den" id="lamp-not"></span></td></tr>
+      </table>
+    </div>
+
+    <div class="card">
+      <h3>2. Luật chơi "bắt lỗi AI" chính là một biểu thức lôgic</h3>
+      <div id="logic-bieuthuc"></div>
+    </div>
+
+    <div class="card">
+      <h3>3. Bảng chân lí của chính em (bảng nhầm lẫn)</h3>
+      <p class="chu2 nho">Hệ thống tự đếm từ nhật ký làm bài của em — không cần thầy/cô chấm.</p>
+      <div id="logic-nhamlan"></div>
+    </div>
+
+    <div class="card">
+      <h3>4. Bên trong AI cũng là một phép so sánh lôgic</h3>
+      <div id="logic-perceptron"></div>
+    </div>
+
+    <div class="card">
+      <h3>5. Luyện tập nhanh (Bài 5 — vận dụng)</h3>
+      <p class="chu2 nho">Mỗi câu là một biểu thức lôgic trong ngữ cảnh AI. Hệ thống tự chấm.</p>
+      <div id="logic-baitap"></div>
+    </div>
+  </section>
+
+  <!-- ===== KIẾN THỨC NỀN AI LỚP 10 ===== -->
+  <section id="v-kienthuc" style="display:none">
+    <div class="card">
+      <h2>📚 Kiến thức nền AI — lớp 10</h2>
+      <p class="tagline">Bám theo <b>Khung nội dung giáo dục trí tuệ nhân tạo cho học sinh phổ thông</b>
+        (ban hành kèm Quyết định 2422/QĐ-BGDĐT ngày 18/8/2026) — các yêu cầu cần đạt của lớp 10.</p>
+      <p class="chu2 nho">Mỗi mục dưới đây ghi rõ mã yêu cầu cần đạt (ví dụ <code>10.A3.1</code>)
+        để thầy/cô đối chiếu khi soạn kế hoạch bài dạy.</p>
+    </div>
+
+    <div class="card">
+      <h3>1. Luật bảo vệ người dùng trong không gian số <span class="tagline">10.A3.1</span></h3>
+      <p class="chu2 nho">Bốn văn bản quan trọng nhất. Mỗi mục có ghi nguồn tra cứu để em tự kiểm chứng.</p>
+      <div id="kt-luat"></div>
+    </div>
+
+    <div class="card">
+      <h3>2. Ứng dụng AI theo tính năng của hệ thống <span class="tagline">10.C2.2</span></h3>
+      <div id="kt-ungdung"></div>
+    </div>
+
+    <div class="card">
+      <h3>3. AI tạo sinh khác AI phân loại / dự đoán thế nào? <span class="tagline">10.C3.3</span></h3>
+      <div id="kt-sosanh"></div>
+    </div>
+
+    <div class="card">
+      <h3>4. Một prompt tốt cần những gì? <span class="tagline">10.C3.1</span></h3>
+      <div id="kt-tieuchi"></div>
+    </div>
+
+    <div class="card">
+      <h3>5. Thực hành viết prompt <span class="tagline">10.C3.2</span></h3>
+      <p class="chu2">Em tự viết prompt cho tình huống, hệ thống sẽ đối chiếu với các tiêu chí bắt buộc
+        và chỉ ra em còn thiếu gì.</p>
+      <div id="kt-prompt"></div>
+    </div>
+
+    <div class="card">
+      <h3>6. Kiểm tra nhanh <span class="tagline">tự chấm</span></h3>
+      <div id="kt-quiz"></div>
+    </div>
+  </section>
+
+  <!-- ===== GIỚI THIỆU ===== -->
+  <section id="v-gioithieu" style="display:none">
+    <div class="card">
+      <h2>Về SOI AI</h2>
+      <p class="tagline"><b>Soi AI để hiểu AI.</b></p>
+      <p><b>Mục tiêu:</b> triển khai nội dung giáo dục AI bắt buộc 12 tiết/lớp/năm học theo
+      Khung nội dung giáo dục trí tuệ nhân tạo cho học sinh phổ thông
+      (Quyết định 2422/QĐ-BGDĐT ngày 18/8/2026) và Công văn 5588/BGDĐT-GDPT ngày 19/8/2026.</p>
+
+      <h3>Cơ chế sư phạm</h3>
+      <p>Học sinh <b>phán xử đầu ra của AI</b> thay vì gõ câu hỏi cho AI.
+      Mỗi nhiệm vụ có <b>nhãn đúng đã biết trước từ lúc thiết kế</b> (lỗi do hệ thống cài vào),
+      vì vậy hệ thống tự chấm được năng lực kiểm định mà không cần giáo viên chấm bài.</p>
+      <p>Cơ chế này dựa trên kết quả nghiên cứu đã công bố: việc cố tình đưa lỗi vào sản phẩm AI
+      để người học phát hiện và sửa giúp hình thành tư duy kiểm chứng tốt hơn
+      so với việc để AI trả lời đúng (<i>When AI Is Wrong on Purpose</i>, ICER 2026, arXiv:2607.05068).</p>
+
+      <h3>Ánh xạ chương trình</h3>
+      <p>4 mạch nội dung của QĐ 2422: Tư duy lấy con người làm trung tâm · Đạo đức AI ·
+      Kĩ thuật và ứng dụng AI · Thiết kế hệ thống AI.<br>
+      <b>13 chủ đề thành phần</b> của Khung 2422 (A1–A3, B1–B3, C1–C5, D1–D2) là trục
+      báo cáo năng lực chính. Lớp 10 có yêu cầu cần đạt ở 10/13 chủ đề; toàn bộ 22 yêu cầu
+      cần đạt lớp 10 được trích <b>nguyên văn</b> và đã kiểm chứng tự động với văn bản gốc
+      (xem <code>data/yccd.js</code>).<br>
+      <span class="nho chu2">Khung năng lực AI cho học sinh của UNESCO (2024) — 4 khía cạnh ×
+      3 mức — chỉ dùng làm cột <b>đối chiếu phụ</b>, không phải trục chính.</span></p>
+
+      <h3>Điều kiện vận hành</h3>
+      <ul>
+        <li>Chạy trực tiếp bằng trình duyệt, mở từ thư mục hoặc USB — <b>không cần Internet</b>.</li>
+        <li><b>Không cần tài khoản</b>, không thu phí, không phụ thuộc nhà cung cấp nào.</li>
+        <li>Dữ liệu học sinh chỉ là <b>mã ẩn danh</b>, lưu cục bộ trên máy đang dùng, có nút xuất CSV/JSON cho giáo viên và nút xóa.</li>
+      </ul>
+      <p class="nho chu2">Phiên bản 0.1.0 · Đóng gói 04/10/2026 · Sản phẩm dự thi Giải thưởng Tiên phong
+      Ứng dụng AI trong Giáo dục Việt Nam 2026 (Bảng B).</p>
+    </div>
+  </section>
+
+  <div class="footer">
+    🔍 <b>SOI AI</b> · <i>Soi AI để hiểu AI</i> · chạy được khi không có Internet · không tài khoản · không thu phí · dữ liệu học sinh chỉ là mã ẩn danh, lưu cục bộ
+    · <button class="btn nho" id="btn-gioithieu">Giới thiệu &amp; căn cứ chương trình</button>
+  </div>
+</div>
+
+<script src="data/meta.js"></script>
+<!-- 13 chủ đề + 22 YCCĐ lớp 10, nguyên văn QĐ 2422/QĐ-BGDĐT, đã verify 22/22
+     bằng tools/verify_yccd.py. NẠP TRƯỚC app.js vì bản đồ năng lực đọc window.MX_YCCD. -->
+<script src="data/yccd.js"></script>
+<script src="data/cauhoi.js"></script>
+<script src="data/cauhoi_moRong.js"></script>
+<script src="data/bai5_logic.js"></script>
+<script src="data/kienthuc.js"></script>
+<script src="js/engine.js"></script>
+<script src="js/lab.js"></script>
+<script src="js/logic.js"></script>
+<script src="js/kienthuc.js"></script>
+<script src="js/app.js"></script>
+</body>
+</html>

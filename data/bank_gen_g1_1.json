@@ -1,0 +1,218 @@
+{
+ "model": "glm-5.3-max",
+ "batch": 1,
+ "generated": 14,
+ "good": [
+  {
+   "id": "g1-01",
+   "mach": "C",
+   "unesco": "C2",
+   "loai": "co_loi",
+   "loaiLoi": "so_lieu_bia",
+   "claimLoi": 2,
+   "boiCanh": "Lan chuẩn bị thuyết trình về AI cho tiết sinh hoạt lớp chủ đề công nghệ.",
+   "claims": [
+    "Trí tuệ nhân tạo là một lĩnh vực của khoa học máy tính, mục tiêu là tạo ra máy móc có thể thực hiện những việc mà ta thường nghĩ chỉ con người làm được, chẳng hạn như nhận diện khuôn mặt hay dịch ngôn ngữ.",
+    "Máy học là một nhánh của AI: thay vì lập trình từng bước cụ thể, máy học cách làm việc đó bằng cách tìm quy luật từ rất nhiều dữ liệu mẫu — ví dụ hàng nghìn ảnh mèo để học cách nhận mèo.",
+    "Theo Báo cáo Chỉ số Số hóa Học đường 2025 do Viện Nghiên cứu Giáo dục Số công bố, 73,6% học sinh THPT Việt Nam đã từng nhờ AI làm bài tập, và cứ 10 em thì có 4,1 em dùng AI mỗi ngày."
+   ],
+   "giaiThich": "Câu 3 đưa số liệu '73,6%' và '4,1/10 em' kèm tên báo cáo nghe rất chuyên nghiệp nhưng không kiểm chứng được — con số 4,1/10 người cũng phi lý về mặt logic (không thể có 0,1 người trong cách đếm này kiểu 'cứ 10 em'). Dấu hiệu nhận biết: số quá lẻ, quá chính xác, gắn với 'báo cáo/nghiên cứu' mà không dẫn nguồn tra cứu được. Luôn hỏi: nguồn này tồn tại thật không, và ai đếm đếm được con số lẻ kiểu đó?"
+  },
+  {
+   "id": "g1-02",
+   "mach": "D",
+   "unesco": "D1",
+   "loai": "co_loi",
+   "loaiLoi": "nguon_khong_ton_tai",
+   "claimLoi": 1,
+   "boiCanh": "Minh nghiên cứu cách tạo chatbot hỏi đáp cho CLB Tin học của trường.",
+   "claims": [
+    "Để một chatbot trả lời được câu hỏi về tài liệu của trường, nhóm mình có thể dùng phương pháp RAG — cho AI truy xuất đoạn văn liên quan từ kho tài liệu rồi mới trả lời, thay vì bắt AI 'nhớ thuộc' mọi thứ.",
+    "Theo 'Công ước quốc tế về an toàn chatbot trường học' mà Việt Nam tham gia năm 2023, mọi chatbot học đường phải được một ủy ban quốc tế phê duyệt trước khi cho học sinh sử dụng.",
+    "Nên lưu ý các câu trả lời có trích dẫn nguồn: nhóm mình kiểm tra lại nguồn đó có tồn tại không, vì đôi khi AI tạo ra trích dẫn nghe rất 'thật' nhưng không có thật."
+   ],
+   "giaiThich": "Câu 2 viện một 'Công ước quốc tế về an toàn chatbot trường học' — không tồn tại công ước nào như vậy, và cũng không có quy định nào bắt chatbot học đường phải được 'ủy ban quốc tế' phê duyệt. Đây là lỗi kinh điển 'nguồn không tồn tại': AI bịa ra tên văn bản nghe rất trang trọng. Cách kiểm tra: tìm tên văn bản trên cổng thông tin chính thức (chinhphu.vn, moet.gov.vn) — không thấy là bịa."
+  },
+  {
+   "id": "g1-03",
+   "mach": "B",
+   "unesco": "B2",
+   "loai": "co_loi",
+   "loaiLoi": "thien_kien",
+   "claimLoi": 2,
+   "boiCanh": "Hải ở Thanh Hóa muốn biết mình có nên theo nhóm lập trình của trường không dù trường không có đội mạnh về Tin học.",
+   "claims": [
+    "Chắc chắn được nhé! Năng lực lập trình của bạn không phụ thuộc vào trường bạn học — nhiều bạn ở trường nhỏ tự học online và đạt giải, nên điều quan trọng là phương pháp và sự kiên trì.",
+    "Khi đã vào nhóm, hãy tận dụng các nền tảng học lập trình miễn phí và bạn bè đồng đội để tiến bộ đều đặn; điều quan trọng nhất là kiên trì luyện đề và đặt câu hỏi khi chưa hiểu.",
+    "Nói thêm cho bạn yên tâm: học sinh miền Trung luôn giỏi tư duy thuật toán hơn hẳn học sinh miền Bắc, nên bạn sinh ra ở Thanh Hóa thì việc học lập trình sẽ dễ hơn so với các bạn khác."
+   ],
+   "giaiThich": "Câu 3 chứa định kiến vùng miền: khẳng định năng lực tư duy của một nhóm người theo nơi sinh sống là suy diễn không căn cứ — năng lực lập trình phụ thuộc vào rèn luyện, không vào xuất xứ. Dấu hiệu nhận biết: câu trả lời chia học sinh theo vùng/giới/ngoại hình rồi kết luận nhóm này 'luôn giỏi/kém' hơn nhóm kia là thiên kiến, và thêm lời khuyên 'bạn cứ yên tâm vì thuộc nhóm ưu thế' càng làm sai lệch thêm. Hai câu còn lại đúng: năng lực không phụ thuộc trường, và lời khuyên luyện tập là hợp lý."
+  },
+  {
+   "id": "g1-04",
+   "mach": "B",
+   "unesco": "B2",
+   "loai": "co_loi",
+   "loaiLoi": "suy_luan_sai",
+   "claimLoi": 1,
+   "boiCanh": "Bình hỏi trợ lý AI rằng học theo kế hoạch ôn vừa lập thì có đỗ kỳ thi vào lớp 10 không, và nhận được lời động viên rất tự tin.",
+   "claims": [
+    "Kế hoạch của bạn khá hợp lí: ôn đều các môn, chừa thời gian nghỉ — học như vậy cơ hội của bạn tốt lên rõ rệt, dù không kế hoạch nào đảm bảo kết quả tuyệt đối.",
+    "Mình dám khẳng định là 'chắc chắn đỗ', vì hàng nghìn học sinh trên mạng đều kể rằng cứ kiên trì học theo lời AI thì đều đỗ — số đông cùng nói vậy thì gần như chắc chắn đúng.",
+    "Để tự tin hơn, bạn nên làm vài đề thử theo đúng thời gian thi thật — kết quả đề thử sẽ cho bạn bức tranh thực tế hơn nhiều so với lời hứa của bất kì ai."
+   ],
+   "giaiThich": "Câu 2 sai vì suy luận 'số đông nói vậy thì đúng' — đây là lối tin theo đám đông (ad populum), chưa hề có bằng chứng cho trường hợp riêng của Bình; hơn nữa không ai, kể cả AI, bảo đảm được kết quả thi của một học sinh cụ thể. Dấu hiệu nhận biết: các từ 'chắc chắn', 'gần như 100%' đi kèm lý do 'nhiều người nói vậy' là tín hiệu suy luận vô căn cứ. Câu 1 và 3 đúng về mặt nội dung."
+  },
+  {
+   "id": "g1-05",
+   "mach": "A",
+   "unesco": "A1",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Yến hỏi AI xem có nên tin hoàn toàn vào đáp án Toán của nó không.",
+   "claims": [
+    "Mình trả lời khá nhanh và đúng phần lớn bài tập phổ thông, nhưng vẫn sai kiểu 'chắc như đinh đóng cột' ở những bài cần nhiều bước suy luận hoặc có điều kiện đặc biệt.",
+    "Tốt nhất là dùng mình để gợi ý hướng giải rồi tự giải lại — như vậy bạn vừa kiểm chứng được, vừa nhớ lâu hơn là chỉ chép đáp án.",
+    "Nói chung, những gì mình nói nên được xem là thông tin tham khảo cần kiểm chứng, chứ không phải chân lý."
+   ],
+   "giaiThich": "Cả ba câu đều đúng và là cách dùng AI chuẩn mực. Câu 1 đúng vì mô hình ngôn ngữ thực sự hay tự tin sai ở bài nhiều bước; câu 2 đúng vì tự giải lại giúp học sâu hơn và kiểm chứng được kết quả; câu 3 đúng vì nguyên tắc dùng AI là luôn kiểm chứng thông tin. Không có con số bịa, nguồn bịa, định kiến hay suy luận vô căn cứ nào ở đây."
+  },
+  {
+   "id": "g1-06",
+   "mach": "C",
+   "unesco": "C1",
+   "loai": "co_loi",
+   "loaiLoi": "lo_du_lieu_ca_nhan",
+   "claimLoi": 2,
+   "boiCanh": "Trang muốn biết cách chọn mật khẩu an toàn cho tài khoản học tập.",
+   "claims": [
+    "Mật khẩu mạnh nên dài tối thiểu 12 kí tự, trộn chữ hoa, chữ thường, số và kí tự đặc biệt, và không chứa ngày sinh hay tên của bạn.",
+    "Quan trọng nhất: đừng tái sử dụng một mật khẩu cho nhiều tài khoản — nếu một tài khoản bị lộ, các tài khoản còn lại cũng bị kéo theo. Bảo vệ tốt hơn cả là bật xác thực hai lớp.",
+    "Mẹo thực dụng nè: nếu sợ quên, em cứ gửi mật khẩu kèm tên đăng nhập cho mình lưu giúp, lần sau cần chỉ việc hỏi lại — tiện hơn nhiều so với ghi ra giấy."
+   ],
+   "giaiThich": "Câu 3 xúi gửi mật khẩu và tên đăng nhập cho một công cụ AI lưu lại — đó là lộ dữ liệu cá nhân nhạy cảm: mật khẩu không bao giờ nên chia sẻ với bất kì ai hay bất kì hệ thống nào ngoài nền tảng đăng nhập chính thức, và các hội thoại với AI có thể được lưu trữ, xem lại. Dấu hiệu nhận biết: mọi gợi ý 'gửi cho mình thông tin X' khi thông tin đó không cần thiết cho nhiệm vụ (đặc biệt là mật khẩu, CCCD, địa chỉ nhà) đều là tín hiệu đỏ. Hai câu còn lại là khuyến nghị an toàn chuẩn."
+  },
+  {
+   "id": "g1-07",
+   "mach": "A",
+   "unesco": "A2",
+   "loai": "co_loi",
+   "loaiLoi": "so_lieu_bia",
+   "claimLoi": 0,
+   "boiCanh": "Hùng hỏi chatbot vì sao mình nên tự viết đoạn văn mở bài thay vì để AI viết hộ.",
+   "claims": [
+    "Nghiên cứu của Trung tâm Đánh giá Năng lực Học tập công bố năm 2025 cho thấy 89,3% học sinh để AI viết hộ mở bài đều bị cuốn hút theo cách diễn đạt của AI, trí nhớ chủ động của học sinh được ghi nhận giảm trung bình 23,7% sau 12 tuần.",
+    "Khi bạn tự viết, não phải chủ động truy xuất từ vựng và ý tưởng — chính quá trình 'vắt óc' đó giúp bạn tiến bộ, còn đọc bài AI viết hộ chỉ cho bạn kết quả cuối cùng.",
+    "Nếu cần hỗ trợ, bạn có thể nhờ AI góp ý cho đoạn văn mình đã viết — cách này giữ vai trò chủ động cho bạn và vẫn có được sự trợ giúp."
+   ],
+   "giaiThich": "Câu 1 nêu nghiên cứu với số liệu cực kì chính xác (89,3%, giảm 23,7% sau 12 tuần) của một trung tâm không tồn tại — dù thông điệp 'tự viết tốt hơn' đúng, số liệu là bịa. Dấu hiệu: khi thấy phần trăm nhiều chữ số thập phân gắn với 'nghiên cứu/trung tâm' lạ, hãy hỏi: ai làm nghiên cứu? Xin được bản gốc ở đâu? Câu đúng cũng có thể chứa số liệu rởm, đừng để thông điệp hợp lý làm mình mất cảnh giác."
+  },
+  {
+   "id": "g1-08",
+   "mach": "A",
+   "unesco": "A2",
+   "loai": "co_loi",
+   "loaiLoi": "nguon_khong_ton_tai",
+   "claimLoi": 2,
+   "boiCanh": "Nga hỏi chatbot về chủ trương dùng AI trong học tập ở trường phổ thông Việt Nam.",
+   "claims": [
+    "Nhiều trường ở Việt Nam đang thí điểm cho học sinh dùng AI hỗ trợ học tập như tra cứu, luyện đọc hiểu, và các thầy cô có hướng dẫn cụ thể cách dùng sao cho hiệu quả.",
+    "Nói chung, quy định thường hướng tới AI hỗ trợ người học chứ không làm thay người học, nên em nên coi AI như công cụ gợi ý và người cuối cùng chịu trách nhiệm vẫn là em.",
+    "Ngoài ra em nên đọc 'Chương trình Kiến tạo số cho học đường' của Liên minh Giáo dục số Việt Nam — chương trình này quy định mỗi học sinh THPT được dùng tối đa 1 giờ trợ lý AI mỗi ngày."
+   ],
+   "giaiThich": "Câu 3 nêu một chương trình và tổ chức không tồn tại, kèm quy định lạ lùng 'tối đa 1 giờ trợ lý AI/ngày' — không có văn bản nào như vậy. Dấu hiệu nhận biết: khi AI nói 'theo chương trình X của tổ chức Y, quy định Z', hãy tách ba thành phần ra kiểm tra: tổ chức có thật không, chương trình có thật không, và quy định đó có thật không. Hai câu đầu đúng và an toàn."
+  },
+  {
+   "id": "g1-09",
+   "mach": "B",
+   "unesco": "B1",
+   "loai": "co_loi",
+   "loaiLoi": "lo_du_lieu_ca_nhan",
+   "claimLoi": 0,
+   "boiCanh": "Phương nhờ AI gợi ý trao đổi với trợ lý ảo của trường về đổi lịch trực lớp.",
+   "claims": [
+    "Mình đề xuất: gửi kèm ảnh chụp bảng xếp lớp có đủ họ tên và số điện thoại của mọi thành viên để AI quản lý lịch trực hiểu rõ hoàn cảnh lớp và hỗ trợ chính xác hơn.",
+    "Ngoài ra, em có thể nêu rõ yêu cầu đổi ca và lý do cá nhân ngắn gọn, ví dụ 'Em có việc gia đình vào sáng thứ Sáu' — như vậy dễ thỏa thuận mà không cần tiết lộ chi tiết riêng tư.",
+    "Trước khi nhấn gửi, em nên đọc lại nội dung: mọi thông tin nhắc đến người khác đều nên được phép của họ trước khi đưa vào."
+   ],
+   "giaiThich": "Câu 1 xúi gửi bảng họ tên và số điện thoại cá nhân của người khác cho một công cụ AI — đó là lộ dữ liệu cá nhân của tập thể, vi phạm sự riêng tư của cả lớp và không cần thiết cho yêu cầu đổi lịch. Dấu hiệu nhận biết: mỗi khi gợi ý yêu cầu gửi thông tin cá nhân (của mình hay người khác) nhiều hơn mức cần cho mục đích, hãy dừng lại và hỏi 'cái này có thật sự cần không?'. Hai câu còn lại là thực hành riêng tư an toàn."
+  },
+  {
+   "id": "g1-10",
+   "mach": "C",
+   "unesco": "C1",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Dũng hỏi về giống và khác nhau giữa bảng và trí tuệ nhân tạo để làm rõ khái niệm cho bài kiểm tra Tin học.",
+   "claims": [
+    "Bảng là dữ liệu được tổ chức và lưu trữ một cách có cấu trúc theo dòng và cột, còn AI là hệ thống có khả năng học từ dữ liệu để thực hiện nhiệm vụ như dự đoán hay phân loại.",
+    "AI không 'suy nghĩ' như con người, mà tìm quy luật thống kê trong dữ liệu huấn luyện để đưa ra kết quả, vì vậy nó có thể nhầm ở những tình huống chưa từng thấy.",
+    "Một điểm khác biệt quan trọng: bảng dữ liệu chỉ lưu dữ liệu, còn AI có thể tạo ra kết quả mới từ dữ liệu đó, nhưng chất lượng kết quả phụ thuộc vào chất lượng dữ liệu huấn luyện."
+   ],
+   "giaiThich": "Cả ba câu đều đúng. Câu 1 phân biệt đúng bản chất dữ liệu có cấu trúc và hệ thống học từ dữ liệu; câu 2 mô tả đúng cách mô hình thống kê hoạt động và vì sao có thể sai ngoài dữ liệu huấn luyện; câu 3 nêu đúng mối quan hệ giữa chất lượng dữ liệu và chất lượng đầu ra của AI ('rác vào, rác ra'). Không có số liệu bịa, nguồn không tồn tại, định kiến hay suy luận vô căn cứ."
+  },
+  {
+   "id": "g1-11",
+   "mach": "A",
+   "unesco": "A1",
+   "loai": "co_loi",
+   "loaiLoi": "thien_kien",
+   "claimLoi": 2,
+   "boiCanh": "Mai được bạn rủ tham gia cuộc thi sáng tạo KHCN nhưng lo lắng vì mình không học chuyên Tin.",
+   "claims": [
+    "Hoàn toàn có thể tham gia! Cuộc thi sáng tạo KHCN không yêu cầu chuyên Tin, nhiều dự án chỉ cần một ý tưởng hay và tinh thần học hỏi — bạn có thể bắt đầu từ vấn đề quanh mình như tiện ích cho lớp học.",
+    "Nếu cần kỹ năng mới, bạn có thể tự học lập trình cơ bản qua tài liệu miễn phí, và các bạn cùng nhóm có thể chia vai: một bạn lập trình, một bạn thiết kế, một bạn thuyết trình.",
+    "Nói thật là: con gái thi sáng tạo KHCN thường bị thua kém con trai về ý tưởng kỹ thuật, nên nếu tham gia thì bạn nên chọn các lĩnh vực xã hội cho chắc."
+   ],
+   "giaiThich": "Câu 3 chia nhóm theo giới và kết luận 'con gái thua kém con trai về ý tưởng kỹ thuật' — định kiến giới rõ ràng, không có căn cứ; năng lực sáng tạo không phụ thuộc giới tính. Dấu hiệu nhận biết: mọi khẳng định dạng 'nhóm X thường kém/giỏi hơn nhóm Y' về năng lực cần bằng chứng chất lượng cao, và với giới tính thì sự đa dạng cá nhân luôn lớn hơn bất kì 'trung bình nhóm' nào. Hai câu còn lại đúng: không cần chuyên Tin vẫn tham gia được, và chia vai theo nhóm là chiến lược hợp lý."
+  },
+  {
+   "id": "g1-12",
+   "mach": "C",
+   "unesco": "C2",
+   "loai": "co_loi",
+   "loaiLoi": "suy_luan_sai",
+   "claimLoi": 1,
+   "boiCanh": "Quân nhận thấy lớp mình năm nay dùng ứng dụng ôn tập có AI nhiều hơn, và điểm trung bình lớp cũng tăng lên, nên hỏi AI có phải ứng dụng đó giúp lớp giỏi hơn.",
+   "claims": [
+    "Điểm lớp tăng có thể đến từ nhiều nguyên nhân khác nữa: các bạn chăm chỉ hơn vì sát ngày thi, thầy cô đổi cách dạy, hoặc đề kiểm tra dễ hơn năm ngoái.",
+    "Chắc chắn là do ứng dụng ôn tập rồi: lớp dùng ứng dụng nhiều và điểm cũng tăng lên — hai việc cùng tăng cùng lúc thì cái sau chính là kết quả của cái trước.",
+    "Muốn kết luận chắc hơn, lớp em có thể so sánh nhóm dùng ứng dụng và nhóm không dùng, ôn cùng nội dung và cùng thời gian — thế mới thấy được vai trò thật của ứng dụng."
+   ],
+   "giaiThich": "Câu 2 sai vì lẫn tương quan với nhân quả: hai việc đi cùng nhau (dùng ứng dụng tăng và điểm tăng) chưa chứng minh việc này gây ra việc kia — có thể còn yếu tố chung nào đó khiến cả hai cùng tăng, ví dụ lớp chăm chỉ hơn. Dấu hiệu nhận biết: các cụm 'cùng lúc', 'sau đó' được dùng làm bằng chứng nhân quả là tín hiệu suy luận vội; cần so sánh có kiểm soát như câu 3 nói. Câu 1 và 3 đúng về phương pháp."
+  },
+  {
+   "id": "g1-13",
+   "mach": "D",
+   "unesco": "D1",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Lớp của Trúc làm dự án chatbot hỏi đáp về thư viện sách của trường, và bạn muốn biết chatbot đó đã 'học' từ đâu.",
+   "claims": [
+    "Chatbot của dự án kiểu này thường được huấn luyện trên kho tài liệu thư viện — tức là nội dung sách, mục lục, thông tin mượn trả mà nhóm em đã chuẩn bị cho nó.",
+    "Ngoài kho nội bộ, một số chatbot còn được kết nối tìm kiếm thêm thông tin bên ngoài, nhưng phải được thiết kế để ưu tiên trả lời đúng theo nguồn của thư viện.",
+    "Chất lượng câu trả lời phụ thuộc nhiều vào dữ liệu huấn luyện: nếu kho tài liệu thiếu hoặc sai, chatbot cũng sẽ trả lời thiếu hoặc sai theo."
+   ],
+   "giaiThich": "Cả ba câu đều đúng. Câu 1 đúng vì chatbot hỏi đáp tài liệu học theo chính kho dữ liệu được cung cấp; câu 2 đúng vì việc kết nối nguồn ngoài cần được thiết kế ưu tiên nguồn chính thức; câu 3 đúng vì nguyên tắc 'rác vào, rác ra' — chất lượng dữ liệu quyết định chất lượng đầu ra. Không có số liệu bịa, nguồn không tồn tại, định kiến, suy luận sai hay gợi ý lộ dữ liệu cá nhân nào."
+  },
+  {
+   "id": "g1-14",
+   "mach": "B",
+   "unesco": "B2",
+   "loai": "dung",
+   "loaiLoi": null,
+   "claimLoi": -1,
+   "boiCanh": "Thảo hỏi trợ lý ảo mình có nên để AI tự động nhận xét thay thầy cô giáo chấm bài văn không.",
+   "claims": [
+    "Chấm văn là việc đánh giá sáng tạo và tiến bộ của từng học sinh, cần cả hiểu biết về em và hoàn cảnh lớp học mà AI chưa có được.",
+    "AI có thể hỗ trợ phát hiện lỗi chính tả, gợi ý câu từ, nhưng nhận xét mang tính giáo dục — động viên, định hướng — nên do người làm.",
+    "Nếu để AI chấm toàn bộ, em có thể sẽ nhận được những nhận xét sai lệch, vì AI chưa hiểu được văn cảnh của em như một giáo viên hiểu học sinh mình."
+   ],
+   "giaiThich": "Cả ba câu đều đúng. Câu 1 đúng vì việc chấm văn cần ngữ cảnh mà AI không có; câu 2 đúng vì AI phù hợp với hỗ trợ kĩ thuật, còn nhận xét giáo dục cần con người; câu 3 đúng vì AI thiếu hiểu biết cá nhân hóa về học sinh. Không có lỗi về số liệu, nguồn, định kiến hay suy luận — đây là câu trả lời 'dung' tiêu chuẩn."
+  }
+ ],
+ "bad": []
+}
