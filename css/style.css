@@ -382,6 +382,21 @@ code{background:var(--nen2);border:1px solid var(--vienNhat);border-radius:5px;p
 @media (max-width:640px){
   .kb-caption{font-size:17px}.kb-san-khau{min-height:270px;padding:20px 14px}
   .kb-hang-ts{grid-template-columns:84px 1fr 56px}.kb-cot{gap:20px}.kb-than{height:130px;width:60px}
+
+  /* BẢNG TRÀN NGANG — BUG THẬT, đo được ở 390px chứ không phải đoán.
+     Lần đo đầu trên mobile cho ra docW=425 > vw=390, bodyTran=true và 20 phần tử
+     TRAN_NGANG, tất cả đều là <table> của Trạm 0 (bảng đặc trưng 4 cột: Đại lượng ·
+     Giá trị · Nguồn · Dùng để làm gì) và bảng kết quả A/B 5 cột của Trạm 1.
+     Nguyên nhân: rule table{width:100%} không giới hạn được độ rộng tối thiểu của
+     nội dung — 4 cột chữ tiếng Việt cộng lại đã vượt 390px, nên bảng phình ra và
+     kéo cả trang tràn ngang. Giáo viên chiếu bằng điện thoại hoặc mở trên tablet
+     dọc sẽ thấy chữ bị cắt ở mép phải.
+     Cách sửa: cho bảng TỰ CUỘN NGANG trong khung của nó (display:block +
+     overflow-x:auto), phần còn lại của trang vẫn vừa màn hình. Đây là kĩ thuật
+     bảng responsive chuẩn, không phải hack; không xoá cột nào nên không mất dữ liệu. */
+  table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
+  th,td{padding:6px 7px;font-size:13px}
+  .card{overflow-x:hidden}
 }
 
 
@@ -405,13 +420,35 @@ code{background:var(--nen2);border:1px solid var(--vienNhat);border-radius:5px;p
    CHỈ ẨN BẰNG CSS, KHÔNG XOÁ DOM: chữ vẫn còn nguyên trong tài liệu, vẫn đọc được
    bằng trình đọc màn hình, vẫn xuất ra khi in và khi xuất CSV nhật ký. Đây là dồn
    bớt chữ chứ không cắt nội dung. */
+/* BUG THẬT ĐÃ SỬA (04/10) — bản đầu ẩn THEO CLASS CHUNG nên xoá luôn phần tử CHỨC NĂNG.
+   Phát hiện nhờ đo ở 390px: 3 nút kịch bản trả về display:none, rect 0x0.
+   Truy nguyên nhân bằng grep class trong index.html và js/*.js cho ra 3 chỗ sai:
+
+     .nho     gắn trên 12 NÚT: kb-truoc, kb-sau, kb-lai, btn-ve-home, btn-gioithieu,
+              t1-lamlai, lab3d-nhe, dt-btn-luyen/pre/post ... và trên CHÍNH nút
+              #btn-it-chu. Bật chế độ ít chữ là MẤT LUÔN NÚT TẮT, không có cách
+              quay lại trạng thái đầy đủ ngoài xoá localStorage.
+     .tagline gắn trên #lbl-user (mã của học sinh), #dt-mode, #dt-tien-do và #nm-yccd
+              — #nm-yccd chính là dòng "Yêu cầu cần đạt" của trạm đang dạy, tức ẩn
+              đúng thứ cần dạy nhất.
+     .legend  là CHÚ GIẢI MÀU của biểu đồ (màu nào là ban ngày/ban đêm, chưa làm/đã
+              làm). Ẩn đi thì biểu đồ còn đó nhưng không đọc được.
+
+   Nay chỉ ẩn ĐÚNG phụ chú văn xuôi, và loại trừ tường minh nút, chip, chú giải,
+   phản hồi và các id định danh. Đây là thu hẹp selector cho đúng đối tượng. */
 body.it-chu .chu2:not(.phanhoi .chu2),
-body.it-chu .nho:not(.phanhoi .nho),
-body.it-chu .tagline:not(.phanhoi .tagline),
-body.it-chu .legend,
+body.it-chu .nho:not(.phanhoi .nho):not(button):not(.btn):not(.chip):not(.legend),
+body.it-chu .tagline:not(#lbl-user):not(#dt-mode):not(#dt-tien-do):not(#nm-yccd):not(#nm-ten-tram),
 body.it-chu p.nho.chu2,
 body.it-chu .card > .chu2,
 body.it-chu .vang.nho:not(.phanhoi .vang.nho){display:none !important}
+
+/* LƯỚI AN TOÀN: dù selector bên trên có bị sửa hỏng về sau thì phần tử chức năng
+   vẫn không bao giờ bị ẩn. Viết tường minh thay vì tin vào :not() ở trên. */
+body.it-chu button,body.it-chu .btn,body.it-chu .chip,body.it-chu .legend,
+body.it-chu .phanhoi,body.it-chu #lbl-user,body.it-chu #dt-mode,
+body.it-chu #dt-tien-do,body.it-chu #nm-yccd,body.it-chu #nm-ten-tram,
+body.it-chu .kb-dieu-khien,body.it-chu .kb-dieu-khien *{display:revert !important}
 
 /* Nút bật/tắt: phải đạt tương phản WCAG như mọi nút khác, không dùng màu mới */
 #btn-it-chu[aria-pressed="true"]{border-color:var(--primary);background:var(--nenChon)}
