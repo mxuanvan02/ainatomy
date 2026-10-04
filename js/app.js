@@ -13,10 +13,16 @@
   const pct = (x) => x===null||x===undefined ? "—" : Math.round(x*100) + "%";
 
   /* ================= ĐIỀU HƯỚNG ================= */
+  const CAC_VIEW = ["v-home","v-nhap","v-lab","v-dautruong","v-baocao","v-logic",
+                    "v-kienthuc","v-lab3d","v-pipe3d","v-gioithieu"];
   function hien(view){
-    ["v-home","v-nhap","v-lab","v-dautruong","v-baocao","v-logic","v-kienthuc","v-gioithieu"].forEach(id=>{
-      $(id).style.display = (id===view) ? "" : "none";
+    CAC_VIEW.forEach(id=>{
+      const el = $(id); if(el) el.style.display = (id===view) ? "" : "none";
     });
+    /* 3D tốn GPU: khi rời scene thì giải phóng, vào lại thì dựng mới.
+     * Đây là lí do mỗi scene có init/huy riêng — tránh rò rỉ bộ nhớ khi đổi tab liên tục. */
+    if(view !== "v-lab3d" && lab3dDaKhoiTao){ try{ window.MX_LAB3D.huy(); }catch(e){} lab3dDaKhoiTao = false; }
+    if(view !== "v-pipe3d" && pipe3dDaKhoiTao){ try{ window.MX_PIPE3D.huy(); }catch(e){} pipe3dDaKhoiTao = false; }
     window.scrollTo(0,0);
   }
 
@@ -376,6 +382,198 @@
     setTimeout(()=>URL.revokeObjectURL(a.href), 4000);
   }
 
+  /* ================= SCENE ② PHÒNG 3D — SOI MÔ HÌNH =================
+   * Dùng DỮ LIỆU THẬT + PERCEPTRON THẬT của Tầng 1 (MX_LAB), không vẽ minh hoạ.
+   * Con số hiển thị là kết quả huấn luyện thật → giữ đúng nguyên tắc oracle. */
+  let lab3dDaKhoiTao = false;
+  function lab3dMo(){
+    hien("v-lab3d");
+    if(lab3dDaKhoiTao) return;
+    const r = window.MX_LAB3D.init({
+      canvas: $("c-lab3d"), root: $("lab3d-fallback"), tiLeNgay: 92, seed: 20261004,
+      onChonDiem: (d)=>{
+        $("lab3d-note").innerHTML = "🔎 " + esc(d.ten)
+          + " · đặc trưng: <code>" + esc(d.f.map(x=>x.toFixed(3)).join(", ")) + "</code>";
+      }
+    });
+    if(!r || !r.ok){
+      $("btn-lab3d").disabled = true;   // máy không có 3D → ẩn lối vào, bản chữ vẫn còn ở fallback
+      $("lab3d-tile").disabled = $("lab3d-so").disabled = true;
+      ["lab3d-tao","lab3d-hoc","lab3d-danhgia"].forEach(id=>$(id).disabled = true);
+      return;
+    }
+    lab3dDaKhoiTao = true;
+    lab3dHud();
+
+    $("lab3d-tile").oninput = e=>{ $("lab3d-tile-so").textContent = e.target.value + "%"; };
+    $("lab3d-so").oninput   = e=>{ $("lab3d-so-num").textContent = e.target.value; };
+
+    $("lab3d-tao").onclick = ()=>{
+      window.MX_LAB3D.doiTiLeNgay(parseInt($("lab3d-tile").value, 10));
+      const n = window.MX_LAB3D.dungDuLieu(parseInt($("lab3d-so").value, 10));
+      $("lab3d-tao").textContent = "🖼️ Tạo lại bộ dữ liệu";
+      $("lab3d-hoc").disabled = false;
+      $("lab3d-danhgia").disabled = true;
+      $("lab3d-kq").style.display = "none";
+      $("lab3d-note").innerHTML = "Đã tạo <b>" + n + "</b> ảnh. Bấm <b>Huấn luyện từng vòng</b> "
+        + "để xem mặt phẳng quyết định dịch dần khi trọng số thay đổi.";
+      lab3dHud();
+      if(ENG) ENG.logSuKien(maHS, { loai:"lab3d", suKien:"taoDuLieu",
+        soDiem:n, tiLeNgay:parseInt($("lab3d-tile").value,10) });
+    };
+
+    $("lab3d-hoc").onclick = ()=>{
+      $("lab3d-hoc").disabled = true;
+      let lan = 0;
+      window.MX_LAB3D.hocHet((kq, xong)=>{
+        if(!kq) return;
+        lan++;
+        if(lan % 5 === 0 || xong){
+          $("lab3d-trongso").textContent =
+            "w = [" + kq.w.map(x=>x.toFixed(4)).join(", ") + "]  ·  b = " + kq.b.toFixed(4)
+            + "  ·  vòng " + kq.epoch + "/" + (window.MX_LAB ? window.MX_LAB.EPOCHS : 60)
+            + "  ·  lỗi ở vòng này: " + kq.loi;
+          lab3dHud();
+        }
+        if(xong){
+          $("lab3d-danhgia").disabled = false;
+          $("lab3d-hoc").disabled = false;
+          $("lab3d-note").innerHTML = "Học xong. Mặt phẳng đỏ là ranh giới mô hình vừa học được. "
+            + "Bấm <b>Đánh giá trên bộ ảnh MỚI</b> để xem nó đúng/sai ở đâu.";
+        }
+      });
+    };
+
+    $("lab3d-danhgia").onclick = ()=>{
+      const kq = window.MX_LAB3D.danhGia();
+      if(!kq) return;
+      $("lab3d-kq").style.display = "";
+      const p = x => x==null ? "—" : Math.round(x*100) + "%";
+      $("lab3d-kpi").innerHTML =
+        `<div class="kpi"><div class="so">${kq.dung}/${kq.tong}</div><div class="nhan">đúng trên bộ ảnh MỚI</div></div>`
+      + `<div class="kpi"><div class="so" style="color:var(--vang)">${p(kq.ngay.tiLe)}</div><div class="nhan">ảnh BAN NGÀY<br>${kq.ngay.dung}/${kq.ngay.tong}</div></div>`
+      + `<div class="kpi"><div class="so ${kq.dem.tiLe<0.75?'ko':''}">${p(kq.dem.tiLe)}</div><div class="nhan">ảnh BAN ĐÊM<br>${kq.dem.dung}/${kq.dem.tong}</div></div>`;
+
+      const tile = parseInt($("lab3d-tile").value, 10);
+      // Giải thích bám đúng YCCĐ 10.C4.1 (chất lượng dữ liệu -> chất lượng AI)
+      let gt;
+      if(tile >= 85)      gt = "Dữ liệu gần như toàn ảnh ban ngày nên mô hình hầu như chưa học gì về ban đêm — "
+                             + "chấm đỏ sẽ dồn ở cụm xanh. Đây là <b>thiên kiến dữ liệu</b> (YCCĐ 10.C4.1, 10.B3.1).";
+      else if(tile <= 15) gt = "Đảo ngược: giờ mô hình chỉ biết ban đêm và hỏng ở ban ngày. "
+                             + "Vấn đề không nằm ở cái máy mà ở <b>người chọn dữ liệu</b>.";
+      else                 gt = "Dữ liệu đã cân bằng nên mô hình học được cả hai nhóm. "
+                             + "Đây chính là <b>ý nghĩa của việc khắc phục</b> (YCCĐ 10.D2.2): sửa ở gốc là sửa dữ liệu.";
+      $("lab3d-giaithich").innerHTML = gt;
+      $("lab3d-note").innerHTML = "Chấm <b>đỏ</b> = AI đoán sai. Nhìn xem chúng nằm ở cụm nào?";
+
+      if(ENG) ENG.logSuKien(maHS, { loai:"lab3d", suKien:"danhGia", tiLeNgay:tile,
+        ketQua:{ tong:kq.tong, dung:kq.dung,
+                 ngay:Math.round(kq.ngay.tiLe*1000)/10, dem:Math.round(kq.dem.tiLe*1000)/10 },
+        // ánh xạ vào chủ đề của Bộ để bản đồ năng lực tính được (xem veBaoCao)
+        kq:{ diem: kq.dem.tiLe>=0.75 && kq.ngay.tiLe>=0.75 ? 1:0, dung: kq.dem.tiLe>=0.75 && kq.ngay.tiLe>=0.75,
+             mach:"C", unesco:"C4", dapAn:"canBang", chon: tile>=85?"lech":(tile<=15?"lechDao":"canBang") } });
+    };
+
+    $("lab3d-nhe").onclick = ()=>{
+      if(window.MX_SCENE && window.MX_SCENE.handle) {}
+      // chuyển sang chế độ nhẹ: dựng lại scene với antialias tắt + không hoạt ảnh
+      try{ window.MX_LAB3D.huy(); }catch(e){}
+      lab3dDaKhoiTao = false;
+      const r = window.MX_LAB3D.init({ canvas:$("c-lab3d"), root:$("lab3d-fallback"),
+                                       tiLeNgay:parseInt($("lab3d-tile").value,10) || 92, nhe:true });
+      lab3dDaKhoiTao = !!(r && r.ok);
+      $("lab3d-nhe").textContent = "⚡ Đã bật chế độ nhẹ — bấm để thử lại 3D đầy đủ";
+      lab3dHud();
+    };
+  }
+  function lab3dHud(){
+    const t = window.MX_LAB3D.trangThai();
+    if(!t){ $("lab3d-hud").innerHTML = ""; return; }
+    const k = window.MX_SCENE.hoTro3D();
+    $("lab3d-hud").innerHTML =
+      `three.js r${k.rev} · ${t.soDiem} ảnh · ngày ${t.tiLeNgay}% · vòng ${t.epoch}`
+      + (t.w ? ` · w=[${t.w.map(x=>x.toFixed(2)).join(", ")}]` : "")
+      + (t.coMatPhang ? " · <b>có mặt phẳng quyết định</b>" : "");
+  }
+
+  /* ================= SCENE ③ ỐNG DẪN — SOI LUỒNG AI =================
+   * Hệ chọn NGẪU NHIÊN trạm hỏng -> đáp án biết trước -> chấm tất định, không cần GV.
+   * Phủ YCCĐ 10.D1.1 (mối liên hệ mục tiêu - thành phần) mà bản 2D chưa phủ. */
+  let pipe3dDaKhoiTao = false;
+  function pipe3dMo(){
+    hien("v-pipe3d");
+    if(!pipe3dDaKhoiTao){
+      const r = window.MX_PIPE3D.init({
+        canvas: $("c-pipe3d"), root: $("pipe3d-fallback"),
+        onChonTram: (t)=> pipe3dChiTiet(t)
+      });
+      if(!r || !r.ok){
+        // không có 3D: vẫn dạy được bằng bảng chữ (MX_PIPE3D.bangTinh đã in vào fallback)
+        $("pipe3d-note").innerHTML = "Máy này không chạy 3D — em vẫn làm được bài ở bảng dưới dạng chữ.";
+      } else {
+        pipe3dDaKhoiTao = true;
+      }
+      // dựng sẵn nút đoán cho 5 trạm
+      const chips = $("pipe3d-chips");
+      chips.innerHTML = "";
+      window.MX_PIPE3D.TRAM.forEach(t=>{
+        const b = document.createElement("button");
+        b.className = "chip"; b.textContent = t.ten;
+        b.onclick = ()=> pipe3dDoan(t.id);
+        chips.appendChild(b);
+      });
+    }
+    pipe3dHud();
+  }
+  function pipe3dHong(){
+    const r = window.MX_PIPE3D.batDauLuot();
+    $("pipe3d-doan").style.display = "";
+    $("pipe3d-kq").innerHTML = "";
+    $("pipe3d-note").innerHTML = "Có <b>" + r.soTram + "</b> trạm trong hệ thống. Một trạm vừa bị làm hỏng — "
+      + "quan sát các hạt sáng rồi đoán xem trạm nào.";
+    if(ENG) ENG.logSuKien(maHS, { loai:"pipe3d", suKien:"batDauLuot" });
+    pipe3dHud();
+  }
+  function pipe3dDoan(tramId){
+    const r = window.MX_PIPE3D.doan(tramId);
+    if(!r || !r.ok){ $("pipe3d-kq").innerHTML = `<p class="chu2">${esc(r && r.liDo || "")}</p>`; return; }
+    const hop = $("pipe3d-kq");
+    hop.className = "phanhoi " + (r.dung ? "dung" : "sai");
+    /* AN TOÀN innerHTML: r.doan/r.dungLa đến từ hằng số TRAM trong pipeline3d.js
+     * (không phải dữ liệu người dùng); vẫn escape toàn bộ cho chắc. */
+    hop.innerHTML = (r.dung
+        ? `<p>✅ <b>Chính xác!</b> Trạm <b>${esc(r.dungLa.ten)}</b> đang hỏng.</p>`
+        : `<p>❌ <b>Chưa đúng.</b> Em đoán <b>${esc(r.doan.ten)}</b>, nhưng trạm hỏng là <b>${esc(r.dungLa.ten)}</b>.</p>`)
+      + `<p class="chu2"><b>Vì sao hỏng trạm này lại gây ra hiện tượng đó:</b> ${esc(r.dungLa.khiHong)}</p>`
+      + `<p class="nho chu2"><b>Ví dụ:</b> ${esc(r.dungLa.viDu)}</p>`
+      + `<p class="nho chu2">YCCĐ liên quan: ${esc(r.dungLa.yccd)} · bấm vào từng trạm trong hình để xem vai trò của nó.</p>`;
+    if(ENG) ENG.logSuKien(maHS, {
+      loai:"pipe3d", suKien:"doan",
+      kq:{ diem: r.dung?1:0, dung: r.dung, mach:"D", unesco:"D1",
+           dapAn: r.dungLa.id, chon: tramId },
+      tramHong: r.dungLa.id, doan: tramId
+    });
+    pipe3dHud();
+  }
+  function pipe3dChiTiet(t){
+    $("pipe3d-chitiet").innerHTML =
+      `<div class="card" style="background:var(--nen2)">
+         <h3>${esc(t.ten)} <span class="nho chu2">(YCCĐ ${esc(t.yccd)})</span></h3>
+         <p>${esc(t.moTa)}</p>
+         <p class="chu2"><b>Vai trò:</b> ${esc(t.vaiTro)}</p>
+         <p class="chu2"><b>Nếu trạm này hỏng:</b> ${esc(t.khiHong)}</p>
+       </div>`;
+  }
+  function pipe3dHud(){
+    const t = window.MX_PIPE3D.trangThai();
+    const k = window.MX_SCENE.hoTro3D();
+    $("pipe3d-hud").innerHTML = t
+      ? `three.js r${k.rev} · ${t.soHat} hạt · ` + (t.tramHong!==null
+          ? (t.daCham ? "đã đoán" : "có 1 trạm hỏng — hãy đoán")
+          : "hệ thống đang chạy bình thường")
+      : "";
+  }
+
   /* ================= KHỞI ĐỘNG ================= */
   window.addEventListener("DOMContentLoaded", ()=>{
     // Gộp ngân hàng mở rộng (nếu có) vào ngân hàng chính — 1 lần duy nhất
@@ -393,6 +591,11 @@
     $("btn-baocao").onclick = ()=>{ hien("v-baocao"); veBaoCao(); };
     $("btn-logic").onclick = ()=>{ hien("v-logic"); window.MX_LOGIC.init(maHS); };
     $("btn-kienthuc").onclick = ()=>{ hien("v-kienthuc"); window.MX_KIEN_THUC.init(maHS); };
+    $("btn-lab3d").onclick = ()=> lab3dMo();
+    $("btn-pipe3d").onclick = ()=> pipe3dMo();
+    $("pipe3d-hong").onclick = ()=> pipe3dHong();
+    $("pipe3d-reset").onclick = ()=>{ window.MX_PIPE3D.datLai(); $("pipe3d-doan").style.display="none";
+      $("pipe3d-chitiet").innerHTML=""; $("pipe3d-note").innerHTML="Đã đặt lại. Bấm <b>Làm hỏng một trạm</b> để chơi lượt mới."; pipe3dHud(); };
     $("btn-gioithieu").onclick = ()=>hien("v-gioithieu");
     $("btn-tao-dulieu").onclick = labTaoDuLieu;
     $("btn-huanluyen").onclick = labHuanLuyen;

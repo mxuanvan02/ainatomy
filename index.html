@@ -62,6 +62,14 @@
         <b>📚 Kiến thức nền AI lớp 10</b>
         <span class="chu2">Luật bảo vệ người dùng · ứng dụng AI theo tính năng · AI tạo sinh vs phân loại · viết prompt đúng cách.</span>
       </button>
+      <button class="btn menu-o" id="btn-lab3d" style="border-color:var(--nhan)">
+        <b>🧊 Phòng 3D — Soi mô hình</b>
+        <span class="chu2">Nhìn thấy dữ liệu huấn luyện và mặt phẳng quyết định trong không gian 3 chiều. Kéo tỉ lệ ảnh ngày/đêm và xem thiên kiến sinh ra trước mắt.</span>
+      </button>
+      <button class="btn menu-o" id="btn-pipe3d" style="border-color:var(--sai)">
+        <b>🔀 Ống dẫn AI — Soi luồng hoạt động</b>
+        <span class="chu2">Theo dõi dòng dữ liệu chảy qua 5 trạm của một hệ thống AI. Hệ thống làm hỏng một trạm — em phải đoán ra trạm nào.</span>
+      </button>
     </div>
 
     <div class="card">
@@ -280,6 +288,106 @@
     </div>
   </section>
 
+  <!-- ===== PHÒNG 3D — SOI MÔ HÌNH ===== -->
+  <section id="v-lab3d" style="display:none">
+    <div class="card">
+      <h2>🧊 Phòng 3D — Soi mô hình</h2>
+      <p class="tagline">YCCĐ lớp 10 (nguyên văn QĐ 2422/QĐ-BGDĐT):
+        <b>10.C4.1</b> Phân tích được sự ảnh hưởng của chất lượng dữ liệu đến chất lượng AI ·
+        <b>10.D2.2</b> vấn đề phát sinh khi vận hành AI và ý nghĩa của việc khắc phục ·
+        <b>10.B3.1</b> thiên vị dữ liệu</p>
+      <p class="chu2">Mỗi chấm là <b>một bức ảnh thật</b> trong bộ dữ liệu huấn luyện
+        (ảnh do hệ vẽ ra, giống hệt bộ ảnh ở Tầng 1). Vị trí của chấm được tính từ
+        <b>4 đặc trưng thật</b> mà mô hình đọc được. Mặt phẳng đỏ mờ là
+        <b>ranh giới quyết định</b> dựng từ <b>trọng số thật</b> của mô hình —
+        không phải hình vẽ trang trí.</p>
+
+      <div class="legend">
+        <span><i style="background:var(--vang)"></i>ảnh BAN NGÀY</span>
+        <span><i style="background:var(--nhan)"></i>ảnh BAN ĐÊM</span>
+        <span>● hình cầu = CÓ mũ bảo hiểm</span>
+        <span>▲ tứ diện = KHÔNG mũ</span>
+        <span><i style="background:var(--sai)"></i>mặt phẳng quyết định</span>
+        <span class="nho chu2">chấm ĐỎ sau khi huấn luyện = AI đoán SAI</span>
+      </div>
+
+      <div id="lab3d-fallback"></div>
+      <div class="scene"><canvas id="c-lab3d"></canvas>
+        <div class="hud" id="lab3d-hud"></div>
+        <div class="note" id="lab3d-note">Bấm <b>Tạo bộ dữ liệu</b> để bắt đầu.</div>
+      </div>
+
+      <div class="grid g3" style="margin-top:12px">
+        <div>
+          <label for="lab3d-tile">Tỉ lệ ảnh BAN NGÀY trong dữ liệu huấn luyện: <b id="lab3d-tile-so">92%</b></label>
+          <input type="range" id="lab3d-tile" min="0" max="100" step="1" value="92">
+          <p class="nho chu2">92% = đúng tỉ lệ lệch của bộ dữ liệu ở Tầng 1. Kéo về 50% để xem điều gì đổi.</p>
+        </div>
+        <div>
+          <label for="lab3d-so">Số ảnh trong bộ dữ liệu: <b id="lab3d-so-num">48</b></label>
+          <input type="range" id="lab3d-so" min="20" max="80" step="4" value="48">
+        </div>
+        <div>
+          <p><button class="btn chinh" id="lab3d-tao">🖼️ Tạo bộ dữ liệu</button></p>
+          <p><button class="btn" id="lab3d-hoc" disabled>▶ Huấn luyện từng vòng</button></p>
+          <p><button class="btn" id="lab3d-danhgia" disabled>🎯 Đánh giá trên bộ ảnh MỚI</button></p>
+          <p><button class="btn nho nhe" id="lab3d-nhe">⚡ Chế độ nhẹ (tắt hoạt ảnh)</button></p>
+        </div>
+      </div>
+
+      <div id="lab3d-kq" style="display:none">
+        <h3>Kết quả — đọc từ mô hình THẬT</h3>
+        <div class="grid g3" id="lab3d-kpi"></div>
+        <div class="card" style="background:var(--nen2)">
+          <b>Trọng số mô hình sau khi học</b> (số thật, cập nhật mỗi vòng):<br>
+          <code id="lab3d-trongso" class="nho">—</code>
+          <p class="nho chu2" id="lab3d-giaithich"></p>
+        </div>
+      </div>
+
+      <div class="card" id="lab3d-cauhoi">
+        <h3>❓ Câu hỏi chốt của bài này</h3>
+        <p><i>Vì sao AI vẫn đúng 100% ảnh ban ngày mà sai gần nửa số ảnh ban đêm?
+           Ai chịu trách nhiệm cho việc đó — cái máy, hay người chọn dữ liệu?</i></p>
+        <p class="nho chu2">Đây chính là nội dung của 4 nhiệm vụ ở Tầng 1. Sau khi xem 3D,
+           em hãy quay lại Tầng 1 để trả lời và được ghi nhận vào nhật ký lớp.</p>
+      </div>
+    </div>
+  </section>
+
+  <!-- ===== ỐNG DẪN 3D — SOI LUỒNG AI ===== -->
+  <section id="v-pipe3d" style="display:none">
+    <div class="card">
+      <h2>🔀 Ống dẫn AI — Soi luồng hoạt động</h2>
+      <p class="tagline">YCCĐ lớp 10: <b>10.D1.1</b> mối liên hệ giữa mục tiêu và các thành phần
+        chính của hệ thống · <b>10.D2.1</b> các thành phần cơ bản (dữ liệu, mô hình, thuật toán,
+        đầu ra, phản hồi) · <b>10.A1.2</b> vì sao con người cần kiểm soát AI</p>
+      <p class="chu2">Các hạt sáng là <b>dòng dữ liệu</b> chảy qua 5 trạm của một hệ thống AI.
+        Bấm <b>Làm hỏng một trạm</b> — hệ thống sẽ chọn NGẪU NHIÊN một trạm để hỏng.
+        Em quan sát hiện tượng rồi đoán xem trạm nào đang hỏng. Hệ thống biết trước đáp án
+        nên chấm ngay, thầy/cô không phải chấm bài.</p>
+
+      <div id="pipe3d-fallback"></div>
+      <div class="scene"><canvas id="c-pipe3d"></canvas>
+        <div class="hud" id="pipe3d-hud"></div>
+        <div class="note" id="pipe3d-note">Bấm <b>Làm hỏng một trạm</b> để bắt đầu.</div>
+      </div>
+
+      <p style="margin-top:10px">
+        <button class="btn chinh" id="pipe3d-hong">💥 Làm hỏng một trạm (ngẫu nhiên)</button>
+        <button class="btn" id="pipe3d-reset">↻ Đặt lại</button>
+      </p>
+
+      <div id="pipe3d-doan" style="display:none">
+        <h3>Em đoán trạm nào đang hỏng?</h3>
+        <div class="chips" id="pipe3d-chips"></div>
+        <div id="pipe3d-kq"></div>
+      </div>
+
+      <div id="pipe3d-chitiet"></div>
+    </div>
+  </section>
+
   <!-- ===== GIỚI THIỆU ===== -->
   <section id="v-gioithieu" style="display:none">
     <div class="card">
@@ -336,6 +444,13 @@
 <script src="js/lab.js"></script>
 <script src="js/logic.js"></script>
 <script src="js/kienthuc.js"></script>
+<!-- 3D: three.js r137.5 bản UMD (KHÔNG phải ES module — ES module bị CORS chặn trên file://)
+     được vendor trong repo để chạy được khi trường mất mạng. Phải nạp TRƯỚC scene3d.js. -->
+<script src="vendor/three/three.min.js"></script>
+<script src="vendor/three/OrbitControls.js"></script>
+<script src="js/scene3d.js"></script>
+<script src="js/lab3d.js"></script>
+<script src="js/pipeline3d.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>
