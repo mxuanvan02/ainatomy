@@ -13,15 +13,19 @@
 (function(){
   "use strict";
 
+  /* Bảng màu 3D cho NỀN SÁNG — mọi giá trị đã đo tương phản WCAG 1.4.11 (>= 3.0:1)
+   * trên nền cảnh #F8FAFC bằng tools/nghiem_thu.py. Màu cũ của giao diện tối bị loại
+   * vì đo được: vàng #FFD43B = 1.43:1, xanh #4DABF7 = 2.48:1, đỏ #FF6B6B = 2.78:1. */
   const MAU = {
-    nen:   0x0f1115,   // --nen
-    the:   0x1d222c,   // --the
-    vien:  0x2b3240,   // --vien
-    nhan:  0x4dabf7,   // --nhan  (xanh)  = ảnh BAN ĐÊM
-    vang:  0xffd43b,   // --vang  (vàng)  = ảnh BAN NGÀY
-    dung:  0x51cf66,   // --dung  (xanh lá) = đoán đúng
-    sai:   0xff6b6b,   // --sai   (đỏ)    = đoán sai
-    chu:   0xe8ecf3
+    nen:   0xF8FAFC,   // nền cảnh (sáng)
+    the:   0xFFFFFF,   // --the
+    vien:  0x7C8598,   // viền/lưới: 3.71:1 trên #FFFFFF, 3.54:1 trên nền cảnh
+                       // (đã loại #8B90A8 vì chỉ 3.02:1 trên nền cảnh — dư 0.02, quá mỏng)
+    nhan:  0x1D4ED8,   // ảnh BAN ĐÊM   — 6.41:1
+    vang:  0xB45309,   // ảnh BAN NGÀY  — 4.80:1
+    dung:  0x15803D,   // AI đoán ĐÚNG  — 4.79:1
+    sai:   0xB91C1C,   // AI đoán SAI   — 6.18:1
+    chu:   0x1E1B4B    // chữ trên nền sáng
   };
 
   let _kiemTra = null;

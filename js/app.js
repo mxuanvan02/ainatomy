@@ -584,11 +584,11 @@
    * nào có căn cứ và câu nào là bịa — không cần giáo viên, không cần người kiểm chứng. */
   const NM_TRAM = [
     { id:0, so:"TRẠM 0", ten:"NHẬP LIỆU", anDuy:"nguyên liệu thô",
-      moTa:"Ba dạng dữ liệu: ảnh (hệ tự vẽ), văn bản, và tín hiệu số. Đây là nguyên liệu đầu vào của cả dây chuyền.",
-      yccd:"10.C4.MR1 · 10.C2.1", view:null, trangThai:"chua" },
+      moTa:"Ba dạng dữ liệu: ảnh (hệ tự vẽ), văn bản, và tín hiệu số. Mở nắp để xem máy thật sự đọc những CON SỐ nào từ mỗi dạng.",
+      yccd:"10.C4.MR1 · 10.C2.1 · 10.D2.1", view:"nhamay0", trangThai:"co" },
     { id:1, so:"TRẠM 1", ten:"DÁN NHÃN", anDuy:"sơ chế",
-      moTa:"Dữ liệu phải được gắn nhãn đúng thì mô hình mới học được. Nhãn sai thì mô hình học sai một cách có hệ thống.",
-      yccd:"10.C4.1", view:null, trangThai:"chua" },
+      moTa:"Chính em dán nhãn cho từng ảnh. Hệ huấn luyện hai mô hình — một từ nhãn của em, một từ nhãn đúng — rồi so trên cùng bộ ảnh mới. Nhãn sai thì mô hình sai có hệ thống.",
+      yccd:"10.C4.1", view:"nhamay1", trangThai:"co" },
     { id:2, so:"TRẠM 2", ten:"HUẤN LUYỆN", anDuy:"dây chuyền sản xuất",
       moTa:"Mô hình so dự đoán với nhãn đúng, đo lỗi, rồi tự chỉnh trọng số. Lặp lại nhiều vòng.",
       yccd:"10.C4.1 · 10.C5", view:"v-lab", trangThai:"co" },
@@ -646,16 +646,14 @@
     const p = document.createElement("p"); p.className = "chu2"; p.textContent = t.moTa;
     nd.appendChild(p);
 
-    // chỉ hiện bảng điều khiển trạm 5 khi mở trạm 5
-    $("nm-tram5").style.display = (t.view === "nhamay5") ? "" : "none";
+    /* Ba trạm có bảng điều khiển ngay trong khung nhìn nhà máy: 0, 1 và 5.
+     * Các trạm còn lại mở khung nhìn chuyên biệt (lab / lab3d / pipe3d). */
+    ["nm-tram0", "nm-tram1", "nm-tram5"].forEach(id => {
+      const el = $(id); if(el) el.style.display = "none";
+    });
 
-    if(!t.view){
-      const canh = document.createElement("p");
-      canh.className = "nho chu2";
-      canh.textContent = "Trạm này đang được xây dựng. Em có thể sang các trạm đã hoàn thành để xem cơ chế hoạt động.";
-      nd.appendChild(canh);
-      return;
-    }
+    if(t.view === "nhamay0"){ nmKhoiDongTram0(); return; }
+    if(t.view === "nhamay1"){ nmKhoiDongTram1(); return; }
     if(t.view === "nhamay5"){ nmKhoiDongTram5(); return; }
 
     const b = document.createElement("button");
@@ -667,6 +665,107 @@
       if(t.view === "v-pipe3d") pipe3dMo();
     };
     nd.appendChild(b);
+  }
+
+  /* ---------- TRẠM 0: NHẬP LIỆU (3 dạng dữ liệu, mở nắp xem máy đọc số gì) ---------- */
+  let nmT0DaNap = false;
+  function nmKhoiDongTram0(){
+    const M = window.MX_NHAMAY01;
+    if(!M){ return; }
+    $("nm-tram0").style.display = "";
+
+    M.khoiDongT0(parseInt($("t0-so").value, 10), parseInt($("t0-tile").value, 10));
+    M.veAnhVaDacTrung($("t0-anh"));
+    M.veVanBan($("t0-vanban"));
+    M.veSo($("t0-so-lieu"));
+
+    /* Câu hỏi chỉ dựng MỘT lần: nếu dựng lại mỗi lần vào trạm thì trạng thái
+     * đã trả lời bị mất và học sinh có thể bấm lại vô hạn để dò đáp án. */
+    if(!nmT0DaNap){
+      M.veCauHoiT0($("t0-cauhoi"), (q, chon, dung) => {
+        if(ENG) ENG.logSuKien(maHS, {
+          loai:"nhamay", suKien:"tram0", tram:0,
+          kq:{ diem: dung?1:0, dung: dung, mach:q.mach, unesco:q.chuDe,
+               dapAn:q.dapAn, chon: chon },
+          yccd:q.yccd
+        });
+        if(dung) nmTramXong(0);
+      });
+      nmT0DaNap = true;
+    }
+  }
+
+  function nmT0TaoLai(){
+    const M = window.MX_NHAMAY01;
+    if(!M) return;
+    M.khoiDongT0(parseInt($("t0-so").value, 10), parseInt($("t0-tile").value, 10));
+    M.veAnhVaDacTrung($("t0-anh"));
+    if(ENG) ENG.logSuKien(maHS, { loai:"nhamay", suKien:"tram0TaoDuLieu",
+      soAnh: parseInt($("t0-so").value,10), tiLeNgay: parseInt($("t0-tile").value,10) });
+  }
+
+  /* ---------- TRẠM 1: DÁN NHÃN (học sinh tự dán -> thấy hậu quả bằng số) ---------- */
+  function nmKhoiDongTram1(taoMoi){
+    const M = window.MX_NHAMAY01;
+    if(!M){ return; }
+    $("nm-tram1").style.display = "";
+    if(taoMoi !== false){
+      M.khoiDongT1(10);
+      $("t1-kq").innerHTML = "";
+    }
+    M.veAnhDanNhan($("t1-anh"));
+    M.capNhatTienDoT1();
+  }
+
+  function nmT1Cham(){
+    const M = window.MX_NHAMAY01;
+    if(!M) return;
+    const r = M.chamT1();
+    if(!r) return;
+    M.veKetQuaT1($("t1-kq"), r);
+    if(ENG) ENG.logSuKien(maHS, {
+      loai:"nhamay", suKien:"tram1", tram:1,
+      kq:{ /* nhãn đúng = đáp án hệ biết trước, nên chấm tất định */
+           diem: r.nhanSai === 0 ? 1 : 0, dung: r.nhanSai === 0,
+           mach:"C", unesco:"C4", dapAn:"nhanDung",
+           chon: r.nhanDung + "/" + r.soAnh },
+      soAnh:r.soAnh, nhanDung:r.nhanDung, nhanSai:r.nhanSai,
+      tiLeNhanDung: Math.round(r.tiLeNhanDung*1000)/10,
+      thietHaiDoChinhXac: Math.round(r.thietHai*1000)/10,
+      moHinhA_nhanHS: Math.round(r.hocTrenNhanHS.doChinhXac*1000)/10,
+      moHinhB_nhanThat: Math.round(r.hocTrenNhanThat.doChinhXac*1000)/10
+    });
+    if(r.nhanSai === 0) nmTramXong(1);
+    nmT1HienNhanThat();
+  }
+
+  /** Sau khi chấm mới tiết lộ nhãn thật — tránh để học sinh dò đáp án trước. */
+  function nmT1HienNhanThat(){
+    const M = window.MX_NHAMAY01;
+    const host = $("t1-anh");
+    if(!host) return;
+    const anhs = host.querySelectorAll(".anh-nhan");
+    const st = M.trangThai().t1;
+    if(!st) return;
+    // đọc nhãn thật từ chính module để không phải đoán
+    anhs.forEach((w, i) => {
+      if(w.querySelector(".nhan-that")) return;
+      const tag = document.createElement("span");
+      tag.className = "nhan-that";
+      tag.textContent = "…";
+      w.style.position = "relative";
+      w.insertBefore(tag, w.firstChild);
+    });
+    // dùng phép so sánh trực tiếp: yêu cầu module trả về nhãn thật
+    const that = M.layNhanThat ? M.layNhanThat() : null;
+    if(that){
+      anhs.forEach((w, i) => {
+        const o = w.querySelector(".nhan-that");
+        if(o && that[i] != null){
+          o.textContent = that[i] === 1 ? "CÓ mũ" : "không mũ";
+        }
+      });
+    }
   }
 
   function nmKhoiDongTram5(){
@@ -797,7 +896,16 @@
     $("btn-lab3d").onclick = ()=> lab3dMo();
     $("btn-pipe3d").onclick = ()=> pipe3dMo();
     /* NHÀ MÁY AI — dây chuyền 7 trạm (điều hướng chính mới) */
-    $("btn-nhamay").onclick = ()=>{ hien("v-nhamay"); nmVeSoDo(); nmMoTram(2); };
+    $("btn-nhamay").onclick = ()=>{ hien("v-nhamay"); nmVeSoDo(); nmMoTram(0); };
+    /* --- Trạm 0: NHẬP LIỆU --- */
+    $("t0-tao").onclick = ()=> nmT0TaoLai();
+    $("t0-tile").oninput = e=>{ $("t0-tile-so").textContent = e.target.value + "%"; };
+    $("t0-so").oninput   = e=>{ $("t0-so-num").textContent = e.target.value; };
+    /* --- Trạm 1: DÁN NHÃN --- */
+    $("t1-tao").onclick   = ()=> nmKhoiDongTram1(true);
+    $("t1-cham").onclick  = ()=> nmT1Cham();
+    $("t1-lamlai").onclick= ()=> nmKhoiDongTram1(true);
+    /* --- Trạm 5: ỨNG DỤNG --- */
     $("nm-sinh").onclick  = ()=> nmSinh();
     $("nm-xoa5").onclick  = ()=>{ nmItem = null; $("nm-prompt").value = "";
       $("nm-dau-ra").style.display = "none"; $("nm-rubric").innerHTML = "";

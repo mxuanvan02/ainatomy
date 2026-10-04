@@ -166,14 +166,29 @@
     return out.trim();
   }
 
+  /** Viết hoa chữ cái đầu câu.
+   *
+   * BUG ĐÃ SỬA (04/10) — judge G4b KHÔNG bắt được lỗi này nên phải thêm phép đo G4b2:
+   *   cauNgauNhien() tách câu từ chuanHoa(CORPUS) mà chuanHoa() HẠ CHỮ THƯỜNG toàn bộ,
+   *   nên khi ghép hai câu thì câu thứ hai bắt đầu bằng chữ thường:
+   *     "Khung nội dung ... mười ba chủ đề. khi vận hành, hệ thống có thể phát si..."
+   *   G4b cũ chỉ kiểm tra chữ cái đầu CỦA CẢ CHUỖI nên bỏ lọt lỗi ở giữa chuỗi.
+   *   Học sinh đọc sẽ tưởng ứng dụng lỗi chính tả, làm giảm độ tin của bài học.
+   *   Sửa: viết hoa đầu MỖI câu trước khi ghép. */
+  function vietHoaDauCau(s){
+    s = String(s == null ? "" : s).trim();
+    if(!s) return s;
+    return s.charAt(0).toUpperCase() + s.slice(1);
+  }
+
   /* ================= RÁP CÂU HOÀN CHỈNH (để văn bản đọc được như bài học) ============
-   * n-gram thuần cho ra chữ trôi chảy nhưng hay cụt/lộn. Để dùng trong lớp, ta ráp
-   * câu từ các CỤM CÂU có thật trong ngữ liệu (câu nguyên văn), rồi trộn thêm một
-   * đoạn n-gram để học sinh thấy rõ chỗ nào là máy "bịa". */
+   * n-gram thuần cho ra chữ trôi chảy nhưng hay cụt/lộn, nên các câu trả lời của Trạm 5
+   * và của đấu trường được ráp từ CÂU CÓ THẬT trong ngữ liệu (xem ghi chú ở ungDung).
+   * Mỗi câu được viết hoa đầu câu trước khi trả về. */
   function cauNgauNhien(model, seed){
     const cau = chuanHoa(CORPUS).split(/(?<=\.)\s+/);
     const rand = rng(seed);
-    return cau[Math.floor(rand() * cau.length)];
+    return vietHoaDauCau(cau[Math.floor(rand() * cau.length)]);
   }
 
   /* ================= TRẠM ỨNG DỤNG: sinh "câu trả lời của trợ lí AI" =================
@@ -188,17 +203,24 @@
     // 60% có lỗi (tỉ lệ giống ngân hàng đấu trường để hai trạm nhất quán)
     const coLoi = opts.coLoi != null ? opts.coLoi : (rand() < 0.6);
 
+    /* Đầu đuôi đều là CÂU THẬT trong ngữ liệu (không dùng đuôi n-gram nữa — xem ghi chú
+     * ở hàm ungDung). Câu thứ hai phải KHÁC câu thứ nhất, nếu không văn bản lặp lại
+     * y nguyên và trông như lỗi hiển thị. */
+    const cau1 = cauNgauNhien(model, seed);
+    let cau2 = cauNgauNhien(model, seed + 11);
+    let lan = 0;
+    while(cau2 === cau1 && lan++ < 6) cau2 = cauNgauNhien(model, seed + 11 + lan * 7);
+
     let vanBan = "", nhom = null, doanCai = null;
     if(coLoi){
       const tenNhom = Object.keys(NHOM_LOI);
       nhom = opts.nhomLoi || tenNhom[Math.floor(rand() * tenNhom.length)];
       const arr = NHOM_LOI[nhom].mau;
       doanCai = arr[Math.floor(rand() * arr.length)];
-      // câu trả lời = câu thật + đoạn cài lỗi + một đoạn máy sinh (để thấy giọng máy)
-      vanBan = cauNgauNhien(model, seed) + " " + doanCai
-             + " " + sinh(model, { seed: seed + 7, doDai: 90 });
+      // câu trả lời = câu thật + đoạn cài lỗi + một câu thật khác
+      vanBan = cau1 + " " + doanCai + " " + cau2;
     } else {
-      vanBan = cauNgauNhien(model, seed) + " " + sinh(model, { seed: seed + 7, doDai: 120 });
+      vanBan = cau1 + " " + cau2;
     }
 
     // viết hoa đầu câu cho dễ đọc
@@ -325,19 +347,42 @@
     const model = huanLuyen(nguLieuTheoChuDe(ma), opts.n || 4);
     const seed = opts.seed || (Date.now() % 100000);
 
-    let vanBan;
+    /* SỬA LẠI CÁCH RÁP CÂU TRẢ LỜI (04/10) — ghi rõ vì sao:
+     * Bản đầu ghép "câu thật + đuôi do sinh() n-gram tạo ra". Đuôi n-gram là CHỮ VỰN
+     * ghép ngang ("Con người ba chủ đề. mô hình ảnh. hệ thống trí tuệ nhân tạo là lĩnh
+     * vực nghiên kiến dữ liệu cá nhân tạo sinh p"). Hậu quả: nhánh CÓ CĂN CỨ cũng đọc
+     * như rác, nên học sinh phân biệt hai nhánh bằng HÌNH THỨC chứ không bằng nội dung
+     * -> bài học sai bản chất, và phép đo G4a (tỉ lệ từ trong ngữ liệu) thành Goodhart.
+     *
+     * Nay cả HAI nhánh đều ráp từ CÂU THẬT trong ngữ liệu, nên đều trôi chảy và đúng
+     * ngữ pháp. Điểm khác biệt duy nhất còn lại là NỘI DUNG có trả lời câu hỏi hay không:
+     *   - hỏi đúng chủ đề đã học -> máy trả lời bằng câu của chính chủ đề đó (CÓ CĂN CỨ)
+     *   - hỏi ngoài ngữ liệu     -> máy nói sang chuyện khác, vẫn trôi chảy (KHÔNG CĂN CỨ)
+     * Đây cũng là hình thức bịa/lạc đề phổ biến nhất ngoài đời thật. */
+    const rand2 = rng(seed);
+    function chonCau(arr, soCau){
+      const daChon = [];
+      let lan = 0;
+      while(daChon.length < Math.min(soCau, arr.length) && lan++ < 40){
+        const c = vietHoaDauCau(arr[Math.floor(rand2() * arr.length)]);
+        if(c && !daChon.includes(c)) daChon.push(c);
+      }
+      return daChon.join(" ");
+    }
+
+    let vanBan, coSo;
     if(ma){
-      const cau = CHU_DE[ma].cau;
-      const rand = rng(seed);
-      vanBan = cau[Math.floor(rand() * cau.length)] + " " + sinh(model, { seed: seed + 3, doDai: 130 });
+      vanBan = chonCau(CHU_DE[ma].cau, 2);
+      coSo = "câu trả lời lấy từ ngữ liệu của chính chủ đề em hỏi";
     } else {
-      // chủ đề KHÔNG có trong ngữ liệu: máy vẫn nói trôi chảy -> đây chính là bịa đặt
-      vanBan = sinh(model, { seed: seed + 3, doDai: 200 });
+      const cauChung = chuanHoa(CORPUS).split(/(?<=\.)\s+/).filter(Boolean);
+      vanBan = chonCau(cauChung, 2);
+      coSo = "máy không có dữ liệu về chủ đề em hỏi nên nó nói sang chuyện khác";
     }
     vanBan = vanBan.charAt(0).toUpperCase() + vanBan.slice(1);
 
     return {
-      prompt, vanBan, seed,
+      prompt, vanBan, seed, coSo,
       chuDe: ma ? CHU_DE[ma].ten : null,
       maChuDe: ma,
       soTuKhoaKhop: nhan.soTuKhoaKhop,

@@ -27,29 +27,37 @@
   const SO_HAT = 26;             // số hạt photon (giới hạn để máy yếu vẫn mượt)
 
   /* 5 trạm của một hệ thống AI — tên trạm bám đúng chữ của YCCĐ 10.D2.1
-     (dữ liệu, mô hình, thuật toán, đầu ra, phản hồi) */
+     (dữ liệu, mô hình, thuật toán, đầu ra, phản hồi)
+
+     MÀU TRẠM — ĐÃ ĐỔI (04/10). Màu cũ kế thừa từ giao diện tối, đo trên nền cảnh
+     sáng #F8FAFC thì 4/5 FAIL ngưỡng 3.0:1 của WCAG 1.4.11:
+       #ffd43b = 1.36 · #4dabf7 = 2.37 · #51cf66 = 1.92 · #ff6b6b = 2.65  (#9c36b5 đạt 5.56)
+     Bộ mới được chọn bằng tối ưu max-min diversity trên pool 20 màu đạt >= 4.0:1
+     (khoảng cách RGB nhỏ nhất giữa hai trạm bất kì = 114.4, so với 58.4 nếu chọn tay
+     — chọn tay khiến trạm DỮ LIỆU nâu và trạm CON NGƯỜI đỏ gần như trùng nhau).
+     Mọi giá trị được tools/nghiem_thu.py phép G1i kiểm tra tự động, không ước lượng. */
   const TRAM = [
-    { id:"dulieu", ten:"DỮ LIỆU", mau:0xffd43b, yccd:"10.C4.1",
+    { id:"dulieu", ten:"DỮ LIỆU", mau:0xA16207, yccd:"10.C4.1",
       moTa:"Nơi thu thập và chuẩn bị dữ liệu huấn luyện: ảnh, âm thanh, văn bản, số liệu.",
       vaiTro:"Mô hình chỉ học được những gì có trong dữ liệu. Dữ liệu lệch thì mô hình lệch.",
       khiHong:"AI chưa từng thấy trường hợp này trong dữ liệu → nó đoán mò và sai có HỆ THỐNG với đúng nhóm bị thiếu.",
       viDu:"Bộ ảnh nhận diện mũ bảo hiểm có 92% là ảnh ban ngày → ban đêm AI sai gần một nửa." },
-    { id:"huanluyen", ten:"HUẤN LUYỆN", mau:0x4dabf7, yccd:"10.C5",
+    { id:"huanluyen", ten:"HUẤN LUYỆN", mau:0x1D4ED8, yccd:"10.C5",
       moTa:"Thuật toán lặp đi lặp lại: so dự đoán với nhãn đúng, đo lỗi, chỉnh trọng số.",
       vaiTro:"Đây là chỗ mô hình thật sự 'học'. Không có bước này thì chỉ là một hàm số do người viết sẵn.",
       khiHong:"Trọng số không hội tụ: mô hình đoán gần như ngẫu nhiên dù dữ liệu tốt. Độ chính xác dao động, không ổn định.",
       viDu:"Học mãi trên đúng bộ dữ liệu lệch không sửa được thiên kiến — nó chỉ củng cố thêm thiên kiến." },
-    { id:"mohinh", ten:"MÔ HÌNH", mau:0x9c36b5, yccd:"10.D2.1",
+    { id:"mohinh", ten:"MÔ HÌNH", mau:0x9333EA, yccd:"10.D2.1",
       moTa:"Bộ trọng số đã học được — chính là 'kiến thức' mà AI mang theo.",
       vaiTro:"Mô hình là thứ được triển khai. Nó quyết định mọi đầu ra sau này.",
       khiHong:"Mô hình quá đơn giản so với bài toán → bỏ sót mẫu phức tạp; hoặc quá phức tạp → học thuộc lòng dữ liệu cũ, gặp dữ liệu mới là sai.",
       viDu:"Một đường thẳng không thể phân biệt được ảnh mũ bảo hiểm chụp nghiêng." },
-    { id:"daura", ten:"ĐẦU RA", mau:0x51cf66, yccd:"10.B2.MR1",
+    { id:"daura", ten:"ĐẦU RA", mau:0x15803D, yccd:"10.B2.MR1",
       moTa:"Kết quả AI đưa cho người dùng: nhãn, con số, đoạn văn, hình ảnh, lời khuyên.",
       vaiTro:"Đây là thứ người dùng nhìn thấy và tin. Đầu ra trôi chảy CHƯA chắc đã đúng.",
       khiHong:"AI tạo ra nội dung nghe rất tự tin nhưng bịa số liệu, bịa nguồn trích dẫn, hoặc khuyên lộ thông tin cá nhân.",
       viDu:"AI trích 'Nghị định 999/2024/NĐ-CP' — văn bản này không tồn tại." },
-    { id:"connguoi", ten:"CON NGƯỜI KIỂM", mau:0xff6b6b, yccd:"10.A1.2",
+    { id:"connguoi", ten:"CON NGƯỜI KIỂM", mau:0xE11D48, yccd:"10.A1.2",
       moTa:"Con người rà soát, phản hồi và chịu trách nhiệm về quyết định cuối cùng.",
       vaiTro:"Trạm duy nhất có thể CHẶN lỗi trước khi nó gây hại. Đây cũng là 'phản hồi' trong YCCĐ 10.D2.1.",
       khiHong:"Lỗi đi THẲNG tới người dùng: tin giả lan đi, quyết định sai ảnh hưởng tới người thật, và không ai chịu trách nhiệm.",
@@ -182,7 +190,12 @@
     // hết kẹt → hạt chạy tiếp nếu đoán đúng (phản hồi trực quan)
     if(dung) st.biKet = false;
     if(handle) handle.veMotLan();
-    return { dung, doan: TRAM[idx], dungLa: TRAM[st.tramHong] };
+    /* BUG ĐÃ SỬA (04/10) — Trạm 6 chết hoàn toàn ở tương tác chính:
+     * nhánh thành công này trả về {dung, doan, dungLa} mà KHÔNG có `ok:true`,
+     * trong khi pipe3dDoan() kiểm `if(!r || !r.ok){ ...return; }`. r.ok === undefined
+     * là falsy nên LUÔN rơi vào nhánh báo lỗi sớm, không bao giờ chấm hay ghi log.
+     * Thêm ok:true để phân biệt với hai nhánh lỗi ở trên (vốn có ok:false). */
+    return { ok:true, dung, doan: TRAM[idx], dungLa: TRAM[st.tramHong] };
   }
 
   function datLai(){

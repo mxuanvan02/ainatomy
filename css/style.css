@@ -1,104 +1,211 @@
-/* SOI AI — giao diện tiếng Việt, tối giản, chạy được trên máy cấu hình yếu */
+/* SOI AI — giao diện NỀN SÁNG, tiếng Việt, chạy được trên máy cấu hình yếu.
+ *
+ * NGUỒN BẢNG MÀU: design-system/soi-ai/MASTER.md (sinh bởi skill ui-ux-pro-max
+ * trong repo ai-agent-tools của anh Văn), đã điều chỉnh 4 điểm vì xung đột với
+ * ràng buộc sản phẩm. Mọi cặp màu dưới đây đã ĐO bằng công thức tương phản WCAG
+ * và được kiểm lại tự động bởi tools/nghiem_thu.py (phép G1). Không đổi màu nào
+ * mà không chạy lại phép kiểm đó.
+ *
+ *   nền trang #FAF5FF · nền phụ #ECEEF9 · nền thẻ #FFFFFF · viền #8B90A8 (3.16:1)
+ *   chữ chính #1E1B4B (15.99:1 trên thẻ) · chữ phụ #475569 (7.58:1)
+ *   chủ đạo #7C3AED (5.70:1) · nhấn/chữ #0E7490 (5.36:1) · sai #B91C1C (6.47:1)
+ *   đúng #15803D (5.02:1) · ngày #B45309 (5.02:1)
+ *
+ * ĐÃ LOẠI VÌ KHÔNG ĐẠT: #0891B2 làm nền nút chữ trắng (chỉ 3.68:1 — tương phản có
+ * tính đối xứng nên 5.70:1 của cặp chữ ĐEN không dùng được cho nút chữ trắng);
+ * #FFD43B / #4DABF7 / #FF6B6B cho đồ hoạ trên nền sáng (1.43 / 2.48 / 2.78:1).
+ *
+ * PHÔNG CHỮ: dùng phông hệ thống, KHÔNG nạp từ mạng. Google Fonts trả về CSS 916 byte
+ * với 0 subset tiếng Việt trong phép thử, và việc gọi mạng trái ràng buộc chạy ngoại
+ * tuyến từ USB. Segoe UI luôn có trên Windows của trường và phủ đủ tiếng Việt.
+ */
 :root{
-  --nen:#0f1115; --nen2:#161a22; --the:#1d222c; --vien:#2b3240;
-  --chu:#e8ecf3; --chu2:#a4adbd; --nhan:#4dabf7; --dung:#51cf66; --sai:#ff6b6b;
-  --vang:#ffd43b;
+  --nen:#FAF5FF;      /* nền trang */
+  --nen2:#ECEEF9;     /* nền phụ: đầu bảng, kpi, ô lồng */
+  --the:#FFFFFF;      /* nền thẻ */
+  --vien:#8B90A8;     /* viền — 3.16:1 trên nền thẻ (đạt ngưỡng đồ hoạ 3.0) */
+  --vienNhat:#DDD6FE; /* viền mờ trang trí, không mang thông tin */
+  --chu:#1E1B4B;      /* chữ chính */
+  --chu2:#475569;     /* chữ phụ */
+  --nhan:#0E7490;     /* màu nhấn dùng cho CHỮ và liên kết — 5.36:1 */
+  --primary:#7C3AED;  /* chủ đạo: nền nút chính, chữ trắng trên đó 5.70:1 */
+  /* ĐÃ ĐỔI TỪ #15803D (04/10). Lí do: #15803D chỉ đạt 4.45:1 trên nền --nenDung,
+   * dưới ngưỡng 4.5:1 cho chữ thường. Nó xuất hiện ở hai chỗ chữ-on-nền-xanh-nhạt:
+   * .den.on ("TRUE" trong bài lôgic) và .nm-tram.xong .an-duy (nền kế thừa từ rule cha).
+   * #146B33 đạt 6.60:1 trên nền thẻ và 5.86:1 trên --nenDung. Số đo bởi
+   * tools/nghiem_thu.py phép G1f2/G1f3 — không ước lượng. */
+  --dung:#146B33;     /* đúng — 6.60:1 trên nền thẻ, 5.86:1 trên --nenDung */
+  --sai:#B91C1C;      /* sai — 6.47:1 trên nền thẻ */
+  /* ĐÃ ĐỔI TỪ #B45309 (04/10). Lí do: #B45309 đạt 5.02:1 trên nền thẻ TRẮNG nhưng chỉ
+   * 4.34:1 trên nền phụ --nen2, mà biến này được dùng làm MÀU CHỮ ở .vang, code và nhãn
+   * nằm trong các ô nền phụ. #8A4006 đạt 6.45:1 trên --nen2 và 7.46:1 trên nền thẻ.
+   * Số đo bởi tools/nghiem_thu.py phép G1f3 — không ước lượng.
+   * LƯU Ý phân biệt: đây là màu CHỮ nên ngưỡng là 4.5:1. Màu "ảnh ban ngày" trong
+   * cảnh 3D (js/scene3d.js MAU.vang = 0xB45309) là màu ĐỒ HOẠ, ngưỡng chỉ 3.0:1 theo
+   * WCAG 1.4.11 và nó đạt 4.80:1 trên nền cảnh, nên KHÔNG cần đổi theo biến này. */
+  --vang:#8A4006;     /* cảnh báo/nhấn nhẹ — 6.45:1 trên nền phụ, 7.46:1 trên nền thẻ */
+  --nenDung:#E7F5EA;  /* nền khối phản hồi đúng */
+  --nenSai:#FCEBEB;   /* nền khối phản hồi sai */
+  --nenChon:#E4EEF7;  /* nền phần tử đang chọn */
 }
 *{box-sizing:border-box}
 body{margin:0;background:var(--nen);color:var(--chu);
-  font-family:"Segoe UI",system-ui,-apple-system,"DejaVu Sans",Arial,sans-serif;
+  /* phông hệ thống — xem ghi chú ở đầu file */
+  font-family:Inter,"Segoe UI",system-ui,-apple-system,"DejaVu Sans",Arial,sans-serif;
   font-size:16px;line-height:1.55}
 a{color:var(--nhan)}
 .wrap{max-width:1000px;margin:0 auto;padding:16px}
-header.top{background:var(--nen2);border-bottom:1px solid var(--vien);padding:10px 0;position:sticky;top:0;z-index:9}
+
+header.top{background:var(--the);border-bottom:1px solid var(--vienNhat);padding:10px 0;
+  position:sticky;top:0;z-index:9;box-shadow:0 1px 2px rgba(30,27,75,.06)}
 header.top .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding-top:0;padding-bottom:0}
-.logo{font-weight:800;letter-spacing:.5px;font-size:18px}
-.logo span{color:var(--nhan)}
-/* tên sản phẩm trong nội dung trang */
-.logo-soi{color:var(--nhan);letter-spacing:.5px}
-/* khung chứa cảnh 3D */
-.scene{position:relative;width:100%;height:min(62vh,460px);background:var(--nen);
-  border:1px solid var(--vien);border-radius:12px;overflow:hidden}
-.scene canvas{display:block;width:100%;height:100%}
-.scene .hud{position:absolute;left:10px;top:10px;right:10px;pointer-events:none;
-  font-size:13px;color:var(--chu2);text-shadow:0 1px 3px #000}
-.scene .hud b{color:var(--chu)}
-.scene .note{position:absolute;left:10px;bottom:10px;right:10px;font-size:12.5px;
-  color:var(--chu2);background:rgba(15,17,21,.72);border-radius:8px;padding:6px 9px}
-.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--chu2);margin:8px 0}
-.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;
-  vertical-align:-1px}
-.btn.nhe{border-color:var(--vang)}
-/* ===== NHÀ MÁY AI: sơ đồ dây chuyền 7 trạm ===== */
-.nm-flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin-top:12px}
-.nm-tram{flex:1 1 120px;min-width:118px;background:var(--nen2);border:2px solid var(--vien);
-  border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;position:relative;
-  transition:border-color 200ms ease, transform 200ms ease, background 200ms ease;font-family:inherit;color:inherit}
-.nm-tram:hover{border-color:var(--nhan);transform:translateY(-2px)}
-.nm-tram:focus-visible{outline:3px solid var(--nhan);outline-offset:2px}
-.nm-tram .so{display:block;font-size:11px;color:var(--chu2);letter-spacing:.5px}
-.nm-tram .ten{display:block;font-weight:700;font-size:13.5px;line-height:1.25;margin:3px 0}
-.nm-tram .an-duy{display:block;font-size:11px;color:var(--chu2)}
-.nm-tram.dang-mo{border-color:#7C3AED;background:#f3eeff}
-.nm-tram.xong{border-color:#15803D}
-.nm-tram.xong .an-duy{color:#15803D}
-/* mũi tên nối giữa các trạm */
-.nm-mui{align-self:center;color:var(--chu2);font-size:18px;flex:0 0 auto}
-@media (max-width:640px){ .nm-mui{display:none} .nm-tram{flex:1 1 45%} }
-@media (prefers-reduced-motion: reduce){ .scene canvas{display:none} }
+.logo{font-weight:800;letter-spacing:.5px;font-size:18px;display:flex;align-items:center;gap:7px}
+.logo span{color:var(--primary)}
+.logo-soi{color:var(--primary);letter-spacing:.5px}
 .tagline{color:var(--chu2);font-size:13px}
 .spacer{flex:1}
-.btn{background:var(--the);color:var(--chu);border:1px solid var(--vien);border-radius:8px;
-  padding:9px 14px;font-size:15px;cursor:pointer;font-family:inherit}
-.btn:hover{border-color:var(--nhan)}
-.btn.chinh{background:var(--nhan);border-color:var(--nhan);color:#08131f;font-weight:700}
+
+/* ===== biểu tượng SVG (thay emoji — MASTER.md cấm emoji làm biểu tượng) ===== */
+.ic{width:1.05em;height:1.05em;flex:0 0 auto;vertical-align:-.15em;fill:none;
+  stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
+.ic.to{width:1.35em;height:1.35em}
+
+/* ===== nút ===== */
+.btn{display:inline-flex;align-items:center;gap:7px;background:var(--the);color:var(--chu);
+  border:1px solid var(--vien);border-radius:8px;padding:9px 14px;font-size:15px;
+  cursor:pointer;font-family:inherit;text-align:left;
+  transition:border-color 200ms ease, background 200ms ease, box-shadow 200ms ease}
+.btn:hover{border-color:var(--primary);box-shadow:0 2px 6px rgba(124,58,237,.16)}
+.btn:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+/* nền nút chính #7C3AED với CHỮ TRẮNG = 5.70:1 (đã đo).
+ * KHÔNG dùng #0891B2 ở đây: chữ trắng trên nền đó chỉ 3.68:1. */
+.btn.chinh{background:var(--primary);border-color:var(--primary);color:#FFFFFF;font-weight:700}
+.btn.chinh:hover{box-shadow:0 3px 10px rgba(124,58,237,.32)}
 .btn.nho{padding:5px 10px;font-size:13px}
-.btn:disabled{opacity:.45;cursor:not-allowed}
-.card{background:var(--the);border:1px solid var(--vien);border-radius:12px;padding:16px;margin:14px 0}
+.btn.nhe{border-color:var(--vang)}
+.btn:disabled{opacity:.5;cursor:not-allowed;box-shadow:none}
+
+/* ===== thẻ ===== */
+.card{background:var(--the);border:1px solid var(--vienNhat);border-radius:12px;
+  padding:16px;margin:14px 0;box-shadow:0 1px 3px rgba(30,27,75,.07)}
 .card h2{margin-top:0;font-size:20px}
 .card h3{font-size:17px;margin:14px 0 6px}
 .chu2{color:var(--chu2)}
 .nho{font-size:13px}
+
+/* ===== khung cảnh 3D (nền sáng) ===== */
+.scene{position:relative;width:100%;height:min(62vh,460px);background:#F8FAFC;
+  border:1px solid var(--vienNhat);border-radius:12px;overflow:hidden}
+.scene canvas{display:block;width:100%;height:100%;background:#F8FAFC;border:0}
+.scene .hud{position:absolute;left:10px;top:10px;right:10px;pointer-events:none;
+  font-size:13px;color:var(--chu2);text-shadow:0 1px 2px rgba(255,255,255,.9)}
+.scene .hud b{color:var(--chu)}
+.scene .note{position:absolute;left:10px;bottom:10px;right:10px;font-size:12.5px;
+  color:var(--chu);background:rgba(255,255,255,.9);border:1px solid var(--vienNhat);
+  border-radius:8px;padding:6px 9px}
+.legend{display:flex;flex-wrap:wrap;gap:14px;font-size:13px;color:var(--chu2);margin:8px 0}
+.legend i{display:inline-block;width:11px;height:11px;border-radius:50%;margin-right:5px;
+  vertical-align:-1px;border:1px solid rgba(30,27,75,.25)}
+@media (prefers-reduced-motion: reduce){ .scene canvas{display:none} }
+
+/* ===== nhà máy: dây chuyền 7 trạm ===== */
+.nm-flow{display:flex;flex-wrap:wrap;gap:8px;align-items:stretch;margin-top:12px}
+.nm-tram{flex:1 1 120px;min-width:118px;background:var(--the);border:2px solid var(--vienNhat);
+  border-radius:10px;padding:10px 8px;cursor:pointer;text-align:center;position:relative;
+  transition:border-color 200ms ease, transform 200ms ease, background 200ms ease;
+  font-family:inherit;color:inherit}
+.nm-tram:hover{border-color:var(--primary);transform:translateY(-2px)}
+.nm-tram:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.nm-tram .so{display:block;font-size:11px;color:var(--chu2);letter-spacing:.5px}
+.nm-tram .ten{display:block;font-weight:700;font-size:13.5px;line-height:1.25;margin:3px 0}
+.nm-tram .an-duy{display:block;font-size:11px;color:var(--chu2)}
+.nm-tram.dang-mo{border-color:var(--primary);background:#F5F1FF}
+.nm-tram.xong{border-color:var(--dung);background:var(--nenDung)}
+.nm-tram.xong .an-duy{color:var(--dung)}
+.nm-mui{align-self:center;color:var(--chu2);font-size:18px;flex:0 0 auto}
+@media (max-width:640px){ .nm-mui{display:none} .nm-tram{flex:1 1 45%} }
+
+/* ===== lưới, kpi ===== */
 .grid{display:grid;gap:12px}
 .g3{grid-template-columns:repeat(auto-fit,minmax(220px,1fr))}
-.kpi{background:var(--nen2);border:1px solid var(--vien);border-radius:10px;padding:12px;text-align:center}
+.kpi{background:var(--nen2);border:1px solid var(--vienNhat);border-radius:10px;
+  padding:12px;text-align:center}
 .kpi .so{font-size:30px;font-weight:800;color:var(--nhan)}
 .kpi .nhan{font-size:12.5px;color:var(--chu2)}
-input,select,textarea{background:var(--nen2);color:var(--chu);border:1px solid var(--vien);
+
+/* ===== form ===== */
+input,select,textarea{background:var(--the);color:var(--chu);border:1px solid var(--vien);
   border-radius:8px;padding:9px 11px;font-size:15px;font-family:inherit;width:100%}
+input:focus,select:focus,textarea:focus{border-color:var(--primary);outline:none;
+  box-shadow:0 0 0 3px rgba(124,58,237,.18)}
 label{display:block;font-size:13px;color:var(--chu2);margin:10px 0 4px}
-.ai-box{background:#11151d;border:1px solid var(--vien);border-left:4px solid var(--nhan);
+input[type=range]{padding:4px 0;border:0;background:transparent;accent-color:var(--primary)}
+
+/* ===== hộp nội dung AI sinh ra ===== */
+.ai-box{background:var(--nen2);border:1px solid var(--vienNhat);border-left:4px solid var(--nhan);
   border-radius:10px;padding:14px;margin:10px 0;white-space:pre-wrap}
 .claim{border-bottom:2px dotted var(--chu2);cursor:pointer;padding:1px 2px;border-radius:3px}
-.claim:hover{background:#243044}
-.claim.chon{background:#3b2b1a;border-bottom-color:var(--vang)}
+.claim:hover{background:var(--nenChon)}
+.claim.chon{background:#FDF3DC;border-bottom-color:var(--vang)}
+
+/* ===== chips ===== */
 .chips{display:flex;flex-wrap:wrap;gap:8px;margin:10px 0}
-.chip{border:1px solid var(--vien);background:var(--nen2);border-radius:999px;padding:7px 13px;
-  cursor:pointer;font-size:14px}
-.chip.chon{border-color:var(--nhan);background:#16324a;color:#cfe6ff;font-weight:700}
-.phanhoi{border-radius:10px;padding:12px;margin:12px 0;border:1px solid var(--vien)}
-.phanhoi.dung{background:#12291a;border-color:#2f6b3d}
-.phanhoi.sai{background:#2b1618;border-color:#7a3238}
-.bar{height:12px;background:var(--nen2);border-radius:99px;overflow:hidden;border:1px solid var(--vien)}
+.chip{display:inline-flex;align-items:center;gap:6px;border:1px solid var(--vien);
+  background:var(--the);border-radius:999px;padding:7px 13px;cursor:pointer;font-size:14px;
+  font-family:inherit;color:var(--chu);transition:border-color 200ms ease,background 200ms ease}
+.chip:hover{border-color:var(--primary)}
+.chip:focus-visible{outline:3px solid var(--primary);outline-offset:2px}
+.chip.chon{border-color:var(--nhan);background:var(--nenChon);color:var(--chu);font-weight:700}
+
+/* ===== phản hồi đúng/sai ===== */
+.phanhoi{border-radius:10px;padding:12px;margin:12px 0;border:1px solid var(--vienNhat)}
+.phanhoi.dung{background:var(--nenDung);border-color:var(--dung)}
+.phanhoi.sai{background:var(--nenSai);border-color:var(--sai)}
+
+/* ===== thanh tiến trình ===== */
+.bar{height:12px;background:var(--nen2);border-radius:99px;overflow:hidden;border:1px solid var(--vienNhat)}
 .bar > i{display:block;height:100%;background:var(--nhan)}
-table{width:100%;border-collapse:collapse;font-size:14px}
-th,td{border:1px solid var(--vien);padding:7px 9px;text-align:left;vertical-align:top}
+
+/* ===== bảng ===== */
+table{width:100%;border-collapse:collapse;font-size:14px;background:var(--the)}
+th,td{border:1px solid var(--vienNhat);padding:7px 9px;text-align:left;vertical-align:top}
 th{background:var(--nen2);font-weight:700}
-canvas{background:#000;border-radius:10px;border:1px solid var(--vien);max-width:100%}
+
+/* canvas ảnh mẫu (ảnh chụp ban đêm rất tối nên giữ nền trung tính, có viền) */
+canvas{background:#FFFFFF;border-radius:10px;border:1px solid var(--vien);max-width:100%}
 .thumb{display:inline-block;margin:4px;text-align:center}
 .thumb canvas{width:88px;height:66px}
+
 .ok{color:var(--dung)}.ko{color:var(--sai)}.vang{color:var(--vang)}
+
+/* ===== các bước ===== */
 .steps{display:flex;gap:6px;flex-wrap:wrap;margin-bottom:8px}
 .step{font-size:12.5px;color:var(--chu2);border:1px solid var(--vien);border-radius:999px;padding:4px 10px}
-.step.on{color:#08131f;background:var(--nhan);border-color:var(--nhan);font-weight:700}
-/* đèn giá trị chân lí (Bài 5 — dữ liệu lôgic) */
+/* .step.on nền là --nhan (#0E7490) nên chữ PHẢI trắng: 5.36:1.
+ * Bản cũ dùng chữ #08131f trên nền này = 3.86:1, dưới ngưỡng 4.5:1. */
+.step.on{color:#FFFFFF;background:var(--nhan);border-color:var(--nhan);font-weight:700}
+
+/* ===== đèn giá trị chân lí (Bài 5 — dữ liệu lôgic) ===== */
 .den{display:inline-block;padding:4px 9px;border-radius:999px;font-weight:700;font-size:14px;
   border:1px solid var(--vien);background:var(--nen2);color:var(--chu2)}
-.den.on{background:#12291a;border-color:#2f6b3d;color:var(--dung)}
-.den.off{background:#2b1618;border-color:#7a3238;color:var(--sai)}
-code{background:var(--nen2);border:1px solid var(--vien);border-radius:5px;padding:1px 5px;
-  font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:14px;color:var(--vang)}
-.menu-o{display:block;text-align:left;padding:14px;margin:8px 0}
+.den.on{background:var(--nenDung);border-color:var(--dung);color:var(--dung)}
+.den.off{background:var(--nenSai);border-color:var(--sai);color:var(--sai)}
+
+code{background:var(--nen2);border:1px solid var(--vienNhat);border-radius:5px;padding:1px 5px;
+  font-family:"DejaVu Sans Mono",Consolas,monospace;font-size:14px;color:var(--chu)}
+
+.menu-o{display:flex;align-items:flex-start;gap:10px;width:100%}
+.menu-o .ic{margin-top:.2em;width:1.4em;height:1.4em;color:var(--primary)}
+.menu-o > div{flex:1 1 auto}
 .menu-o b{display:block;font-size:16px;margin-bottom:3px}
-.footer{color:var(--chu2);font-size:12.5px;padding:18px 0;border-top:1px solid var(--vien);margin-top:22px}
-@media print{body{background:#fff;color:#000}.card{border-color:#999}}
+.footer{color:var(--chu2);font-size:12.5px;padding:18px 0;border-top:1px solid var(--vienNhat);margin-top:22px}
+
+/* ===== nhãn dữ liệu (Trạm 0/1 nhà máy) ===== */
+.dl-the{display:inline-block;border:1px solid var(--vien);border-radius:8px;padding:6px 10px;
+  margin:4px;background:var(--the);font-size:13.5px;cursor:pointer;font-family:inherit;color:var(--chu)}
+.dl-the.chon{border-color:var(--primary);background:#F5F1FF;font-weight:700}
+.anh-nhan{position:relative;display:inline-block;margin:6px;text-align:center}
+.anh-nhan .nhan-that{position:absolute;right:4px;top:4px;font-size:11px;font-weight:700;
+  padding:2px 6px;border-radius:99px;background:#FFFFFF;border:1px solid var(--vien);color:var(--chu)}
+
+@media print{body{background:#fff;color:#000}.card{border-color:#999;box-shadow:none}}
