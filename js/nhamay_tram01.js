@@ -367,10 +367,20 @@
     return t1State ? t1State.ds.map(d => d.nhan) : null;
   }
 
+  /** Trả bộ dữ liệu Trạm 0 đang dùng — để bên ngoài ĐO được bốn đặc trưng thật.
+   * VÌ SAO CẦN XUẤT RA: ô dự đoán Mức 3 của BT-01 (js/app.js hàm traLoiBT01) phải so bốn
+   * đặc trưng của một ảnh ban ngày với một ảnh ban đêm CÙNG nhãn. Nếu app.js tự sinh lại
+   * bộ dữ liệu bằng một seed khác thì nó đo trên dữ liệu khác — phép đối chiếu thành vô
+   * nghĩa mà vẫn in ra kết luận. Xuất chính mảng đang hiển thị là cách duy nhất để chắc.
+   * Trả về MẢNG GỐC (không sao chép) vì chỉ dùng để đọc, không sửa. */
+  function dsT0(){
+    return t0State ? t0State.ds : null;
+  }
+
   window.MX_NHAMAY01 = {
     CAU_HOI_T0,
     khoiDongT0, veAnhVaDacTrung, veVanBan, veSo, veCauHoiT0,
-    khoiDongT1, veAnhDanNhan, capNhatTienDoT1, chamT1, veKetQuaT1, layNhanThat,
+    khoiDongT1, veAnhDanNhan, capNhatTienDoT1, chamT1, veKetQuaT1, layNhanThat, dsT0,
     trangThai(){ return { t0: !!t0State, t1: t1State ? {
       soAnh: t1State.ds.length,
       daDan: t1State.nhanHS.filter(x => x !== null).length,

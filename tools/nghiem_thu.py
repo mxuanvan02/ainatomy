@@ -808,10 +808,10 @@ console.log(JSON.stringify(out));
                 đếm thật. Phép kiểm này bắt được lỗi thật ngay lần chạy đầu: bt13.js
                 ghi 8 trong khi mã sống có 9, bt09.js ghi 7 trong khi có 10.
         """
-        print("\n=== G11 HAI MODULE MỨC 3 MỚI (bt13.js, bt09.js) ===")
+        print("\n=== G11 CÁC MODULE MỨC 3 (bt13.js, bt09.js, muc3.js) ===")
         idx = doc("index.html")
         sprite = set(re.findall(r'symbol id="(i-[\w-]+)"', idx))
-        MODULE = ["js/bt13.js", "js/bt09.js"]
+        MODULE = ["js/bt13.js", "js/bt09.js", "js/muc3.js"]
 
         # ---- G11a: nạp trong index.html, TRƯỚC app.js ----
         vi_tri = {m.group(1): m.start() for m in re.finditer(r'<script src="([^"]+)"', idx)}
@@ -819,7 +819,7 @@ console.log(JSON.stringify(out));
         thieu_nap = [f for f in MODULE if f not in vi_tri]
         sau_app = [f for f in MODULE
                    if f in vi_tri and app_pos is not None and vi_tri[f] > app_pos]
-        self.them("G11a", "bt13.js + bt09.js nạp trong index.html TRƯỚC app.js",
+        self.them("G11a", "bt13.js + bt09.js + muc3.js nạp trong index.html TRƯỚC app.js",
                   not thieu_nap and not sau_app,
                   (f"thiếu trong index.html: {thieu_nap}" if thieu_nap else
                    (f"nạp SAU app.js: {sau_app}" if sau_app else
@@ -849,11 +849,30 @@ console.log(JSON.stringify(out));
 
         tong_icon, tong_css = sum(len(v) for v in ten_icon_moi_tep.values()), 0
         van_de = []
+        # Danh sách RIÊNG cho G11c. VÌ SAO KHÔNG DÙNG LẠI `van_de`: bản trước kiểm
+        # `any("đi vào innerHTML" in v for v in van_de)` — tức nó suy lại "có phát hiện
+        # không" từ CÂU CHỮ của thông báo. Khi thông báo đổi chữ (thêm "thẳng", đổi sang
+        # "nội suy ${...}"), 2 trong 3 đường phát hiện vẫn chạy đúng nhưng dòng lọc không
+        # còn khớp, nên cổng in ĐẠT trong khi đã tìm thấy lỗi — một âm tính giả ở tầng
+        # BÁO CÁO, nguy hiểm hơn cả việc dò sót, vì cổng trông vẫn xanh. Cách chữa không
+        # phải là đồng bộ câu chữ, mà là ĐỪNG suy lại từ câu chữ: ghi phát hiện vào một
+        # danh sách riêng và kiểm chính danh sách đó.
+        xau_c_toan_bo = []
         for f in MODULE:
             raw = doc(f)
             song = than_ma_song(raw)
 
             # G11c — chữ học sinh không được đi vào innerHTML
+            # VÌ SAO VIẾT LẠI (05/10): bản cũ chỉ bắt được biến gán từ `.value` khi nó
+            # xuất hiện KÈM DẤU `+` hai bên, và có một nhánh CHẾT:
+            #   `re.fullmatch(r"\s*=\s*" + b + r"\s*;", seg)`
+            # — `seg` được cắt từ SAU dấu `=` (dau = m.end()), nên nhánh này không bao giờ
+            # khớp. Đo trên 8 đoạn mã mẫu: bản cũ MISS cả 5 dạng nguy hiểm, trong đó có
+            # dạng trực tiếp `el.innerHTML = inp.value` — dạng DỄ xảy ra nhất khi viết ẩu.
+            # Cổng vẫn in "0 chỗ chèn biến .value" nên trông như đang canh, thực ra là mù.
+            # Bản mới bắt 3 đường: (a) `.value` đứng thẳng trong biểu thức; (b) biến gán từ
+            # `.value` xuất hiện ở BẤT KỲ vị trí nào trong biểu thức (không đòi dấu `+`);
+            # (c) nội suy `${...}` trong template literal chứa một trong hai thứ trên.
             bien = bien_chua_chu_hoc_sinh(song)
             xau = []
             for m in re.finditer(r"\.innerHTML\s*=", song):
@@ -862,24 +881,45 @@ console.log(JSON.stringify(out));
                 if cuoi < 0 or cuoi - dau > 600:
                     cuoi = min(dau + 600, len(song))
                 seg = song[dau:cuoi + 1]
+                dong = song[:m.start()].count("\n") + 1
+
+                # (a) `.value` đứng thẳng: el.innerHTML = inp.value
+                if re.search(r"\.value\b", seg):
+                    xau.append(f"{f}:{dong} giá trị .value đi thẳng vào innerHTML")
+
+                # (b) biến gán từ `.value`, ở bất kỳ vị trí nào trong biểu thức.
+                # `\b` để `t` không khớp trong `text`; loại trừ tên nằm ngay sau dấu `.`
+                # (thuộc tính `obj.t`) vì đó không phải biến cục bộ.
                 for b in bien:
-                    if re.search(r"[+]\s*" + re.escape(b) + r"\b", seg) or \
-                       re.search(r"\b" + re.escape(b) + r"\s*[+]", seg) or \
-                       re.fullmatch(r"\s*=\s*" + re.escape(b) + r"\s*;", seg):
-                        dong = song[:m.start()].count("\n") + 1
-                        xau.append(f"{f}:{dong} biến '{b}' đi vào innerHTML")
+                    if re.search(r"(?<![\w.])" + re.escape(b) + r"\b", seg):
+                        xau.append(f"{f}:{dong} biến '{b}' (gán từ .value) đi vào innerHTML")
+
+                # (c) nội suy template literal chứa .value hoặc biến chữ.
+                for t in re.findall(r"\$\{([^}]*)\}", seg):
+                    if re.search(r"\.value\b", t) or \
+                       any(re.search(r"(?<![\w.])" + re.escape(b) + r"\b", t) for b in bien):
+                        xau.append(f"{f}:{dong} nội suy ${{...}} chứa chữ học sinh: {t.strip()[:40]}")
+
             tong_css += len(re.findall(r"\.innerHTML\s*=", song))
 
             # G11d — con số ghi trong comment phải khớp số đếm thật
+            # NHÁNH BỔ SUNG (05/10, khi thêm js/muc3.js): tệp KHÔNG có chỗ gán innerHTML
+            # nào thì KHÔNG có gì để khai báo. muc3.js dựng toàn bộ giao diện qua
+            # MX_DUDOAN nên n_that = 0 và không có dòng "**N chỗ**" — bản cũ sẽ báo LỖI
+            # "không tìm thấy con số", tức phạt một tệp vì nó SẠCH hơn yêu cầu. Đó là
+            # dương tính giả cùng họ với vụ grep trúng comment ở G11b.
             n_that = len(re.findall(r"\.innerHTML\s*=", song))
             m_khai = re.search(r"\*\*(\d+)\s*chỗ\*\*", raw)
             khai = int(m_khai.group(1)) if m_khai else None
-            if khai is None:
-                van_de.append(f"{f}: không tìm thấy con số '**N chỗ**' trong ghi chú")
+            if n_that == 0 and khai is None:
+                pass                                   # không có gì để khai → không có gì để sai
+            elif khai is None:
+                van_de.append(f"{f}: có {n_that} chỗ innerHTML nhưng ghi chú không khai số")
             elif khai != n_that:
                 van_de.append(f"{f}: ghi chú khai {khai} chỗ, mã sống có {n_that} chỗ")
 
             van_de.extend(xau)
+            xau_c_toan_bo.extend(xau)      # G11c kiểm danh sách này, không kiểm câu chữ
 
         ten_khac_nhau = set().union(*ten_icon_moi_tep.values()) if ten_icon_moi_tep else set()
         self.them("G11b", "mọi svgIco trong MỌI js/*.js trỏ symbol có thật (đếm trên mã sống)",
@@ -888,29 +928,72 @@ console.log(JSON.stringify(out));
                   f"({len(ten_khac_nhau)} tên khác nhau) · {len(sprite)} symbol · 0 mồ côi"
                   if not mo_coi_toan_bo
                   else "; ".join(mo_coi_toan_bo))
-        self.them("G11c", "chữ học sinh KHÔNG đi vào innerHTML (bt13/bt09)",
-                  not any("đi vào innerHTML" in v for v in van_de),
-                  f"{tong_css} chỗ innerHTML đã rà, 0 chỗ chèn biến .value"
-                  if not any("đi vào innerHTML" in v for v in van_de)
-                  else "; ".join(v for v in van_de if "đi vào innerHTML" in v))
-        self.them("G11d", "con số innerHTML ghi trong ghi chú khớp mã sống",
-                  not any(("ghi chú khai" in v or "không tìm thấy con số" in v) for v in van_de),
-                  "số ghi chú = số đo được ở cả 2 tệp"
-                  if not any(("ghi chú khai" in v or "không tìm thấy con số" in v) for v in van_de)
+        self.them("G11c", "chữ học sinh KHÔNG đi vào innerHTML (bt13/bt09/muc3)",
+                  not xau_c_toan_bo,
+                  f"{tong_css} chỗ innerHTML đã rà trong {len(MODULE)} module, 0 chỗ chèn chữ "
+                  f"học sinh (3 đường: .value thẳng, biến gán từ .value, nội suy ${{...}})"
+                  if not xau_c_toan_bo
+                  else "; ".join(xau_c_toan_bo))
+        self.them("G11d", "con số innerHTML ghi trong ghi chú khớp mã sống "
+                          "(hoặc không khai vì tệp không dùng innerHTML)",
+                  not any(("ghi chú khai" in v or "không khai số" in v
+                           or "không tìm thấy con số" in v) for v in van_de),
+                  f"số ghi chú = số đo được ở {len(MODULE)} module"
+                  if not any(("ghi chú khai" in v or "không khai số" in v
+                              or "không tìm thấy con số" in v) for v in van_de)
                   else "; ".join(v for v in van_de
-                                 if "ghi chú khai" in v or "không tìm thấy con số" in v))
+                                 if "ghi chú khai" in v or "không khai số" in v
+                                 or "không tìm thấy con số" in v))
 
-        # ---- G11e: host id của 2 module mới phải có trong index.html ----
-        # Thiếu sót #2 reviewer nêu: cổng cũ không nhắc tới kt-bt13 / dt-bt09. Hai id này
-        # là chỗ app.js gắn kết quả của module vào trang. Một trong hai bị đổi tên hoặc
-        # bị xoá thì module chạy xong mà KHÔNG hiện gì — im lặng, không exception, nên
-        # không phép kiểm runtime nào bắt được. Cổng tĩnh là chỗ duy nhất bắt được nó.
+        # ---- G11e: host id của các module Mức 3 phải có trong index.html ----
+        # Thiếu sót #2 reviewer nêu: cổng cũ không nhắc tới kt-bt13 / dt-bt09. Đây là chỗ
+        # app.js gắn kết quả của module vào trang. Một trong hai bị đổi tên hoặc bị xoá
+        # thì module chạy xong mà KHÔNG hiện gì — im lặng, không exception, nên không phép
+        # kiểm runtime nào bắt được. Cổng tĩnh là chỗ duy nhất bắt được nó.
+        # MỞ RỘNG (05/10): thêm bảy host id của js/muc3.js. Nguồn danh sách KHÔNG gõ tay —
+        # đọc từ chính các lời gọi `.mo("BT-xx", $("host"), ...)` trong app.js, nên thêm ô
+        # mới mà quên host id thì cổng tự biết. Và phải khớp cả hai chiều: mỗi host id
+        # trong app.js phải có trong HTML, VÀ mỗi host id của muc3 phải được app.js dùng.
         host = {"js/bt13.js": "kt-bt13", "js/bt09.js": "dt-bt09"}
         thieu_host = [f"{f} -> #{i}" for f, i in host.items() if f'id="{i}"' not in idx]
-        self.them("G11e", "host id kt-bt13 + dt-bt09 có trong index.html",
-                  not thieu_host,
-                  f"{len(host)} host id đã kiểm: {sorted(host.values())}"
-                  if not thieu_host else "thiếu: " + ", ".join(thieu_host))
+        app_js = than_ma_song(doc("js/app.js"))
+        goi_mo = dict(re.findall(r'\.mo\(\s*"(BT-\d{2})"\s*,\s*\$\("([\w-]+)"\)', app_js))
+        thieu_m3 = [f"{ma} -> #{hid}" for ma, hid in goi_mo.items()
+                    if f'id="{hid}"' not in idx]
+        self.them("G11e", f"host id trong index.html cho {len(host) + len(goi_mo)} ô Mức 3",
+                  not thieu_host and not thieu_m3,
+                  f"{len(host)} host cũ + {len(goi_mo)} host muc3 ({sorted(goi_mo)}) đều có trong HTML"
+                  if not thieu_host and not thieu_m3
+                  else "thiếu: " + "; ".join(thieu_host + thieu_m3))
+
+        # ---- G11f MỚI: mọi hàm MX_MUC3.* mà app.js gọi phải tồn tại thật ----
+        # Lớp lỗi này đã TỪNG xảy ra ở js/duDoan.js (svgIco("target")) và ở G11a: gọi một
+        # tên không tồn tại, khác ở chỗ lỗi đó nằm im cho tới khi người dùng bấm nút. Với
+        # bảy ô mới, tên hàm được gọi từ tệp KHÁC (app.js gọi M3().mo / M3().cham), nên nếu
+        # muc3.js đổi tên hàm thì app.js trỏ vào hư không mà không cổng nào biết.
+        m3_js = than_ma_song(doc("js/muc3.js"))
+        xuat = set()
+        m_api = re.search(r"window\.MX_MUC3\s*=\s*\{(.*?)\};", m3_js, re.S)
+        if m_api:
+            # VÌ SAO KHÔNG DÙNG `(\w+)\s*[,:]` NHƯ BẢN ĐẦU: bản đầu bỏ sót hàm viết dạng
+            # shorthand `ghiLog(fn){ ... }` — JS hợp lệ, nhưng không có dấu `:` nên regex
+            # cũ không thấy, và cổng báo oan "app.js gọi hàm KHÔNG tồn tại: ['ghiLog']"
+            # trong khi hàm CÓ thật. Đây là dương tính giả thứ hai cùng họ với vụ grep
+            # trúng comment ở G11b: phép kiểm tự nó viết sai, rồi buộc tội mã đúng.
+            # BẢN 2 (05/10, sau khi bản 1 báo oan `cham`): bản 1 dùng `(?:^|,)\s*(\w+)\s*[(:,{]`
+            # — regex TIÊU THỤ dấu `,` phân cách, mà findall lại không chồng lấn, nên trong
+            # `mo, cham, DS:` thì dấu `,` sau `mo` bị ăn mất và `cham` không còn dấu đứng
+            # trước để khớp → cổng vu oan cho hàm CÓ thật. Sửa bằng cách để dấu phân cách
+            # nằm trong LOOKAHEAD (không tiêu thụ), nhờ đó mọi khoá đều còn dấu trước nó.
+            # Vẫn giữ ràng buộc "khoá phải đứng đầu dòng hoặc sau `,`/`{`" nên không nuốt
+            # tên hàm nằm trong biểu thức (vd `keys` trong `Object.keys(BANG)`).
+            xuat = set(re.findall(r'(?:^|[,{])\s*(\w+)\s*(?=[(:,{])', m_api.group(1), re.M))
+        goi = set(re.findall(r"M3\(\)\.(\w+)", app_js))
+        thieu_ham = sorted(h for h in goi if h not in xuat)
+        self.them("G11f", "mọi hàm MX_MUC3.* mà app.js gọi đều có thật trong muc3.js",
+                  not thieu_ham,
+                  f"app.js gọi {sorted(goi)} · muc3.js xuất {sorted(xuat)} · khớp hết"
+                  if not thieu_ham else f"app.js gọi hàm KHÔNG tồn tại: {thieu_ham}")
 
     def tong_ket(self):
         print("\n" + "=" * 72)
