@@ -1,10 +1,11 @@
-/* SOI AI — MODULE KIẾN THỨC NỀN (phủ 4 YCCĐ cốt lõi lớp 10 còn thiếu)
+/* SOI AI — MODULE KIẾN THỨC NỀN (phủ 6 YCCĐ cốt lõi lớp 10)
  * Nguồn: Khung nội dung giáo dục AI cho HS phổ thông, ban hành kèm QĐ 2422/QĐ-BGDĐT (18/8/2026).
  * Mã YCCĐ theo quy ước của Khung: [Lớp].[Mã chủ đề].[Số thứ tự]; tiền tố MR = nội dung mở rộng.
  *
  * Phủ:
  *   10.A3.1 (cốt lõi) — kể tên quy định/luật bảo vệ người dùng trong không gian số
  *   10.C2.2 (cốt lõi) — liệt kê ứng dụng AI theo tính năng của hệ thống
+ *   10.C2.3 (cốt lõi) — nêu ví dụ sử dụng AI hỗ trợ quá trình học tập
  *   10.C3.1 (cốt lõi) — mô tả yêu cầu để đưa ra prompt phù hợp mục tiêu
  *   10.C3.2 (cốt lõi) — thực hành đặt prompt giải quyết vấn đề gần gũi
  *   10.C3.3 (cốt lõi) — phân biệt AI tạo sinh với AI phân loại/dự đoán
@@ -50,14 +51,111 @@ window.MX_KT = {
     }
   ],
 
-  /* ============ 10.C2.2 — ỨNG DỤNG AI THEO TÍNH NĂNG HỆ THỐNG ============ */
+  /* ============ 10.C2.2 — ỨNG DỤNG AI THEO TÍNH NĂNG HỆ THỐNG ============
+   * Trường `ma` là ĐỊNH DANH MÁY ĐỌC của từng nhóm, do bài tập xếp nhóm (BT-13) dùng
+   * để chấm tất định: học sinh chọn một `ma`, hệ so với `hoTroHocTap[].nhomDung`.
+   * Không đổi `ma` sau khi phát hành — nhật ký đã ghi của các lớp trước dùng chuỗi này.
+   */
   ungDung: [
-    { nhom: "Phân loại (classification)", moTa: "Gán đối tượng vào một nhóm có sẵn", viDu: "Lọc thư rác; nhận diện khuôn mặt để điểm danh; phân loại ảnh y tế; hệ thống nhận diện mũ bảo hiểm trong ứng dụng này" },
-    { nhom: "Dự đoán (prediction)", moTa: "Ước lượng một giá trị hoặc sự kiện tương lai từ dữ liệu quá khứ", viDu: "Dự báo thời tiết; dự đoán điểm số có nguy cơ sa sút; gợi ý sản phẩm; dự báo sản lượng nông nghiệp" },
-    { nhom: "Tạo sinh (generative)", moTa: "Tạo ra nội dung MỚI chưa từng có: chữ, hình ảnh, âm thanh, mã lệnh", viDu: "Trợ lý ảo viết văn bản; tạo ảnh từ mô tả; tổng hợp giọng nói; sinh mã chương trình" },
-    { nhom: "Nhận dạng mẫu (pattern recognition)", moTa: "Tìm quy luật lặp lại trong dữ liệu lớn", viDu: "Phát hiện gian lận giao dịch; phân cụm học sinh theo nhu cầu học; nhận dạng chữ viết tay" },
-    { nhom: "Xử lí ngôn ngữ (language)", moTa: "Hiểu và sinh ngôn ngữ tự nhiên", viDu: "Dịch máy; tóm tắt văn bản; trả lời câu hỏi; chuyển giọng nói thành chữ" },
-    { nhom: "Tối ưu & ra quyết định (optimization)", moTa: "Chọn phương án tốt nhất theo ràng buộc", viDu: "Điều phối đèn giao thông; lập thời khóa biểu; tối ưu lộ trình vận chuyển; phân bổ nguồn lực bệnh viện" }
+    { ma: "phan_loai", nhom: "Phân loại (classification)", moTa: "Gán đối tượng vào một nhóm có sẵn", viDu: "Lọc thư rác; nhận diện khuôn mặt để điểm danh; phân loại ảnh y tế; hệ thống nhận diện mũ bảo hiểm trong ứng dụng này" },
+    { ma: "du_doan", nhom: "Dự đoán (prediction)", moTa: "Ước lượng một giá trị hoặc sự kiện tương lai từ dữ liệu quá khứ", viDu: "Dự báo thời tiết; dự đoán điểm số có nguy cơ sa sút; gợi ý sản phẩm; dự báo sản lượng nông nghiệp" },
+    { ma: "tao_sinh", nhom: "Tạo sinh (generative)", moTa: "Tạo ra nội dung MỚI chưa từng có: chữ, hình ảnh, âm thanh, mã lệnh", viDu: "Trợ lý ảo viết văn bản; tạo ảnh từ mô tả; tổng hợp giọng nói; sinh mã chương trình" },
+    { ma: "nhan_dang_mau", nhom: "Nhận dạng mẫu (pattern recognition)", moTa: "Tìm quy luật lặp lại trong dữ liệu lớn", viDu: "Phát hiện gian lận giao dịch; phân cụm học sinh theo nhu cầu học; nhận dạng chữ viết tay" },
+    { ma: "xu_li_ngon_ngu", nhom: "Xử lí ngôn ngữ (language)", moTa: "Hiểu và sinh ngôn ngữ tự nhiên", viDu: "Dịch máy; tóm tắt văn bản; trả lời câu hỏi; chuyển giọng nói thành chữ" },
+    { ma: "toi_uu", nhom: "Tối ưu & ra quyết định (optimization)", moTa: "Chọn phương án tốt nhất theo ràng buộc", viDu: "Điều phối đèn giao thông; lập thời khóa biểu; tối ưu lộ trình vận chuyển; phân bổ nguồn lực bệnh viện" }
+  ],
+
+  /* ============ 10.C2.3 — VÍ DỤ AI HỖ TRỢ QUÁ TRÌNH HỌC TẬP ============
+   * Yêu cầu cần đạt nguyên văn: "Nêu được ví dụ một số trường hợp sử dụng AI hỗ trợ
+   * quá trình học tập."
+   *
+   * VÌ SAO CÓ KHỐI DỮ LIỆU NÀY
+   *   Trước 05/10 khối `ungDung` ở trên chỉ là BẢNG ĐỂ ĐỌC: học sinh xem sáu nhóm tính
+   *   năng rồi thôi. Quét toàn bộ mã nguồn cho thấy chuỗi 10.C2.3 chỉ xuất hiện trong
+   *   data/yccd.js (nơi khai báo danh sách yêu cầu cần đạt) — không có câu hỏi, không có
+   *   bài tập nào gắn với nó. Đọc một bảng không phải là "nêu được ví dụ".
+   *   Khối dưới đây biến phần đọc thành phần LÀM: mỗi ví dụ là MỘT tình huống học tập
+   *   thật, học sinh phải xếp nó vào đúng nhóm tính năng rồi nói rõ đầu vào và đầu ra.
+   *
+   * CÁCH CHẤM (tất định, không cần giáo viên, không cần mạng)
+   *   `nhomDung` là đáp án xếp nhóm. `tuKhoaVao` / `tuKhoaRa` là từ khoá đã định nghĩa
+   *   trước để nhận ra học sinh có nói tới đầu vào và đầu ra hay không — GIỐNG cách
+   *   chấm prompt ở js/kienthuc.js: đếm từ khoá có mặt, KHÔNG hiểu ngữ nghĩa.
+   *   Hồ sơ phải nói rõ giới hạn này: hệ đếm dấu hiệu, giáo viên vẫn là người nhận xét.
+   *
+   * ĐIỂM MẤU CHỐT (giữ đúng tinh thần BT-13)
+   *   Mỗi tình huống dưới đây gắn với TÍNH NĂNG của hệ thống, không gắn với tên thương
+   *   mại. Tên thương mại đổi mỗi năm; tính năng thì không. Cùng một tình huống có thể
+   *   chạm nhiều nhóm — trường `cungLienQuan` ghi các nhóm được chấp nhận thêm, và học
+   *   sinh phải nói được vì sao mình chọn nhóm đó.
+   */
+  hoTroHocTap: [
+    {
+      id: "ht-01",
+      tinhHuong: "Em chụp ảnh bài giải viết tay của mình, hệ đọc chữ trong ảnh rồi gán bài đó vào một trong ba nhóm có sẵn: \"đã hiểu\", \"cần xem lại\", \"chưa đạt\".",
+      nhomDung: "phan_loai",
+      dauVaoMau: "Ảnh chụp bài giải viết tay của học sinh (cùng một tập nhãn cố định 3 nhóm).",
+      dauRaMau: "Một nhãn trong ba nhãn có sẵn — ví dụ \"cần xem lại\". Không sinh ra nội dung mới nào.",
+      tuKhoaVao: ["ảnh", "bài giải", "chụp", "viết tay", "chữ", "bài làm"],
+      tuKhoaRa: ["nhãn", "nhóm", "một trong ba", "xếp", "gán", "đã hiểu", "cần xem lại", "chưa đạt"],
+      viSao: "Đối tượng được gán vào một nhóm CÓ SẴN, nên đây là phân loại. Dấu hiệu nhận biết: nếu hệ chỉ chọn đáp án trong danh sách đã có thì là phân loại.",
+      canhBao: "Hệ đọc chữ viết tay có thể sai với chữ xấu hoặc ảnh mờ. Em cần biết ngưỡng này tồn tại trước khi tin kết quả."
+    },
+    {
+      id: "ht-02",
+      tinhHuong: "Hệ đọc bảng điểm giữa kì của em ở các môn, so với điểm các tuần trước, rồi cảnh báo môn nào có nguy cơ sa sút trong tháng tới.",
+      nhomDung: "du_doan",
+      dauVaoMau: "Bảng điểm quá khứ của học sinh theo thời gian (dữ liệu đã có, không phải dữ liệu tương lai).",
+      dauRaMau: "Một tỉ lệ hoặc mức nguy cơ cho từng môn — ví dụ \"môn Toán: nguy cơ sa sút 62%\".",
+      tuKhoaVao: ["điểm", "bảng điểm", "các tuần", "quá khứ", "giữa kì", "kết quả cũ"],
+      tuKhoaRa: ["nguy cơ", "tỉ lệ", "dự báo", "phần trăm", "xác suất", "mức độ", "cảnh báo"],
+      viSao: "Đầu ra là một ước lượng về chuyện CHƯA xảy ra, tính từ dữ liệu đã xảy ra, nên đây là dự đoán. Dấu hiệu nhận biết: có chữ \"sẽ\", \"nguy cơ\", \"dự báo\" đi kèm một con số.",
+      canhBao: "Dự đoán không phải bản án. Một con số nguy cơ cao không có nghĩa là em chắc chắn sẽ sa sút — nó chỉ nói dữ liệu hiện có giống những trường hợp trước đây."
+    },
+    {
+      id: "ht-03",
+      tinhHuong: "Em nhờ trợ lý AI soạn cho mình 10 câu luyện tập MỚI về chương đang học, kèm lời giải, để tự làm thêm ở nhà.",
+      nhomDung: "tao_sinh",
+      dauVaoMau: "Câu mô tả yêu cầu của học sinh (chương nào, dạng bài nào, mức độ khó) và tài liệu em dán vào.",
+      dauRaMau: "Văn bản hoàn toàn mới: 10 câu hỏi và lời giải chưa từng tồn tại trước đó.",
+      tuKhoaVao: ["yêu cầu", "mô tả", "chương", "dạng bài", "tài liệu", "dán", "nhờ"],
+      tuKhoaRa: ["câu hỏi mới", "đề mới", "văn bản", "lời giải", "nội dung mới", "soạn", "sinh ra"],
+      viSao: "Đầu ra là nội dung MỚI chưa từng có, không chọn từ danh sách có sẵn, nên đây là tạo sinh. Dấu hiệu nhận biết: bỏ câu trả lời đi thì hệ phải sinh lại từ đầu, không tra cứu được ở đâu.",
+      canhBao: "Đây là nhóm khó kiểm chứng nhất: đề và lời giải có thể trôi chảy nhưng sai kiến thức. Phải đối chiếu với sách giáo khoa trước khi học theo."
+    },
+    {
+      id: "ht-04",
+      tinhHuong: "Hệ đọc nhật ký làm bài của cả lớp trong học kì, rồi chỉ ra rằng nhóm học sinh hay sai cùng một dạng câu hỏi về dữ liệu lệch.",
+      nhomDung: "nhan_dang_mau",
+      dauVaoMau: "Nhật ký làm bài của NHIỀU học sinh, nhiều lượt, tích lại theo thời gian (dữ liệu lớn).",
+      dauRaMau: "Một quy luật lặp lại: nhóm học sinh nào hay sai dạng câu nào — không phải điểm của một em.",
+      tuKhoaVao: ["nhật ký", "nhiều", "cả lớp", "nhiều lượt", "dữ liệu lớn", "lịch sử làm bài"],
+      tuKhoaRa: ["quy luật", "nhóm học sinh", "lặp lại", "xu hướng", "phân cụm", "hay sai"],
+      viSao: "Việc cần làm là TÌM QUY LUẬT LẶP LẠI trong dữ liệu lớn, chứ không phải gán nhãn cho một bài hay đoán một con số, nên đây là nhận dạng mẫu.",
+      canhBao: "Quy luật tìm trên dữ liệu của lớp em có thể không đúng cho lớp khác. Mẫu tìm được là giả thuyết để kiểm, không phải kết luận."
+    },
+    {
+      id: "ht-05",
+      tinhHuong: "Em dán một bài đọc tiếng Anh vào trợ lý AI, nhờ dịch sang tiếng Việt và tóm tắt còn 5 gạch đầu dòng để kịp đọc trước giờ học.",
+      nhomDung: "xu_li_ngon_ngu",
+      dauVaoMau: "Văn bản tiếng Anh em dán vào (ngôn ngữ tự nhiên, có thể dài).",
+      dauRaMau: "Bản dịch tiếng Việt và bản tóm tắt 5 gạch đầu dòng.",
+      tuKhoaVao: ["bài đọc", "tiếng anh", "văn bản", "dán", "đoạn văn"],
+      tuKhoaRa: ["dịch", "tiếng việt", "tóm tắt", "gạch đầu dòng", "bản dịch"],
+      viSao: "Việc cần làm là HIỂU và SINH ngôn ngữ tự nhiên (dịch, tóm tắt), nên đây là xử lí ngôn ngữ. Dấu hiệu nhận biết: đầu vào và đầu ra đều là chữ của con người.",
+      canhBao: "Bản dịch có thể trôi chảy nhưng lệch nghĩa ở câu khó. Với bài đọc quan trọng, em nên đối chiếu lại vài câu then chốt."
+    },
+    {
+      id: "ht-06",
+      tinhHuong: "Hệ nhận thời gian trống của em trong tuần và hạn nộp của từng bài, rồi gợi ý một thời khóa biểu tự học, xếp việc gấp lên trước.",
+      nhomDung: "toi_uu",
+      dauVaoMau: "Các ràng buộc: thời gian trống từng ngày, hạn nộp từng bài, thời lượng mỗi việc cần.",
+      dauRaMau: "Một phương án lịch cụ thể cho cả tuần — chọn trong vô số cách xếp, theo tiêu chí đã đặt.",
+      tuKhoaVao: ["thời gian trống", "hạn nộp", "ràng buộc", "lịch", "thời lượng", "mấy giờ"],
+      tuKhoaRa: ["thời khóa biểu", "phương án", "xếp lịch", "tối ưu", "gợi ý lịch", "cách sắp xếp"],
+      viSao: "Việc cần làm là CHỌN PHƯƠNG ÁN TỐT NHẤT trong nhiều cách xếp, dưới các ràng buộc, nên đây là tối ưu và ra quyết định.",
+      canhBao: "Lịch do hệ xếp tối ưu theo tiêu chí của hệ, không theo sức học của em. Em vẫn là người quyết định có theo hay không."
+    }
   ],
 
   /* ============ 10.C3.3 — AI TẠO SINH vs AI PHÂN LOẠI/DỰ ĐOÁN ============ */

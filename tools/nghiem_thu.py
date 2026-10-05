@@ -512,6 +512,246 @@ console.log(JSON.stringify(out));
         except Exception as e:
             self.them("G7b", "đọc CSS từ site", False, str(e)[:120])
 
+    # ================= G8 — KỊCH BẢN ÍT CHỮ & 3 BÀI HỌC ẢO ẢNH TEST =================
+    def g8(self):
+        """Cổng G8, thêm 04/10 sau khi dựng js/kichban.js.
+
+        Ba phép kiểm ở đây đều sinh ra từ LỖI THẬT đã xảy ra, không phải phòng xa:
+
+        G8a  Chữ trên mỗi cảnh phải <= 14 từ. Anh Văn yêu cầu "ít chữ", và preset
+             EXPLAINER của motion-video-brief-framework đặt ngưỡng này. Nếu không đo
+             thì "ít chữ" chỉ là cảm giác.
+
+        G8b  Không emoji làm biểu tượng, không ký tự đồng dạng (homoglyph). Ký tự
+             Cyrillic trá hình đã 3 lần lọt vào repo (2 lần trong selector thật làm
+             chết nút, 1 lần trong comment). tools/kiem_noi_dung.py quét theo mã
+             Unicode nên bắt được cả loại mắt thường không phân biệt nổi.
+
+        G8c  Không khai thời lượng gõ tay. Bản đầu ghi "110s ± 10%" trong khi
+             TONG_MS thật là 91s (82,7%, ngoài khoảng chính nó tuyên bố).
+
+        G8d  kichban.js phải nạp TRƯỚC app.js, vì app.js gọi window.MX_KICHBAN.init()
+             khi bấm nút. Đảo thứ tự thì nút kịch bản im lặng không hoạt động.
+        """
+        kb_path = os.path.join(ROOT, "js", "kichban.js")
+        idx_path = os.path.join(ROOT, "index.html")
+        if not os.path.exists(kb_path):
+            self.them("G8a", "kịch bản tồn tại", False, "thiếu js/kichban.js")
+            return
+        kb = doc("js/kichban.js")
+        idx = doc("index.html")
+
+        # G8a — độ dài caption mỗi cảnh, đo bằng regex trên mảng CANH
+        caps = re.findall(r'caption\s*:\s*"([^"]*)"', kb)
+        if not caps:
+            self.them("G8a", "caption <= 14 từ", False, "không tìm thấy caption nào trong CANH")
+        else:
+            dai = [(c, len(c.split())) for c in caps if len(c.split()) > 14]
+            trung_binh = round(sum(len(c.split()) for c in caps) / len(caps), 1)
+            self.them("G8a", f"{len(caps)} caption <= 14 từ (TB {trung_binh} từ/cảnh)",
+                      not dai,
+                      "đạt" if not dai else f"{len(dai)} cảnh vượt: " +
+                      "; ".join(f'"{c}" = {n} từ' for c, n in dai[:4]))
+
+        # G8b — chạy tools/kiem_noi_dung.py làm cổng, không tự kiểm lại logic ở đây
+        # LỖI ĐÃ SỬA (05/10, khi đóng gói cổng vào repo): bản đầu dò
+        # os.path.dirname(ROOT) + "/tools/..." rồi mới tới một đường dẫn TUYỆT ĐỐI viết
+        # cứng vào máy của tác giả. Cả hai chỗ đó đều trỏ RA NGOÀI repo, nên bản trong
+        # repo chạy ở máy khác sẽ không tìm thấy tệp và cổng G8b im lặng mất hiệu lực.
+        # Nay ưu tiên bản NẰM TRONG repo (ROOT/tools), chỉ rơi về bản ngoài nếu tệp
+        # trong repo chưa được đồng bộ — và nói rõ đang dùng bản nào.
+        tool = os.path.join(ROOT, "tools", "kiem_noi_dung.py")
+        if not os.path.exists(tool):
+            tool = os.path.join(os.path.dirname(ROOT), "tools", "kiem_noi_dung.py")
+        try:
+            r = subprocess.run([sys.executable, tool], capture_output=True, text=True, timeout=180)
+            # LỖI ĐÃ SỬA TRONG CHÍNH PHÉP KIỂM NÀY (04/10): bản đầu đếm số dòng bắt đầu
+            # bằng "·" trong output để ra số lỗi. Nhưng kiem_noi_dung.py chỉ in TỐI ĐA
+            # 12 dòng mỗi phép rồi ghi "… và N lỗi nữa", nên G8b báo "12 lỗi" trong khi
+            # con số thật là 40 — tức báo cáo THIẾU 70% số lỗi. Một cổng nghiệm thu mà
+            # đếm sai số lỗi thì không dùng để quyết định được. Nay đọc đúng con số
+            # TỔNG mà tool tự in ra, kèm phân rã theo từng phép K1/K2/K3.
+            m = re.search(r"TỔNG:\s*(\d+)\s*lỗi", r.stdout)
+            n_that = int(m.group(1)) if m else None
+            nhom = re.findall(r"❌\s*(K\d[^:]*):\s*(\d+)\s*lỗi", r.stdout)
+            mau = [l.strip() for l in r.stdout.splitlines() if l.strip().startswith("·")][:3]
+            dat = (r.returncode == 0)
+            self.them("G8b", "không emoji / không homoglyph (tools/kiem_noi_dung.py)", dat,
+                      "đạt — 0 lỗi" if dat else
+                      (f"{n_that if n_that is not None else '?'} lỗi "
+                       f"[{'; '.join(f'{k.strip()}={v}' for k, v in nhom)}] "
+                       + ("vd: " + " | ".join(x[:60] for x in mau) if mau else "")))
+        except Exception as e:
+            self.them("G8b", "không emoji / không homoglyph", False, f"{type(e).__name__}: {e}"[:120])
+
+        # G8c — không khai thời lượng cứng cho NGƯỜI DÙNG xem.
+        # SỬA LẠI CHO ĐÚNG BẢN CHẤT (04/10): bản đầu quét nguyên tệp kb + idx nên bắt
+        # luôn chữ "110s" nằm trong COMMENT ghi chú lỗi cũ ("bản đầu ghi cứng 110s…").
+        # Comment mô tả lịch sử KHÔNG phải tuyên bố với người xem; flag nó sẽ khiến
+        # người sau phải xoá mất ghi chú bài học — hại nhiều hơn lợi. Nay chỉ quét
+        # phần CHỮ HIỂN THỊ: bỏ <!-- --> trong HTML và bỏ /* */ + // trong JS.
+        idx_hien = re.sub(r"<!--.*?-->", " ", idx, flags=re.S)
+        kb_hien = re.sub(r"/\*.*?\*/", " ", kb, flags=re.S)
+        kb_hien = re.sub(r"//[^\n]*", " ", kb_hien)
+        cung = re.findall(r"\b(\d{2,3})\s*(?:giây|s\b)", idx_hien + "\n" + kb_hien)
+        self.them("G8c", "thời lượng hiển thị lấy từ dữ liệu, không gõ tay",
+                  not cung,
+                  "đạt — không thấy số giây cứng trong nội dung hiển thị" if not cung else
+                  f"thấy số giây gõ tay: {sorted(set(cung))} — phải để TONG_MS tự cộng từ dur")
+
+        # G8d — thứ tự nạp script
+        a, b = idx.find("js/kichban.js"), idx.find("js/app.js")
+        self.them("G8d", "kichban.js nạp trước app.js",
+                  a > -1 and b > -1 and a < b,
+                  f"kichban @{a}, app @{b}" if (a > -1 and b > -1) else "thiếu một trong hai thẻ script")
+
+        # G8e — section và nút phải có thật, nếu không thì kịch bản không mở được
+        self.them("G8e", "có section #v-kichban + #kb-host + nút #btn-kichban",
+                  all(x in idx for x in ('id="v-kichban"', 'id="kb-host"', 'id="btn-kichban"')),
+                  "đạt" if all(x in idx for x in ('id="v-kichban"', 'id="kb-host"', 'id="btn-kichban"'))
+                  else "thiếu một trong ba id — nút sẽ không mở được kịch bản")
+
+    # ================= G9 — CHẾ ĐỘ ÍT CHỮ & BẢNG RESPONSIVE =================
+    def g9(self):
+        """Cổng G9, thêm 04/10 sau HAI BUG THẬT đo được ở 390px.
+
+        G9a  Chế độ ít chữ không được ẩn phần tử CHỨC NĂNG.
+             Bản đầu viết `body.it-chu .nho{display:none}` mà class .nho gắn trên 12 NÚT
+             (kể cả chính nút #btn-it-chu), .tagline gắn trên #lbl-user và #nm-yccd,
+             .legend là chú giải màu của biểu đồ. Bật ít chữ là mất nút tắt, mất mã học
+             sinh, mất dòng "Yêu cầu cần đạt" và mất chú giải biểu đồ.
+             Phép kiểm này đòi CSS phải có LƯỚI AN TOÀN liệt kê tường minh các phần tử
+             đó với display:revert — không tin vào danh sách :not() vì dễ bị sửa hỏng.
+
+        G9b  Ở màn hình hẹp, bảng phải tự cuộn ngang.
+             Đo thật ở 390px: docW=425 > vw=390, 20 phần tử TRAN_NGANG, đều là <table>
+             của Trạm 0 (4 cột) và bảng A/B Trạm 1 (5 cột). Nguyên nhân: table{width:100%}
+             không chặn được độ rộng tối thiểu của nội dung. Giáo viên chiếu bằng điện
+             thoại sẽ thấy chữ bị cắt mép phải.
+        """
+        css = doc("css/style.css")
+
+        # G9a — lưới an toàn phải có đủ các phần tử chức năng
+        can_co = ["body.it-chu button", "body.it-chu .btn", "body.it-chu .chip",
+                  "body.it-chu .legend", "body.it-chu .phanhoi", "body.it-chu #lbl-user",
+                  "body.it-chu #nm-yccd"]
+        thieu = [c for c in can_co if c not in css]
+        m = re.search(r"body\.it-chu button[^{]*\{([^}]*)\}", css)
+        co_revert = bool(m and re.search(r"display\s*:\s*revert", m.group(1)))
+        self.them("G9a", "ít chữ không ẩn phần tử chức năng (nút/chip/legend/lbl-user/yccd)",
+                  not thieu and co_revert,
+                  ("lưới an toàn đủ " + str(len(can_co)) + " selector + display:revert")
+                  if (not thieu and co_revert) else
+                  ("thiếu selector: " + str(thieu) if thieu
+                   else "có selector nhưng KHÔNG có display:revert"))
+
+        # G9b — media query hẹp phải cho bảng cuộn ngang
+        mq = re.findall(r"@media\s*\(max-width:\s*(\d+)px\)\s*\{(.*?)\n\}", css, re.S)
+        hep = [(int(w), b) for w, b in mq if int(w) <= 640]
+        ok_bang = False
+        for w, b in hep:
+            if re.search(r"table\s*\{[^}]*display\s*:\s*block", b) and \
+               re.search(r"table\s*\{[^}]*overflow-x\s*:\s*auto", b):
+                ok_bang = True
+                break
+        self.them("G9b", "bảng tự cuộn ngang ở màn hình <=640px", ok_bang,
+                  ("tìm thấy table{display:block;overflow-x:auto} trong @" + str(hep[0][0]) + "px")
+                  if ok_bang else
+                  ("không thấy quy tắc bảng cuộn ngang trong media query hẹp; "
+                   "các media query hiện có: " + str([w for w, _ in mq])))
+
+    # ============ G10 — NGÔN NGỮ: không tiếp thị trong giao diện học sinh ============
+    def g10(self):
+        r"""Cổng G10, thêm 05/10 theo chỉ đạo anh Văn: "mấy cái chữ tâng bốc này bỏ đi,
+        cứ tập trung vào mục đích là sản phẩm để học trò học về AI".
+
+        PHẠM VI HẸP VÀ CÓ LÍ DO — đây là chỗ dễ làm hỏng nhất nếu quét rộng:
+          Chỉ quét index.html, data/meta.js, js/kichban.js, js/app.js — tức khung giao
+          diện và lời kịch bản. KHÔNG quét data/cauhoi*.js và js/tinhhuong.js, vì hai
+          nơi đó chứa claim SAI có chủ đích để học sinh bắt lỗi, ví dụ "học sinh miền
+          Trung luôn giỏi tư duy thuật toán hơn hẳn học sinh miền Bắc" (thiên kiến vùng
+          miền cài sẵn) hay "dịch máy đạt 99,27%" (số liệu bịa cài sẵn). Quét chúng sẽ
+          báo lỗi và dẫn tới sửa mất nội dung bài học. Nên danh sách tệp là TƯỜNG MINH.
+
+          Cùng lí do đó, từ cấm phải là CẢ CỤM chứ không phải một từ đơn. Quét từ đơn
+          "hoàn toàn" sẽ bắt oan câu "một số câu hoàn toàn đúng" ở index.html:212 — đó
+          là nội dung dạy học sinh phân biệt câu đúng với câu có lỗi.
+
+        G10a  ngôn ngữ tiếp thị đã loại bỏ không được quay lại
+        G10b  tên hiển thị là định danh môn/lớp, không phải khẩu hiệu
+        G10c  khẩu hiệu cũ "Soi AI để hiểu AI" = 0 trong mã sống (comment ghi chú được phép)
+        G10d  phiên bản ở chân trang và trong data/meta.js phải khớp
+        G10e  kịch bản không nói sai số trạm (đã từng ghi "9 trạm" trong khi nhà máy có 7)
+        """
+        idx = doc("index.html")
+        meta = doc("data/meta.js")
+        kb = doc("js/kichban.js")
+
+        def chu_hien_thi(s):
+            """Chỉ giữ chữ người dùng đọc: bỏ thẻ, bỏ comment HTML."""
+            s = re.sub(r"<!--.*?-->", " ", s, flags=re.S)
+            s = re.sub(r"<[^>]*>", " ", s)
+            return s
+
+        idx_txt = chu_hien_thi(idx)
+
+        # (nhóm, [cụm từ cấm]) — đều là cụm, không có từ đơn, để không bắt oan nội dung dạy học
+        CAM = [
+            ("so sánh với sản phẩm khác",
+             ["khác các ứng dụng", "khác các công cụ", "hơn hẳn các công cụ"]),
+            ("tính từ tuyệt đối / tự khen",
+             ["Tiếng Việt hoàn toàn", "tuyệt vời", "duy nhất trên thị trường",
+              "đẳng cấp", "số một"]),
+            ("tiếp thị giá và đối tác",
+             ["không thu phí", "nhà cung cấp", "miễn phí hoàn toàn"]),
+            ("giải thưởng trong giao diện học sinh",
+             ["dự thi", "Giải thưởng Tiên phong", "Bảng B"]),
+            ("lợi ích giáo viên đặt ở chỗ học sinh đọc",
+             ["thầy/cô không phải chấm", "giáo viên không phải chấm"]),
+            ("khẩu hiệu",
+             ["Soi AI để hiểu AI", "không hỏi AI"]),
+        ]
+        vi_pham = []
+        for nhom, tus in CAM:
+            for t in tus:
+                n = idx_txt.count(t)
+                if n:
+                    vi_pham.append(nhom + ": '" + t + "' x" + str(n))
+        self.them("G10a", "không còn ngôn ngữ tiếp thị trong index.html (6 nhóm, 17 cụm)",
+                  not vi_pham,
+                  "; ".join(vi_pham) if vi_pham else "sạch cả 6 nhóm")
+
+        TEN = "Phòng thực hành Trí tuệ nhân tạo lớp 10"
+        du = (TEN in idx) and (TEN in meta)
+        self.them("G10b", "tên hiển thị là định danh môn/lớp", du,
+                  "có trong index.html và data/meta.js" if du
+                  else "thiếu ở index.html hoặc data/meta.js")
+
+        # G10c: khẩu hiệu cũ — bỏ comment rồi mới đếm, vì comment ghi lại bài học là hợp lệ
+        khau = "Soi AI để hiểu AI"
+        con = 0
+        for ten_f in ("index.html", "data/meta.js", "js/kichban.js", "js/app.js"):
+            s = doc(ten_f)
+            s = re.sub(r"/\*.*?\*/", " ", s, flags=re.S)
+            s = re.sub(r"//[^\n]*", " ", s)
+            s = re.sub(r"<!--.*?-->", " ", s, flags=re.S)
+            con += s.count(khau)
+        self.them("G10c", "khẩu hiệu cũ = 0 trong mã sống", con == 0,
+                  "sạch" if con == 0 else "còn " + str(con) + " chỗ")
+
+        m_footer = re.search(r"Phiên bản\s+([\d.]+)", idx)
+        m_meta = re.search(r'phienBan\s*:\s*"([\d.]+)"', meta)
+        v1 = m_footer.group(1) if m_footer else None
+        v2 = m_meta.group(1) if m_meta else None
+        self.them("G10d", "phiên bản chân trang khớp data/meta.js",
+                  v1 is not None and v1 == v2,
+                  "chân trang " + str(v1) + " / meta.js " + str(v2))
+
+        self.them("G10e", "kịch bản ghi đúng số trạm của nhà máy",
+                  ("9 trạm" not in kb) and ("7 trạm" in kb),
+                  "đúng: 7 trạm" if "9 trạm" not in kb
+                  else "sai: vẫn ghi '9 trạm' (nhà máy có 7 trạm, kịch bản có 9 cảnh)")
+
     def tong_ket(self):
         print("\n" + "=" * 72)
         dat = sum(1 for k in self.kq if k["dat"])
@@ -537,7 +777,7 @@ console.log(JSON.stringify(out));
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
-    for g in ["G1", "G2", "G3", "G4", "G6", "G7"]:
+    for g in ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10"]:
         if not chi or g in chi:
             getattr(j, g.lower())()
     return j.tong_ket()

@@ -448,7 +448,15 @@ body.it-chu .vang.nho:not(.phanhoi .vang.nho){display:none !important}
 body.it-chu button,body.it-chu .btn,body.it-chu .chip,body.it-chu .legend,
 body.it-chu .phanhoi,body.it-chu #lbl-user,body.it-chu #dt-mode,
 body.it-chu #dt-tien-do,body.it-chu #nm-yccd,body.it-chu #nm-ten-tram,
-body.it-chu .kb-dieu-khien,body.it-chu .kb-dieu-khien *{display:revert !important}
+body.it-chu .de-bai,body.it-chu .kb-dieu-khien,body.it-chu .kb-dieu-khien *{display:revert !important}
+
+/* ĐỀ BÀI KHÔNG PHẢI PHỤ CHÚ (thêm 05/10 cùng lúc với js/bt13.js).
+   BT-13 dựng phần tình huống và câu hỏi bằng JS. Bản đầu em gán cho chúng class .chu2
+   cho hợp thị giác — nhưng luật ít chữ ở trên ẩn .chu2, nên bật ít chữ là MẤT ĐỀ BÀI,
+   đúng lớp lỗi đã xảy ra 04/10 với .nho và .tagline (xem ghi chú ở khối trên).
+   Nay đề bài dùng class riêng .de-bai: chỉ đổi màu chữ, KHÔNG nằm trong bất kì luật ẩn
+   nào, và có mặt trong lưới an toàn ở trên để một lần nữa không bị ẩn. */
+.de-bai{color:var(--chu2)}
 
 /* Nút bật/tắt: phải đạt tương phản WCAG như mọi nút khác, không dùng màu mới */
 #btn-it-chu[aria-pressed="true"]{border-color:var(--primary);background:var(--nenChon)}
