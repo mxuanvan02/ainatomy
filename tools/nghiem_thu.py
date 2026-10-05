@@ -820,17 +820,33 @@ console.log(JSON.stringify(out));
                    (f"nạp SAU app.js: {sau_app}" if sau_app else
                     f"{len(MODULE)} tệp, thứ tự đúng (app.js @{app_pos})")))
 
-        # ---- G11b + G11c + G11d ----
-        tong_icon, tong_css = 0, 0
+        # ---- G11b (MỌI js/*.js) + G11c + G11d (2 module mới) ----
+        # VÌ SAO MỞ RỘNG RA MỌI TỆP js (05/10, reviewer độc lập chỉ ra tiếp sau lần vá
+        # đầu): bản đầu của G11b chỉ phủ js/bt13.js và js/bt09.js. Nhưng lớp lỗi
+        # "svgIco gọi tên không có trong sprite" đã TỪNG XẢY RA THẬT ở js/duDoan.js với
+        # svgIco("target") — một tệp KHÔNG nằm trong 2 module mới. Một cổng bắt được
+        # đúng 1 ca mà không bắt được LỚP lỗi thì lần sau lỗi tái sinh ở tệp khác là
+        # cổng lại mù, và cảnh báo "đã kiểm" trở thành sai. Nay quét toàn bộ js/*.js.
+        tat_ca_js = sorted("js/" + x
+                           for x in os.listdir(os.path.join(ROOT, "js"))
+                           if x.endswith(".js"))
+        ten_icon_moi_tep = {}
+        mo_coi_toan_bo = []
+        for f in tat_ca_js:
+            song_f = than_ma_song(doc(f))
+            ten_f = set(re.findall(r'svgIco\(\s*"([\w-]+)"\s*\)', song_f))
+            if not ten_f:
+                continue
+            ten_icon_moi_tep[f] = ten_f
+            xau_f = sorted(t for t in ten_f if ("i-" + t) not in sprite)
+            if xau_f:
+                mo_coi_toan_bo.append(f"{f}: {xau_f}")
+
+        tong_icon, tong_css = sum(len(v) for v in ten_icon_moi_tep.values()), 0
         van_de = []
         for f in MODULE:
             raw = doc(f)
             song = than_ma_song(raw)
-
-            # G11b — icon
-            ten_goi = set(re.findall(r'svgIco\(\s*"([\w-]+)"\s*\)', song))
-            tong_icon += len(ten_goi)
-            mo_coi = sorted(t for t in ten_goi if ("i-" + t) not in sprite)
 
             # G11c — chữ học sinh không được đi vào innerHTML
             bien = bien_chua_chu_hoc_sinh(song)
@@ -858,15 +874,15 @@ console.log(JSON.stringify(out));
             elif khai != n_that:
                 van_de.append(f"{f}: ghi chú khai {khai} chỗ, mã sống có {n_that} chỗ")
 
-            if mo_coi:
-                van_de.append(f"{f}: svgIco gọi tên không có trong sprite: {mo_coi}")
             van_de.extend(xau)
 
-        self.them("G11b", "mọi svgIco trong bt13/bt09 trỏ symbol có thật (đếm trên mã sống)",
-                  not any("svgIco gọi tên" in v for v in van_de),
-                  f"{tong_icon} tên icon đã kiểm / {len(sprite)} symbol trong sprite"
-                  if not any("svgIco gọi tên" in v for v in van_de)
-                  else "; ".join(v for v in van_de if "svgIco gọi tên" in v))
+        ten_khac_nhau = set().union(*ten_icon_moi_tep.values()) if ten_icon_moi_tep else set()
+        self.them("G11b", "mọi svgIco trong MỌI js/*.js trỏ symbol có thật (đếm trên mã sống)",
+                  not mo_coi_toan_bo,
+                  f"{len(tat_ca_js)} tệp js đã quét · {tong_icon} lượt gọi "
+                  f"({len(ten_khac_nhau)} tên khác nhau) · {len(sprite)} symbol · 0 mồ côi"
+                  if not mo_coi_toan_bo
+                  else "; ".join(mo_coi_toan_bo))
         self.them("G11c", "chữ học sinh KHÔNG đi vào innerHTML (bt13/bt09)",
                   not any("đi vào innerHTML" in v for v in van_de),
                   f"{tong_css} chỗ innerHTML đã rà, 0 chỗ chèn biến .value"
@@ -878,6 +894,18 @@ console.log(JSON.stringify(out));
                   if not any(("ghi chú khai" in v or "không tìm thấy con số" in v) for v in van_de)
                   else "; ".join(v for v in van_de
                                  if "ghi chú khai" in v or "không tìm thấy con số" in v))
+
+        # ---- G11e: host id của 2 module mới phải có trong index.html ----
+        # Thiếu sót #2 reviewer nêu: cổng cũ không nhắc tới kt-bt13 / dt-bt09. Hai id này
+        # là chỗ app.js gắn kết quả của module vào trang. Một trong hai bị đổi tên hoặc
+        # bị xoá thì module chạy xong mà KHÔNG hiện gì — im lặng, không exception, nên
+        # không phép kiểm runtime nào bắt được. Cổng tĩnh là chỗ duy nhất bắt được nó.
+        host = {"js/bt13.js": "kt-bt13", "js/bt09.js": "dt-bt09"}
+        thieu_host = [f"{f} -> #{i}" for f, i in host.items() if f'id="{i}"' not in idx]
+        self.them("G11e", "host id kt-bt13 + dt-bt09 có trong index.html",
+                  not thieu_host,
+                  f"{len(host)} host id đã kiểm: {sorted(host.values())}"
+                  if not thieu_host else "thiếu: " + ", ".join(thieu_host))
 
     def tong_ket(self):
         print("\n" + "=" * 72)
