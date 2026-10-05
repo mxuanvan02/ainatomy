@@ -32,10 +32,11 @@ PHÉP KIỂM ĐÚNG (v7) — khớp theo THỨ TỰ nhưng CHO PHÉP rác chèn 
   4. TẬP MÃ: đúng 22 mã, khớp tập mã PDF tìm thấy trong vùng LỚP 10.
 Chỉ khi cả 22 câu đạt cả 4 phép mới ghi JSON. Không đạt thì KHÔNG ghi.
 """
-import json, re, subprocess, sys
+import json, os, re, subprocess, sys
 
-PDF = "/home/hitokiri/ieeai2026/research/src/2422_PL_khung.pdf"
-OUT = "/home/hitokiri/ieeai2026/yccd_lop10_sach.json"
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+PDF = os.path.join(_ROOT, "data-source", "2422_PL_khung.pdf")
+OUT = os.path.join(_ROOT, "data-source", "yccd_lop10_sach.json")
 CODE_RE = re.compile(r'10\.[A-D]\d\.(?:MR)?\d+\.')
 
 # Bản chép tay từ `pdftotext -layout 2422_PL_khung.pdf` trang 37-39, vùng LỚP 10.

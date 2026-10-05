@@ -10,7 +10,8 @@ màu tại chỗ thay vì chép số, để không có số liệu transcription
 import json, urllib.request, urllib.parse, sys
 
 TOK = "/home/hitokiri/.hermes/google_token.json"
-OUT = "/home/hitokiri/ieeai2026/sheet_thietke.json"
+OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
+                   "out", "sheet_thietke.json")
 
 # ---------- tương phản WCAG: TÍNH, không chép ----------
 def _lin(c):
@@ -57,8 +58,8 @@ def build():
         ["SOI AI — THIẾT KẾ TỔNG QUAN & QUẢN LÝ DỰ ÁN (v2)"],
         ["Lập", "04/10/2026", "Thay thế sheet cũ (bản YCCĐ v1 bị lộn cột)"],
         ["Khẩu hiệu", "Soi AI để hiểu AI", "Học sinh không hỏi AI — học sinh bắt lỗi AI"],
-        ["Repo", "github.com/mxuanvan02/soi-ai", "public"],
-        ["Website", "https://mxuanvan02.github.io/soi-ai/", "đã verify HTTP 200 + nội dung đúng"],
+        ["Repo", "github.com/mxuanvan02/soi-ai-lop10", "public"],
+        ["Website", "https://mxuanvan02.github.io/soi-ai-lop10/", "đã verify HTTP 200 + nội dung đúng"],
         ["Tài liệu thiết kế", "~/ieeai2026/THIET_KE_TONG_QUAN.md", "30 KB, 8 phần"],
         ["Design system", "soi-ai/design-system/soi-ai/MASTER.md", "sinh bởi ui-ux-pro-max (repo ai-agent-tools của anh Văn)"],
         ["Chuẩn viết nội dung", "academic-prose (repo ai-agent-tools)", "giữ lực nhận thức, tránh văn phong quảng cáo"],
@@ -152,7 +153,8 @@ def build():
     ]
 
     # ================= TAB 4: YCCĐ (đã verify) =================
-    yc = json.load(open("/home/hitokiri/ieeai2026/yccd_lop10_sach.json"))
+    _r = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+    yc = json.load(open(os.path.join(_r, "data-source", "yccd_lop10_sach.json")))
     yccd = [["Mã", "Chủ đề", "Mạch", "Loại", "Nguyên văn (đã verify)", "subseq", "từ khoá", "Sản phẩm phủ ở đâu", "Mức phủ"]]
     # ánh xạ mức phủ theo thiết kế v2
     PHU = {

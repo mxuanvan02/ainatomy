@@ -39,8 +39,8 @@ RANH GIỚI (không được vi phạm — kháng Goodhart):
 """
 import datetime, json, os, re, subprocess, sys, urllib.request, urllib.parse
 
-ROOT = "/home/hitokiri/ieeai2026/soi-ai"
-SITE = "https://mxuanvan02.github.io/soi-ai"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SITE = os.environ.get("SOI_AI_SITE", "https://mxuanvan02.github.io/soi-ai-lop10")
 NGUONG_TU_CO_NGHIA = 0.72      # G4: >=72% từ sinh ra phải có trong ngữ liệu
 NGUONG_PHAN_BO_LOI = (0.45, 0.75)   # G4: tỉ lệ "có lỗi" phải nằm trong khoảng này
 
@@ -939,8 +939,9 @@ console.log(JSON.stringify(out));
         # dung. Đây đúng lớp lỗi "số đúng định dạng nhưng của bản khác" phải chặn ở gốc.
         # LUẬT: lần chạy LỌC không được phép ghi tệp bằng chứng; mọi tệp bằng chứng phải
         # kèm sidecar meta để bên đọc TỪ CHỐI ĐƯỢC nếu nó là bản phần.
-        BC = "/home/hitokiri/ieeai2026/judge_result.json"
-        META = "/home/hitokiri/ieeai2026/judge_result.meta.json"
+        BC = os.path.join(ROOT, "out", "judge_result.json")
+        META = os.path.join(ROOT, "out", "judge_result.meta.json")
+        os.makedirs(os.path.dirname(BC), exist_ok=True)
         if self.day_du:
             json.dump(self.kq, open(BC, "w"), ensure_ascii=False, indent=1)
             commit = subprocess.run(["git", "-C", ROOT, "rev-parse", "HEAD"],

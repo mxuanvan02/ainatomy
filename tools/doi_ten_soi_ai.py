@@ -15,7 +15,7 @@ Các phép thay:
 """
 import re, sys, pathlib
 
-ROOT = pathlib.Path("/home/hitokiri/ieeai2026/soi-ai")
+ROOT = pathlib.Path(__file__).resolve().parent.parent
 SKIP_DIRS = {"vendor", ".git", "node_modules"}
 EXT = {".js", ".html", ".css", ".md", ".json", ".txt"}
 

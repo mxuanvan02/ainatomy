@@ -16,7 +16,7 @@ chặn truy vấn tài nguyên cục bộ ở một số trình duyệt do chín
 """
 import os, re, sys, pathlib
 
-ROOT = pathlib.Path("/home/hitokiri/ieeai2026/soi-ai")
+ROOT = pathlib.Path(__file__).resolve().parent.parent
 ICON_DIR = ROOT / "vendor" / "lucide"
 IDX = ROOT / "index.html"
 

@@ -1,14 +1,32 @@
-# SOI AI — Hướng dẫn giáo viên (v0.2.0)
+# SOI AI · Lớp 10 — Hướng dẫn giáo viên (v1.0.0)
 
 Phòng thí nghiệm AI **offline, tiếng Việt, không tài khoản, không thu phí** cho học sinh phổ thông.
 Bám Khung nội dung giáo dục AI (QĐ 2422/QĐ-BGDĐT 18/8/2026) — 4 mạch × 12 khối năng lực UNESCO.
 Học sinh **bắt lỗi AI** thay vì hỏi AI; hệ thống **tự chấm** vì lỗi do chính hệ cài sẵn.
 
+**Repo:** https://github.com/mxuanvan02/soi-ai-lop10 · **Bản chạy thử:** https://mxuanvan02.github.io/soi-ai-lop10/
+
+## 0. Repo này tự chứa (chạy được ở máy khác)
+
+Mọi công cụ trong `tools/` tự suy gốc repo từ vị trí tệp, **không ghi cứng đường dẫn máy tác giả**:
+
+```bash
+git clone https://github.com/mxuanvan02/soi-ai-lop10.git
+cd soi-ai-lop10
+python3 tools/nghiem_thu.py          # nghiệm thu: kỳ vọng 52/52
+python3 tools/kiem_noi_dung.py       # nội dung: kỳ vọng 0 lỗi
+python3 tools/tinh_do_phu.py         # độ phủ YCCĐ: kỳ vọng 22/22
+```
+
+Không cần cài gì ngoài Python 3.8+ và một trình duyệt. Đầu vào dùng cho các phép kiểm
+nằm trong `data-source/` (Khung 2422 PDF + bản chữ, danh sách 22 YCCĐ). Kết quả kiểm
+sinh ra ở `out/`.
+
 ## 1. Chạy (3 cách, không cần Internet)
 
 | Cách | Làm gì | Dùng khi |
 |---|---|---|
-| **USB** | Chép cả thư mục `soi-ai/` vào USB → mở `index.html` bằng Chrome/Edge/Firefox | Phòng máy bất kỳ |
+| **USB** | Chép cả thư mục `soi-ai-lop10/` vào USB → mở `index.html` bằng Chrome/Edge/Firefox | Phòng máy bất kỳ |
 | **Máy chủ lớp** | Đặt thư mục trên 1 máy, chia sẻ qua mạng LAN hoặc phát WiFi cục bộ | Trường có 1 máy chủ |
 | **Máy cá nhân** | Giải nén, mở `index.html` | Học ở nhà, không cần mạng |
 

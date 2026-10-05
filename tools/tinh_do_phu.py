@@ -31,9 +31,10 @@ CÁCH CHẠY
 """
 import json, os, re, sys
 
-ROOT = "/home/hitokiri/ieeai2026/soi-ai"
-YCCD = "/home/hitokiri/ieeai2026/yccd_lop10_sach.json"
-OUT = "/home/hitokiri/ieeai2026/yccd_coverage_v2.json"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+YCCD = os.path.join(ROOT, "data-source", "yccd_lop10_sach.json")
+OUT = os.path.join(ROOT, "out", "yccd_coverage_v2.json")
+os.makedirs(os.path.dirname(OUT), exist_ok=True)
 
 # BẰNG CHỨNG: mã YCCĐ -> [(tệp, mô tả, tên hàm/hằng phải có thật trong tệp)]
 # Phần tử thứ ba để trống ("") nghĩa là chỉ cần MÃ YCCĐ xuất hiện trong tệp.
