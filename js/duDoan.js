@@ -121,7 +121,7 @@
         const khop = lech <= dungSai;
         fb.className = "phanhoi " + (khop ? "dung" : "sai");
         const p1 = document.createElement("p");
-        p1.innerHTML = (khop ? svgIco("check") : svgIco("target"))
+        p1.innerHTML = (khop ? svgIco("check") : svgIco("triangle-alert"))
           + " <b>" + (khop ? "Dự đoán khớp kết quả thật." : "Dự đoán lệch kết quả thật.") + "</b>";
         fb.appendChild(p1);
         const p2 = document.createElement("p");

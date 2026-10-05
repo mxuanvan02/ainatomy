@@ -20,6 +20,15 @@ GOAL (7 tiêu chí):
   G6 OFFLINE      — không có request ra mạng nào bắt buộc (font CDN, thư viện CDN);
                     three.js và icon đều nằm trong repo.
   G7 DEPLOY       — Pages trả 200 cho mọi asset mới, đúng commit.
+  G8 KỊCH BẢN ẢO ẢNH — caption <= 14 từ, 0 emoji/homoglyph, thời lượng lấy từ dữ liệu.
+  G9 ÍT CHỮ       — chế độ "ít chữ" không được ẩn phần tử CHỨC NĂNG.
+  G10 KHÔNG TIẾP THỊ — ngôn ngữ tiếp thị đã bỏ không được quay lại; tên hiển thị là
+                    định danh môn/lớp; phiên bản chân trang khớp data/meta.js.
+  G11 HAI MODULE MỨC 3 — bt13.js và bt09.js phải nạp trước app.js, mọi icon chúng gọi
+                    phải có thật trong sprite, và KHÔNG có biến nào chứa chữ học sinh
+                    đi vào innerHTML. Thêm 05/10 vì reviewer độc lập trên PR #1 phát
+                    hiện cổng cũ KHÔNG nhắc tới hai tệp này lần nào: tệp không nằm
+                    trong cổng thì mọi lỗi trong nó đều là "đã kiểm" theo nghĩa sai.
 
 RANH GIỚI (không được vi phạm — kháng Goodhart):
   * Không xoá/nới bất kì phép kiểm nào trong file này để pass.
@@ -57,6 +66,26 @@ def ratio(a, b):
 def doc(p):
     with open(os.path.join(ROOT, p), encoding="utf-8") as f:
         return f.read()
+
+
+def than_ma_song(js):
+    """Bỏ comment khỏi một tệp JS để chỉ còn MÃ SỐNG.
+
+    VÌ SAO CẦN (bài học thật, 05/10): phép grep thô trên tệp còn comment sẽ khớp cả
+    CHỮ TRONG GHI CHÚ. Tệp js/bt13.js có dòng ghi chú viết `svgIco("tên")` như một ví
+    dụ mô tả quy tắc — reviewer độc lập grep thô rồi kết luận tệp gọi một icon không
+    tồn tại và đề nghị CHẶN MERGE. Đó là dương tính giả toàn tập: nó khiến người đọc
+    đi sửa thứ không hỏng, và tệ nhất là làm mất lòng tin vào các cảnh báo thật.
+    Mọi phép đếm dấu hiệu trong mã JS phải chạy trên mã sống, không chạy trên comment.
+    """
+    js = re.sub(r"/\*.*?\*/", " ", js, flags=re.S)
+    js = re.sub(r"(?m)//[^\n]*", " ", js)
+    return js
+
+
+def bien_chua_chu_hoc_sinh(js_song):
+    """Tên các biến được gán từ `.value` — tức chữ do học sinh gõ vào ô nhập."""
+    return set(re.findall(r"(?:const|let|var)\s+(\w+)\s*=\s*[^;\n]*\.value", js_song))
 
 
 class Judge:
@@ -512,6 +541,372 @@ console.log(JSON.stringify(out));
         except Exception as e:
             self.them("G7b", "đọc CSS từ site", False, str(e)[:120])
 
+    # ================= G8 — KỊCH BẢN ÍT CHỮ & 3 BÀI HỌC ẢO ẢNH TEST =================
+    def g8(self):
+        """Cổng G8, thêm 04/10 sau khi dựng js/kichban.js.
+
+        Ba phép kiểm ở đây đều sinh ra từ LỖI THẬT đã xảy ra, không phải phòng xa:
+
+        G8a  Chữ trên mỗi cảnh phải <= 14 từ. Anh Văn yêu cầu "ít chữ", và preset
+             EXPLAINER của motion-video-brief-framework đặt ngưỡng này. Nếu không đo
+             thì "ít chữ" chỉ là cảm giác.
+
+        G8b  Không emoji làm biểu tượng, không ký tự đồng dạng (homoglyph). Ký tự
+             Cyrillic trá hình đã 3 lần lọt vào repo (2 lần trong selector thật làm
+             chết nút, 1 lần trong comment). tools/kiem_noi_dung.py quét theo mã
+             Unicode nên bắt được cả loại mắt thường không phân biệt nổi.
+
+        G8c  Không khai thời lượng gõ tay. Bản đầu ghi "110s ± 10%" trong khi
+             TONG_MS thật là 91s (82,7%, ngoài khoảng chính nó tuyên bố).
+
+        G8d  kichban.js phải nạp TRƯỚC app.js, vì app.js gọi window.MX_KICHBAN.init()
+             khi bấm nút. Đảo thứ tự thì nút kịch bản im lặng không hoạt động.
+        """
+        kb_path = os.path.join(ROOT, "js", "kichban.js")
+        idx_path = os.path.join(ROOT, "index.html")
+        if not os.path.exists(kb_path):
+            self.them("G8a", "kịch bản tồn tại", False, "thiếu js/kichban.js")
+            return
+        kb = doc("js/kichban.js")
+        idx = doc("index.html")
+
+        # G8a — độ dài caption mỗi cảnh, đo bằng regex trên mảng CANH
+        caps = re.findall(r'caption\s*:\s*"([^"]*)"', kb)
+        if not caps:
+            self.them("G8a", "caption <= 14 từ", False, "không tìm thấy caption nào trong CANH")
+        else:
+            dai = [(c, len(c.split())) for c in caps if len(c.split()) > 14]
+            trung_binh = round(sum(len(c.split()) for c in caps) / len(caps), 1)
+            self.them("G8a", f"{len(caps)} caption <= 14 từ (TB {trung_binh} từ/cảnh)",
+                      not dai,
+                      "đạt" if not dai else f"{len(dai)} cảnh vượt: " +
+                      "; ".join(f'"{c}" = {n} từ' for c, n in dai[:4]))
+
+        # G8b — chạy tools/kiem_noi_dung.py làm cổng, không tự kiểm lại logic ở đây
+        # LỖI ĐÃ SỬA (05/10, khi đóng gói cổng vào repo): bản đầu dò
+        # os.path.dirname(ROOT) + "/tools/..." rồi mới tới một đường dẫn TUYỆT ĐỐI viết
+        # cứng vào máy của tác giả. Cả hai chỗ đó đều trỏ RA NGOÀI repo, nên bản trong
+        # repo chạy ở máy khác sẽ không tìm thấy tệp và cổng G8b im lặng mất hiệu lực.
+        # Nay ưu tiên bản NẰM TRONG repo (ROOT/tools), chỉ rơi về bản ngoài nếu tệp
+        # trong repo chưa được đồng bộ — và nói rõ đang dùng bản nào.
+        tool = os.path.join(ROOT, "tools", "kiem_noi_dung.py")
+        if not os.path.exists(tool):
+            tool = os.path.join(os.path.dirname(ROOT), "tools", "kiem_noi_dung.py")
+        try:
+            r = subprocess.run([sys.executable, tool], capture_output=True, text=True, timeout=180)
+            # LỖI ĐÃ SỬA TRONG CHÍNH PHÉP KIỂM NÀY (04/10): bản đầu đếm số dòng bắt đầu
+            # bằng "·" trong output để ra số lỗi. Nhưng kiem_noi_dung.py chỉ in TỐI ĐA
+            # 12 dòng mỗi phép rồi ghi "… và N lỗi nữa", nên G8b báo "12 lỗi" trong khi
+            # con số thật là 40 — tức báo cáo THIẾU 70% số lỗi. Một cổng nghiệm thu mà
+            # đếm sai số lỗi thì không dùng để quyết định được. Nay đọc đúng con số
+            # TỔNG mà tool tự in ra, kèm phân rã theo từng phép K1/K2/K3.
+            m = re.search(r"TỔNG:\s*(\d+)\s*lỗi", r.stdout)
+            n_that = int(m.group(1)) if m else None
+            nhom = re.findall(r"❌\s*(K\d[^:]*):\s*(\d+)\s*lỗi", r.stdout)
+            mau = [l.strip() for l in r.stdout.splitlines() if l.strip().startswith("·")][:3]
+            dat = (r.returncode == 0)
+            self.them("G8b", "không emoji / không homoglyph (tools/kiem_noi_dung.py)", dat,
+                      "đạt — 0 lỗi" if dat else
+                      (f"{n_that if n_that is not None else '?'} lỗi "
+                       f"[{'; '.join(f'{k.strip()}={v}' for k, v in nhom)}] "
+                       + ("vd: " + " | ".join(x[:60] for x in mau) if mau else "")))
+        except Exception as e:
+            self.them("G8b", "không emoji / không homoglyph", False, f"{type(e).__name__}: {e}"[:120])
+
+        # G8c — không khai thời lượng cứng cho NGƯỜI DÙNG xem.
+        # SỬA LẠI CHO ĐÚNG BẢN CHẤT (04/10): bản đầu quét nguyên tệp kb + idx nên bắt
+        # luôn chữ "110s" nằm trong COMMENT ghi chú lỗi cũ ("bản đầu ghi cứng 110s…").
+        # Comment mô tả lịch sử KHÔNG phải tuyên bố với người xem; flag nó sẽ khiến
+        # người sau phải xoá mất ghi chú bài học — hại nhiều hơn lợi. Nay chỉ quét
+        # phần CHỮ HIỂN THỊ: bỏ <!-- --> trong HTML và bỏ /* */ + // trong JS.
+        idx_hien = re.sub(r"<!--.*?-->", " ", idx, flags=re.S)
+        kb_hien = re.sub(r"/\*.*?\*/", " ", kb, flags=re.S)
+        kb_hien = re.sub(r"//[^\n]*", " ", kb_hien)
+        cung = re.findall(r"\b(\d{2,3})\s*(?:giây|s\b)", idx_hien + "\n" + kb_hien)
+        self.them("G8c", "thời lượng hiển thị lấy từ dữ liệu, không gõ tay",
+                  not cung,
+                  "đạt — không thấy số giây cứng trong nội dung hiển thị" if not cung else
+                  f"thấy số giây gõ tay: {sorted(set(cung))} — phải để TONG_MS tự cộng từ dur")
+
+        # G8d — thứ tự nạp script
+        a, b = idx.find("js/kichban.js"), idx.find("js/app.js")
+        self.them("G8d", "kichban.js nạp trước app.js",
+                  a > -1 and b > -1 and a < b,
+                  f"kichban @{a}, app @{b}" if (a > -1 and b > -1) else "thiếu một trong hai thẻ script")
+
+        # G8e — section và nút phải có thật, nếu không thì kịch bản không mở được
+        self.them("G8e", "có section #v-kichban + #kb-host + nút #btn-kichban",
+                  all(x in idx for x in ('id="v-kichban"', 'id="kb-host"', 'id="btn-kichban"')),
+                  "đạt" if all(x in idx for x in ('id="v-kichban"', 'id="kb-host"', 'id="btn-kichban"'))
+                  else "thiếu một trong ba id — nút sẽ không mở được kịch bản")
+
+    # ================= G9 — CHẾ ĐỘ ÍT CHỮ & BẢNG RESPONSIVE =================
+    def g9(self):
+        """Cổng G9, thêm 04/10 sau HAI BUG THẬT đo được ở 390px.
+
+        G9a  Chế độ ít chữ không được ẩn phần tử CHỨC NĂNG.
+             Bản đầu viết `body.it-chu .nho{display:none}` mà class .nho gắn trên 12 NÚT
+             (kể cả chính nút #btn-it-chu), .tagline gắn trên #lbl-user và #nm-yccd,
+             .legend là chú giải màu của biểu đồ. Bật ít chữ là mất nút tắt, mất mã học
+             sinh, mất dòng "Yêu cầu cần đạt" và mất chú giải biểu đồ.
+             Phép kiểm này đòi CSS phải có LƯỚI AN TOÀN liệt kê tường minh các phần tử
+             đó với display:revert — không tin vào danh sách :not() vì dễ bị sửa hỏng.
+
+        G9b  Ở màn hình hẹp, bảng phải tự cuộn ngang.
+             Đo thật ở 390px: docW=425 > vw=390, 20 phần tử TRAN_NGANG, đều là <table>
+             của Trạm 0 (4 cột) và bảng A/B Trạm 1 (5 cột). Nguyên nhân: table{width:100%}
+             không chặn được độ rộng tối thiểu của nội dung. Giáo viên chiếu bằng điện
+             thoại sẽ thấy chữ bị cắt mép phải.
+        """
+        css = doc("css/style.css")
+
+        # G9a — lưới an toàn phải có đủ các phần tử chức năng
+        can_co = ["body.it-chu button", "body.it-chu .btn", "body.it-chu .chip",
+                  "body.it-chu .legend", "body.it-chu .phanhoi", "body.it-chu #lbl-user",
+                  "body.it-chu #nm-yccd"]
+        thieu = [c for c in can_co if c not in css]
+        m = re.search(r"body\.it-chu button[^{]*\{([^}]*)\}", css)
+        co_revert = bool(m and re.search(r"display\s*:\s*revert", m.group(1)))
+        self.them("G9a", "ít chữ không ẩn phần tử chức năng (nút/chip/legend/lbl-user/yccd)",
+                  not thieu and co_revert,
+                  ("lưới an toàn đủ " + str(len(can_co)) + " selector + display:revert")
+                  if (not thieu and co_revert) else
+                  ("thiếu selector: " + str(thieu) if thieu
+                   else "có selector nhưng KHÔNG có display:revert"))
+
+        # G9b — media query hẹp phải cho bảng cuộn ngang
+        mq = re.findall(r"@media\s*\(max-width:\s*(\d+)px\)\s*\{(.*?)\n\}", css, re.S)
+        hep = [(int(w), b) for w, b in mq if int(w) <= 640]
+        ok_bang = False
+        for w, b in hep:
+            if re.search(r"table\s*\{[^}]*display\s*:\s*block", b) and \
+               re.search(r"table\s*\{[^}]*overflow-x\s*:\s*auto", b):
+                ok_bang = True
+                break
+        self.them("G9b", "bảng tự cuộn ngang ở màn hình <=640px", ok_bang,
+                  ("tìm thấy table{display:block;overflow-x:auto} trong @" + str(hep[0][0]) + "px")
+                  if ok_bang else
+                  ("không thấy quy tắc bảng cuộn ngang trong media query hẹp; "
+                   "các media query hiện có: " + str([w for w, _ in mq])))
+
+    # ============ G10 — NGÔN NGỮ: không tiếp thị trong giao diện học sinh ============
+    def g10(self):
+        r"""Cổng G10, thêm 05/10 theo chỉ đạo anh Văn: "mấy cái chữ tâng bốc này bỏ đi,
+        cứ tập trung vào mục đích là sản phẩm để học trò học về AI".
+
+        PHẠM VI HẸP VÀ CÓ LÍ DO — đây là chỗ dễ làm hỏng nhất nếu quét rộng:
+          Chỉ quét index.html, data/meta.js, js/kichban.js, js/app.js — tức khung giao
+          diện và lời kịch bản. KHÔNG quét data/cauhoi*.js và js/tinhhuong.js, vì hai
+          nơi đó chứa claim SAI có chủ đích để học sinh bắt lỗi, ví dụ "học sinh miền
+          Trung luôn giỏi tư duy thuật toán hơn hẳn học sinh miền Bắc" (thiên kiến vùng
+          miền cài sẵn) hay "dịch máy đạt 99,27%" (số liệu bịa cài sẵn). Quét chúng sẽ
+          báo lỗi và dẫn tới sửa mất nội dung bài học. Nên danh sách tệp là TƯỜNG MINH.
+
+          Cùng lí do đó, từ cấm phải là CẢ CỤM chứ không phải một từ đơn. Quét từ đơn
+          "hoàn toàn" sẽ bắt oan câu "một số câu hoàn toàn đúng" ở index.html:212 — đó
+          là nội dung dạy học sinh phân biệt câu đúng với câu có lỗi.
+
+        G10a  ngôn ngữ tiếp thị đã loại bỏ không được quay lại
+        G10b  tên hiển thị là định danh môn/lớp, không phải khẩu hiệu
+        G10c  khẩu hiệu cũ "Soi AI để hiểu AI" = 0 trong mã sống (comment ghi chú được phép)
+        G10d  phiên bản ở chân trang và trong data/meta.js phải khớp
+        G10e  kịch bản không nói sai số trạm (đã từng ghi "9 trạm" trong khi nhà máy có 7)
+        """
+        idx = doc("index.html")
+        meta = doc("data/meta.js")
+        kb = doc("js/kichban.js")
+
+        def chu_hien_thi(s):
+            """Chỉ giữ chữ người dùng đọc: bỏ thẻ, bỏ comment HTML."""
+            s = re.sub(r"<!--.*?-->", " ", s, flags=re.S)
+            s = re.sub(r"<[^>]*>", " ", s)
+            return s
+
+        idx_txt = chu_hien_thi(idx)
+
+        # (nhóm, [cụm từ cấm]) — đều là cụm, không có từ đơn, để không bắt oan nội dung dạy học
+        CAM = [
+            ("so sánh với sản phẩm khác",
+             ["khác các ứng dụng", "khác các công cụ", "hơn hẳn các công cụ"]),
+            ("tính từ tuyệt đối / tự khen",
+             ["Tiếng Việt hoàn toàn", "tuyệt vời", "duy nhất trên thị trường",
+              "đẳng cấp", "số một"]),
+            ("tiếp thị giá và đối tác",
+             ["không thu phí", "nhà cung cấp", "miễn phí hoàn toàn"]),
+            ("giải thưởng trong giao diện học sinh",
+             ["dự thi", "Giải thưởng Tiên phong", "Bảng B"]),
+            ("lợi ích giáo viên đặt ở chỗ học sinh đọc",
+             ["thầy/cô không phải chấm", "giáo viên không phải chấm"]),
+            ("khẩu hiệu",
+             ["Soi AI để hiểu AI", "không hỏi AI"]),
+        ]
+        vi_pham = []
+        for nhom, tus in CAM:
+            for t in tus:
+                n = idx_txt.count(t)
+                if n:
+                    vi_pham.append(nhom + ": '" + t + "' x" + str(n))
+        self.them("G10a", "không còn ngôn ngữ tiếp thị trong index.html (6 nhóm, 17 cụm)",
+                  not vi_pham,
+                  "; ".join(vi_pham) if vi_pham else "sạch cả 6 nhóm")
+
+        TEN = "Phòng thực hành Trí tuệ nhân tạo lớp 10"
+        du = (TEN in idx) and (TEN in meta)
+        self.them("G10b", "tên hiển thị là định danh môn/lớp", du,
+                  "có trong index.html và data/meta.js" if du
+                  else "thiếu ở index.html hoặc data/meta.js")
+
+        # G10c: khẩu hiệu cũ — bỏ comment rồi mới đếm, vì comment ghi lại bài học là hợp lệ
+        khau = "Soi AI để hiểu AI"
+        con = 0
+        for ten_f in ("index.html", "data/meta.js", "js/kichban.js", "js/app.js"):
+            s = doc(ten_f)
+            s = re.sub(r"/\*.*?\*/", " ", s, flags=re.S)
+            s = re.sub(r"//[^\n]*", " ", s)
+            s = re.sub(r"<!--.*?-->", " ", s, flags=re.S)
+            con += s.count(khau)
+        self.them("G10c", "khẩu hiệu cũ = 0 trong mã sống", con == 0,
+                  "sạch" if con == 0 else "còn " + str(con) + " chỗ")
+
+        m_footer = re.search(r"Phiên bản\s+([\d.]+)", idx)
+        m_meta = re.search(r'phienBan\s*:\s*"([\d.]+)"', meta)
+        v1 = m_footer.group(1) if m_footer else None
+        v2 = m_meta.group(1) if m_meta else None
+        self.them("G10d", "phiên bản chân trang khớp data/meta.js",
+                  v1 is not None and v1 == v2,
+                  "chân trang " + str(v1) + " / meta.js " + str(v2))
+
+        self.them("G10e", "kịch bản ghi đúng số trạm của nhà máy",
+                  ("9 trạm" not in kb) and ("7 trạm" in kb),
+                  "đúng: 7 trạm" if "9 trạm" not in kb
+                  else "sai: vẫn ghi '9 trạm' (nhà máy có 7 trạm, kịch bản có 9 cảnh)")
+
+    # ============ G11 HAI MODULE MỨC 3 MỚI (bt13.js, bt09.js) ============
+    def g11(self):
+        """Cổng G11, thêm 05/10/2026 theo phát hiện của reviewer độc lập trên PR #1.
+
+        Reviewer chạy `grep -c "bt13.js" tools/nghiem_thu.py` và `grep -c "bt09.js" …`
+        — cả hai trả 0. Nghĩa là hai tệp mới thêm vào sản phẩm, trong đó có gọi
+        innerHTML và có gọi icon, KHÔNG được cổng nào kiểm. Một tệp không nằm trong
+        cổng thì mọi lỗi trong nó đều được tính là "đã kiểm" theo nghĩa sai.
+
+        Bốn phép kiểm, mỗi phép sinh từ một lớp lỗi THẬT đã xảy ra trong repo này:
+          G11a  nạp trong index.html và nạp TRƯỚC app.js — vì app.js gọi init() của
+                cả hai; nạp sau là ReferenceError lúc bấm nút.
+          G11b  mọi svgIco("tên") trong MÃ SỐNG phải trỏ tới symbol có thật — đúng
+                lớp lỗi đã xảy ra ở js/duDoan.js với svgIco("target"), và phải đếm
+                trên mã sống vì comment cũng chứa chuỗi ấy.
+          G11c  KHÔNG có biến chứa chữ học sinh (.value) nào đi vào innerHTML — đây
+                là điều cả hai tệp khẳng định trong ghi chú; phép kiểm bắt khẳng định
+                đó phải tự chứng minh được, không tin lời ghi chú.
+          G11d  con số "N chỗ innerHTML" ghi trong comment của mỗi tệp phải KHỚP số
+                đếm thật. Phép kiểm này bắt được lỗi thật ngay lần chạy đầu: bt13.js
+                ghi 8 trong khi mã sống có 9, bt09.js ghi 7 trong khi có 10.
+        """
+        print("\n=== G11 HAI MODULE MỨC 3 MỚI (bt13.js, bt09.js) ===")
+        idx = doc("index.html")
+        sprite = set(re.findall(r'symbol id="(i-[\w-]+)"', idx))
+        MODULE = ["js/bt13.js", "js/bt09.js"]
+
+        # ---- G11a: nạp trong index.html, TRƯỚC app.js ----
+        vi_tri = {m.group(1): m.start() for m in re.finditer(r'<script src="([^"]+)"', idx)}
+        app_pos = vi_tri.get("js/app.js")
+        thieu_nap = [f for f in MODULE if f not in vi_tri]
+        sau_app = [f for f in MODULE
+                   if f in vi_tri and app_pos is not None and vi_tri[f] > app_pos]
+        self.them("G11a", "bt13.js + bt09.js nạp trong index.html TRƯỚC app.js",
+                  not thieu_nap and not sau_app,
+                  (f"thiếu trong index.html: {thieu_nap}" if thieu_nap else
+                   (f"nạp SAU app.js: {sau_app}" if sau_app else
+                    f"{len(MODULE)} tệp, thứ tự đúng (app.js @{app_pos})")))
+
+        # ---- G11b (MỌI js/*.js) + G11c + G11d (2 module mới) ----
+        # VÌ SAO MỞ RỘNG RA MỌI TỆP js (05/10, reviewer độc lập chỉ ra tiếp sau lần vá
+        # đầu): bản đầu của G11b chỉ phủ js/bt13.js và js/bt09.js. Nhưng lớp lỗi
+        # "svgIco gọi tên không có trong sprite" đã TỪNG XẢY RA THẬT ở js/duDoan.js với
+        # svgIco("target") — một tệp KHÔNG nằm trong 2 module mới. Một cổng bắt được
+        # đúng 1 ca mà không bắt được LỚP lỗi thì lần sau lỗi tái sinh ở tệp khác là
+        # cổng lại mù, và cảnh báo "đã kiểm" trở thành sai. Nay quét toàn bộ js/*.js.
+        tat_ca_js = sorted("js/" + x
+                           for x in os.listdir(os.path.join(ROOT, "js"))
+                           if x.endswith(".js"))
+        ten_icon_moi_tep = {}
+        mo_coi_toan_bo = []
+        for f in tat_ca_js:
+            song_f = than_ma_song(doc(f))
+            ten_f = set(re.findall(r'svgIco\(\s*"([\w-]+)"\s*\)', song_f))
+            if not ten_f:
+                continue
+            ten_icon_moi_tep[f] = ten_f
+            xau_f = sorted(t for t in ten_f if ("i-" + t) not in sprite)
+            if xau_f:
+                mo_coi_toan_bo.append(f"{f}: {xau_f}")
+
+        tong_icon, tong_css = sum(len(v) for v in ten_icon_moi_tep.values()), 0
+        van_de = []
+        for f in MODULE:
+            raw = doc(f)
+            song = than_ma_song(raw)
+
+            # G11c — chữ học sinh không được đi vào innerHTML
+            bien = bien_chua_chu_hoc_sinh(song)
+            xau = []
+            for m in re.finditer(r"\.innerHTML\s*=", song):
+                dau = m.end()
+                cuoi = song.find(";", dau)
+                if cuoi < 0 or cuoi - dau > 600:
+                    cuoi = min(dau + 600, len(song))
+                seg = song[dau:cuoi + 1]
+                for b in bien:
+                    if re.search(r"[+]\s*" + re.escape(b) + r"\b", seg) or \
+                       re.search(r"\b" + re.escape(b) + r"\s*[+]", seg) or \
+                       re.fullmatch(r"\s*=\s*" + re.escape(b) + r"\s*;", seg):
+                        dong = song[:m.start()].count("\n") + 1
+                        xau.append(f"{f}:{dong} biến '{b}' đi vào innerHTML")
+            tong_css += len(re.findall(r"\.innerHTML\s*=", song))
+
+            # G11d — con số ghi trong comment phải khớp số đếm thật
+            n_that = len(re.findall(r"\.innerHTML\s*=", song))
+            m_khai = re.search(r"\*\*(\d+)\s*chỗ\*\*", raw)
+            khai = int(m_khai.group(1)) if m_khai else None
+            if khai is None:
+                van_de.append(f"{f}: không tìm thấy con số '**N chỗ**' trong ghi chú")
+            elif khai != n_that:
+                van_de.append(f"{f}: ghi chú khai {khai} chỗ, mã sống có {n_that} chỗ")
+
+            van_de.extend(xau)
+
+        ten_khac_nhau = set().union(*ten_icon_moi_tep.values()) if ten_icon_moi_tep else set()
+        self.them("G11b", "mọi svgIco trong MỌI js/*.js trỏ symbol có thật (đếm trên mã sống)",
+                  not mo_coi_toan_bo,
+                  f"{len(tat_ca_js)} tệp js đã quét · {tong_icon} lượt gọi "
+                  f"({len(ten_khac_nhau)} tên khác nhau) · {len(sprite)} symbol · 0 mồ côi"
+                  if not mo_coi_toan_bo
+                  else "; ".join(mo_coi_toan_bo))
+        self.them("G11c", "chữ học sinh KHÔNG đi vào innerHTML (bt13/bt09)",
+                  not any("đi vào innerHTML" in v for v in van_de),
+                  f"{tong_css} chỗ innerHTML đã rà, 0 chỗ chèn biến .value"
+                  if not any("đi vào innerHTML" in v for v in van_de)
+                  else "; ".join(v for v in van_de if "đi vào innerHTML" in v))
+        self.them("G11d", "con số innerHTML ghi trong ghi chú khớp mã sống",
+                  not any(("ghi chú khai" in v or "không tìm thấy con số" in v) for v in van_de),
+                  "số ghi chú = số đo được ở cả 2 tệp"
+                  if not any(("ghi chú khai" in v or "không tìm thấy con số" in v) for v in van_de)
+                  else "; ".join(v for v in van_de
+                                 if "ghi chú khai" in v or "không tìm thấy con số" in v))
+
+        # ---- G11e: host id của 2 module mới phải có trong index.html ----
+        # Thiếu sót #2 reviewer nêu: cổng cũ không nhắc tới kt-bt13 / dt-bt09. Hai id này
+        # là chỗ app.js gắn kết quả của module vào trang. Một trong hai bị đổi tên hoặc
+        # bị xoá thì module chạy xong mà KHÔNG hiện gì — im lặng, không exception, nên
+        # không phép kiểm runtime nào bắt được. Cổng tĩnh là chỗ duy nhất bắt được nó.
+        host = {"js/bt13.js": "kt-bt13", "js/bt09.js": "dt-bt09"}
+        thieu_host = [f"{f} -> #{i}" for f, i in host.items() if f'id="{i}"' not in idx]
+        self.them("G11e", "host id kt-bt13 + dt-bt09 có trong index.html",
+                  not thieu_host,
+                  f"{len(host)} host id đã kiểm: {sorted(host.values())}"
+                  if not thieu_host else "thiếu: " + ", ".join(thieu_host))
+
     def tong_ket(self):
         print("\n" + "=" * 72)
         dat = sum(1 for k in self.kq if k["dat"])
@@ -537,7 +932,7 @@ console.log(JSON.stringify(out));
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
-    for g in ["G1", "G2", "G3", "G4", "G6", "G7"]:
+    for g in ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11"]:
         if not chi or g in chi:
             getattr(j, g.lower())()
     return j.tong_ket()

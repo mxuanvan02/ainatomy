@@ -1104,13 +1104,22 @@
 
     $("btn-ve-home").onclick = ()=>hien("v-home");
     $("btn-lab").onclick = ()=>{ hien("v-lab"); labBuoc(1); };
-    $("btn-dautruong").onclick = ()=>{ hien("v-dautruong"); dtBatDau("luyen"); };
+    $("btn-dautruong").onclick = ()=>{ hien("v-dautruong"); dtBatDau("luyen");
+      /* BT-09 Mức 3 nằm cùng view với Đấu trường nhưng ở tệp riêng js/bt09.js, vì phần
+       * này có trạng thái riêng (nhớ loại lỗi nào đã ghi) còn Đấu trường chỉ chạy phiên.
+       * Gọi ở đây để mỗi lần mở view đều dựng lại với đúng mã học sinh đang dùng. */
+      const _b09 = window.MX_BT09; if(_b09) _b09.init(maHS); };
     $("dt-btn-luyen").onclick = ()=>dtBatDau("luyen");
     $("dt-btn-pre").onclick   = ()=>dtBatDau("pre");
     $("dt-btn-post").onclick  = ()=>dtBatDau("post");
     $("btn-baocao").onclick = ()=>{ hien("v-baocao"); veBaoCao(); };
     $("btn-logic").onclick = ()=>{ hien("v-logic"); window.MX_LOGIC.init(maHS); };
-    $("btn-kienthuc").onclick = ()=>{ hien("v-kienthuc"); window.MX_KIEN_THUC.init(maHS); };
+    $("btn-kienthuc").onclick = ()=>{ hien("v-kienthuc"); window.MX_KIEN_THUC.init(maHS);
+      /* BT-13 Mức 2 + Mức 3 (10.C2.3) nằm trong cùng view Kiến thức nền nhưng ở tệp
+       * riêng js/bt13.js, vì phần này có trạng thái (nhớ lần kiểm tra đầu của từng
+       * tình huống) còn js/kienthuc.js chỉ render bảng tĩnh. Gọi ở đây để mỗi lần mở
+       * view đều dựng lại phần tình huống với đúng mã học sinh đang dùng. */
+      const _b13 = window.MX_BT13; if(_b13) _b13.init(maHS); };
     $("btn-tinhhuong").onclick = ()=> thMo();
     /* Nút kịch bản có thể chưa tồn tại nếu index.html bị revert một phần, nên kiểm
      * null thay vì gán thẳng như các nút cũ — gán thẳng sẽ ném lỗi và CHẶN toàn bộ

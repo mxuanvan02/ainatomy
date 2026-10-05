@@ -227,6 +227,14 @@
       </p>
       <div id="dt-kq" class="phanhoi" style="display:none"></div>
     </div>
+
+    <div class="card">
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-lightbulb"/></svg> Mức 3 — em tự cài một lỗi cho bạn bắt <span class="tagline">BT-09 · 10.B2.1</span></h2>
+      <p class="de-bai">Phần trên là em bắt lỗi của máy. Phần này đảo lại: em tự viết một câu
+        trả lời của AI có cài <b>đúng một lỗi</b>, rồi đưa cho một bạn cùng lớp bắt. Bạn bắt được
+        thì bài của em đạt.</p>
+      <div id="dt-bt09"></div>
+    </div>
   </section>
 
   <!-- ===== TẦNG 3 ===== -->
@@ -323,24 +331,32 @@
     </div>
 
     <div class="card">
-      <h3>3. AI tạo sinh khác AI phân loại / dự đoán thế nào? <span class="tagline">10.C3.3</span></h3>
+      <h3>3. Xếp ứng dụng AI vào đúng nhóm tính năng <span class="tagline">10.C2.3</span></h3>
+      <p class="chu2">Sáu tình huống AI hỗ trợ việc học. Với mỗi tình huống, em chọn nhóm tính năng
+        rồi nói rõ <b>đầu vào</b> và <b>đầu ra</b> của hệ thống. Cuối mục là phần tự tìm một ứng dụng
+        AI em đang dùng trong việc học của chính mình.</p>
+      <div id="kt-bt13"></div>
+    </div>
+
+    <div class="card">
+      <h3>4. AI tạo sinh khác AI phân loại / dự đoán thế nào? <span class="tagline">10.C3.3</span></h3>
       <div id="kt-sosanh"></div>
     </div>
 
     <div class="card">
-      <h3>4. Một prompt tốt cần những gì? <span class="tagline">10.C3.1</span></h3>
+      <h3>5. Một prompt tốt cần những gì? <span class="tagline">10.C3.1</span></h3>
       <div id="kt-tieuchi"></div>
     </div>
 
     <div class="card">
-      <h3>5. Thực hành viết prompt <span class="tagline">10.C3.2</span></h3>
+      <h3>6. Thực hành viết prompt <span class="tagline">10.C3.2</span></h3>
       <p class="chu2">Em tự viết prompt cho tình huống, hệ thống sẽ đối chiếu với các tiêu chí bắt buộc
         và chỉ ra em còn thiếu gì.</p>
       <div id="kt-prompt"></div>
     </div>
 
     <div class="card">
-      <h3>6. Kiểm tra nhanh <span class="tagline">tự chấm</span></h3>
+      <h3>7. Kiểm tra nhanh <span class="tagline">tự chấm</span></h3>
       <div id="kt-quiz"></div>
     </div>
   </section>
@@ -656,6 +672,12 @@
 <script src="data/cauhoi_moRong.js"></script>
 <script src="data/bai5_logic.js"></script>
 <script src="data/kienthuc.js"></script>
+<!-- BT-13 Mức 2 + Mức 3 (YCCĐ 10.C2.3): xếp ứng dụng AI vào nhóm tính năng, nói rõ
+     đầu vào/đầu ra. Nạp TRƯỚC app.js vì app.js gọi window.MX_BT13.init(). -->
+<script src="js/bt13.js"></script>
+<!-- BT-09 Mức 3 (YCCĐ 10.B2.1): học sinh tự soạn một câu trả lời AI có cài đúng một lỗi.
+     Đọc `dauHieu` của 5 loại lỗi trong data/meta.js nên phải nạp SAU data/meta.js. -->
+<script src="js/bt09.js"></script>
 <script src="js/engine.js"></script>
 <script src="js/lab.js"></script>
 <script src="js/logic.js"></script>
