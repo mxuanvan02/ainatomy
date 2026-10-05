@@ -123,6 +123,20 @@ header.top .wrap{display:flex;align-items:center;gap:12px;flex-wrap:wrap;padding
 .nm-tram.xong{border-color:var(--dung);background:var(--nenDung)}
 .nm-tram.xong .an-duy{color:var(--dung)}
 .nm-mui{align-self:center;color:var(--chu2);font-size:18px;flex:0 0 auto}
+/* ===== MỐC TABLET 768px (P2-6) =====
+ * VÌ SAO (06/10): Sheet thiết kế P2-6 đòi bố cục thích ứng ở các mốc quanh 768px
+ * (tablet dọc) và 1024px (desktop nhỏ) — trước đây CSS chỉ có một mốc 640px cho điện
+ * thoại. Khối này ĐẶT TRƯỚC khối 640px bên dưới có chủ ý: ở ≤640px cả hai cùng áp
+ * dụng, và theo thứ tự CSS thì khối 640px (đứng sau) thắng ở các selector trùng —
+ * giữ nguyên bố cục điện thoại đã đo được, không bị khối tablet đè.
+ * Mỗi luật dưới đây là thay đổi bố cục THẬT, không phải luật rỗng để đếm mốc. */
+@media (max-width:768px){
+  .wrap{padding:12px}
+  .nm-tram{flex:1 1 30%;min-width:100px}
+  .kpi .so{font-size:26px}
+  .g3{grid-template-columns:repeat(auto-fit,minmax(200px,1fr))}
+  .legend{gap:10px;font-size:12.5px}
+}
 @media (max-width:640px){ .nm-mui{display:none} .nm-tram{flex:1 1 45%} }
 
 /* ===== lưới, kpi ===== */
@@ -397,6 +411,14 @@ code{background:var(--nen2);border:1px solid var(--vienNhat);border-radius:5px;p
   table{display:block;overflow-x:auto;-webkit-overflow-scrolling:touch;max-width:100%}
   th,td{padding:6px 7px;font-size:13px}
   .card{overflow-x:hidden}
+}
+/* ===== MỐC DESKTOP NHỎ 1024px (P2-6) =====
+ * Từ 1024px trở lên: nới khung nội dung thêm 80px (1000 -> 1080) vì màn desktop nhỏ
+ * vẫn còn dư hai bên mép; trạm nhà máy trở lại co giãn theo nội dung gốc. Luật thật,
+ * đo được bằng thay đổi độ rộng .wrap, không phải mốc rỗng. */
+@media (min-width:1024px){
+  .wrap{max-width:1080px}
+  .nm-tram{flex:1 1 120px}
 }
 
 
