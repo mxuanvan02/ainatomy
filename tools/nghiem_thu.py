@@ -37,7 +37,7 @@ RANH GIỚI (không được vi phạm — kháng Goodhart):
   * Không hiển thị "điểm"/"xếp loại" cho học sinh (Khung 2422 phần VI).
   * Không thu họ tên/ảnh/dữ liệu cá nhân.
 """
-import json, os, re, subprocess, sys, urllib.request, urllib.parse
+import datetime, json, os, re, subprocess, sys, urllib.request, urllib.parse
 
 ROOT = "/home/hitokiri/ieeai2026/soi-ai"
 SITE = "https://mxuanvan02.github.io/soi-ai"
@@ -91,6 +91,11 @@ def bien_chua_chu_hoc_sinh(js_song):
 class Judge:
     def __init__(self):
         self.kq = []
+        # Hai cờ phục vụ việc CHẶN ghi tệp bằng chứng phần (xem tong_ket):
+        #   day_du        — lần chạy này có phải chạy ĐẦY ĐỦ mọi nhóm không
+        #   nhom_da_chay  — danh sách nhóm thực sự đã chạy, để ghi vào sidecar meta
+        self.day_du = False
+        self.nhom_da_chay = []
 
     def them(self, ma, ten, dat, chi_tiet=""):
         self.kq.append({"ma": ma, "ten": ten, "dat": bool(dat), "chi_tiet": chi_tiet})
@@ -924,15 +929,49 @@ console.log(JSON.stringify(out));
             byG[g][1] += 1
         print("Theo nhóm:", " · ".join(f"{g}:{v[0]}/{v[1]}" for g, v in sorted(byG.items())))
         print("=" * 72)
-        json.dump(self.kq, open("/home/hitokiri/ieeai2026/judge_result.json", "w"),
-                  ensure_ascii=False, indent=1)
+
+        # ---- GHI TỆP BẰNG CHỨNG — CHỈ KHI CHẠY ĐẦY ĐỦ ----
+        # BUG ĐÃ SỬA (05/10), loại im lặng và nguy hiểm: bản cũ ghi đè judge_result.json
+        # ở MỌI lần chạy, kể cả `nghiem_thu.py G11` (chạy đúng MỘT nhóm). Hậu quả thật:
+        # sau khi chạy lọc 1 nhóm, tệp bằng chứng chỉ còn 5 mục, và công cụ cập nhật
+        # Google Sheet đọc tệp đó rồi định ghi "Tiêu chí đạt = 5/5" trong khi cổng thật
+        # là 52/52. Không có thông báo lỗi nào — tệp vẫn đúng định dạng, chỉ sai nội
+        # dung. Đây đúng lớp lỗi "số đúng định dạng nhưng của bản khác" phải chặn ở gốc.
+        # LUẬT: lần chạy LỌC không được phép ghi tệp bằng chứng; mọi tệp bằng chứng phải
+        # kèm sidecar meta để bên đọc TỪ CHỐI ĐƯỢC nếu nó là bản phần.
+        BC = "/home/hitokiri/ieeai2026/judge_result.json"
+        META = "/home/hitokiri/ieeai2026/judge_result.meta.json"
+        if self.day_du:
+            json.dump(self.kq, open(BC, "w"), ensure_ascii=False, indent=1)
+            commit = subprocess.run(["git", "-C", ROOT, "rev-parse", "HEAD"],
+                                    capture_output=True, text=True).stdout.strip()[:12]
+            json.dump({
+                "day_du": True,
+                "nhom_da_chay": self.nhom_da_chay,
+                "so_tieu_chi": len(self.kq),
+                "so_dat": dat,
+                "commit": commit,
+                "luc": datetime.datetime.now().isoformat(timespec="seconds"),
+            }, open(META, "w"), ensure_ascii=False, indent=1)
+            print(f"Đã ghi bằng chứng: judge_result.json ({len(self.kq)} tiêu chí) "
+                  f"+ judge_result.meta.json (commit {commit})")
+        else:
+            print(f"KHÔNG ghi judge_result.json — lần chạy này LỌC nhóm "
+                  f"{self.nhom_da_chay}, không phải chạy đầy đủ.")
+            print("  Lý do: tệp bằng chứng phần sẽ làm mọi báo cáo đọc nó bị sai âm thầm.")
+            print("  Muốn cập nhật bằng chứng: chạy `python3 tools/nghiem_thu.py` không đối số.")
         return 0 if not loi else 1
 
 
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
-    for g in ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11"]:
+    NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11"]
+    j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
+    # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
+    # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.
+    j.day_du = not chi and j.nhom_da_chay == NHOM
+    for g in NHOM:
         if not chi or g in chi:
             getattr(j, g.lower())()
     return j.tong_ket()
