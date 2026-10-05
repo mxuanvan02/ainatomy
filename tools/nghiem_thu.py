@@ -20,6 +20,15 @@ GOAL (7 tiêu chí):
   G6 OFFLINE      — không có request ra mạng nào bắt buộc (font CDN, thư viện CDN);
                     three.js và icon đều nằm trong repo.
   G7 DEPLOY       — Pages trả 200 cho mọi asset mới, đúng commit.
+  G8 KỊCH BẢN ẢO ẢNH — caption <= 14 từ, 0 emoji/homoglyph, thời lượng lấy từ dữ liệu.
+  G9 ÍT CHỮ       — chế độ "ít chữ" không được ẩn phần tử CHỨC NĂNG.
+  G10 KHÔNG TIẾP THỊ — ngôn ngữ tiếp thị đã bỏ không được quay lại; tên hiển thị là
+                    định danh môn/lớp; phiên bản chân trang khớp data/meta.js.
+  G11 HAI MODULE MỨC 3 — bt13.js và bt09.js phải nạp trước app.js, mọi icon chúng gọi
+                    phải có thật trong sprite, và KHÔNG có biến nào chứa chữ học sinh
+                    đi vào innerHTML. Thêm 05/10 vì reviewer độc lập trên PR #1 phát
+                    hiện cổng cũ KHÔNG nhắc tới hai tệp này lần nào: tệp không nằm
+                    trong cổng thì mọi lỗi trong nó đều là "đã kiểm" theo nghĩa sai.
 
 RANH GIỚI (không được vi phạm — kháng Goodhart):
   * Không xoá/nới bất kì phép kiểm nào trong file này để pass.
@@ -57,6 +66,26 @@ def ratio(a, b):
 def doc(p):
     with open(os.path.join(ROOT, p), encoding="utf-8") as f:
         return f.read()
+
+
+def than_ma_song(js):
+    """Bỏ comment khỏi một tệp JS để chỉ còn MÃ SỐNG.
+
+    VÌ SAO CẦN (bài học thật, 05/10): phép grep thô trên tệp còn comment sẽ khớp cả
+    CHỮ TRONG GHI CHÚ. Tệp js/bt13.js có dòng ghi chú viết `svgIco("tên")` như một ví
+    dụ mô tả quy tắc — reviewer độc lập grep thô rồi kết luận tệp gọi một icon không
+    tồn tại và đề nghị CHẶN MERGE. Đó là dương tính giả toàn tập: nó khiến người đọc
+    đi sửa thứ không hỏng, và tệ nhất là làm mất lòng tin vào các cảnh báo thật.
+    Mọi phép đếm dấu hiệu trong mã JS phải chạy trên mã sống, không chạy trên comment.
+    """
+    js = re.sub(r"/\*.*?\*/", " ", js, flags=re.S)
+    js = re.sub(r"(?m)//[^\n]*", " ", js)
+    return js
+
+
+def bien_chua_chu_hoc_sinh(js_song):
+    """Tên các biến được gán từ `.value` — tức chữ do học sinh gõ vào ô nhập."""
+    return set(re.findall(r"(?:const|let|var)\s+(\w+)\s*=\s*[^;\n]*\.value", js_song))
 
 
 class Judge:
@@ -752,6 +781,104 @@ console.log(JSON.stringify(out));
                   "đúng: 7 trạm" if "9 trạm" not in kb
                   else "sai: vẫn ghi '9 trạm' (nhà máy có 7 trạm, kịch bản có 9 cảnh)")
 
+    # ============ G11 HAI MODULE MỨC 3 MỚI (bt13.js, bt09.js) ============
+    def g11(self):
+        """Cổng G11, thêm 05/10/2026 theo phát hiện của reviewer độc lập trên PR #1.
+
+        Reviewer chạy `grep -c "bt13.js" tools/nghiem_thu.py` và `grep -c "bt09.js" …`
+        — cả hai trả 0. Nghĩa là hai tệp mới thêm vào sản phẩm, trong đó có gọi
+        innerHTML và có gọi icon, KHÔNG được cổng nào kiểm. Một tệp không nằm trong
+        cổng thì mọi lỗi trong nó đều được tính là "đã kiểm" theo nghĩa sai.
+
+        Bốn phép kiểm, mỗi phép sinh từ một lớp lỗi THẬT đã xảy ra trong repo này:
+          G11a  nạp trong index.html và nạp TRƯỚC app.js — vì app.js gọi init() của
+                cả hai; nạp sau là ReferenceError lúc bấm nút.
+          G11b  mọi svgIco("tên") trong MÃ SỐNG phải trỏ tới symbol có thật — đúng
+                lớp lỗi đã xảy ra ở js/duDoan.js với svgIco("target"), và phải đếm
+                trên mã sống vì comment cũng chứa chuỗi ấy.
+          G11c  KHÔNG có biến chứa chữ học sinh (.value) nào đi vào innerHTML — đây
+                là điều cả hai tệp khẳng định trong ghi chú; phép kiểm bắt khẳng định
+                đó phải tự chứng minh được, không tin lời ghi chú.
+          G11d  con số "N chỗ innerHTML" ghi trong comment của mỗi tệp phải KHỚP số
+                đếm thật. Phép kiểm này bắt được lỗi thật ngay lần chạy đầu: bt13.js
+                ghi 8 trong khi mã sống có 9, bt09.js ghi 7 trong khi có 10.
+        """
+        print("\n=== G11 HAI MODULE MỨC 3 MỚI (bt13.js, bt09.js) ===")
+        idx = doc("index.html")
+        sprite = set(re.findall(r'symbol id="(i-[\w-]+)"', idx))
+        MODULE = ["js/bt13.js", "js/bt09.js"]
+
+        # ---- G11a: nạp trong index.html, TRƯỚC app.js ----
+        vi_tri = {m.group(1): m.start() for m in re.finditer(r'<script src="([^"]+)"', idx)}
+        app_pos = vi_tri.get("js/app.js")
+        thieu_nap = [f for f in MODULE if f not in vi_tri]
+        sau_app = [f for f in MODULE
+                   if f in vi_tri and app_pos is not None and vi_tri[f] > app_pos]
+        self.them("G11a", "bt13.js + bt09.js nạp trong index.html TRƯỚC app.js",
+                  not thieu_nap and not sau_app,
+                  (f"thiếu trong index.html: {thieu_nap}" if thieu_nap else
+                   (f"nạp SAU app.js: {sau_app}" if sau_app else
+                    f"{len(MODULE)} tệp, thứ tự đúng (app.js @{app_pos})")))
+
+        # ---- G11b + G11c + G11d ----
+        tong_icon, tong_css = 0, 0
+        van_de = []
+        for f in MODULE:
+            raw = doc(f)
+            song = than_ma_song(raw)
+
+            # G11b — icon
+            ten_goi = set(re.findall(r'svgIco\(\s*"([\w-]+)"\s*\)', song))
+            tong_icon += len(ten_goi)
+            mo_coi = sorted(t for t in ten_goi if ("i-" + t) not in sprite)
+
+            # G11c — chữ học sinh không được đi vào innerHTML
+            bien = bien_chua_chu_hoc_sinh(song)
+            xau = []
+            for m in re.finditer(r"\.innerHTML\s*=", song):
+                dau = m.end()
+                cuoi = song.find(";", dau)
+                if cuoi < 0 or cuoi - dau > 600:
+                    cuoi = min(dau + 600, len(song))
+                seg = song[dau:cuoi + 1]
+                for b in bien:
+                    if re.search(r"[+]\s*" + re.escape(b) + r"\b", seg) or \
+                       re.search(r"\b" + re.escape(b) + r"\s*[+]", seg) or \
+                       re.fullmatch(r"\s*=\s*" + re.escape(b) + r"\s*;", seg):
+                        dong = song[:m.start()].count("\n") + 1
+                        xau.append(f"{f}:{dong} biến '{b}' đi vào innerHTML")
+            tong_css += len(re.findall(r"\.innerHTML\s*=", song))
+
+            # G11d — con số ghi trong comment phải khớp số đếm thật
+            n_that = len(re.findall(r"\.innerHTML\s*=", song))
+            m_khai = re.search(r"\*\*(\d+)\s*chỗ\*\*", raw)
+            khai = int(m_khai.group(1)) if m_khai else None
+            if khai is None:
+                van_de.append(f"{f}: không tìm thấy con số '**N chỗ**' trong ghi chú")
+            elif khai != n_that:
+                van_de.append(f"{f}: ghi chú khai {khai} chỗ, mã sống có {n_that} chỗ")
+
+            if mo_coi:
+                van_de.append(f"{f}: svgIco gọi tên không có trong sprite: {mo_coi}")
+            van_de.extend(xau)
+
+        self.them("G11b", "mọi svgIco trong bt13/bt09 trỏ symbol có thật (đếm trên mã sống)",
+                  not any("svgIco gọi tên" in v for v in van_de),
+                  f"{tong_icon} tên icon đã kiểm / {len(sprite)} symbol trong sprite"
+                  if not any("svgIco gọi tên" in v for v in van_de)
+                  else "; ".join(v for v in van_de if "svgIco gọi tên" in v))
+        self.them("G11c", "chữ học sinh KHÔNG đi vào innerHTML (bt13/bt09)",
+                  not any("đi vào innerHTML" in v for v in van_de),
+                  f"{tong_css} chỗ innerHTML đã rà, 0 chỗ chèn biến .value"
+                  if not any("đi vào innerHTML" in v for v in van_de)
+                  else "; ".join(v for v in van_de if "đi vào innerHTML" in v))
+        self.them("G11d", "con số innerHTML ghi trong ghi chú khớp mã sống",
+                  not any(("ghi chú khai" in v or "không tìm thấy con số" in v) for v in van_de),
+                  "số ghi chú = số đo được ở cả 2 tệp"
+                  if not any(("ghi chú khai" in v or "không tìm thấy con số" in v) for v in van_de)
+                  else "; ".join(v for v in van_de
+                                 if "ghi chú khai" in v or "không tìm thấy con số" in v))
+
     def tong_ket(self):
         print("\n" + "=" * 72)
         dat = sum(1 for k in self.kq if k["dat"])
@@ -777,7 +904,7 @@ console.log(JSON.stringify(out));
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
-    for g in ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10"]:
+    for g in ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11"]:
         if not chi or g in chi:
             getattr(j, g.lower())()
     return j.tong_ket()

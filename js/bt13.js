@@ -37,10 +37,15 @@
  *   svgIco() — hằng số tĩnh trỏ tới sprite trong index.html. Chữ học sinh gõ KHÔNG BAO GIỜ
  *   được chèn lại vào HTML; phần phản hồi chỉ in ra từ khoá lấy từ data/kienthuc.js.
  *
- *   GHI CHÚ CHO PHÉP KIỂM TĨNH (đã rà từng dòng, không phải suy đoán): tệp này có 8 chỗ
- *   gán innerHTML và cả 8 đều thuộc đúng hai dạng an toàn —
- *     (1) svgIco("tên") + chuỗi hằng viết cứng trong mã nguồn;
- *     (2) "<b>nhãn</b> " + esc(...) với tham số là hằng số từ data/kienthuc.js.
+ *   GHI CHÚ CHO PHÉP KIỂM TĨNH — SỐ ĐÃ ĐO LẠI (05/10, sau khi reviewer độc lập chỉ ra
+ *   con số cũ sai): tệp này có **9 chỗ** gán innerHTML trong MÃ SỐNG (đếm bằng cách bỏ
+ *   comment trước, vì phép grep thô còn khớp cả chữ trong ghi chú). Cả 9 chỗ thuộc đúng
+ *   ba dạng an toàn:
+ *     (1) reset: `.innerHTML = ""` — 2 chỗ, xoá sạch trước khi dựng lại;
+ *     (2) svgIco("tên") + nhãn viết cứng trong mã nguồn — 3 chỗ;
+ *     (3) nhãn viết cứng + esc(hằng số từ data/kienthuc.js) — 4 chỗ (dòng 58, 177,
+ *         183, 191): mẫu `"<b>Đầu vào mẫu:</b> "` rồi phần dữ liệu đi vào qua
+ *         `textContent` của một thẻ span riêng, KHÔNG nối vào chuỗi HTML.
  *   Không có nhánh nào để chữ người dùng trở thành HTML. Bộ quét tự động của công cụ ghi
  *   tệp báo innerHTML_xss ở mức pattern-match; đây là dương tính giả đã được rà tay.
  */

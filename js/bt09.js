@@ -42,9 +42,18 @@
  * AN TOÀN (innerHTML)
  *   Dựng bằng createElement + textContent. innerHTML chỉ dùng với svgIco() (hằng số tĩnh
  *   trỏ sprite trong index.html) và nhãn viết cứng trong mã nguồn. Chữ học sinh gõ chỉ
- *   được ĐẾM và hiển thị lại qua textContent — không bao giờ thành HTML. Bộ quét tự động
- *   của công cụ ghi tệp báo innerHTML_xss ở mức pattern-match; đây là dương tính giả đã
- *   được rà tay từng dòng (7 chỗ, tất cả đều svgIco + hằng số).
+ *   được ĐẾM và hiển thị lại qua textContent — không bao giờ thành HTML.
+ *
+ *   SỐ ĐÃ ĐO LẠI (05/10, sau khi reviewer độc lập chỉ ra con số cũ sai): **10 chỗ** gán
+ *   innerHTML trong MÃ SỐNG (đếm sau khi bỏ comment — grep thô còn khớp cả chữ trong ghi
+ *   chú). Phân loại: 3 chỗ reset `.innerHTML = ""`; 5 chỗ svgIco("tên") + nhãn hằng;
+ *   3 chỗ nhãn viết cứng rồi dữ liệu đi vào qua textContent của một span riêng (dòng 143,
+ *   151, 286) — KHÔNG nối dữ liệu vào chuỗi HTML. Bộ quét tự động của công cụ ghi tệp báo
+ *   innerHTML_xss ở mức pattern-match; đây là dương tính giả đã rà tay từng dòng.
+ *
+ *   Cảnh báo trung thực: con số cũ trong bản đầu (7) là SAI. Comment khai sai số chỗ
+ *   nguy hiểm hơn không có comment, vì người đọc sau tin nó mà bỏ phần rà tay. Cổng G11
+ *   trong tools/nghiem_thu.py nay tự đếm lại và đối chiếu với con số ghi ở đây.
  */
 (function(){
   "use strict";
