@@ -166,6 +166,8 @@
         <div id="lab-thongke" class="card" style="background:var(--nen2)"></div>
         <div id="lab-thumbs"></div>
         <p class="nho chu2"><svg class="ic" aria-hidden="true"><use href="#i-lightbulb"/></svg> Hãy quan sát kĩ: bộ dữ liệu này có "cân bằng" không?</p>
+        <!-- BT-03 Mức 3: dự đoán độ chính xác trên chính dữ liệu vừa học, TRƯỚC khi bấm -->
+        <div id="lab-muc3-bt03"></div>
         <button class="btn chinh" id="btn-huanluyen">Huấn luyện mô hình AI ▶</button>
       </div>
 
@@ -179,6 +181,8 @@
         <p>Ban ngày: <span class="bar" style="display:inline-block;width:60%"><i id="bar-ngay" style="width:0"></i></span></p>
         <p>Ban đêm: <span class="bar" style="display:inline-block;width:60%"><i id="bar-dem" style="width:0;background:var(--sai)"></i></span></p>
         <p class="vang"><b>Mô hình báo "rất chính xác" nhưng lại sai gần hết vào ban đêm. Vì sao?</b></p>
+        <!-- BT-06 Mức 3: dự đoán tỉ lệ ban đêm SAU cân bằng, TRƯỚC khi bấm nút cân bằng -->
+        <div id="lab-muc3-bt06"></div>
         <button class="btn" id="btn-sosanh"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg>Thử lại với bộ dữ liệu CÂN BẰNG ngày/đêm </button>
         <div id="lab-sosanh" style="display:none" class="card">
           <h3>Sau khi bổ sung dữ liệu ban đêm</h3>
@@ -515,6 +519,8 @@
       </div>
 
       <h3>① Dạng ẢNH — và bốn con số máy thật sự đọc</h3>
+      <!-- BT-01 Mức 3: dự đoán trước khi thấy ảnh ở mức chi tiết khác nhau (js/muc3.js) -->
+      <div id="t0-muc3"></div>
       <div id="t0-anh"></div>
 
       <h3>② Dạng VĂN BẢN</h3>
@@ -561,6 +567,9 @@
 
       <div class="card" style="background:var(--nen2)" id="nm-thong-tin-may"></div>
 
+      <!-- BT-07 Mức 3: dự đoán hệ làm gì khi hỏi NGOÀI bốn chủ đề (js/muc3.js) -->
+      <div id="nm-muc3-bt07"></div>
+
       <label for="nm-prompt">Em hãy hỏi hệ một câu:</label>
       <textarea id="nm-prompt" rows="3" placeholder="Ví dụ: Hãy liệt kê 3 ứng dụng AI trong nông nghiệp ở Việt Nam, trình bày dạng bảng"></textarea>
       <div class="chips" id="nm-goi-y"></div>
@@ -570,6 +579,9 @@
       </p>
 
       <div id="nm-rubric"></div>
+
+      <!-- BT-08 Mức 3: tự viết prompt + TỰ CHẤM trước khi hệ chấm (js/muc3.js) -->
+      <div id="nm-muc3-bt08"></div>
 
       <div id="nm-dau-ra" style="display:none">
         <h3>Đầu ra của hệ AI</h3>
@@ -601,6 +613,14 @@
         Em chọn cách xử lí, hệ thống giải thích ngay và nêu biện pháp hạn chế rủi ro.</p>
       <p class="nho chu2" id="th-thong-ke"></p>
       <div id="th-danh-sach"></div>
+
+      <!-- BT-10 Mức 3: đề xuất biện pháp cho dự án của CHÍNH NHÓM EM (js/muc3.js).
+           Đây là Mức 3 KHÔNG có đáp án duy nhất — chấm bằng đếm phương diện đã chạm. -->
+      <div id="th-muc3-bt10"></div>
+
+      <!-- BT-12 Mức 3: viết nguyên tắc dùng AI của RIÊNG EM, có nêu ai chịu trách nhiệm.
+           Cũng không có đáp án duy nhất → cùng cách chấm với BT-10. -->
+      <div id="th-muc3-bt12"></div>
       <p class="nho chu2">Kết quả được ghi vào nhật ký lớp để làm minh chứng quá trình.
         Đây là <b>nhận xét</b>, không phải điểm số và không dùng để xếp loại
         (theo phần VI của Khung 2422/QĐ-BGDĐT).</p>
@@ -702,6 +722,9 @@
 <!-- KỊCH BẢN 9 cảnh "hành trình của một bức ảnh". Nạp TRƯỚC app.js vì app.js gọi
      window.MX_KICHBAN.init() khi người học bấm nút xem. -->
 <script src="js/kichban.js"></script>
+<!-- Mức 3 cho 7 bài còn lại (BT-01/03/06/07/08/10/12). Nạp SAU duDoan.js vì mọi ô ở
+     đây đều dựng qua window.MX_DUDOAN, và TRƯỚC app.js vì app.js gọi window.MX_MUC3.mo(). -->
+<script src="js/muc3.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

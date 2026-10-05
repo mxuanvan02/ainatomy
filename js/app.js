@@ -21,6 +21,96 @@
   }
   const pct = (x) => x===null||x===undefined ? "—" : Math.round(x*100) + "%";
 
+  /* ================= MỨC 3 CHO BẢY BÀI CÒN LẠI (js/muc3.js) =================
+   * app.js là nơi DUY NHẤT biết trạng thái bài học (mã HS, bộ dữ liệu vừa sinh, mô hình
+   * vừa huấn luyện, câu trả lời vừa sinh), nên app.js chịu hai việc:
+   *   1. gắn hàm ghi nhật ký lớp cho muc3.js — tệp đó CỐ Ý không tự gọi ENG để không phụ
+   *      thuộc thứ tự nạp script (xem giải thích ở đầu js/muc3.js).
+   *   2. dựng ô Mức 3 và truyền hàm TÍNH kết quả thật.
+   * KHÔNG truyền đáp án viết tay. Đáp án phải TÍNH từ dữ liệu thật của bài; nếu viết cứng
+   * thì khi dữ liệu đổi, ô dự đoán vẫn "chấm" theo ký ức người viết và sai âm thầm — đúng
+   * lớp lỗi mà cả dự án này đang chống. */
+  const M3 = () => window.MX_MUC3;
+  const m3 = { bt01:null, bt03:null, bt06:null, bt07:null, bt08:null, bt10:null, bt12:null };
+
+  /* BT-01 — đáp án ĐO ĐƯỢC: so bốn đặc trưng của hai ảnh CÙNG nhãn, CÙNG loại đối tượng,
+   * chỉ khác điều kiện sáng, lấy từ CHÍNH bộ dữ liệu Trạm 0 đang hiển thị
+   * (MX_NHAMAY01.dsT0). Cùng nhãn + cùng kind để cô lập DUY NHẤT biến ánh sáng; nếu để
+   * khác kind thì hai ảnh khác nhau ở cả đối tượng lẫn ánh sáng, phép so mất nghĩa.
+   *
+   * LỖI ĐÃ SỬA (05/10, đo trên trình duyệt): bản đầu đòi `nhan === 1` (tức cả hai ảnh đều
+   * "có mũ"). Bộ dữ liệu mặc định (12 ảnh, ~90% ban ngày) có 6 ảnh nhãn-1 nhưng TẤT CẢ
+   * đều ban ngày; ảnh ban đêm duy nhất mang nhãn 0. Nên điều kiện không bao giờ khớp →
+   * hàm trả null → ô im lặng, không phản hồi gì sau khi học sinh bấm chốt. Đo lại trên
+   * chính bộ dữ liệu đó: có 5 cặp cùng nhãn + cùng kind + khác ánh sáng, tất cả nhãn 0.
+   * Nay bỏ ràng buộc nhãn-1, chỉ đòi cùng nhãn + cùng kind, nên luôn tìm được cặp có thật.
+   *
+   * Trả null khi KHÔNG có cặp nào (vd giáo viên kéo thanh trượt về 100% ban ngày) — thà
+   * không chấm còn hơn chấm bằng phỏng đoán. */
+  function traLoiBT01(){
+    const M = window.MX_NHAMAY01;
+    if(!M || !M.dsT0) return null;
+    const ds = M.dsT0();
+    if(!ds || !ds.length) return null;
+
+    /* Ưu tiên cặp SẠCH NHẤT (cùng nhãn + cùng kind), vì nó cô lập được biến ánh sáng.
+     * Nếu không có, nới sang cùng kind (nhãn có thể khác) và GHI RÕ trong lời giải rằng
+     * hai ảnh khác nhãn — không im lặng bỏ qua chỗ nới lỏng, vì đó là chỗ lập luận yếu đi. */
+    let a = null, b = null, chuan = true;
+    outer:
+    for(let i = 0; i < ds.length; i++){
+      for(let j = i + 1; j < ds.length; j++){
+        const x = ds[i], y = ds[j];
+        if(x.kind === y.kind && x.light !== y.light && x.nhan === y.nhan){ a = x; b = y; break outer; }
+      }
+    }
+    if(!a){
+      chuan = false;
+      outer2:
+      for(let i = 0; i < ds.length; i++){
+        for(let j = i + 1; j < ds.length; j++){
+          const x = ds[i], y = ds[j];
+          if(x.kind === y.kind && x.light !== y.light){ a = x; b = y; break outer2; }
+        }
+      }
+    }
+    if(!a) return null;
+
+    const va = LAB.vec(a.f), vb = LAB.vec(b.f);
+    const khac = va.some((x, i) => Math.abs(x - vb[i]) > 0.05);
+    const tenSang = (l) => l === "ngay" ? "ban ngày" : "ban đêm";
+    const tenNhan = (n) => n === 1 ? "có mũ" : "không mũ";
+    return {
+      dapAn: khac ? "khac" : "giong",
+      giaiThich: "Hai ảnh đem so: một " + tenSang(a.light) + " và một " + tenSang(b.light)
+        + ", cùng loại đối tượng"
+        + (chuan ? ", cùng nhãn '" + tenNhan(a.nhan) + "'" : ", nhãn '" + tenNhan(a.nhan)
+           + "' và '" + tenNhan(b.nhan) + "' (bộ dữ liệu hiện tại không có cặp cùng nhãn, "
+           + "nên phép so này còn lẫn cả đối tượng)")
+        + ". Bốn số máy đọc từ ảnh ban ngày: [" + va.map(x => x.toFixed(3)).join(", ")
+        + "]; từ ảnh ban đêm: [" + vb.map(x => x.toFixed(3)).join(", ") + "]. "
+        + (khac
+            ? "Hai bộ số KHÁC NHAU dù cùng một đối tượng — vì cả bốn đặc trưng đều là đại "
+              + "lượng ÁNH SÁNG. Đó chính là gốc rễ của việc mô hình 'giỏi ban ngày, dốt ban đêm'."
+            : "Hai bộ số gần như trùng nhau trên bộ dữ liệu này.")
+    };
+  }
+
+  /* BT-07 — đáp án ĐO ĐƯỢC: chỉ chấm khi học sinh ĐÃ hỏi một câu, và câu đó nằm NGOÀI bốn
+   * chủ đề đã học (nmItem.trongNguLieu === false). Nếu em hỏi câu nằm TRONG ngữ liệu thì
+   * tiền đề của câu hỏi chưa được kiểm — trả null thay vì chấm bừa. */
+  function traLoiBT07(){
+    if(!nmItem) return null;
+    if(nmItem.trongNguLieu) return null;
+    return {
+      dapAn: "biao",
+      giaiThich: "Đúng như dự đoán: chủ đề em hỏi KHÔNG có trong ngữ liệu, nhưng máy vẫn "
+        + "trả lời trôi chảy. Đó là bịa — không phải lỗi kĩ thuật mà là bản chất của máy "
+        + "sinh văn bản: nó luôn chọn chuỗi kí tự có vẻ hợp lí nhất, kể cả khi không có "
+        + "căn cứ nào."
+    };
+  }
+
   /* ================= ĐIỀU HƯỚNG ================= */
   const CAC_VIEW = ["v-home","v-nhap","v-lab","v-dautruong","v-baocao","v-logic",
                     "v-kienthuc","v-tinhhuong","v-lab3d","v-pipe3d","v-nhamay","v-kichban","v-gioithieu"];
@@ -44,6 +134,13 @@
     if(!hs){ alert("Em hãy nhập mã của mình (ví dụ A001)."); return; }
     maHS = hs.toUpperCase(); maLop = lop.toUpperCase() || maLop;
     ENG.vaoLop(maHS, maLop);
+    /* Gắn hàm ghi nhật ký lớp cho tầng Mức 3 (js/muc3.js). Làm ở đây vì chỉ app.js biết
+     * `maHS` và có `ENG`. muc3.js cố ý không tự gọi ENG để không phụ thuộc thứ tự nạp
+     * script — đúng lớp lỗi mà cổng G11a đang bắt. Gắn lại mỗi lần đăng nhập để mã HS
+     * mới được dùng, không giữ mã cũ của lượt trước. */
+    if(M3()) M3().ghiLog((ma, giaTri) => ENG.logSuKien(maHS, {
+      loai:"duDoan", suKien:"chot", baiToan:ma, kq:{ duDoan: giaTri }
+    }));
     $("lbl-user").textContent = `${maHS}${maLop? " · "+maLop : ""}`;
     hien("v-home");
   }
@@ -84,6 +181,12 @@
       `Bộ dữ liệu huấn luyện: <b>${lab.train.length} ảnh</b> — trong đó <b class="vang">${ngay} ảnh ban ngày (${pct(ngay/lab.train.length)})</b> và chỉ <b>${lab.train.length-ngay} ảnh ban đêm</b>.<br>` +
       `Bộ kiểm thử: ${lab.testNgay.length} ảnh ban NGÀY và ${lab.testDem.length} ảnh ban ĐÊM (giữ riêng, mô hình chưa từng thấy).`;
     veThumb(lab.train, 10, $("lab-thumbs"));
+    /* BT-03 Mức 3 — dựng TRƯỚC khi học sinh bấm "Huấn luyện mô hình AI".
+     * Kết quả thật (kqTrain.doChinhXac) CHƯA có ở đây, nên ô chỉ dựng; việc đối chiếu
+     * do labHuanLuyen() gọi MX_MUC3.cham() sau khi huấn luyện xong. */
+    m3.bt03 = M3() ? M3().mo("BT-03", $("lab-muc3-bt03"), () => ({
+      so: lab.kqTrain ? lab.kqTrain.doChinhXac : null
+    })) : null;
     labBuoc(2);
   }
 
@@ -99,7 +202,15 @@
     $("bar-dem").style.width = Math.round(lab.kqDem.doChinhXac*100)+"%";
     $("bar-ngay").style.width = Math.round(lab.kqNgay.doChinhXac*100)+"%";
     ENG.logSuKien(maHS, { loai:"huanLuyen", cheDo:"lech", doChinhXacTrain: lab.kqTrain.doChinhXac, ngay: lab.kqNgay.doChinhXac, dem: lab.kqDem.doChinhXac });
+    /* BT-03: kết quả thật nay ĐÃ CÓ (kqTrain) — đối chiếu dự đoán của học sinh.
+     * Đây là lúc duy nhất biết được con số này, nên phải chấm ở đây, không phải lúc dựng ô. */
+    if(m3.bt03 && M3()) M3().cham(m3.bt03);
     labBuoc(3);
+    /* BT-06 Mức 3 — dựng ở bước 3, TRƯỚC khi học sinh bấm nút cân bằng.
+     * Kết quả thật (kqDemC2) chỉ có sau labSoSanh(), nên chấm ở đó. */
+    m3.bt06 = M3() ? M3().mo("BT-06", $("lab-muc3-bt06"), () => ({
+      so: lab.kqDemC2 ? lab.kqDemC2.doChinhXac : null
+    })) : null;
   }
 
   function labSoSanh(){
@@ -111,6 +222,8 @@
     $("bar-dem2").style.width = Math.round(lab.kqDemC2.doChinhXac*100)+"%";
     $("lab-sosanh").style.display = "";
     ENG.logSuKien(maHS, { loai:"huanLuyen", cheDo:"canBang", dem: lab.kqDemC2.doChinhXac });
+    /* BT-06: kết quả thật của lần huấn luyện CÂN BẰNG nay đã có — đối chiếu dự đoán. */
+    if(m3.bt06 && M3()) M3().cham(m3.bt06);
   }
 
   function labCauHoi(){
@@ -743,6 +856,12 @@
       info.soTinhHuong + " tình huống · phủ " + info.yccdPhu.length
       + " yêu cầu cần đạt: " + info.yccdPhu.join(", ");
     thDaNap = true;
+    /* BT-10 + BT-12 Mức 3 — hai bài KHÔNG có đáp án đúng duy nhất (PHẦN 4.5 thiết kế):
+     * BT-10 đề xuất biện pháp cho dự án của CHÍNH NHÓM EM, BT-12 viết nguyên tắc dùng AI
+     * của RIÊNG EM. Cả hai dùng ô tự luận, tự chấm bằng đếm phương diện đã chạm — không
+     * bịa "đáp án đúng" cho một việc không có đáp án duy nhất. */
+    m3.bt10 = M3() ? M3().mo("BT-10", $("th-muc3-bt10")) : null;
+    m3.bt12 = M3() ? M3().mo("BT-12", $("th-muc3-bt12")) : null;
   }
 
   /* ================= NHÀ MÁY AI — DÂY CHUYỀN 7 TRẠM =================
@@ -864,6 +983,12 @@
       });
       nmT0DaNap = true;
     }
+    /* BT-01 Mức 3 — dựng SAU khoiDongT0() vì đáp án phải đo từ CHÍNH bộ dữ liệu vừa sinh
+     * (MX_NHAMAY01.dsT0). Dựng lại mỗi lần vào trạm: mỗi lần bấm "Tạo lại bộ dữ liệu" là
+     * một lượt mới, và nếu giữ ô cũ thì học sinh đã chốt rồi mà dữ liệu lại đổi — dự đoán
+     * cũ vô nghĩa. traLoiBT01() tự trả null nếu chưa đo được (vd bộ dữ liệu thiếu ca ban
+     * đêm), khi đó ô không chấm thay vì chấm bừa. */
+    m3.bt01 = M3() ? M3().mo("BT-01", $("t0-muc3"), traLoiBT01) : null;
   }
 
   function nmT0TaoLai(){
@@ -993,6 +1118,16 @@
 
     $("nm-prompt").oninput = nmDanhGiaPrompt;
     nmDanhGiaPrompt();
+
+    /* BT-07 Mức 3 — dựng NGAY khi vào Trạm 5, TRƯỚC khi học sinh hỏi câu nào.
+     * Đáp án chỉ chấm được SAU khi em đã hỏi một câu NGOÀI ngữ liệu (traLoiBT07 trả null
+     * nếu câu hỏi nằm trong ngữ liệu). Vì vậy ô dựng ở đây còn việc đối chiếu do nmSinh()
+     * gọi MX_MUC3.cham() sau khi hệ đã sinh câu trả lời. */
+    m3.bt07 = M3() ? M3().mo("BT-07", $("nm-muc3-bt07"), traLoiBT07) : null;
+
+    /* BT-08 Mức 3 — ô tự luận, tự chấm ngay khi học sinh bấm chốt (tuChamNgay: true),
+     * nên không cần app.js gọi cham() nữa. */
+    m3.bt08 = M3() ? M3().mo("BT-08", $("nm-muc3-bt08")) : null;
   }
 
   /* Chấm chất lượng prompt theo rubric (10.C3.1) — tất định, không cần LLM */
@@ -1030,6 +1165,10 @@
     $("nm-dau-ra").style.display = "";
     $("nm-kq5").innerHTML = "";
     $("nm-can-cu").classList.remove("chon"); $("nm-bia").classList.remove("chon");
+    /* BT-07: câu trả lời đã sinh → nay mới biết câu hỏi nằm trong hay ngoài ngữ liệu.
+     * Đối chiếu dự đoán của học sinh ở đây (traLoiBT07 trả null nếu câu hỏi nằm TRONG
+     * ngữ liệu — khi đó không chấm, vì tiền đề của câu hỏi chưa được kiểm). */
+    if(m3.bt07 && M3()) M3().cham(m3.bt07);
     if(ENG) ENG.logSuKien(maHS, { loai:"nhamay", suKien:"ungDung", prompt:p,
       chuDe: nmItem.maChuDe, trongNguLieu: nmItem.trongNguLieu, ms: +ms.toFixed(2) });
   }
