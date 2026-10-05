@@ -284,6 +284,31 @@
   }
 
   function doiTiLeNgay(p){ state.tiLeNgay = p; }
+
+  /* ---------------- BT-04 Mức 3: chọn điểm NGẪU NHIÊN để học sinh dự đoán nhãn ----
+   * Trả về {index, f, light} — KHÔNG kèm nhãn, để học sinh phải tự dự đoán trước.
+   * Chọn tất định theo seed của bộ dữ liệu: cùng bộ dữ liệu thì cùng một điểm,
+   * không thể bấm lại liên tục để dò điểm "dễ". */
+  function chonDiemNgauNhien(){
+    if(!state || !state.duLieu || !state.duLieu.length) return null;
+    const seed = (state.opts.seed || 20261004) >>> 0;
+    const idx = (seed * 2654435761 >>> 0) % state.duLieu.length;
+    const d = state.duLieu[idx];
+    /* BUG ĐÃ SỬA: bản đầu viết d.f.slice() nhưng d.f là OBJECT đặc trưng đặt tên
+     * (dacTrung() trả {tiLeRatSang,...}), không phải mảng — .slice() ném TypeError.
+     * Chuyển về vector 4 số bằng L().vec() giống mọi nơi khác. */
+    return { index: idx, f: L().vec(d.f), light: d.light };
+  }
+  /** Tiết lộ nhãn thật của một điểm — chỉ gọi SAU khi học sinh đã chốt dự đoán. */
+  function layNhanDiem(i){
+    return (state && state.duLieu && state.duLieu[i]) ? state.duLieu[i].nhan : null;
+  }
+  /** Mô hình đang giữ trong phòng 3D đoán điểm i là gì (1 = có mũ, 0 = không).
+   * Trả null nếu chưa tạo dữ liệu / chưa học — người gọi phải thông báo, không đoán mò. */
+  function dudoanDiem(i){
+    if(!state || !state.duLieu || !state.duLieu[i] || !state.model) return null;
+    return state.model.dudoan(state.duLieu[i].f);
+  }
   function huy(){ if(handle){ handle.huy(); } handle = null; state = null; }
   function trangThai(){
     if(!state) return null;
@@ -299,6 +324,7 @@
   window.MX_LAB3D = {
     init, dungDuLieu, hocMotEpoch, hocHet, danhGia,
     doiTiLeNgay, capNhatMatPhang, trangThai, huy,
+    chonDiemNgauNhien, layNhanDiem, dudoanDiem,
     veMotLan: () => handle && handle.veMotLan(),
     TEN_TRUC
   };

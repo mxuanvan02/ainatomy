@@ -120,7 +120,12 @@
         let last = performance.now();
         const loop = (now) => {
           if(!this._chay) return;
-          const dt = Math.min(0.05, (now - last) / 1000); last = now;
+          /* BUG ĐÃ SỬA (05/10, bắt bằng monkey-patch getPoint + stack thật): timestamp
+           * của rAF là thời điểm BẮT ĐẦU frame, có thể nhỏ hơn performance.now() vừa
+           * gán cho `last` (gọi sau) → dt ÂM ở frame đầu/tab vừa hiện lại. dt âm làm
+           * vị trí hạt trong pipeline3d tụt xuống t < 0 → curve.getPoint(t<0) ném
+           * TypeError giết vòng render. Math.max(0,...) chặn tận gốc cho MỌI scene. */
+          const dt = Math.max(0, Math.min(0.05, (now - last) / 1000)); last = now;
           // tab ẩn thì rAF tự ngừng; thêm chốt an toàn để không vẽ vô ích
           if(!document.hidden) this.veMotLan(dt);
           this._raf = requestAnimationFrame(loop);

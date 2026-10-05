@@ -148,14 +148,29 @@
     handle.khiTick(dt => {
       for(const h of st.hat){
         h.userData.t += dt * h.userData.tocDo;
-        if(h.userData.t > 1) h.userData.t -= 1;
+        /* BUG THỨ HAI CÙNG GỐC (05/10): bản cũ viết `if(t > 1) t -= 1` — chỉ trừ MỘT lần.
+         * Khi tab bị throttle (chạy nền), dt của một tick có thể hàng chục giây, t nhảy
+         * lên 2–3; trừ một lần vẫn > 1 → curve.getPoint(t>1) ném TypeError trong three.js
+         * và giết vòng render. Modulo đưa t về [0,1) với MỌI dt. */
+        if(h.userData.t > 1) h.userData.t %= 1;
         // trạm hỏng: hạt kẹt lại ngay trước trạm đó và đổi màu đỏ
-        if(st.biKet && st.tramHong !== null && h.userData.t >= st.tramHong/(TRAM.length-1) - 0.02){
-          h.userData.t = st.tramHong/(TRAM.length-1) - 0.02;
+        /* BUG ĐÃ SỬA (05/10, bắt được bằng hook rAF + stack thật): khi trạm hỏng là
+         * trạm ĐẦU TIÊN (index 0), vị trí kẹt = 0/(5-1) − 0.02 = −0.02. CatmullRomCurve3
+         * .getPoint(t) với t < 0 ném "Cannot read properties of undefined (reading 'x')"
+         * trong three.js, exception lọt ra ngoài callback rAF làm CHẾT cả vòng render —
+         * cảnh 3D đứng hình vĩnh viễn mà console chỉ hiện "Script error." (file:// che
+         * stack). Xác suất trúng ≈ 1/5 lượt chơi. Sửa: clamp vị trí kẹt vào [0, 1). */
+        const tKet = Math.max(0, st.tramHong/(TRAM.length-1) - 0.02);
+        if(st.biKet && st.tramHong !== null && h.userData.t >= tKet){
+          h.userData.t = tKet;
           h.material.color.setHex(M.sai);
         } else {
           h.material.color.setHex(M.chu);
         }
+        /* Lớp phòng vệ thứ hai: dù dt đã được chặn >= 0 ở scene3d.js, vẫn kẹp t vào
+         * [0, 1] ngay trước getPoint — curve này là CatmullRom không khép kín, mọi t
+         * ngoài miền đều ném TypeError bên trong three.js (đã chứng kiến 05/10). */
+        h.userData.t = Math.max(0, Math.min(1, h.userData.t));
         const p = st.curve.getPoint(h.userData.t);
         h.position.copy(p);
       }

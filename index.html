@@ -402,6 +402,11 @@
         </div>
       </div>
 
+      <!-- BT-05 Mức 3: dự đoán tỉ lệ đúng ban đêm TRƯỚC khi bấm Đánh giá -->
+      <div id="lab3d-duDoan"></div>
+      <!-- BT-04 Mức 3: dự đoán nhãn của một điểm 3D trước khi hệ tiết lộ -->
+      <div id="lab3d-duDoanDiem"></div>
+
       <div class="card" id="lab3d-cauhoi">
         <h3><svg class="ic to" aria-hidden="true"><use href="#i-circle-help"/></svg> Câu hỏi chốt của bài này</h3>
         <p><i>Vì sao AI vẫn đúng 100% ảnh ban ngày mà sai gần nửa số ảnh ban đêm?
@@ -434,6 +439,8 @@
         <button class="btn chinh" id="pipe3d-hong"><svg class="ic" aria-hidden="true"><use href="#i-zap"/></svg> Làm hỏng một trạm (ngẫu nhiên)</button>
         <button class="btn" id="pipe3d-reset">↻ Đặt lại</button>
       </p>
+
+      <div id="pipe3d-duDoan"></div>
 
       <div id="pipe3d-doan" style="display:none">
         <h3>Em đoán trạm nào đang hỏng?</h3>
@@ -514,7 +521,9 @@
       <p><button class="btn chinh" id="t1-tao">Tạo bộ ảnh cần dán nhãn</button>
          <span class="nho chu2" id="t1-tiendo" style="margin-left:10px"></span></p>
       <div id="t1-anh"></div>
-      <p><button class="btn" id="t1-cham" disabled>Chấm nhãn và xem hậu quả</button>
+      <!-- BT-02 Mức 3: dự đoán độ chính xác mô hình A TRƯỚC khi chấm (js/duDoan.js) -->
+      <div id="t1-duDoan"></div>
+      <p><button class="btn chinh" id="t1-cham" disabled>Chấm nhãn và xem hậu quả</button>
          <button class="btn nho" id="t1-lamlai">Dán lại từ đầu</button></p>
       <div id="t1-kq"></div>
 
@@ -654,6 +663,8 @@
 <!-- 12 tình huống phủ 5 YCCĐ còn trống: 10.A2.1, 10.A2.MR1, 10.B2.1, 10.C2.MR1, 10.C3.MR1.
      Nạp TRƯỚC app.js. -->
 <script src="js/tinhhuong.js"></script>
+<!-- Ô "dự đoán trước khi chạy" (Mức 3 — BT-02/04/05/11). Nạp trước app.js. -->
+<script src="js/duDoan.js"></script>
 <!-- Trạm 5 NHÀ MÁY: máy sinh văn bản n-gram chạy trong trình duyệt (0 MB, không mạng).
      Nạp TRƯỚC app.js vì giao diện trạm ứng dụng gọi window.MX_NHAMAY_TEXT. -->
 <script src="js/nhamay_text.js"></script>

@@ -402,6 +402,8 @@
    * Dùng DỮ LIỆU THẬT + PERCEPTRON THẬT của Tầng 1 (MX_LAB), không vẽ minh hoạ.
    * Con số hiển thị là kết quả huấn luyện thật → giữ đúng nguyên tắc oracle. */
   let lab3dDaKhoiTao = false;
+  /* Ô dự đoán Mức 3 (js/duDoan.js): ddDem = BT-05, ddDiem = BT-04 */
+  let ddDem = null, ddDiem = null;
   function lab3dMo(){
     hien("v-lab3d");
     if(lab3dDaKhoiTao) return;
@@ -420,6 +422,10 @@
     }
     lab3dDaKhoiTao = true;
     lab3dHud();
+    /* vào lại phòng 3D: xoá ô dự đoán cũ (dữ liệu cũ đã bị huỷ, dự đoán cũ vô nghĩa) */
+    ddDem = null; ddDiem = null;
+    if($("lab3d-duDoan")) $("lab3d-duDoan").innerHTML = "";
+    if($("lab3d-duDoanDiem")) $("lab3d-duDoanDiem").innerHTML = "";
 
     $("lab3d-tile").oninput = e=>{ $("lab3d-tile-so").textContent = e.target.value + "%"; };
     $("lab3d-so").oninput   = e=>{ $("lab3d-so-num").textContent = e.target.value; };
@@ -434,6 +440,24 @@
       $("lab3d-note").innerHTML = "Đã tạo <b>" + n + "</b> ảnh. Bấm <b>Huấn luyện từng vòng</b> "
         + "để xem mặt phẳng quyết định dịch dần khi trọng số thay đổi.";
       lab3dHud();
+      /* BT-05 Mức 3: dựng ô dự đoán tỉ lệ đúng BAN ĐÊM sau khi có bộ dữ liệu mới.
+       * Bộ dữ liệu mới -> dự đoán cũ vô nghĩa -> dựng lại ô mới (chốt được một lần). */
+      ddDem = null;
+      if($("lab3d-duDoan") && window.MX_DUDOAN){
+        const tileHienTai = parseInt($("lab3d-tile").value, 10);
+        ddDem = window.MX_DUDOAN.veTruot($("lab3d-duDoan"), {
+          cauHoi: "Với " + tileHienTai + "% ảnh ban ngày trong dữ liệu huấn luyện, em dự đoán sau khi học xong mô hình sẽ trả lời ĐÚNG bao nhiêu % ảnh BAN ĐÊM trên bộ ảnh mới?",
+          dungSai: 0.10,
+          ghiChu: "Chốt dự đoán TRƯỚC khi bấm 'Đánh giá trên bộ ảnh MỚI'. Ngưỡng khớp: ±10 điểm %.",
+          onChot(g){
+            if(ENG) ENG.logSuKien(maHS, { loai:"duDoan", suKien:"chot", baiToan:"BT-05",
+              tiLeNgay: tileHienTai, kq:{ duDoan: Math.round(g*100) } });
+          }
+        });
+      }
+      /* BT-04: điểm dự đoán cũ thuộc bộ dữ liệu cũ — xoá, chờ học xong mới dựng lại */
+      ddDiem = null;
+      if($("lab3d-duDoanDiem")) $("lab3d-duDoanDiem").innerHTML = "";
       if(ENG) ENG.logSuKien(maHS, { loai:"lab3d", suKien:"taoDuLieu",
         soDiem:n, tiLeNgay:parseInt($("lab3d-tile").value,10) });
     };
@@ -456,6 +480,42 @@
           $("lab3d-hoc").disabled = false;
           $("lab3d-note").innerHTML = "Học xong. Mặt phẳng đỏ là ranh giới mô hình vừa học được. "
             + "Bấm <b>Đánh giá trên bộ ảnh MỚI</b> để xem nó đúng/sai ở đâu.";
+          /* BT-04 Mức 3: sau khi học xong, hệ chọn MỘT điểm trong bộ dữ liệu và hỏi
+           * học sinh dự đoán mô hình sẽ gán nhãn gì cho nó — TRƯỚC khi tiết lộ.
+           * Đáp án = dự đoán của chính mô hình thật (state.model.dudoan), tất định. */
+          ddDiem = null;
+          const host = $("lab3d-duDoanDiem");
+          if(host && window.MX_DUDOAN && window.MX_LAB3D.chonDiemNgauNhien){
+            const d = window.MX_LAB3D.chonDiemNgauNhien();
+            if(d){
+              ddDiem = window.MX_DUDOAN.veChon(host, {
+                cauHoi: "Hệ chọn ảnh số " + (d.index + 1) + " (ảnh chụp "
+                  + (d.light === "ngay" ? "BAN NGÀY" : "BAN ĐÊM") + ") trong bộ dữ liệu. "
+                  + "Theo em, MÔ HÌNH VỪA HỌC sẽ đoán ảnh này là CÓ mũ hay KHÔNG mũ?",
+                phuongAn: [
+                  { id:"co",  text:"CÓ mũ bảo hiểm" },
+                  { id:"khong", text:"KHÔNG mũ bảo hiểm" }
+                ],
+                onChot(chon){
+                  if(ENG) ENG.logSuKien(maHS, { loai:"duDoan", suKien:"chot", baiToan:"BT-04",
+                    diem: d.index + 1, kq:{ duDoan: chon } });
+                  /* tiết lộ NGAY sau khi chốt: nhãn máy đoán + nhãn thật */
+                  const mayDoan = window.MX_LAB3D.dudoanDiem(d.index);
+                  const that = window.MX_LAB3D.layNhanDiem(d.index);
+                  const dc = ddDiem.doiChieu(
+                    mayDoan === 1 ? "co" : "khong",
+                    "Máy đoán: " + (mayDoan === 1 ? "CÓ mũ" : "KHÔNG mũ")
+                      + ". Nhãn thật của ảnh: " + (that === 1 ? "CÓ mũ" : "KHÔNG mũ")
+                      + (mayDoan === that ? " — máy đoán đúng ảnh này." : " — máy đoán SAI ảnh này: vì đặc trưng của nó nằm gần mặt phẳng quyết định, hoặc vì dữ liệu lệch khiến ranh giới bị nghiêng.")
+                  );
+                  if(dc && ENG) ENG.logSuKien(maHS, { loai:"duDoan", suKien:"doiChieu", baiToan:"BT-04",
+                    diem: d.index + 1,
+                    kq:{ diem: dc.khop?1:0, dung: dc.khop, mach:"C", unesco:"C4",
+                         dapAn: dc.dapAn, chon: dc.duDoan, nhanThat: that } });
+                }
+              });
+            }
+          }
         }
       });
     };
@@ -464,6 +524,14 @@
       const kq = window.MX_LAB3D.danhGia();
       if(!kq) return;
       $("lab3d-kq").style.display = "";
+      /* BT-05 Mức 3: đối chiếu dự đoán tỉ lệ đúng ban đêm với kết quả THẬT */
+      if(ddDem && ddDem.daChot() && !ddDem.daDoiChieu){
+        const dc = ddDem.doiChieu(kq.dem.tiLe);
+        if(dc && ENG) ENG.logSuKien(maHS, { loai:"duDoan", suKien:"doiChieu", baiToan:"BT-05",
+          tiLeNgay: parseInt($("lab3d-tile").value, 10),
+          kq:{ diem: dc.khop?1:0, dung: dc.khop, mach:"C", unesco:"C4",
+               dapAn: Math.round(dc.ketQua*100), chon: Math.round(dc.duDoan*100), lech: Math.round(dc.lech*100) } });
+      }
       const p = x => x==null ? "—" : Math.round(x*100) + "%";
       $("lab3d-kpi").innerHTML =
         `<div class="kpi"><div class="so">${kq.dung}/${kq.tong}</div><div class="nhan">đúng trên bộ ảnh MỚI</div></div>`
@@ -516,6 +584,8 @@
    * Hệ chọn NGẪU NHIÊN trạm hỏng -> đáp án biết trước -> chấm tất định, không cần GV.
    * Phủ YCCĐ 10.D1.1 (mối liên hệ mục tiêu - thành phần) mà bản 2D chưa phủ. */
   let pipe3dDaKhoiTao = false;
+  /* BT-11 Mức 3: ô dự đoán hiện tượng đầu ra (js/duDoan.js) */
+  let ddPipe = null;
   function pipe3dMo(){
     hien("v-pipe3d");
     if(!pipe3dDaKhoiTao){
@@ -538,6 +608,28 @@
         b.onclick = ()=> pipe3dDoan(t.id);
         chips.appendChild(b);
       });
+      /* BT-11 Mức 3: dự đoán HIỆN TƯỢNG Ở ĐẦU RA trước khi hệ làm hỏng trạm.
+       * Oracle = hành vi thật trong pipeline3d.js: vòng tick kẹp hạt lại ngay trước
+       * trạm hỏng và đổi màu hạt sang đỏ (h.material.color.setHex(M.sai)) — hằng số
+       * trong mã nguồn, không phụ thuộc trạm nào bị hỏng nên không lộ đáp án của
+       * trò đoán trạm bên dưới. */
+      ddPipe = null;
+      const hostDD = $("pipe3d-duDoan");
+      if(hostDD && window.MX_DUDOAN){
+        ddPipe = window.MX_DUDOAN.veChon(hostDD, {
+          cauHoi: "TRƯỚC KHI hệ làm hỏng một trạm: em dự đoán hiện tượng gì sẽ xuất hiện trên dòng hạt sáng (đầu ra của ống dẫn)?",
+          phuongAn: [
+            { id:"ket",   text:"Hạt sáng kẹt lại ngay trước trạm hỏng và đổi màu đỏ" },
+            { id:"mat",   text:"Hạt sáng biến mất hoàn toàn khỏi ống dẫn" },
+            { id:"nhanh", text:"Hạt sáng chạy nhanh hơn bình thường" },
+            { id:"binhThuong", text:"Không có gì thay đổi — hệ vẫn báo lỗi bằng chữ" }
+          ],
+          onChot(chon){
+            if(ENG) ENG.logSuKien(maHS, { loai:"duDoan", suKien:"chot", baiToan:"BT-11",
+              kq:{ duDoan: chon } });
+          }
+        });
+      }
     }
     pipe3dHud();
   }
@@ -545,6 +637,17 @@
     const r = window.MX_PIPE3D.batDauLuot();
     $("pipe3d-doan").style.display = "";
     $("pipe3d-kq").innerHTML = "";
+    /* BT-11 Mức 3: hệ ĐÃ làm hỏng trạm — đối chiếu dự đoán hiện tượng với hành vi thật */
+    if(ddPipe && ddPipe.daChot() && !ddPipe.daDoiChieu){
+      const dc = ddPipe.doiChieu("ket",
+        "Trong mã nguồn pipeline3d.js, mỗi hạt có vị trí t trên đường ống; khi một trạm hỏng, "
+        + "vòng lặp hoạt ảnh kẹp t của mọi hạt dừng lại NGAY TRƯỚC trạm đó và tô hạt màu đỏ. "
+        + "Hạt không biến mất và không nhanh lên — chúng ùn tắc, giống hàng hoá kẹt trước "
+        + "một dây chuyền hỏng. Hiện tượng ở đầu ra luôn là dấu hiệu đầu tiên để SOI ra chỗ hỏng.");
+      if(dc && ENG) ENG.logSuKien(maHS, { loai:"duDoan", suKien:"doiChieu", baiToan:"BT-11",
+        kq:{ diem: dc.khop?1:0, dung: dc.khop, mach:"D", unesco:"D1",
+             dapAn: dc.dapAn, chon: dc.duDoan } });
+    }
     $("pipe3d-note").innerHTML = "Có <b>" + r.soTram + "</b> trạm trong hệ thống. Một trạm vừa bị làm hỏng — "
       + "quan sát các hạt sáng rồi đoán xem trạm nào.";
     if(ENG) ENG.logSuKien(maHS, { loai:"pipe3d", suKien:"batDauLuot" });
@@ -773,6 +876,8 @@
   }
 
   /* ---------- TRẠM 1: DÁN NHÃN (học sinh tự dán -> thấy hậu quả bằng số) ---------- */
+  /* BT-02 Mức 3: ô dự đoán độ chính xác mô hình A trước khi chấm (js/duDoan.js) */
+  let ddT1 = null;
   function nmKhoiDongTram1(taoMoi){
     const M = window.MX_NHAMAY01;
     if(!M){ return; }
@@ -780,6 +885,20 @@
     if(taoMoi !== false){
       M.khoiDongT1(10);
       $("t1-kq").innerHTML = "";
+      /* bộ ảnh mới -> dự đoán cũ vô nghĩa, dựng ô mới */
+      ddT1 = null;
+      const host = $("t1-duDoan");
+      if(host && window.MX_DUDOAN){
+        ddT1 = window.MX_DUDOAN.veTruot(host, {
+          cauHoi: "Mô hình A sẽ học từ NHÃN DO EM DÁN. Em dự đoán mô hình A đạt độ chính xác bao nhiêu trên bộ ảnh kiểm tra mới? (Mô hình B học từ nhãn đúng thường đạt ~100%.)",
+          dungSai: 0.10,
+          ghiChu: "Chốt dự đoán TRƯỚC khi bấm 'Chấm nhãn'. Ngưỡng khớp: ±10 điểm %. Mỗi bộ ảnh chỉ dự đoán được một lần.",
+          onChot(g){
+            if(ENG) ENG.logSuKien(maHS, { loai:"duDoan", suKien:"chot", baiToan:"BT-02",
+              kq:{ duDoan: Math.round(g*100) } });
+          }
+        });
+      }
     }
     M.veAnhDanNhan($("t1-anh"));
     M.capNhatTienDoT1();
@@ -791,6 +910,13 @@
     const r = M.chamT1();
     if(!r) return;
     M.veKetQuaT1($("t1-kq"), r);
+    /* BT-02 Mức 3: đối chiếu dự đoán với độ chính xác THẬT của mô hình A */
+    if(ddT1 && ddT1.daChot() && !ddT1.daDoiChieu){
+      const dc = ddT1.doiChieu(r.hocTrenNhanHS.doChinhXac);
+      if(dc && ENG) ENG.logSuKien(maHS, { loai:"duDoan", suKien:"doiChieu", baiToan:"BT-02",
+        kq:{ diem: dc.khop?1:0, dung: dc.khop, mach:"C", unesco:"C4",
+             dapAn: Math.round(dc.ketQua*100), chon: Math.round(dc.duDoan*100), lech: Math.round(dc.lech*100) } });
+    }
     if(ENG) ENG.logSuKien(maHS, {
       loai:"nhamay", suKien:"tram1", tram:1,
       kq:{ /* nhãn đúng = đáp án hệ biết trước, nên chấm tất định */
