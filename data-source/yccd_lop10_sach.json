@@ -1,0 +1,377 @@
+[
+ {
+  "ma": "10.A1.1",
+  "text": "Thực hành xác định được vai trò của con người trong sử dụng, vận hành, tùy chỉnh một hệ thống AI cụ thể.",
+  "chuDe": "A1",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "23/23",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.A1.1"
+   ],
+   "tuKhoa": "3/3",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.A1.2",
+  "text": "Giải thích được tại sao việc con người kiểm soát AI là quan trọng, thông qua việc liên hệ đến các giá trị như an toàn, công bằng và quyền lợi con người.",
+  "chuDe": "A1",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "33/33",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.A1.2"
+   ],
+   "tuKhoa": "4/4",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.A2.1",
+  "text": "Nêu được một số rủi ro đối với con người, xã hội mà một sản phẩm AI có thể đem lại.",
+  "chuDe": "A2",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "21/21",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.A2.1",
+    "10.A2.MR1"
+   ],
+   "tuKhoa": "3/3",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.A2.MR1",
+  "text": "Nêu được một số biện pháp hạn chế các rủi ro đối với con người, xã hội mà một sản phẩm AI có thể đem lại thông qua một dự án sáng tạo AI.",
+  "chuDe": "A2",
+  "loai": "mở rộng",
+  "verify": {
+   "subseq": "34/34",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.A2.MR1"
+   ],
+   "tuKhoa": "3/3",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.A3.1",
+  "text": "Kể tên được một vài quy định hoặc luật lệ (ở mức độ khái niệm, ví dụ: Luật An ninh mạng, Luật Dữ liệu, Luật Bảo vệ dữ liệu cá nhân) có chức năng bảo vệ người dùng trong không gian số.",
+  "chuDe": "A3",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "41/41",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.A3.1"
+   ],
+   "tuKhoa": "4/4",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.B2.1",
+  "text": "Nêu được ví dụ về hành vi sử dụng AI hoặc sự cố liên quan đến AI vi phạm quy định của nhà trường hoặc các văn bản pháp luật liên quan đến sử dụng công nghệ thông tin.",
+  "chuDe": "B2",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "39/39",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.B2.1"
+   ],
+   "tuKhoa": "5/5",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.B2.MR1",
+  "text": "Nhận biết được một số dấu hiệu của nội dung do AI tạo sinh tạo ra; kiểm tra và nhận xét được mức độ minh bạch của việc khai báo sử dụng AI trong một sản phẩm.",
+  "chuDe": "B2",
+  "loai": "mở rộng",
+  "verify": {
+   "subseq": "37/37",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.B2.MR1"
+   ],
+   "tuKhoa": "4/4",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.B3.1",
+  "text": "Trình bày được ví dụ minh họa một số vấn đề đạo đức có thể phát sinh trong quá trình thiết kế và vận hành AI (như thiên vị dữ liệu, vi phạm quyền riêng tư hoặc thiếu minh bạch).",
+  "chuDe": "B3",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "40/40",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.B3.1"
+   ],
+   "tuKhoa": "4/4",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C2.1",
+  "text": "Xác định được các vấn đề thực tế có thể ứng dụng AI để thực hiện. Ưu tiên các vấn đề gần gũi, cần thiết trong bối cảnh Việt Nam, chẳng hạn: sản xuất nông nghiệp, các vấn đề liên quan đến các cộng đồng thiểu số, …",
+  "chuDe": "C2",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "47/47",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C2.1"
+   ],
+   "tuKhoa": "5/5",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C2.MR1",
+  "text": "Xác định được các yêu cầu cần có đối với việc ứng dụng AI thực hiện nhiệm vụ cụ thể.",
+  "chuDe": "C2",
+  "loai": "mở rộng",
+  "verify": {
+   "subseq": "20/20",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C2.MR1"
+   ],
+   "tuKhoa": "2/2",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C2.2",
+  "text": "Liệt kê được tên các ứng dụng AI theo các tính năng của hệ thống.",
+  "chuDe": "C2",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "15/15",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C2.2"
+   ],
+   "tuKhoa": "2/2",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C2.MR2",
+  "text": "Sử dụng được một số ứng dụng AI trong học tập.",
+  "chuDe": "C2",
+  "loai": "mở rộng",
+  "verify": {
+   "subseq": "11/11",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C2.MR2"
+   ],
+   "tuKhoa": "2/2",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C2.3",
+  "text": "Nêu được ví dụ một số trường hợp sử dụng AI hỗ trợ quá trình học tập.",
+  "chuDe": "C2",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "17/17",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C2.3"
+   ],
+   "tuKhoa": "3/3",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C3.1",
+  "text": "Mô tả được các yêu cầu để đưa ra prompt phù hợp với mục tiêu cụ thể.",
+  "chuDe": "C3",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "17/17",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C3.1"
+   ],
+   "tuKhoa": "3/3",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C3.MR1",
+  "text": "Trình bày được ví dụ mô tả một số công nghệ để thiết kế và tạo AI.",
+  "chuDe": "C3",
+  "loai": "mở rộng",
+  "verify": {
+   "subseq": "17/17",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C3.MR1"
+   ],
+   "tuKhoa": "2/2",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C3.2",
+  "text": "Thực hành đặt prompt giải quyết một số vấn đề gần gũi trong cuộc sống, học tập một cách hiệu quả.",
+  "chuDe": "C3",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "21/21",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C3.2"
+   ],
+   "tuKhoa": "4/4",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C3.3",
+  "text": "Phân biệt được AI tạo sinh với các hệ thống AI phân loại, dự đoán qua ví dụ cụ thể.",
+  "chuDe": "C3",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "20/20",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C3.3"
+   ],
+   "tuKhoa": "4/4",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C4.1",
+  "text": "Phân tích được sự ảnh hưởng của chất lượng dữ liệu đến chất lượng AI.",
+  "chuDe": "C4",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "15/15",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C4.1"
+   ],
+   "tuKhoa": "4/4",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.C4.MR1",
+  "text": "Phân tích được các dạng dữ liệu (hình ảnh, âm thanh, từ ngữ, …) được sử dụng để huấn luyện AI.",
+  "chuDe": "C4",
+  "loai": "mở rộng",
+  "verify": {
+   "subseq": "20/20",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.C4.MR1"
+   ],
+   "tuKhoa": "5/5",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.D1.1",
+  "text": "Nêu được ví dụ cụ thể, xác định nhiệm vụ hoặc mục tiêu cụ thể mà một hệ thống AI cần thực hiện, nêu được mối liên hệ giữa mục tiêu đó với các thành phần chính của hệ thống.",
+  "chuDe": "D1",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "40/40",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.D1.1"
+   ],
+   "tuKhoa": "4/4",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.D2.1",
+  "text": "Mô tả được các thành phần cơ bản của hệ thống AI (dữ liệu, mô hình, thuật toán, đầu ra, phản hồi) phù hợp với nhiệm vụ cụ thể.",
+  "chuDe": "D2",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "29/29",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.D2.1"
+   ],
+   "tuKhoa": "5/5",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ },
+ {
+  "ma": "10.D2.2",
+  "text": "Nêu được ví dụ về một số vấn đề phát sinh trong quá trình vận hành hoặc tối ưu hoá AI và trình bày được ý nghĩa của việc khắc phục các vấn đề đó.",
+  "chuDe": "D2",
+  "loai": "cốt lõi",
+  "verify": {
+   "subseq": "34/34",
+   "subseqDayDu": true,
+   "oDacHieuNhat": true,
+   "cacOKhop": [
+    "10.D2.2"
+   ],
+   "tuKhoa": "4/4",
+   "dat": true
+  },
+  "nguon": "QĐ 2422/QĐ-BGDĐT (18/8/2026), Phụ lục Khung nội dung GD AI, lớp 10"
+ }
+]

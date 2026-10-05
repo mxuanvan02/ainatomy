@@ -30,8 +30,8 @@ import os
 import re
 import sys
 
-ROOT = "/home/hitokiri/ieeai2026/soi-ai"
-TOOLS = "/home/hitokiri/ieeai2026/tools"
+ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+TOOLS = os.path.join(ROOT, "tools")
 
 # Ký tự trông giống chữ Latin nhưng không phải. Quét theo khoảng Unicode, không gõ tay
 # từng chữ — gõ tay chính là cách ký tự lạ lọt vào tệp ngay từ đầu.
@@ -112,7 +112,7 @@ def k3_duong_dan_mo():
             rel = m.group(0)
             # thử cả trong repo sản phẩm lẫn thư mục tools của dự án
             ok = (os.path.exists(os.path.join(ROOT, rel))
-                  or os.path.exists(os.path.join("/home/hitokiri/ieeai2026", rel))
+                  or os.path.exists(os.path.join(ROOT, "data-source", rel))
                   or os.path.exists(os.path.join(TOOLS, os.path.basename(rel))))
             if not ok:
                 dong = s[:m.start()].count("\n") + 1

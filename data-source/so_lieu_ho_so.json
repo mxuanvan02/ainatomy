@@ -1,0 +1,79 @@
+{
+ "doPhu": {
+  "tongYCCD": 22,
+  "theoMuc": {
+   "PHỦ MẠNH": 9,
+   "PHỦ": 13
+  },
+  "theoLoai": {
+   "cốt lõi": 16,
+   "mở rộng": 6
+  },
+  "cotLoiChuaPhu": [],
+  "soBangChungTB": 1.5
+ },
+ "judge": {
+  "dat": 40,
+  "tong": 40,
+  "nhomDaChay": [
+   "G1",
+   "G2",
+   "G3",
+   "G4",
+   "G6",
+   "G8",
+   "G9"
+  ],
+  "hong": []
+ },
+ "vanPhong": {
+  "tongTu": 14491,
+  "tongLoi": 25,
+  "tongMien": 9
+ },
+ "repo": {
+  "commit": "c5677bf",
+  "soCommit": "10",
+  "soTep": 77,
+  "KB": 1346
+ },
+ "soDongCode": 7213,
+ "giaoDien": {
+  "view": 13,
+  "iconSVG": 27,
+  "nut": 19
+ },
+ "kichBan": {
+  "soCanh": 9,
+  "tongTuDongCong": true,
+  "ten": [
+   "mo",
+   "nhaplieu",
+   "dannhan",
+   "huanluyen",
+   "kiemdinh",
+   "ungdung",
+   "connguoi",
+   "vonglap",
+   "ket"
+  ]
+ },
+ "tinhHuong": {
+  "soThamChieuYCCD": 12
+ },
+ "nganHang": {
+  "data/cauhoi.js": 22,
+  "data/cauhoi_moRong.js": 56,
+  "data/bai5_logic.js": 40
+ },
+ "top50": 50,
+ "keHoach12tiet": {
+  "dong": 44,
+  "tu": 1020
+ },
+ "giaoAnBai5": {
+  "dong": 189,
+  "tu": 2657
+ },
+ "tenCuTrongTaiLieuNop": 0
+}

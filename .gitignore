@@ -1,2 +1,5 @@
 __pycache__/
 *.pyc
+
+# Đầu ra của công cụ kiểm (sinh lại được, không phải nguồn)
+out/

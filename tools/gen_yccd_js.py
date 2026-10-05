@@ -10,10 +10,11 @@ Nguồn vào:
 
 KHÔNG được sửa tay nội dung YCCĐ trong file sinh ra — sửa ở nguồn rồi sinh lại.
 """
-import json, re, sys
+import json, os, re, sys
 
-SRC = "/home/hitokiri/ieeai2026/yccd_lop10_sach.json"
-OUT = "/home/hitokiri/ieeai2026/soi-ai/data/yccd.js"
+_ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
+SRC = os.path.join(_ROOT, "data-source", "yccd_lop10_sach.json")
+OUT = os.path.join(_ROOT, "data", "yccd.js")
 
 # 13 chủ đề — NGUYÊN VĂN Khung 2422 (phụ lục, mục danh mục chủ đề)
 CHU_DE = {
