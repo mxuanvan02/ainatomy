@@ -104,7 +104,7 @@
 
     { id:"ket", ten:"Kết", dur:9000,
       caption:"AI không tự đúng. Người làm ra nó quyết định điều đó.",
-      sub:"Bây giờ đến lượt em soi.",
+      sub:"Bây giờ đến lượt em kiểm tra.",
       canh:"ket" }
   ];
 
@@ -306,7 +306,7 @@
       logo.appendChild(m);
       logo.appendChild(el("span", null, "SOI AI"));
       s.appendChild(logo);
-      s.appendChild(el("div", "kb-logo-soi", "Soi AI để hiểu AI"));
+      s.appendChild(el("div", "kb-logo-soi", "Phòng thực hành Trí tuệ nhân tạo lớp 10"));
     },
 
     nhaplieu(s){
@@ -463,8 +463,8 @@
     ket(s){
       s.classList.add(GIUA);
       const d = el("div", "kb-ket");
-      d.appendChild(el("div", "kb-ket-lon", "Soi AI để hiểu AI"));
-      d.appendChild(el("div", "kb-ket-nho", "9 trạm · 22 yêu cầu cần đạt lớp 10 · chạy không cần mạng"));
+      d.appendChild(el("div", "kb-ket-lon", "Đến lượt em kiểm tra"));
+      d.appendChild(el("div", "kb-ket-nho", "9 cảnh · 7 trạm · 22 yêu cầu cần đạt lớp 10"));
       s.appendChild(d);
     }
   };

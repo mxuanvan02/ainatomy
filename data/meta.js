@@ -4,7 +4,7 @@
    Chạy offline, không cần máy chủ. Dữ liệu nhúng dạng JS để mở trực tiếp bằng file:// (USB). */
 window.MX_META = {
   ten: "SOI AI",
-  khauHieu: "Soi AI để hiểu AI",
+  dinhDanh: "Phòng thực hành Trí tuệ nhân tạo lớp 10",
   phienBan: "1.0.0",
   ngayDongGoi: "2026-10-04",
   canCu: "QĐ 2422/QĐ-BGDĐT (18/8/2026) · CV 5588/BGDĐT-GDPT (19/8/2026)",
