@@ -13,10 +13,16 @@ Mọi công cụ trong `tools/` tự suy gốc repo từ vị trí tệp, **khô
 ```bash
 git clone https://github.com/mxuanvan02/soi-ai-lop10.git
 cd soi-ai-lop10
-python3 tools/nghiem_thu.py          # nghiệm thu: kỳ vọng 52/52
+python3 tools/nghiem_thu.py          # nghiệm thu: kỳ vọng 53/53
 python3 tools/kiem_noi_dung.py       # nội dung: kỳ vọng 0 lỗi
 python3 tools/tinh_do_phu.py         # độ phủ YCCĐ: kỳ vọng 22/22
+python3 tools/sinh_manifest.py       # chỉ-kiểm hash; thêm --ghi để sinh lại
+sha256sum -c SHA256SUMS.txt          # kỳ vọng 72/72 OK
 ```
+
+Ba con số "kỳ vọng" ở trên phải KHỚP với kết quả bạn vừa chạy. Nếu lệch, đừng bỏ qua:
+hoặc bạn đang ở commit khác bản README này, hoặc có thứ đã hỏng. Số kỳ vọng được cập nhật
+cùng nhịp với cổng — cổng thêm tiêu chí thì dòng này phải đổi theo.
 
 Không cần cài gì ngoài Python 3.8+ và một trình duyệt. Đầu vào dùng cho các phép kiểm
 nằm trong `data-source/` (Khung 2422 PDF + bản chữ, danh sách 22 YCCĐ). Kết quả kiểm
