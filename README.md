@@ -38,11 +38,17 @@ Yêu cầu: trình duyệt bất kỳ (Chrome 60+, Firefox 60+, Edge). Máy cấ
 1. **Phát mã**: GV phát mỗi HS một mã ẩn danh (A001, A002... — KHÔNG dùng họ tên) + mã lớp (10A1).
 2. **Vào app**: HS mở `index.html`, nhập mã → vào Trang chủ.
 3. **Chọn hoạt động**:
-   - 🧪 **Tầng 1 — Xưởng huấn luyện**: tạo dữ liệu → huấn luyện mô hình nhận diện mũ bảo hiểm → phát hiện mô hình "giỏi ban ngày, dốt ban đêm" → sửa bằng dữ liệu cân bằng → làm 4 nhiệm vụ phân tích. *(~20 phút — dạy khái niệm thiên kiến dữ liệu, mạch C+D)*
-   - 🕵️ **Tầng 2 — Đấu trường bắt lỗi AI**: phiên 12 câu (8 câu có lỗi thuộc 5 loại + 4 câu đúng mồi nhử). HS đọc câu trả lời của "trợ lý AI", bấm vào câu nghi sai, phán quyết có lỗi/không + chọn loại lỗi. Hệ chấm ngay và giải thích. *(~15 phút)*
-   - 📊 **Tầng 3 — Bản đồ năng lực**: HS xem recall theo 5 loại lỗi + tiến trình theo 12 khối năng lực + nhận xét tự động. *(~5 phút)*
-4. **Pre/post**: đầu chuyên đề bấm **📋 Pre-test**, cuối chuyên đề bấm **🏁 Post-test** (cùng hệ đo, phiên khác nhau — đo tiến bộ).
-5. **Thu dữ liệu**: cuối tiết, trên mỗi máy bấm **Báo cáo → ⬇ Xuất CSV**, GV gom file vào USB (mỗi máy 1 file).
+   - **Tầng 1 — Xưởng huấn luyện**: tạo dữ liệu → huấn luyện mô hình nhận diện mũ bảo hiểm → phát hiện mô hình "giỏi ban ngày, dốt ban đêm" → sửa bằng dữ liệu cân bằng → làm 4 nhiệm vụ phân tích. *(~20 phút — dạy khái niệm thiên kiến dữ liệu, mạch C+D)*
+   - **Tầng 2 — Đấu trường bắt lỗi AI**: phiên 12 câu (8 câu có lỗi thuộc 5 loại + 4 câu đúng mồi nhử). HS đọc câu trả lời của "trợ lý AI", bấm vào câu nghi sai, phán quyết có lỗi/không + chọn loại lỗi. Hệ chấm ngay và giải thích. *(~15 phút)*
+   - **Tầng 3 — Bản đồ năng lực**: HS xem recall theo 5 loại lỗi + tiến trình theo 12 khối năng lực + nhận xét tự động. *(~5 phút)*
+4. **Pre/post**: đầu chuyên đề bấm **Pre-test (đầu vào)**, cuối chuyên đề bấm **Post-test (đầu ra)** (cùng hệ đo, phiên khác nhau — đo tiến bộ).
+5. **Thu dữ liệu**: cuối tiết, trên mỗi máy bấm **Báo cáo → Xuất CSV nhật ký lớp (minh chứng)**, GV gom file vào USB (mỗi máy 1 file).
+
+> Nhãn nút ở bước 4–5 chép NGUYÊN VĂN từ `index.html:211-212` và `js/app.js:494`.
+> Trước đây README ghi "Pre-test" / "Post-test" / "Xuất CSV" (rút gọn) nên giáo viên
+> tìm không ra nút trên màn hình. Đã bỏ luôn 7 emoji ở mục này vì MASTER.md cấm emoji
+> làm biểu tượng — README là thứ giám khảo và đồng nghiệp đọc ĐẦU TIÊN trên GitHub,
+> nên nó phải theo cùng chuẩn với giao diện.
 
 ## 3. Không có phòng máy? (phương án in — đúng tinh thần CV 5588 "phiên bản in ấn")
 
