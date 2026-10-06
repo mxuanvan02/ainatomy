@@ -227,11 +227,24 @@
       chips.className = "chips";
       const fb = document.createElement("div");
 
-      q.luaChon.forEach(l => {
+      /* XÁO VỊ TRÍ PHƯƠNG ÁN (06/10) — đây là nơi mẹo lộ rõ nhất trong cả app.
+       * ĐO ĐƯỢC trên chính dữ liệu repo: đáp án là "b" ở 11/12 tình huống, và "b" đồng
+       * thời là phương án DÀI NHẤT ở 11/12 -> học sinh không cần đọc, cứ bấm B là đạt 92%.
+       * Ba thứ phải sửa CÙNG LÚC, thiếu một là công sức đổ sông:
+       *   (1) xáo thứ tự trước khi vẽ;
+       *   (2) chữ cái in ra phải theo VỊ TRÍ sau khi xáo (chuCai(i)), KHÔNG theo l.id —
+       *       vì l.id là nhãn cố định trong dữ liệu, in nó ra thì đáp án vẫn luôn là chữ B;
+       *   (3) dòng "Phương án đúng: B" ở cuối phải đổi sang chữ cái theo VỊ TRÍ, nếu không
+       *       học sinh đọc được đáp án đúng là chữ gì trong khi trên màn hình nó nằm chỗ khác.
+       * Chi tiết và giới hạn (xáo vị trí KHÔNG diệt được mẹo "chọn câu dài nhất"):
+       * js/engine.js hàm xaoLuaChon, và cổng G12 trong tools/nghiem_thu.py. */
+      const ds = window.MX_ENGINE.xaoLuaChon(q.luaChon, q.id);
+      const viTriDapAn = ds.findIndex(x => x.id === q.dapAn);
+      ds.forEach((l, i) => {
         const nut = document.createElement("button");
         nut.type = "button";
         nut.className = "chip";
-        nut.textContent = l.id.toUpperCase() + ". " + l.text;
+        nut.textContent = window.MX_ENGINE.chuCai(i) + ". " + l.text;
         nut.onclick = () => {
           const dapUng = (l.id === q.dapAn);
           fb.className = "phanhoi " + (dapUng ? "dung" : "sai");
@@ -259,7 +272,11 @@
           }
           const p3 = document.createElement("p");
           p3.className = "nho chu2";
-          p3.textContent = "Phương án đúng: " + q.dapAn.toUpperCase()
+          /* Chữ cái theo VỊ TRÍ đã xáo, không theo q.dapAn (nhãn cố định trong dữ liệu).
+           * Nếu in q.dapAn.toUpperCase() thì sau khi xáo, dòng này chỉ vào một ô SAI trên
+           * màn hình — học sinh sẽ thấy "phương án đúng: B" trong khi ô được tô viền xanh
+           * là ô D. Lỗi kiểu này tự nó dạy học sinh điều sai. */
+          p3.textContent = "Phương án đúng: " + window.MX_ENGINE.chuCai(viTriDapAn)
                          + " · Yêu cầu cần đạt " + q.yccd + " · chủ đề " + q.chuDe;
           fb.appendChild(p3);
           [...chips.children].forEach(c => { c.disabled = true; });

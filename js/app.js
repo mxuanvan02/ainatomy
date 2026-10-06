@@ -237,16 +237,23 @@
         <div id="fb-${nv.id}"></div>`;
       box.appendChild(c);
       const chips = c.querySelector(".chips");
-      nv.luaChon.forEach(l=>{
+      /* XÁO VỊ TRÍ trước khi vẽ (06/10): cả 4 nhiệm vụ này có đáp án là "b" và "b" cũng là
+       * phương án dài nhất -> mẹo "luôn bấm B" đạt 100% mà không cần đọc. Xem giải thích
+       * đầy đủ ở MX_ENGINE.xaoLuaChon (js/engine.js).
+       * PHẢI dùng cùng một mảng `ds` ở cả chỗ vẽ lẫn chỗ tô màu: bản cũ tô màu bằng
+       * nv.luaChon[i] theo CHỈ SỐ, nên nếu vẽ theo thứ tự xáo mà tô màu theo thứ tự gốc
+       * thì viền xanh/đỏ sẽ hiện sai phương án — lỗi nhìn thấy ngay trên màn hình. */
+      const ds = ENG.xaoLuaChon(nv.luaChon, nv.id);
+      ds.forEach((l,i)=>{
         const b = document.createElement("button"); b.className="chip"; b.textContent = l.text;
         b.onclick = ()=>{
           if(lab.daTraLoi[nv.id]) return;
           lab.daTraLoi[nv.id] = true;
           const kq = ENG.chamLab(nv, l.id);
-          [...chips.children].forEach((ch,i)=>{
+          [...chips.children].forEach((ch,j)=>{
             ch.classList.remove("chon");
-            if(nv.luaChon[i].id === nv.dapAn) ch.style.borderColor = "var(--dung)";
-            if(nv.luaChon[i].id === l.id && l.id !== nv.dapAn) ch.style.borderColor = "var(--sai)";
+            if(ds[j].id === nv.dapAn) ch.style.borderColor = "var(--dung)";
+            if(ds[j].id === l.id && l.id !== nv.dapAn) ch.style.borderColor = "var(--sai)";
             ch.style.cursor = "default";
           });
           const fb = c.querySelector(".fb") || (()=>{ const d=document.createElement("div"); d.className="fb"; c.querySelector("[id^=fb-]").appendChild(d); return d; })();

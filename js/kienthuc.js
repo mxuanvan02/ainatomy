@@ -163,18 +163,22 @@
         <div id="kt-fb-${q.id}"></div>`;
       box.appendChild(c);
       const chips = c.querySelector(".chips");
-      q.luaChon.forEach(l => {
+      /* XÁO VỊ TRÍ + chữ cái theo vị trí — xem giải thích ở js/logic.js và js/engine.js.
+       * Bản cũ in `l.id.toUpperCase()` nên chữ cái dính chặt với dữ liệu, và tô màu theo
+       * `q.luaChon[i]` (thứ tự GỐC) — nếu chỉ xáo chỗ vẽ thì viền đúng/sai sẽ hiện sai ô. */
+      const ds = window.MX_ENGINE.xaoLuaChon(q.luaChon, q.id);
+      ds.forEach((l, i) => {
         const b = document.createElement("button");
         b.className = "chip"; b.style.textAlign = "left";
-        b.innerHTML = `<b>${l.id.toUpperCase()}.</b> ${esc(l.text)}`;
+        b.innerHTML = `<b>${window.MX_ENGINE.chuCai(i)}.</b> ${esc(l.text)}`;
         b.onclick = () => {
           if(quizState[q.id]) return;
           quizState[q.id] = true;
           const dung = (l.id === q.dapAn);
-          [...chips.children].forEach((ch,i) => {
+          [...chips.children].forEach((ch,j) => {
             ch.style.cursor = "default";
-            if(q.luaChon[i].id === q.dapAn) ch.style.borderColor = "var(--dung)";
-            if(q.luaChon[i].id === l.id && !dung) ch.style.borderColor = "var(--sai)";
+            if(ds[j].id === q.dapAn) ch.style.borderColor = "var(--dung)";
+            if(ds[j].id === l.id && !dung) ch.style.borderColor = "var(--sai)";
           });
           const fb = document.createElement("div");
           fb.className = "phanhoi " + (dung ? "dung" : "sai");

@@ -246,10 +246,70 @@
 
   function xoaHet(){ localStorage.removeItem(KEY); }
 
+  /* ================= XÁO VỊ TRÍ PHƯƠNG ÁN (chống mẹo không cần đọc hiểu) =========
+   *
+   * VÌ SAO CÓ HÀM NÀY (06/10) — số đo trên chính dữ liệu của repo, không phỏng đoán:
+   *   js/tinhhuong.js : đáp án là "b" ở 11/12 câu, và "b" đồng thời là phương án DÀI
+   *                     NHẤT ở 11/12 câu  -> mẹo "luôn bấm B" đạt 92%.
+   *   js/lab.js       : đáp án là "b" ở 4/4 câu, và là phương án dài nhất ở 4/4 câu
+   *                     -> mẹo đó đạt 100%.
+   *   data/cauhoi.js + cauhoi_moRong.js : claim sai nằm ở vị trí giữa 26/53 item.
+   * Một học sinh KHÔNG ĐỌC câu hỏi vẫn đạt 92–100%. Điều đó phá đúng tuyên bố cốt lõi
+   * của sản phẩm ("tự chấm khách quan bằng oracle"): con số thu về không còn đo năng
+   * lực, nên pre/post và recall đều vô nghĩa nếu học sinh phát hiện ra mẹo.
+   *
+   * HÀM NÀY SỬA ĐƯỢC GÌ VÀ KHÔNG SỬA ĐƯỢC GÌ — nói rõ để không ai tưởng đã xong:
+   *   SỬA ĐƯỢC  mẹo "luôn bấm chữ B". Sau khi xáo, chữ cái hiển thị của đáp án thay đổi
+   *             theo câu và theo học sinh, nên không còn vị trí cố định để lợi dụng.
+   *   KHÔNG SỬA ĐƯỢC mẹo "chọn phương án dài nhất". Đó là lỗi NỘI DUNG: phương án nhiễu
+   *             được viết ngắn hơn đáp án. Không phép xáo trộn nào thay đổi được độ dài
+   *             tương đối. Muốn diệt phải VIẾT LẠI phương án nhiễu cho cân độ dài — việc
+   *             của tác giả, không phải của mã. Cổng G12 đo cả hai con số và in ra để
+   *             khoản nợ này không bị quên.
+   *
+   * TẤT ĐỊNH theo (mã phiên + id câu): cùng một học sinh mở lại trang vẫn thấy thứ tự cũ
+   * (không xáo giữa chừng khi làm lại một câu), nhưng hai học sinh khác nhau thấy thứ tự
+   * khác nhau nên không thể chuyền nhau "câu 3 đáp án B". Đặt mã phiên trên window để
+   * phép kiểm tự động ghim lại được khi cần tái lập.
+   */
+  function bamDuong(s){
+    let h = 0x811c9dc5;
+    for(let i = 0; i < s.length; i++){ h ^= s.charCodeAt(i); h = (h * 0x01000193) >>> 0; }
+    return h >>> 0;
+  }
+
+  function maPhien(){
+    if(window.MX_SEED_PHIEN != null) return String(window.MX_SEED_PHIEN);
+    if(!window.__SOIAI_PHIEN){
+      window.__SOIAI_PHIEN = String((Date.now() ^ Math.floor(Math.random() * 0xffffffff)) >>> 0);
+    }
+    return window.__SOIAI_PHIEN;
+  }
+
+  function xaoLuaChon(ds, mam){
+    if(!ds) return [];
+    if(ds.length < 2) return ds.slice();
+    /* cùng bộ số LCG đã dùng ở js/nhamay_tram01.js — giữ nhất quán trong repo */
+    let seed = bamDuong(maPhien() + "|" + String(mam == null ? "" : mam));
+    const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
+    const a = ds.slice();
+    for(let i = a.length - 1; i > 0; i--){
+      const j = Math.floor(rnd() * (i + 1));
+      const t = a[i]; a[i] = a[j]; a[j] = t;
+    }
+    return a;
+  }
+
+  /* Chữ cái hiển thị theo VỊ TRÍ sau khi xáo (0 -> A). Phải lấy theo vị trí chứ không
+   * lấy `l.id`: id là nhãn cố định trong dữ liệu, nếu in nó ra thì đáp án vẫn luôn hiện
+   * là chữ B dù các phương án đã đổi chỗ — xáo trộn thành vô nghĩa. */
+  function chuCai(i){ return String.fromCharCode(65 + i); }
+
   window.MX_ENGINE = {
     doc, ghi, vaoLop, logSuKien,
     chamDauTruong, chamLab,
     tongHop, taoNhanXet, tongHopLop, bangNhamLan,
-    xuatCSV, xuatJSON, xoaHet
+    xuatCSV, xuatJSON, xoaHet,
+    xaoLuaChon, chuCai, maPhien
   };
 })();

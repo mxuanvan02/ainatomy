@@ -37,7 +37,7 @@ RANH GIỚI (không được vi phạm — kháng Goodhart):
   * Không hiển thị "điểm"/"xếp loại" cho học sinh (Khung 2422 phần VI).
   * Không thu họ tên/ảnh/dữ liệu cá nhân.
 """
-import datetime, json, os, re, subprocess, sys, urllib.request, urllib.parse
+import datetime, hashlib, json, os, re, subprocess, sys, urllib.request, urllib.parse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SITE = os.environ.get("SOI_AI_SITE", "https://mxuanvan02.github.io/soi-ai-lop10")
@@ -995,6 +995,242 @@ console.log(JSON.stringify(out));
                   f"app.js gọi {sorted(goi)} · muc3.js xuất {sorted(xuat)} · khớp hết"
                   if not thieu_ham else f"app.js gọi hàm KHÔNG tồn tại: {thieu_ham}")
 
+    def g12(self):
+        """G12 — CHỐNG MẸO LÀM BÀI MÀ KHÔNG CẦN ĐỌC (thêm 06/10).
+
+        VÌ SAO CÓ CỔNG NÀY. Phản biện độc lập vòng 9 cáo buộc: học sinh không đọc câu hỏi
+        vẫn đạt điểm cao. Đo lại trên chính dữ liệu của repo thì cáo buộc ĐÚNG:
+            js/tinhhuong.js  đáp án là "b" ở 11/12 câu, và "b" cũng là phương án DÀI NHẤT
+                             ở 11/12 câu  -> mẹo "luôn bấm B" đạt 92%
+            js/lab.js        đáp án "b" ở 4/4 câu, dài nhất 4/4 -> mẹo đó đạt 100%
+        Điều này phá đúng tuyên bố cốt lõi của sản phẩm ("tự chấm khách quan bằng oracle"):
+        con số thu về không còn đo năng lực, nên pre/post và recall đều vô nghĩa nếu học
+        sinh phát hiện ra mẹo. Một hệ tự chấm mà bị mẹo hoá thì tệ hơn không tự chấm, vì
+        nó tạo cảm giác đã đo được.
+
+        HAI LỚP LỖI, HAI CÁCH CHỮA KHÁC NHAU — cổng này tách bạch để không ai tưởng
+        sửa một cái là xong cả hai:
+          LỚP 1 (VỊ TRÍ cố định) chữa được bằng MÃ: xáo thứ tự phương án trước khi vẽ
+            (MX_ENGINE.xaoLuaChon) và sinh chữ cái hiển thị theo VỊ TRÍ sau khi xáo
+            (MX_ENGINE.chuCai). Đã đo sau khi sửa: mẹo "luôn bấm một vị trí" từ 92% xuống
+            26,0%, và kiểm định khi-bình-phương trên 3.600 mẫu cho χ²=5,47 < 7,81 (ngưỡng
+            5%, 3 bậc tự do) — tức phân bố vị trí đáp án đều, không lệch chỗ nào.
+          LỚP 2 (phương án ĐÚNG dài hơn phương án nhiễu) KHÔNG chữa được bằng mã. Không
+            phép xáo trộn nào thay đổi được độ dài tương đối. Muốn diệt phải VIẾT LẠI
+            phương án nhiễu cho cân độ dài — việc của tác giả, cần thời gian, và phải làm
+            trước khi dạy thật. Vì vậy cổng KHÔNG che nó đi: nó đo, in ra tỉ lệ thật, và
+            liệt kê từng item mắc nợ để thành danh sách việc làm.
+
+        G12a  mọi chỗ vẽ phương án đều phải xáo vị trí (bắt hồi quy: ai thêm chỗ vẽ mới mà
+              quên xáo thì mẹo "luôn bấm B" sống lại ngay).
+        G12b  chữ cái hiển thị không được lấy từ nhãn cố định trong dữ liệu.
+        G12c  ĐO KHOẢN NỢ NỘI DUNG: tỉ lệ câu có đáp án là phương án dài nhất. KHÔNG đặt
+              ngưỡng pass/fail — đặt ngưỡng thì người ta sẽ sửa số đo cho qua, hoặc bỏ câu
+              khó ra khỏi ngân hàng. In ra để nhìn thấy, và FAIL chỉ khi tỉ lệ TĂNG so với
+              mốc đã ghi (khoản nợ phình ra mà không ai để ý).
+        """
+        print("\n=== G12 CHỐNG MẸO LÀM BÀI KHÔNG CẦN ĐỌC ===")
+        # ---- G12a: mọi chỗ vẽ phương án đều phải đi qua xaoLuaChon ----
+        # Đo bằng cách đếm: tệp nào có `.forEach` trên một mảng luaChon THÌ tệp đó phải có
+        # lời gọi xaoLuaChon. Bản cũ của app vẽ thẳng `nv.luaChon.forEach(...)` — đó chính
+        # là chỗ mẹo hoạt động. Nếu ai viết thêm một chỗ vẽ mới theo kiểu cũ, cổng kêu.
+        tep_ve = []
+        quen_xao = []
+        for f in sorted(os.listdir(os.path.join(ROOT, "js"))):
+            if not f.endswith(".js"):
+                continue
+            song = than_ma_song(doc("js/" + f))
+            if "luaChon" not in song:
+                continue
+            # chỗ VẼ: duyệt mảng luaChon bằng forEach/map rồi tạo button
+            ve = re.findall(r"(\w+)\.forEach\(", song)
+            co_cho_ve = False
+            for m in re.finditer(r"(\w+)\.forEach\(", song):
+                bien = m.group(1)
+                # biến đó có phải mảng phương án (gốc hoặc đã xáo) không
+                sau = song[m.end():m.end() + 700]
+                if re.search(r"createElement\(\s*[\"']button", sau) and \
+                   re.search(r"\b" + re.escape(bien) + r"\b\s*=\s*"
+                             r"(?:\w+\.)?xaoLuaChon\(", song):
+                    co_cho_ve = True
+                elif bien in ("ds",) and re.search(
+                        r"createElement\(\s*[\"']button", sau):
+                    co_cho_ve = True
+            if not co_cho_ve:
+                continue
+            tep_ve.append("js/" + f)
+            if "xaoLuaChon" not in song:
+                quen_xao.append("js/" + f)
+        self.them("G12a", "mọi chỗ vẽ phương án đều xáo vị trí (chống mẹo 'luôn bấm B')",
+                  tep_ve and not quen_xao,
+                  f"{len(tep_ve)} tệp vẽ phương án ({', '.join(tep_ve)}) đều gọi xaoLuaChon"
+                  if tep_ve and not quen_xao
+                  else ("KHÔNG tìm thấy chỗ vẽ phương án nào — phép đo HỎNG, đừng tin dòng này"
+                        if not tep_ve else f"quên xáo vị trí: {quen_xao}"))
+
+        # ---- G12b: chữ cái hiển thị không lấy từ nhãn cố định ----
+        # `l.id.toUpperCase()` in ra chữ cái DÍNH với dữ liệu: xáo vị trí xong đáp án vẫn
+        # luôn hiện chữ B, nên học sinh vẫn "luôn bấm B" được. Phải in theo VỊ TRÍ.
+        in_nhan_co_dinh = []
+        for f in sorted(os.listdir(os.path.join(ROOT, "js"))):
+            if not f.endswith(".js"):
+                continue
+            song = than_ma_song(doc("js/" + f))
+            for m in re.finditer(r"(\w+)\.id\.toUpperCase\(\)", song):
+                dong = song[:m.start()].count("\n") + 1
+                in_nhan_co_dinh.append(f"js/{f}:{dong}")
+            # dòng "Phương án đúng: " in ra nhãn cố định cũng lộ đáp án sai chỗ
+            for m in re.finditer(r"Phương án đúng[^\n]{0,80}\.dapAn\.toUpperCase\(\)", song):
+                dong = song[:m.start()].count("\n") + 1
+                in_nhan_co_dinh.append(f"js/{f}:{dong} (dòng 'Phương án đúng')")
+        self.them("G12b", "chữ cái phương án sinh theo VỊ TRÍ, không theo nhãn cố định",
+                  not in_nhan_co_dinh,
+                  "không còn chỗ nào in `.id.toUpperCase()` hay `dapAn.toUpperCase()`"
+                  if not in_nhan_co_dinh else "vẫn in nhãn cố định: " + ", ".join(in_nhan_co_dinh))
+
+        # ---- G12c: đo khoản nợ nội dung, so với mốc đã ghi ----
+        MOC_NO = 82.9          # % đo được ngày 06/10, trước khi viết lại phương án nhiễu
+        DUNGSAI = 1.0          # điểm phần trăm: lệch dưới mức này coi như nhiễu đo
+        re_block = re.compile(r"luaChon\s*:\s*\[(.*?)\]", re.S)
+        re_item = re.compile(r'\{\s*id\s*:\s*"([a-e])"\s*,\s*text\s*:\s*"((?:[^"\\]|\\.)*)"')
+        re_dap = re.compile(r'dapAn\s*:\s*"([a-e])"')
+        tong, no, muc = 0, 0, {}
+        nguon = ("js", "data")
+        for thu_muc in nguon:
+            for f in sorted(os.listdir(os.path.join(ROOT, thu_muc))):
+                if not f.endswith(".js"):
+                    continue
+                rel = f"{thu_muc}/{f}"
+                s = doc(rel)
+                if "luaChon" not in s:
+                    continue
+                n = d = 0
+                for m in re_block.finditer(s):
+                    items = re_item.findall(m.group(1))
+                    if len(items) < 2:
+                        continue
+                    dm = re_dap.search(s[m.end():m.end() + 900])
+                    if not dm:
+                        truoc = s[max(0, m.start() - 1500):m.start()]
+                        c = list(re_dap.finditer(truoc))
+                        dm = c[-1] if c else None
+                    if not dm:
+                        continue
+                    dap = dm.group(1)
+                    if dap not in [k for k, _ in items]:
+                        continue
+                    dai = max(items, key=lambda x: len(x[1]))[0]
+                    n += 1
+                    if dai == dap:
+                        d += 1
+                if n:
+                    muc[rel] = (d, n)
+                    tong += n
+                    no += d
+        ti_le = (100.0 * no / tong) if tong else None
+        self.them("G12c", f"khoản nợ nội dung không phình (mốc {MOC_NO}%, đo {ti_le:.1f}%)"
+                  if ti_le is not None else "khoản nợ nội dung (không đo được)",
+                  ti_le is not None and ti_le <= MOC_NO + DUNGSAI,
+                  (f"{no}/{tong} câu có đáp án LÀ phương án dài nhất = {ti_le:.1f}% "
+                   f"(mẹo 'chọn câu dài nhất' đạt từng ấy; ngẫu nhiên ~25%). "
+                   f"Chi tiết: " + ", ".join(f"{k} {v[0]}/{v[1]}" for k, v in sorted(muc.items()))
+                   + " — ĐÂY LÀ NỢ NỘI DUNG, xáo vị trí không sửa được, phải viết lại phương án nhiễu")
+                  if ti_le is not None else
+                  "không tìm thấy câu hỏi nào có luaChon+dapAn — phép đo HỎNG, đừng tin dòng này")
+
+    def g13(self):
+        """G13 — MANIFEST PHẢI PHỦ ĐỦ MỌI TỆP THUỘC SẢN PHẨM (thêm 06/10).
+
+        VÌ SAO CÓ CỔNG NÀY. SHA256SUMS.txt được README khai là "bằng chứng mốc thời gian &
+        toàn vẹn", và hồ sơ dự thi dựa vào nó để chứng minh "sản phẩm gốc". Nhưng đo thật
+        lúc phát hiện: git theo dõi 90 tệp mà manifest chỉ có 72 — thiếu 18 tệp, trong đó có
+            · tools/nghiem_thu.py  — CHÍNH CÁI CỔNG sinh ra mọi con số "56/56 ĐẠT"
+            · tools/kiem_noi_dung.py, tinh_do_phu.py, gop_csv.py, sinh_manifest.py
+            · data-source/2422_PL_khung.pdf — văn bản Bộ có chữ ký, căn cứ pháp lý của sản phẩm
+        Đây là LỖ HỔNG TỰ THAM CHIẾU: bằng chứng toàn vẹn không phủ công cụ sinh ra bằng
+        chứng. Sửa cổng để nó luôn in ĐẠT thì manifest không phát hiện. Và `sha256sum -c`
+        vẫn trả "72/72 OK" — đúng định dạng, đọc như thật, không ai nghi ngờ.
+
+        Nguyên nhân gốc nằm ở tools/sinh_manifest.py: danh sách tệp lấy từ
+        `set(manifest_cũ) | set(danh_sách_gõ_tay)`, nên tệp mới chỉ được vào manifest nếu
+        nó ĐÃ ở trong đó hoặc có ai nhớ gõ tên. Đã sửa sang `git ls-files`. Cổng này giữ
+        cho lỗi đó không quay lại.
+
+        G13a  mọi tệp git theo dõi phải có trong manifest (trừ chính manifest).
+        G13b  hash trong manifest phải KHỚP tệp trên đĩa — bắt manifest cũ sau khi sửa mã.
+        G13c  manifest không được chứa tệp mà git không theo dõi (bằng chứng mồ côi).
+        """
+        print("\n=== G13 TOÀN VẸN MANIFEST SHA256SUMS ===")
+        man = os.path.join(ROOT, "SHA256SUMS.txt")
+        if not os.path.isfile(man):
+            self.them("G13a", "manifest phủ đủ mọi tệp sản phẩm", False,
+                      "KHÔNG có SHA256SUMS.txt — không có bằng chứng toàn vẹn nào để kiểm")
+            return
+
+        khai = {}
+        for dong in open(man, encoding="utf-8"):
+            m = re.match(r"^([0-9a-f]{64})\s+(.+?)\s*$", dong)
+            if m:
+                khai[m.group(2)] = m.group(1)
+
+        # Danh sách tệp thuộc sản phẩm: hỏi git, không gõ tay.
+        try:
+            r = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True,
+                               text=True, timeout=120)
+            tracked = [f for f in r.stdout.split("\n") if f] if r.returncode == 0 else None
+        except (OSError, subprocess.SubprocessError):
+            tracked = None
+        if not tracked:
+            self.them("G13a", "manifest phủ đủ mọi tệp sản phẩm", False,
+                      "không đọc được `git ls-files` — KHÔNG đoán danh sách thay thế, "
+                      "vì đoán là tái sinh đúng lỗi manifest thiếu tệp")
+            return
+
+        tracked = [f for f in tracked if f != "SHA256SUMS.txt"]
+
+        thieu = sorted(f for f in tracked if f not in khai)
+        # Cổng phải phủ CHÍNH NÓ: nêu đích danh nếu thiếu công cụ đo.
+        thieu_cong_cu = [f for f in thieu
+                         if f.startswith("tools/") or f.startswith("data-source/")]
+        self.them("G13a", f"manifest phủ đủ {len(tracked)} tệp git theo dõi (kể cả cổng + văn bản Bộ)",
+                  not thieu,
+                  f"đủ {len(tracked)}/{len(tracked)} tệp" if not thieu
+                  else f"THIẾU {len(thieu)} tệp"
+                       + (f" — trong đó có CÔNG CỤ ĐO/NGUỒN PHÁP LÝ: {thieu_cong_cu}"
+                          if thieu_cong_cu else "")
+                       + f": {thieu[:8]}{'…' if len(thieu) > 8 else ''}"
+                       + " · chạy `python3 tools/sinh_manifest.py --ghi`")
+
+        # G13b — hash phải khớp. Tệp không còn trên đĩa thì báo riêng, không tính là khớp.
+        lech, mat = [], []
+        for f, h in sorted(khai.items()):
+            p = os.path.join(ROOT, f)
+            if not os.path.isfile(p):
+                mat.append(f)
+                continue
+            hh = hashlib.sha256()
+            with open(p, "rb") as fp:
+                for khoi in iter(lambda: fp.read(1 << 20), b""):
+                    hh.update(khoi)
+            if hh.hexdigest() != h:
+                lech.append(f)
+        self.them("G13b", "hash trong manifest KHỚP tệp trên đĩa (manifest không cũ)",
+                  not lech and not mat,
+                  f"{len(khai) - len(lech) - len(mat)}/{len(khai)} tệp khớp hash"
+                  if not lech and not mat
+                  else ("mất trên đĩa: " + ", ".join(mat[:6]) + " · " if mat else "")
+                       + (f"hash LỆCH {len(lech)} tệp: {', '.join(lech[:6])}"
+                          f"{'…' if len(lech) > 6 else ''}" if lech else "")
+                       + " · mã đã đổi mà manifest chưa sinh lại: "
+                         "`python3 tools/sinh_manifest.py --ghi`")
+
+        mo_coi = sorted(set(khai) - set(tracked) - {"SHA256SUMS.txt"})
+        self.them("G13c", "manifest không chứa tệp ngoài git (bằng chứng mồ côi)",
+                  not mo_coi,
+                  "mọi tệp trong manifest đều được git theo dõi" if not mo_coi
+                  else f"{len(mo_coi)} tệp trong manifest mà git không theo dõi: "
+                       f"{mo_coi[:8]} — hoặc `git add` nó, hoặc nó không thuộc sản phẩm")
+
     def tong_ket(self):
         print("\n" + "=" * 72)
         dat = sum(1 for k in self.kq if k["dat"])
@@ -1050,7 +1286,7 @@ console.log(JSON.stringify(out));
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
-    NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11"]
+    NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.

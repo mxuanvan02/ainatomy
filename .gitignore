@@ -9,6 +9,12 @@ __pycache__/
 # nhưng bản .bak của manifest thì không.
 SHA256SUMS.txt.bak-*
 
+# Kết quả do cổng nghiệm thu sinh ra — KHÔNG đưa vào manifest.
+# VÌ SAO: out/judge_result.json đổi sau MỖI lần chạy cổng. Nếu track nó thì mọi lần chạy
+# đều làm hash lệch và G13b (manifest khớp đĩa) sẽ fail liên tục vì một lý do không phải lỗi.
+# Đây là đầu ra tái lập được từ mã, không phải nguồn — bằng chứng thật là lệnh chạy cổng.
+out/
+
 # Tệp tạm của hệ điều hành / trình soạn thảo
 .DS_Store
 Thumbs.db

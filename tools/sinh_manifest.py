@@ -8,15 +8,34 @@ VÌ SAO PHẢI LÀ CHƯƠNG TRÌNH, KHÔNG ĐƯỢC GÕ TAY (luật 5f của ski
   đúng định dạng, đọc như thật, và cả hồ sơ dựa trên nó. Nên: sinh bằng hashlib, ghi ra tệp,
   rồi verify bằng `sha256sum -c` (đọc kết quả từ file, không qua pipe).
 
-DANH SÁCH TỆP lấy từ CHÍNH manifest cũ (không tự bịa thêm/bớt), cộng js/muc3.js là tệp MỚI
-  của đợt này. Giữ nguyên thứ tự sắp xếp theo đường dẫn như bản cũ để diff chỉ hiện đúng
-  những dòng thật sự đổi.
+DANH SÁCH TỆP lấy từ `git ls-files` — tức CHÍNH git quyết định tệp nào thuộc sản phẩm.
+
+  LỖI ĐÃ SỬA (06/10), và đây là lỗi nặng nhất tìm được trong đợt phản biện này:
+  bản đầu lấy danh sách từ `set(manifest_cũ) | set(THEM_MOI_gõ_tay)`. Hệ quả là một tệp
+  chỉ được vào manifest nếu nó ĐÃ ở trong manifest, hoặc có ai nhớ gõ tên nó vào THEM_MOI.
+  Tệp mới không nằm trong cả hai thì RƠI ÂM THẦM — không lỗi, không cảnh báo, script vẫn
+  in "ĐÃ GHI ... (72 dòng)" và `sha256sum -c` vẫn trả 72/72 OK. Đo thật lúc phát hiện:
+  git theo dõi 90 tệp, manifest chỉ có 72 — thiếu 18 tệp, trong đó có:
+    · tools/nghiem_thu.py  — CHÍNH CÁI CỔNG sinh ra mọi con số "56/56 ĐẠT". Sửa cổng để nó
+      luôn in ĐẠT thì manifest KHÔNG phát hiện. Đây là lỗ hổng tự tham chiếu: bằng chứng
+      toàn vẹn không phủ công cụ sinh ra bằng chứng.
+    · tools/kiem_noi_dung.py, tinh_do_phu.py, gop_csv.py, sinh_manifest.py — mọi công cụ đo.
+    · data-source/2422_PL_khung.pdf — VĂN BẢN BỘ có chữ ký Thứ trưởng, căn cứ pháp lý của
+      cả sản phẩm và là thứ giám khảo sẽ đối chiếu.
+  README.md dòng 108 khai manifest là "bằng chứng mốc thời gian & toàn vẹn" — lời khai đó
+  sai với phạm vi thực tế của nó. Đã kiểm: KHÔNG có gate hay ghi chú nào nói việc bỏ sót
+  tools/ là cố ý (grep "SHA256SUMS" trong nghiem_thu.py ra rỗng), nên đây là rơi âm thầm
+  chứ không phải thiết kế.
+  Nay lấy danh sách từ git, và KHÔNG CẦN danh sách gõ tay nào nữa — tệp mới tự động vào.
+
+  Loại trừ duy nhất: chính SHA256SUMS.txt (không thể hash chính nó một cách có nghĩa).
 
 Mặc định CHỈ KIỂM: in ra tệp nào lệch hash, KHÔNG ghi. Muốn ghi thật phải thêm --ghi.
 """
 import hashlib
 import os
 import re
+import subprocess
 import sys
 
 ROOT = os.path.dirname(os.path.abspath(__file__)) if "__file__" in dir() else "."
@@ -24,7 +43,24 @@ ROOT = os.path.abspath(os.path.join(os.path.dirname(os.path.abspath(__file__)), 
 # Đường dẫn gốc suy từ vị trí tệp này (luật 5m): script nằm ở ieeai2026/tools/, repo ở
 # ieeai2026/soi-ai/ — nên đừng ghi cứng /home/<user>/... vì bản clone sẽ chấm nhầm máy.
 MANIFEST = os.path.join(ROOT, "SHA256SUMS.txt")
-THEM_MOI = ["js/muc3.js"]
+LOAI_TRU = {"SHA256SUMS.txt"}
+
+
+def danh_sach_tep():
+    """Danh sách tệp THUỘC SẢN PHẨM, lấy từ git — nguồn có thẩm quyền duy nhất.
+
+    Trả None nếu không phải repo git, để người gọi biết mà dừng thay vì âm thầm sinh một
+    manifest thiếu (đúng lớp lỗi vừa sửa ở trên).
+    """
+    try:
+        r = subprocess.run(["git", "ls-files"], cwd=ROOT, capture_output=True,
+                           text=True, timeout=120)
+    except (OSError, subprocess.SubprocessError):
+        return None
+    if r.returncode != 0:
+        return None
+    ds = [d for d in r.stdout.split("\n") if d and d not in LOAI_TRU]
+    return sorted(ds) or None
 
 
 def sha256(p):
@@ -47,12 +83,29 @@ def main():
         if m:
             cu[m.group(2)] = m.group(1)
 
-    ds = sorted(set(cu) | set(THEM_MOI))
+    ds = danh_sach_tep()
+    if not ds:
+        print("!!! không đọc được danh sách tệp từ `git ls-files`.")
+        print("    KHÔNG suy ra từ manifest cũ: làm vậy là tái sinh đúng lỗi đã sửa —")
+        print("    tệp mới sẽ rơi âm thầm và manifest vẫn in ra trông đầy đủ.")
+        print(f"    Chạy trong repo git (ROOT = {ROOT}) hoặc tự thêm tệp vào LOAI_TRU/danh sách.")
+        return 1
+
     print("=" * 96)
-    print(f"SINH LẠI MANIFEST · {len(cu)} tệp trong bản cũ + {len(THEM_MOI)} tệp mới "
-          f"-> {len(ds)} tệp")
+    print(f"SINH LẠI MANIFEST · git theo dõi {len(ds)} tệp (đã trừ {sorted(LOAI_TRU)})")
     print("=" * 96)
     print(f"ROOT (suy từ vị trí script, không ghi cứng): {ROOT}")
+
+    # Tệp có trong manifest CŨ nhưng git không theo dõi nữa: báo rõ, không âm thầm xoá.
+    # Đây có thể là (a) tệp vừa bị git rm — xoá khỏi manifest là đúng, hoặc
+    # (b) tệp bị .gitignore sót — xoá khỏi manifest là MẤT BẰNG CHỨNG. Người chạy phải quyết.
+    mo_cui = sorted(set(cu) - set(ds) - LOAI_TRU)
+    if mo_cui:
+        print(f"\n  TRONG MANIFEST CŨ NHƯNG GIT KHÔNG THEO DÕI ({len(mo_cui)} tệp): {mo_cui}")
+        print("  -> chúng sẽ bị GỠ khỏi manifest. Nếu đây là tệp sản phẩm thật thì phải")
+        print("     `git add` nó TRƯỚC — gỡ khỏi manifest là mất bằng chứng toàn vẹn.")
+        if not ghi:
+            print("     (chế độ chỉ-kiểm: chưa gỡ gì)")
 
     thieu, lech, moi, khop = [], [], [], []
     dong_moi = []

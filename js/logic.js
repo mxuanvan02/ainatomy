@@ -165,19 +165,26 @@
         <div id="bt-fb-${bt.id}"></div>`;
       box.appendChild(c);
       const chips = c.querySelector(".chips");
-      bt.luaChon.forEach(l=>{
+      /* XÁO VỊ TRÍ + CHỮ CÁI THEO VỊ TRÍ (06/10). Hai lỗi phải sửa CÙNG LÚC:
+       * (1) thứ tự phương án cố định trong dữ liệu;
+       * (2) chữ cái in ra lấy từ `l.id` — tức nhãn cố định. Nếu chỉ xáo thứ tự mà vẫn in
+       *     l.id thì đáp án vẫn luôn hiện chữ B, học sinh vẫn "luôn bấm B" được.
+       * Nên chữ cái phải sinh theo VỊ TRÍ sau khi xáo (MX_ENGINE.chuCai), còn `l.id` chỉ
+       * dùng để so với bt.dapAn và ghi log. Chi tiết: js/engine.js hàm xaoLuaChon. */
+      const ds = window.MX_ENGINE.xaoLuaChon(bt.luaChon, bt.id);
+      ds.forEach((l,i)=>{
         const b = document.createElement("button");
         b.className = "chip";
-        b.innerHTML = `<b>${l.id.toUpperCase()}.</b> ${esc(l.text)}`;
+        b.innerHTML = `<b>${window.MX_ENGINE.chuCai(i)}.</b> ${esc(l.text)}`;
         b.style.textAlign = "left";
         b.onclick = ()=>{
           if(btState[bt.id]) return;
           btState[bt.id] = true;
           const dung = (l.id === bt.dapAn);
-          [...chips.children].forEach((ch,i)=>{
+          [...chips.children].forEach((ch,j)=>{
             ch.style.cursor = "default";
-            if(bt.luaChon[i].id === bt.dapAn) ch.style.borderColor = "var(--dung)";
-            if(bt.luaChon[i].id === l.id && !dung) ch.style.borderColor = "var(--sai)";
+            if(ds[j].id === bt.dapAn) ch.style.borderColor = "var(--dung)";
+            if(ds[j].id === l.id && !dung) ch.style.borderColor = "var(--sai)";
           });
           const fb = document.createElement("div");
           fb.className = "phanhoi " + (dung ? "dung" : "sai");

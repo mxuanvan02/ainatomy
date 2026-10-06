@@ -13,16 +13,24 @@ Mọi công cụ trong `tools/` tự suy gốc repo từ vị trí tệp, **khô
 ```bash
 git clone https://github.com/mxuanvan02/soi-ai-lop10.git
 cd soi-ai-lop10
-python3 tools/nghiem_thu.py          # nghiệm thu: kỳ vọng 53/53
+python3 tools/nghiem_thu.py          # nghiệm thu: dòng KẾT QUẢ phải là N/N (hai số bằng nhau)
 python3 tools/kiem_noi_dung.py       # nội dung: kỳ vọng 0 lỗi
 python3 tools/tinh_do_phu.py         # độ phủ YCCĐ: kỳ vọng 22/22
 python3 tools/sinh_manifest.py       # chỉ-kiểm hash; thêm --ghi để sinh lại
-sha256sum -c SHA256SUMS.txt          # kỳ vọng 72/72 OK
+sha256sum -c SHA256SUMS.txt          # kỳ vọng 0 dòng FAILED (mã thoát 0)
 ```
 
-Ba con số "kỳ vọng" ở trên phải KHỚP với kết quả bạn vừa chạy. Nếu lệch, đừng bỏ qua:
-hoặc bạn đang ở commit khác bản README này, hoặc có thứ đã hỏng. Số kỳ vọng được cập nhật
-cùng nhịp với cổng — cổng thêm tiêu chí thì dòng này phải đổi theo.
+**Cố ý KHÔNG ghi số tiêu chí hay số tệp cụ thể ở đây.** Bản cũ ghi "kỳ vọng 52/52" rồi
+"72/72" — mỗi lần cổng thêm tiêu chí hoặc repo thêm tệp là dòng đó thành sai, trong khi
+người đọc vẫn tin nó. Đã xảy ra thật: README ghi "52/52" khi cổng là 53/53, rồi lại ghi
+"59/59" và "89/89" khi cổng lên 59 nhưng manifest còn 88. Ghi ĐIỀU KIỆN ("hai số bằng
+nhau", "0 FAILED") thì không cũ được. Muốn biết hiện trạng: chạy lệnh và đọc kết quả, hoặc
+xem `out/judge_result.meta.json` (ghi số tiêu chí + commit + thời điểm của lần chạy).
+
+Manifest phủ **mọi tệp git theo dõi** (mã, dữ liệu, công cụ đo, và `data-source/` chứa văn bản
+Bộ), chỉ trừ chính nó và `out/`. Cổng `G13` kiểm điều đó: nếu một tệp mới bị bỏ sót khỏi
+manifest thì cổng FAIL, nên không thể âm thầm khai thiếu bằng chứng toàn vẹn. Sinh lại bằng
+`tools/sinh_manifest.py` — danh sách lấy từ `git ls-files`, không gõ tay.
 
 Không cần cài gì ngoài Python 3.8+ và một trình duyệt. Đầu vào dùng cho các phép kiểm
 nằm trong `data-source/` (Khung 2422 PDF + bản chữ, danh sách 22 YCCĐ). Kết quả kiểm

@@ -200,7 +200,11 @@
         <p class="nho chu2">Yêu cầu cần đạt ${esc(q.yccd)} · chủ đề ${esc(q.chuDe)}</p>`;
       host.appendChild(box);
       const chips = $("t0-chips-" + qi);
-      q.luaChon.forEach(l => {
+      /* XÁO VỊ TRÍ (06/10): câu hỏi Trạm 0 cũng có đáp án ở vị trí cố định, nên cùng một
+       * mẹo "luôn bấm ô thứ hai" áp dụng được. Chỗ này không in chữ cái nên chỉ cần xáo.
+       * Seed dùng qi vì item CAU_HOI_T0 có thể không có id — xem js/engine.js xaoLuaChon. */
+      const ds = window.MX_ENGINE.xaoLuaChon(q.luaChon, q.id != null ? q.id : "t0-" + qi);
+      ds.forEach(l => {
         const b = document.createElement("button");
         b.className = "chip"; b.type = "button"; b.textContent = l.text;
         b.onclick = () => {
