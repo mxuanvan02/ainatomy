@@ -233,7 +233,9 @@
     </div>
 
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-lightbulb"/></svg> Mức 3 — em tự cài một lỗi cho bạn bắt <span class="tagline">BT-09 · 10.B2.1</span></h2>
+      <!-- Bỏ nhãn "Mức 3" khỏi tiêu đề học sinh đọc: khung ba mức không được giải thích ở
+           đâu trong app, nên con số đó vô nghĩa với học sinh. Xem js/bt09.js. -->
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-lightbulb"/></svg> Em tự cài một lỗi cho bạn bắt <span class="tagline">BT-09 · 10.B2.1</span></h2>
       <p class="de-bai">Phần trên là em bắt lỗi của máy. Phần này đảo lại: em tự viết một câu
         trả lời của AI có cài <b>đúng một lỗi</b>, rồi đưa cho một bạn cùng lớp bắt. Bạn bắt được
         thì bài của em đạt.</p>
@@ -573,6 +575,9 @@
       <label for="nm-prompt">Em hãy hỏi hệ một câu:</label>
       <textarea id="nm-prompt" rows="3" placeholder="Ví dụ: Hãy liệt kê 3 ứng dụng AI trong nông nghiệp ở Việt Nam, trình bày dạng bảng"></textarea>
       <div class="chips" id="nm-goi-y"></div>
+      <p class="nho chu2" id="nm-canh-bao">Hệ này <b>có lúc sinh ra câu sai hoặc câu mang định kiến</b>
+        — đó chính là bài học của trạm này, không phải quan điểm của nhà trường hay của thầy cô.
+        Việc của em là tìm ra câu đó.</p>
       <p>
         <button class="btn chinh" id="nm-sinh"><svg class="ic" aria-hidden="true"><use href="#i-cpu"/></svg> Đưa vào dây chuyền — sinh câu trả lời</button>
         <button class="btn" id="nm-xoa5">↻ Làm lại</button>

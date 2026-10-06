@@ -286,7 +286,8 @@
     card.style.borderLeft = "4px solid var(--vang)";
 
     const h = document.createElement("p");
-    h.innerHTML = svgIco("lightbulb") + " <b>Mức 3 — ứng dụng AI trong việc học của chính em</b>";
+    /* Bỏ nhãn "Mức 3" — xem giải thích ở js/bt09.js. */
+    h.innerHTML = svgIco("lightbulb") + " <b>Ứng dụng AI trong việc học của chính em</b>";
     card.appendChild(h);
 
     const q = document.createElement("p");

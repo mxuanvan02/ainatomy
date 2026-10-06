@@ -507,13 +507,20 @@
      * phải sửa cả chỗ vẽ.
      * `boQua` được in ra cùng lúc, không giấu: chỉ in "khớp x/y" thì một lớp toàn người bỏ
      * qua trông như "dạy chưa tới", còn in cả hai thì thấy đúng mức độ tham gia. */
+    /* KHÔNG dùng nhãn "Mức 3" ở đây — sửa 06/10, và đây là lỗi do CHÍNH đợt vá trước tạo ra:
+     * tôi vừa bỏ nhãn "Mức 3" khỏi tiêu đề các bài tập (bt09/bt13/duDoan/index.html) với lý do
+     * khung ba mức không được giải thích ở đâu trong app, rồi lại viết đúng nhãn đó vào bốn
+     * dòng báo cáo này. Báo cáo Tầng 3 là view HỌC SINH vào được (nút xoá dữ liệu cũng nằm ở
+     * đây), nên lý do bỏ nhãn áp dụng y như nhau. "Dự đoán trước khi chạy" tự nó đã đủ nghĩa;
+     * khung ba mức vẫn được gọi đúng tên trong README và THIET_KE_BAI_TOAN.md cho giáo viên
+     * và giám khảo đối chiếu. */
     const dd = th.duDoan;
     const ddDong = (dd.tong || dd.boQua)
-      ? `<p class="nho"><b>Dự đoán trước khi chạy (Mức 3):</b> ${dd.tong} lượt đã đối chiếu`
+      ? `<p class="nho"><b>Dự đoán trước khi chạy:</b> ${dd.tong} lượt đã đối chiếu`
         + (dd.tong ? ` — khớp <b>${dd.khop}/${dd.tong}</b> (${pct(dd.tiLe)})` : ``)
         + (dd.boQua ? ` · <b>${dd.boQua}</b> lượt bấm chạy mà không chốt dự đoán` : ``)
         + `</p>`
-      : `<p class="nho chu2"><b>Dự đoán trước khi chạy (Mức 3):</b> chưa có lượt nào.</p>`;
+      : `<p class="nho chu2"><b>Dự đoán trước khi chạy:</b> chưa có lượt nào.</p>`;
     let html = `
       <div class="grid g3">
         <div class="kpi"><div class="so">${th.dauTruong.tong}</div><div class="nhan">câu đã phán quyết</div></div>
@@ -522,7 +529,12 @@
       </div>
       ${ddDong}
       <h3>Khả năng phát hiện theo từng loại lỗi AI</h3>`;
-    html += `<table><tr><th>Loại lỗi</th><th>Phát hiện đúng</th><th>Tỉ lệ (recall)</th><th>Bắt oan</th></tr>`;
+    /* NHÃN CỘT BẰNG TIẾNG VIỆT TRƯỚC — sửa 06/10. Bản cũ ghi "Tỉ lệ (recall)": recall là
+     * thuật ngữ chuyên ngành đo lường, chương trình lớp 10 không dạy, và cả trang không có
+     * chỗ nào giải thích. Học sinh nhìn vào chỉ thấy một con số không tên.
+     * Giữ thuật ngữ gốc trong ngoặc SAU tiếng Việt: giáo viên và giám khảo cần đối chiếu với
+     * hồ sơ chuyên môn, nhưng người đọc chính (học sinh) phải hiểu được trước đã. */
+    html += `<table><tr><th>Loại lỗi</th><th>Phát hiện đúng</th><th>Tỉ lệ bắt đúng lỗi (recall)</th><th>Bắt oan</th></tr>`;
     for(const r of th.recallTheoLoai){
       html += `<tr><td><span style="color:${META.loaiLoi[r.maLoai].mau}">●</span> ${esc(r.ten)}</td>
         <td>${r.phatHien}/${r.tongCoLoi}</td><td>${pct(r.recall)}</td><td>${r.batOan}</td></tr>`;
@@ -581,12 +593,14 @@
        * lop.duDoan nhưng bản cũ không in ra. Con số này mới là thứ giáo viên dùng để nhận xét
        * cả lớp và để trả lời giám khảo "học sinh có thật sự dự đoán không". */
       const ddl = lop.duDoan;
+      /* Nhãn giống hệt báo cáo cá nhân, và cũng KHÔNG dùng "Mức 3" — xem chú thích ở đó.
+       * Bản đầu chỉ sửa báo cáo cá nhân mà quên báo cáo lớp, tức cùng một lỗi sửa nửa chừng. */
       const ddLop = (ddl.tong || ddl.boQua)
-        ? `<p class="nho"><b>Mức 3 cả lớp:</b> ${ddl.tong} lượt dự đoán đã đối chiếu`
+        ? `<p class="nho"><b>Dự đoán trước khi chạy — cả lớp:</b> ${ddl.tong} lượt đã đối chiếu`
           + (ddl.tong ? ` — khớp <b>${ddl.khop}/${ddl.tong}</b> (${pct(ddl.tiLe)})` : ``)
           + (ddl.boQua ? ` · <b>${ddl.boQua}</b> lượt bấm chạy mà không chốt dự đoán` : ``)
           + `</p>`
-        : `<p class="nho chu2"><b>Mức 3 cả lớp:</b> chưa có lượt dự đoán nào.</p>`;
+        : `<p class="nho chu2"><b>Dự đoán trước khi chạy — cả lớp:</b> chưa có lượt nào.</p>`;
       let h2 = `<p class="nho chu2">Tổng hợp ${lop.soHS} học sinh${maLop? " lớp "+esc(maLop):""} — dữ liệu ẩn danh, lưu cục bộ trên máy này.</p>
       <div class="grid g3">
         <div class="kpi"><div class="so">${lop.dauTruong.tong}</div><div class="nhan">tổng phán quyết</div></div>
@@ -594,7 +608,7 @@
         <div class="kpi"><div class="so">${lop.lab.tong}</div><div class="nhan">nhiệm vụ lab</div></div>
       </div>
       ${ddLop}
-      <table><tr><th>Loại lỗi</th><th>Cả lớp phát hiện</th><th>Recall</th><th>Bắt oan</th></tr>`;
+      <table><tr><th>Loại lỗi</th><th>Cả lớp phát hiện</th><th>Tỉ lệ bắt đúng lỗi (recall)</th><th>Bắt oan</th></tr>`;
       for(const k of Object.keys(lop.recall)){
         const r = lop.recall[k];
         h2 += `<tr><td><span style="color:${META.loaiLoi[k].mau}">●</span> ${META.loaiLoi[k].ten}</td>
@@ -1305,8 +1319,15 @@
     // Dùng textContent cho nội dung máy sinh ra — TUYỆT ĐỐI không innerHTML,
     // vì đây là chuỗi do mô hình sinh, không phải hằng số của nhà phát triển.
     $("nm-van-ban").textContent = nmItem.vanBan;
+    /* DỜI `seed` KHỎI MÀN HÌNH, GIỮ LẠI TRONG NHẬT KÝ — sửa 06/10.
+     * Bản cũ in cho học sinh: "seed 48213 (cùng seed sẽ cho cùng kết quả)". "seed" là thuật
+     * ngữ của bộ sinh số giả ngẫu nhiên, không phục vụ yêu cầu cần đạt nào của lớp 10, và
+     * dòng chữ đó chiếm chỗ của thông tin em thật sự cần (máy nhận ra chủ đề gì).
+     * NHƯNG không xoá hẳn: seed là thứ làm cho câu trả lời TÁI LẬP ĐƯỢC, tức là bằng chứng
+     * khi hồ sơ bị chất vấn "câu này máy sinh thật hay tác giả viết tay?". Nên chuyển nó vào
+     * logSuKien bên dưới để vẫn nằm trong CSV/JSON mà giáo viên tải về. */
     $("nm-chan-doan").textContent =
-      `Máy sinh câu này trong ${ms.toFixed(2)} ms · seed ${nmItem.seed} (cùng seed sẽ cho cùng kết quả) · `
+      `Máy sinh câu này trong ${ms.toFixed(2)} ms · `
       + `chủ đề máy nhận ra: ${nmItem.chuDe || "không nằm trong ngữ liệu đã học"}`;
     $("nm-dau-ra").style.display = "";
     $("nm-kq5").innerHTML = "";
@@ -1315,8 +1336,10 @@
      * Đối chiếu dự đoán của học sinh ở đây (traLoiBT07 trả null nếu câu hỏi nằm TRONG
      * ngữ liệu — khi đó không chấm, vì tiền đề của câu hỏi chưa được kiểm). */
     if(m3.bt07 && M3()) M3().cham(m3.bt07);
+    /* seed được ghi VÀO LOG thay vì in ra màn hình học sinh — xem chú thích ở nm-chan-doan. */
     if(ENG) ENG.logSuKien(maHS, { loai:"nhamay", suKien:"ungDung", prompt:p,
-      chuDe: nmItem.maChuDe, trongNguLieu: nmItem.trongNguLieu, ms: +ms.toFixed(2) });
+      chuDe: nmItem.maChuDe, trongNguLieu: nmItem.trongNguLieu, ms: +ms.toFixed(2),
+      seed: nmItem.seed });
   }
 
   function nmPhanQuyet(coCanCu){

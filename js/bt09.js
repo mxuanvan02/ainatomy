@@ -161,7 +161,13 @@
     card.style.borderLeft = "4px solid var(--vang)";
 
     const h = document.createElement("p");
-    h.innerHTML = svgIco("lightbulb") + " <b>Mức 3 — em tự cài một lỗi cho bạn bắt</b>";
+    /* NHÃN NÓI VIỆC CẦN LÀM, KHÔNG NÓI MÃ KHUNG THIẾT KẾ — sửa 06/10.
+     * Bản cũ ghi "Mức 3 — ...". "Mức 3" là mức thứ ba trong khung ba mức của
+     * THIET_KE_BAI_TOAN.md; khung đó KHÔNG có màn hình nào trong app giải thích, nên với học
+     * sinh đây là một con số vô nghĩa đứng trước một câu đã rõ nghĩa. Học sinh cần biết mình
+     * phải LÀM gì, còn khung ba mức là chuyện của giáo viên và của hồ sơ chuyên môn
+     * (README + THIET_KE_BAI_TOAN.md vẫn giữ nguyên cách gọi đó để giám khảo đối chiếu). */
+    h.innerHTML = svgIco("lightbulb") + " <b>Em tự cài một lỗi cho bạn bắt</b>";
     card.appendChild(h);
 
     const q = document.createElement("p");

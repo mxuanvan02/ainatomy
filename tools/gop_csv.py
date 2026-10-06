@@ -29,7 +29,11 @@ LOAI_LOI = {
     "nguon_khong_ton_tai": "Nguồn/văn bản không tồn tại",
     "thien_kien": "Thiên kiến, định kiến",
     "suy_luan_sai": "Suy luận sai",
-    "lo_du_lieu_ca_nhan": "Xui lộ dữ liệu cá nhân",
+    # "Xúi" — phải khớp với ten trong data/meta.js và js/nhamay_text.js. Đây là bản sao
+    # thứ ba của cùng một nhãn; lệch thì tệp baocao_lop.csv in ra tên khác với tên học
+    # sinh nhìn thấy trong app, và giáo viên không nối được hai bên. Cổng G14 canh ba
+    # bản sao này. Xem giải thích về chữ "Xúi" ở data/meta.js.
+    "lo_du_lieu_ca_nhan": "Xúi lộ dữ liệu cá nhân",
 }
 UNESCO = {
     "A1": "A1 Hiểu: AI phục vụ con người", "A2": "A2 Vận dụng: đánh giá AI theo nhu cầu",

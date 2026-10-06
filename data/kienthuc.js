@@ -165,7 +165,7 @@ window.MX_KT = {
       ["Nhiệm vụ", "Chọn đáp án từ tập nhãn CÓ SẴN", "Tạo nội dung MỚI chưa tồn tại"],
       ["Đầu ra", "Một nhãn hoặc một con số (ví dụ: 'có mũ' / 'không mũ', 87%)", "Văn bản, hình ảnh, âm thanh, mã lệnh"],
       ["Kiểm tra đúng/sai", "DỄ: so với nhãn đúng đã biết", "KHÓ: có thể trôi chảy nhưng sai sự thật (bịa số liệu, bịa nguồn)"],
-      ["Lỗi điển hình", "Thiên kiến do dữ liệu huấn luyện lệch; sai với nhóm ít dữ liệu", "Bịa đặt (hallucination), đạo văn, giọng điệu tự tin nhưng vô căn cứ"],
+      ["Lỗi điển hình", "Thiên kiến do dữ liệu huấn luyện lệch; sai với nhóm ít dữ liệu", "Bịa đặt — máy nói nghe như thật nhưng không có thật (thuật ngữ: hallucination), đạo văn, giọng điệu tự tin nhưng vô căn cứ"],
       ["Ví dụ trong ứng dụng này", "Xưởng huấn luyện AI (Tầng 1)", "Đấu trường bắt lỗi AI (Tầng 2)"],
       ["Cách con người kiểm soát", "Kiểm tra dữ liệu huấn luyện + đo độ chính xác theo từng nhóm", "Đối chiếu với nguồn thật + không dùng kết quả khi chưa kiểm chứng"]
     ],

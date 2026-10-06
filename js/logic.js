@@ -103,22 +103,22 @@
         <tr><th></th><th>Thật sự CÓ lỗi (T)</th><th>Thật sự ĐÚNG (NOT T)</th></tr>
         <tr>
           <th>Em nói "Có lỗi" (P)</th>
-          <td class="ok"><b>${tp}</b> — bắt đúng<br><span class="nho">P AND T = TRUE (true positive)</span></td>
-          <td class="vang"><b>${fp}</b> — bắt oan<br><span class="nho">P AND (NOT T) (false positive)</span></td>
+          <td class="ok"><b>${tp}</b> — bắt đúng<br><span class="nho">P AND T = TRUE</span></td>
+          <td class="vang"><b>${fp}</b> — bắt oan<br><span class="nho">P AND (NOT T) = TRUE</span></td>
         </tr>
         <tr>
           <th>Em nói "Không lỗi" (NOT P)</th>
-          <td class="ko"><b>${fn}</b> — bỏ sót<br><span class="nho">(NOT P) AND T (false negative)</span></td>
-          <td class="ok"><b>${tn}</b> — xác nhận đúng<br><span class="nho">(NOT P) AND (NOT T) (true negative)</span></td>
+          <td class="ko"><b>${fn}</b> — bỏ sót<br><span class="nho">(NOT P) AND T = TRUE</span></td>
+          <td class="ok"><b>${tn}</b> — xác nhận đúng<br><span class="nho">(NOT P) AND (NOT T) = TRUE</span></td>
         </tr>
       </table>
       <div class="grid g3" style="margin-top:10px">
-        <div class="kpi"><div class="so">${pct(bl.tiLeDung)}</div><div class="nhan">phán quyết đúng<br>(TP+TN) / tổng</div></div>
-        <div class="kpi"><div class="so ko">${bl.tiLeBoSot===null?"—":pct(bl.tiLeBoSot)}</div><div class="nhan">tỉ lệ bỏ sót<br>FN / (TP+FN)</div></div>
-        <div class="kpi"><div class="so vang">${bl.tiLeBatOan===null?"—":pct(bl.tiLeBatOan)}</div><div class="nhan">tỉ lệ bắt oan<br>FP / (FP+TN)</div></div>
+        <div class="kpi"><div class="so">${pct(bl.tiLeDung)}</div><div class="nhan">phán quyết đúng<br>(bắt đúng + xác nhận đúng) / tổng</div></div>
+        <div class="kpi"><div class="so ko">${bl.tiLeBoSot===null?"—":pct(bl.tiLeBoSot)}</div><div class="nhan">tỉ lệ bỏ sót<br>bỏ sót / (bỏ sót + bắt đúng)</div></div>
+        <div class="kpi"><div class="so vang">${bl.tiLeBatOan===null?"—":pct(bl.tiLeBatOan)}</div><div class="nhan">tỉ lệ bắt oan<br>bắt oan / (bắt oan + xác nhận đúng)</div></div>
       </div>
       <p class="nho chu2" style="margin-top:10px"><b>Vì sao "bắt oan" nguy hiểm hơn "bỏ sót" trong đời thật?</b>
-      Một hệ thống AI từ chối hồ sơ của người vô tội (false positive) gây hại trực tiếp cho người đó.
+      Một hệ thống AI từ chối hồ sơ của người vô tội — tức là "bắt oan" — gây hại trực tiếp cho người đó.
       Học sinh thấy con số của chính mình nên hiểu được đánh đổi này — đây là nội dung mạch
       <i>Đạo đức AI</i> và <i>Tư duy lấy con người làm trung tâm</i> của Khung QĐ 2422.</p>`;
   }

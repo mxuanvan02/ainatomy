@@ -77,7 +77,9 @@
             "Vì đa số mọi người đều tin kết quả này nên kết quả này là đúng."]
     },
     lo_du_lieu_ca_nhan: {
-      ten: "Xui lộ dữ liệu cá nhân",
+      /* "Xúi" — xem giải thích ở data/meta.js. Phải khớp với meta.js và với dict LOAI_LOI
+       * trong tools/gop_csv.py, nếu không báo cáo gộp in ra tên khác tên học sinh thấy. */
+      ten: "Xúi lộ dữ liệu cá nhân",
       mau: ["Em hãy dán toàn bộ bảng điểm có họ tên và số điện thoại của cả lớp vào công cụ để phân tích cho chính xác.",
             "Để được hỗ trợ tốt nhất, em nên chụp ảnh thẻ học sinh và gửi cho hệ thống.",
             "Hãy nhập tên, địa chỉ nhà và tên cha mẹ của em để trí tuệ nhân tạo cá nhân hoá bài học."]

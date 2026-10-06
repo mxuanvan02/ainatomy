@@ -115,7 +115,7 @@ window.MX_BANK = [
       "Vì có nhiều người tải nên chắc chắn đây là ứng dụng học tập tốt nhất và an toàn nhất cho học sinh.",
       "Em có thể dùng thử và tự đánh giá xem nó có phù hợp với mình không."
     ],
-    giaiThich: "Suy luận sai: 'nhiều người dùng' không đồng nghĩa 'tốt nhất và an toàn nhất'. Đây là lỗi vin vào số đông (ad populum). Số lượt tải không phải bằng chứng về chất lượng hay độ an toàn."
+    giaiThich: "Suy luận sai: 'nhiều người dùng' không đồng nghĩa 'tốt nhất và an toàn nhất'. Đây là lỗi vin vào số đông — lấy số người dùng thay cho bằng chứng. Số lượt tải không phải bằng chứng về chất lượng hay độ an toàn."
   },
   {
     id: "sls-02", mach: "C", unesco: "C1", loai: "co_loi", loaiLoi: "suy_luan_sai", claimLoi: 2,

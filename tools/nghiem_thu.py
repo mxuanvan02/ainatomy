@@ -1231,6 +1231,171 @@ console.log(JSON.stringify(out));
                   else f"{len(mo_coi)} tệp trong manifest mà git không theo dõi: "
                        f"{mo_coi[:8]} — hoặc `git add` nó, hoặc nó không thuộc sản phẩm")
 
+    def g14(self):
+        """G14 — NHÃN LOẠI LỖI PHẢI KHỚP NHAU Ở MỌI BẢN SAO (thêm 07/10).
+
+        VÌ SAO CÓ CỔNG NÀY. Tên 5 loại lỗi AI được chép tay ở BA nơi khác nhau:
+          data/meta.js         -> nguồn hiển thị trong app (bảng báo cáo, bảng nhầm lẫn)
+          js/nhamay_text.js    -> nhãn dùng ở Trạm 5 (nhà máy sinh văn bản)
+          tools/gop_csv.py     -> dict LOAI_LOI, in ra baocao_lop.csv khi gộp đa máy
+        Ba bản sao chép tay thì SỚP MUỘN cũng lệch. Hậu quả rất khó thấy: học sinh nhìn tên
+        lỗi này trong app, giáo viên mở tệp báo cáo gộp lại thấy tên khác, và không nối được
+        hai bên — trong khi cả hai đều "đúng" theo tệp của mình. Đã xảy ra thật: nhãn này
+        từng là "Xui lộ dữ liệu cá nhân" và được sửa thành "Xúi lộ dữ liệu cá nhân" (vì "xui"
+        đọc lướt thành "xui xẻo", sai hẳn ý "xúi giục"). Sửa nhãn ở một chỗ mà quên hai chỗ
+        còn lại là đúng loại lỗi cổng này phải chặn.
+
+        CÁCH SO. Đọc khoá (so_lieu_bia, thien_kien, ...) làm trục, không so cả tệp: mỗi nơi
+        khai nhãn theo cú pháp riêng (JS object vs dict Python), nên chỉ trích đúng cặp
+        khoá -> nhãn rồi đối chiếu từng khoá một. Khoá có ở nơi này mà thiếu ở nơi khác
+        cũng bị bắt, không chỉ bắt khi nhãn khác chữ.
+        """
+        import re as _re
+
+        # tools/gop_csv.py: dict LOAI_LOI = { "<khoá>": "<nhãn>", ... } — đây là NGUỒN KHOÁ
+        # chuẩn, vì nó phẳng (không lồng) nên trích không thể nhầm.
+        py = doc("tools/gop_csv.py")
+        m_dict = _re.search(r"^LOAI_LOI\s*=\s*\{(?P<body>.*?)^\}", py, _re.S | _re.M)
+        gop = {}
+        if m_dict:
+            for k, v in _re.findall(r'"(\w+)"\s*:\s*"([^"]+)"', m_dict.group("body")):
+                gop[k] = v
+
+        def nhan_js(path, khoa):
+            """Lấy nhãn của MỘT khoá trong tệp JS.
+
+            CÁCH LÀM VÀ VÌ SAO: định vị chuỗi `<khoá>: {` rồi lấy `ten: "..."` ĐẦU TIÊN sau
+            vị trí đó. Bản đầu của cổng này quét mọi khối `^\s{2,}(\w+): {` trong tệp — và
+            sai, vì cả hai tệp JS đều có cấu trúc LỒNG: data/meta.js có `loaiLoi: {` chứa 5
+            khoá con rồi tới `dauHieu: {`, còn js/nhamay_text.js có thêm 4 khối chủ đề Trạm 5
+            (nongNghiep/yTe/giaoDuc/moiTruong). Kết quả lần chạy đầu: meta.js trích ra 6 nhãn
+            trong đó có `unesco` và `loaiLoi` là RÁC, `so_lieu_bia` bị nuốt vào khối cha nên
+            biến mất, và G14a vẫn in ĐẠT. Đó là ĐẠT GIẢ — cổng báo xanh trong khi nó đang so
+            sai dữ liệu, tức tệ hơn là không có cổng.
+            Tra theo khoá cụ thể thì không phụ thuộc độ lồng, và khoá lạ không thể lọt vào.
+            """
+            src = doc(path)
+            m = _re.search(rf"(?<![\w]){_re.escape(khoa)}\s*:\s*\{{", src)
+            if not m:
+                return None
+            t = _re.search(r'ten:\s*"([^"]+)"', src[m.end():])
+            return t.group(1) if t else None
+
+        # G14a — cổng có TRÍCH ĐƯỢC nhãn không. Đây là phép kiểm SỨC KHOẺ CỦA CHÍNH CỔNG,
+        # không phải phép kiểm sản phẩm: nếu regex trật (đổi định dạng tệp, đổi tên trường)
+        # thì hai phép dưới so sánh trên dữ liệu rỗng và sẽ in ĐẠT GIẢ.
+        #
+        # SỬA 07/10 SAU MUTATION TEST. Bản đầu viết `ok_a = not thieu_trich and
+        # len(meta) == len(gop)` rồi `return` sớm — tức G14a FAIL ngay khi gop_csv.py có một
+        # khoá mà meta.js không có. Nhưng đó CHÍNH XÁC là việc G14c phải bắt. Hệ quả: G14c
+        # không bao giờ chạy được (mutation ca 3 chứng minh: phá đúng thứ G14c canh thì
+        # G14a kêu trước rồi return, G14c im lặng vĩnh viễn). Một tiêu chí không thể fail
+        # là nhánh chết — cùng lớp lỗi với G11c.
+        # Nay G14a chỉ hỏi "có trích được gì không", còn thiếu/lệch/lạ giao cho G14b, G14c.
+        def khoa_con_cap1(src, ten_khoi):
+            """Liệt kê khoá CON CẤP 1 của khối `ten_khoi: { ... }`, bỏ qua khối lồng.
+
+            VÌ SAO KHÔNG DÙNG `^\\s{4}(\\w+):\\{`: cách đó phụ thuộc số dấu cách thụt lề, và
+            một lần chạy formatter là cổng mù. Cách này đếm depth bằng chính dấu ngoặc: một
+            khoá được nhận khi tại vị trí của nó, số `{` trừ số `}` tính từ đầu khối bằng 0
+            (tức đang ở cấp 1, chưa vào khối con nào). `dauHieu: {` bên trong mỗi loại lỗi
+            có depth 1 nên bị loại — đó chính là lỗi của bản regex đầu tiên.
+
+            Trả về None nếu không thấy khối (định dạng đã đổi) — để G14a báo cổng hỏng.
+            """
+            m = _re.search(rf"(?<![\w]){_re.escape(ten_khoi)}\s*:\s*\{{", src)
+            if not m:
+                return None
+            # cắt đúng thân khối bằng đếm ngoặc, không đoán bằng indent
+            i, depth = m.end(), 1
+            while i < len(src) and depth > 0:
+                if src[i] == "{":
+                    depth += 1
+                elif src[i] == "}":
+                    depth -= 1
+                i += 1
+            than = src[m.end():i - 1]
+            keys = []
+            for mm in _re.finditer(r"(\w+)\s*:\s*\{", than):
+                truoc = than[:mm.start()]
+                if truoc.count("{") - truoc.count("}") == 0:
+                    keys.append(mm.group(1))
+            return keys
+
+        meta_src = doc("data/meta.js")
+        khoa_meta = khoa_con_cap1(meta_src, "loaiLoi") or []
+
+        meta, nhamay, thieu_trich = {}, {}, []
+        for khoa in sorted(gop):
+            a = nhan_js("data/meta.js", khoa)
+            b = nhan_js("js/nhamay_text.js", khoa)
+            if a is None:
+                thieu_trich.append(khoa)
+            else:
+                meta[khoa] = a
+            if b is not None:
+                nhamay[khoa] = b      # nhamay_text.js không bắt buộc đủ 5 loại
+
+        # G14a = SỨC KHOẺ CỦA CHÍNH CỔNG. Chỉ hỏi "cơ chế trích có chạy không", KHÔNG hỏi
+        # "hai bên có đủ 5 khoá không" — việc đó của G14c. Bản đầu gộp hai câu hỏi làm một
+        # (`len(meta) == len(gop)`) nên G14a kêu trước rồi `return`, và G14c thành nhánh chết.
+        # Cũng KHÔNG đòi `len(khoa_meta) >= 5`: nếu meta.js thật sự chỉ còn 4 loại lỗi thì
+        # việc trích vẫn ĐÃ THÀNH CÔNG (tìm ra 4) — báo "cổng hỏng" lúc đó là báo sai, và
+        # che mất thông tin thật là hai bên lệch nhau.
+        ok_a = len(gop) >= 5 and len(meta) >= 1 and len(nhamay) >= 1 and len(khoa_meta) >= 1
+        self.them("G14a", "cơ chế trích nhãn loại lỗi còn hoạt động ở cả ba bản sao", ok_a,
+                  f"gop_csv.py {len(gop)} khoá · data/meta.js {len(khoa_meta)} khoá "
+                  f"(trích được {len(meta)} nhãn) · nhamay_text.js {len(nhamay)} nhãn"
+                  if ok_a
+                  else f"chỉ trích được gop={len(gop)} meta={len(meta)} "
+                       f"khoa_meta={len(khoa_meta)} nhamay={len(nhamay)} — cơ chế trích trong "
+                       f"g14() đã trật (đổi định dạng tệp? đổi tên trường? đổi kiểu dấu nháy?), "
+                       f"cổng không được tin, ĐỪNG đọc hai phép dưới là ĐẠT")
+        if not ok_a:
+            return
+
+        # G14b — nhãn phải trùng chữ ở mọi nơi có cùng khoá.
+        # Chỉ so những khoá CÓ ở cả hai bên; khoá thiếu được G14c xử, không cộng vào đây
+        # (nếu không thì một lỗi bị đếm hai lần và thông báo lỗi chỉ chỗ sai).
+        lech = []
+        for khoa in sorted(meta):
+            ten = meta[khoa]
+            for ten_tep, bang in (("js/nhamay_text.js", nhamay), ("tools/gop_csv.py", gop)):
+                if khoa not in bang:
+                    # nhamay_text.js không bắt buộc đủ 5 loại (nó chỉ sinh văn bản theo
+                    # loại có mẫu), nên thiếu ở đó là bình thường; thiếu trong gop_csv.py
+                    # thì báo cáo gộp sẽ in rỗng — mới là lỗi, và do G14c bắt.
+                    continue
+                if bang[khoa] != ten:
+                    lech.append(f"{khoa}: meta.js «{ten}» ≠ {ten_tep} «{bang[khoa]}»")
+        self.them("G14b", "nhãn 5 loại lỗi trùng chữ ở meta.js / nhamay_text.js / gop_csv.py",
+                  not lech,
+                  f"{len(meta)} loại lỗi có nhãn khớp nhau ở mọi bản sao" if not lech
+                  else ("; ".join(lech[:4])
+                        + " — sửa cho khớp, hoặc nếu nhãn đổi có chủ đích thì đổi ở CẢ BA nơi"))
+
+        # G14c — hai chiều của tập khoá. Chiều thứ nhất (khoá lạ trong gop_csv.py) là ca
+        # mutation số 3; chiều thứ hai (meta.js có khoá mà gop_csv.py thiếu) cũng bắt luôn,
+        # vì nó làm dòng báo cáo của loại lỗi đó in rỗng.
+        # SO VỚI `khoa_meta` (liệt kê độc lập từ data/meta.js), KHÔNG so với `meta`.
+        # `meta` chỉ được xây từ `for khoa in sorted(gop)` nên tập khoá của nó luôn là TẬP CON
+        # của gop — viết `set(meta) - set(gop)` thì kết quả luôn rỗng, tức nhánh "thiếu" không
+        # bao giờ chạy được. Đó là code chết nằm ngay dưới một tiêu chí có tên tuyên bố kiểm
+        # CẢ HAI CHIỀU ("hai bên khai đúng cùng một tập"), nên cổng vẫn in ĐẠT và không ai
+        # biết nửa còn lại chưa từng được thực thi. Chỉ phát hiện được khi thiết kế ca phá
+        # cho đúng chiều đó TRƯỚC khi tin rằng cổng đã canh.
+        thua = sorted(set(gop) - set(khoa_meta))     # gop_csv khai mà app không có loại lỗi đó
+        thieu = sorted(set(khoa_meta) - set(gop))    # app có mà báo cáo gộp sẽ in rỗng
+        ok_c = not thua and not thieu
+        self.them("G14c", "hai bên khai đúng cùng một tập 5 loại lỗi",
+                  ok_c,
+                  f"cùng {len(gop)} khoá ở data/meta.js và tools/gop_csv.py" if ok_c
+                  else (" · ".join(filter(None, [
+                            f"thừa trong gop_csv.py (app không bao giờ ghi, dòng báo cáo luôn "
+                            f"trống): {thua[:4]}" if thua else "",
+                            f"thiếu trong gop_csv.py (loại lỗi này mất khỏi baocao_lop.csv): "
+                            f"{thieu[:4]}" if thieu else ""]))))
+
     def tong_ket(self):
         print("\n" + "=" * 72)
         dat = sum(1 for k in self.kq if k["dat"])
@@ -1286,7 +1451,7 @@ console.log(JSON.stringify(out));
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
-    NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13"]
+    NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13", "G14"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.

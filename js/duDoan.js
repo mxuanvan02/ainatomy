@@ -69,7 +69,7 @@
     card.style.borderLeft = "4px solid var(--nhan)";
 
     const h = document.createElement("p");
-    h.innerHTML = svgIco("circle-help") + " <b>Dự đoán trước khi chạy (Mức 3)</b>";
+    h.innerHTML = svgIco("circle-help") + " <b>Dự đoán trước khi chạy</b>";
     card.appendChild(h);
 
     const q = document.createElement("p");
@@ -167,7 +167,7 @@
     card.style.borderLeft = "4px solid var(--vang)";
 
     const h = document.createElement("p");
-    h.innerHTML = svgIco("circle-help") + " <b>Dự đoán trước khi chạy (Mức 3)</b>";
+    h.innerHTML = svgIco("circle-help") + " <b>Dự đoán trước khi chạy</b>";
     card.appendChild(h);
 
     const q = document.createElement("p");
@@ -255,7 +255,7 @@
     card.style.borderLeft = "4px solid var(--dung)";
 
     const h = document.createElement("p");
-    h.innerHTML = svgIco("circle-help") + " <b>Viết ra trước khi xem gợi ý (Mức 3)</b>";
+    h.innerHTML = svgIco("circle-help") + " <b>Viết ra trước khi xem gợi ý</b>";
     card.appendChild(h);
 
     const q = document.createElement("p");

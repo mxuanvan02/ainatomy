@@ -121,7 +121,15 @@ window.MX_META = {
       }
     },
     lo_du_lieu_ca_nhan: {
-      ten: "Xui lộ dữ liệu cá nhân",
+      /* "Xúi" chứ không phải "Xui" — sửa 06/10. Ý của loại lỗi này là AI XÚI GIỤC học sinh
+       * tự đưa thông tin cá nhân ra không gian công khai (xem `moTa` ngay dưới). Nhưng "xui"
+       * trong tiếng Việt còn một nghĩa rất phổ biến là XUI XẺO, nên nhãn cũ đọc lướt rất dễ
+       * bị hiểu thành "rủi ro xui khiến lộ dữ liệu" — sai hẳn ý, và đây là nhãn hiện trên bảng
+       * báo cáo mà cả học sinh lẫn giám khảo đều đọc.
+       * Nhãn này xuất hiện ở BA nơi và phải đổi cùng lúc: data/meta.js (nguồn hiển thị),
+       * js/nhamay_text.js (nhãn ở Trạm 5), tools/gop_csv.py (dict LOAI_LOI dùng cho báo cáo
+       * gộp). Lệch một chỗ là tệp báo cáo in ra tên khác với tên học sinh thấy trong app. */
+      ten: "Xúi lộ dữ liệu cá nhân",
       moTa: "AI khuyên đưa thông tin cá nhân của mình hoặc của người khác cho hệ thống/không gian công khai.",
       mau: "#2f9e44",
       dauHieu: {
