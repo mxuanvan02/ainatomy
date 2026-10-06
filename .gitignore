@@ -1,5 +1,15 @@
+# Byte-code Python sinh ra khi chạy tools/*.py — không phải sản phẩm, không được commit.
+# VÌ SAO: __pycache__ từng xuất hiện trong cây thư mục khi chạy cổng nghiệm thu. Nó không
+# nằm trong git (đã kiểm: git ls-files | grep pycache = 0), nhưng nếu ai đó `git add -A`
+# thì nó sẽ vào repo, làm lệch SHA256SUMS và làm bẩn bản phát hành.
 __pycache__/
 *.pyc
 
-# Đầu ra của công cụ kiểm (sinh lại được, không phải nguồn)
-out/
+# Bằng chứng do cổng sinh ra — giữ trong git vì hồ sơ dự thi cần mốc thời gian,
+# nhưng bản .bak của manifest thì không.
+SHA256SUMS.txt.bak-*
+
+# Tệp tạm của hệ điều hành / trình soạn thảo
+.DS_Store
+Thumbs.db
+*.swp
