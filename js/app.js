@@ -280,8 +280,11 @@
   const dt = { ds:[], i:0, traLoi:{ verdict:null, loaiLoi:null, claimChon:-1 }, ketQua:[], seedNgay:null, mode:"luyen" };
 
   /* Chọn phiên 12 câu phân tầng: đủ 5 loại lỗi + ~1/3 câu đúng (đo "bắt oan").
-     Tất định theo seed → tái lập được cho pre/post và cho báo cáo hồ sơ. */
-  function dtChonPhien(seed){
+     Tất định theo seed → tái lập được cho pre/post và cho báo cáo hồ sơ.
+
+     THAM SỐ `boQua` (thêm 06/10) là tập id câu mà chính HS này ĐÃ GẶP ở phiên trước, để
+     phiên sau không bốc lại. Xem dtDaGap() bên dưới vì sao bắt buộc phải có. */
+  function dtChonTuPool(seed, boQua){
     const bank = window.MX_BANK;
     let s = seed >>> 0;
     const rnd = () => (s = (s*1664525 + 1013904223) >>> 0) / 4294967296;
@@ -290,6 +293,7 @@
     for(const k of Object.keys(META.loaiLoi)) byType[k] = [];
     const dung = [];
     for(const it of bank){
+      if(boQua && boQua.has(it.id)) continue;   // đã ra ở phiên trước của chính em
       if(it.loai === "dung") dung.push(it);
       else if(byType[it.loaiLoi]) byType[it.loaiLoi].push(it);
     }
@@ -313,6 +317,44 @@
     return shuffle(pick).slice(0,12);
   }
 
+  function dtChonPhien(seed, boQua){
+    const ds = dtChonTuPool(seed, boQua);
+    if(ds.length >= 12) return { ds: ds, daPhaiLap: false };
+    /* NGÂN HÀNG SAU KHI LOẠI TRỪ QUÁ MỎNG. Thà cho LẶP LẠI còn hơn trả về phiên ngắn:
+     * pre và post phải CÙNG ĐỘ DÀI thì hiệu số mới so được, và phiên 9 câu sẽ làm mọi con số
+     * "tỉ lệ đúng" của hồ sơ lệch chuẩn mà không ai biết vì sao.
+     * Trường hợp này được GHI VÀO LOG (dt.daPhaiLap) chứ không giấu — xem dtTongKet().
+     * Với ngân hàng 78 câu và mỗi phiên 12 câu thì phải qua 6 phiên mới chạm ngưỡng này. */
+    return { ds: dtChonTuPool(seed, null), daPhaiLap: true };
+  }
+
+  /* Tập id câu mà CHÍNH HS NÀY đã gặp ở các phiên đấu trường trước — thêm 06/10.
+
+     VÌ SAO BẮT BUỘC CÓ. Bản cũ phân biệt pre/post chỉ bằng seed (+101 / +202) trong khi cả
+     hai vẫn bốc từ CÙNG một ngân hàng, nên hai phiên vẫn trúng nhau. Phản biện vòng 9 đo
+     bằng cách chạy mô phỏng trên chính data/cauhoi.js (50 cặp, cùng ngày, cùng mã HS):
+       · trùng pre∩post trung bình 1,54/12 câu; 64% cặp có ÍT NHẤT một câu trùng
+       · trùng pre∩luyện tập trung bình 1,92/12 câu
+       · pre bấm lại cùng ngày cho kết quả identical: true
+     Hệ quả: post-test một phần đo TRÍ NHỚ CÂU CŨ chứ không đo "học xong thì giỏi hơn bao
+     nhiêu" — mà hiệu pre/post chính là con số hồ sơ dùng làm bằng chứng tác động. Đo sai chỗ
+     này thì mọi kết luận về tác động đều vô nghĩa, dù code chấm điểm có đúng đến đâu.
+
+     Đọc từ nhật ký trong localStorage nên danh sách sống qua các lần tải trang và qua cả
+     những phiên ở NGÀY KHÁC (seed đổi theo ngày, nhưng câu đã gặp thì vẫn bị loại).
+     Chỉ loại trừ với pre/post — hai phiên ĐO. Chế độ "luyện tập" không loại, vì luyện tập
+     làm lại câu cũ là có ý đồ sư phạm và nó không được dùng làm bằng chứng. */
+  function dtDaGap(){
+    const d = ENG.doc();
+    const hs = d && d[maHS];
+    const bo = new Set();
+    if(!hs || !hs.suKien) return bo;
+    for(const sk of hs.suKien){
+      if(sk.loai === "dauTruong" && sk.kq && sk.kq.itemId) bo.add(sk.kq.itemId);
+    }
+    return bo;
+  }
+
   function dtBatDau(mode){
     dt.mode = mode || "luyen";
     const today = new Date();
@@ -320,12 +362,35 @@
     dt.seedNgay = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate()
       + maHS.split("").reduce((a,c)=>a+c.charCodeAt(0),0)*31
       + (dt.mode==="pre" ? 101 : dt.mode==="post" ? 202 : 0);
-    dt.ds = dtChonPhien(dt.seedNgay);
+    /* seed KHÁC NHAU LÀ CHƯA ĐỦ — thêm 06/10.
+     * Seed chỉ đổi THỨ TỰ bốc, còn ngân hàng vẫn là một; nên pre và post vẫn trúng nhau
+     * (đo được: 64% cặp có ít nhất một câu trùng). Phải LOẠI TRỪ những câu chính em này đã
+     * gặp, đọc từ nhật ký. Xem dtDaGap() để biết vì sao đây là điều kiện sống còn của bằng
+     * chứng tác động.
+     *
+     * CHỈ loại trừ với pre/post — hai phiên dùng làm BẰNG CHỨNG. Chế độ "luyện tập" không
+     * loại, vì luyện lại câu cũ là có ý đồ sư phạm và nó không được dùng để kết luận gì.
+     *
+     * dtChonPhien nay trả OBJECT {ds, daPhaiLap} chứ không trả mảng. Đã có lúc chỗ này vẫn
+     * viết `dt.ds = dtChonPhien(...)` sau khi đổi kiểu trả về — làm dt.ds thành object,
+     * dt.ds[dt.i] thành undefined, và CẢ TẦNG 2 SẬP. Kiểu trả về đổi thì mọi chỗ gọi phải
+     * đổi theo; cổng nghiệm thu không bắt được vì cú pháp vẫn hợp lệ. */
+    const daGap = (dt.mode === "luyen") ? null : dtDaGap();
+    const chon = dtChonPhien(dt.seedNgay, daGap);
+    dt.ds = chon.ds;
+    dt.daPhaiLap = chon.daPhaiLap;
     dt.i = 0; dt.ketQua = [];
     // khôi phục UI nếu phiên trước đã kết thúc (nút nộp bị ẩn, onclick bị đổi)
     $("dt-nop").style.display = "";
     $("dt-tiep").onclick = dtTiep;
     $("dt-mode").textContent = dt.mode==="pre" ? "Khảo sát ĐẦU VÀO (pre-test)" : dt.mode==="post" ? "Khảo sát ĐẦU RA (post-test)" : "Luyện tập";
+    /* Nếu ngân hàng sau khi loại trừ quá mỏng và hệ phải cho lặp lại câu cũ, NÓI RA NGAY
+     * chứ không im lặng: phiên này không còn là phép đo sạch, và giáo viên cần biết để
+     * không dùng nó làm bằng chứng. Giấu đi thì con số vẫn đẹp — và sai. */
+    if(dt.daPhaiLap){
+      $("dt-tien-do").textContent = "Ngân hàng đã hết câu mới — phiên này có câu lặp lại, "
+        + "không dùng làm bằng chứng tiến bộ.";
+    }
     dtHienCau();
   }
 
@@ -409,8 +474,13 @@
     const batOan = dt.ketQua.filter(k=>k.batOan).length;
     const boSot = dt.ketQua.filter(k=>k.boSot).length;
     // ghi sự kiện tổng kết phiên (pre/post) để báo cáo tiến trình
+    /* `phaiLap` — thêm 06/10: cờ cho biết phiên này có phải lặp lại câu cũ vì ngân hàng đã
+     * cạn sau khi loại trừ. Ghi vào nhật ký để tools/gop_csv.py và bất kỳ ai đọc số liệu sau
+     * này lọc bỏ được những phiên không còn là phép đo sạch. Không ghi thì các phiên đó
+     * trộn lẫn vào hiệu pre/post và làm bằng chứng tác động sai mà không có dấu vết. */
     ENG.logSuKien(maHS, { loai:"phien", cheDo: dt.mode, tong: dt.ketQua.length,
-                          dung: dung, batOan: batOan, boSot: boSot });
+                          dung: dung, batOan: batOan, boSot: boSot,
+                          phaiLap: dt.daPhaiLap ? 1 : 0 });
     $("dt-tien-do").textContent = "Hoàn thành!";
     $("dt-boicanh").textContent = "";
     $("dt-claims").innerHTML = `
@@ -537,7 +607,43 @@
       bcL.innerHTML = h2; bcL.style.display="";
       $("btn-csv").onclick = ()=> taiFile(ENG.xuatCSV(maLop||null), `soiai_nhatky_${maLop||'lop'}_${Date.now()}.csv`, "text/csv");
       $("btn-json").onclick = ()=> taiFile(ENG.xuatJSON(), `soiai_nhatky_${Date.now()}.json`, "application/json");
-      $("btn-xoa").onclick = ()=>{ if(confirm("Xóa toàn bộ nhật ký trên máy này? Chỉ dùng khi kết thúc đợt thu dữ liệu.")) { ENG.xoaHet(); veBaoCao(); } };
+      /* BACKUP TRƯỚC KHI XOÁ + GÕ CHỮ XÁC NHẬN — thêm 06/10.
+       *
+       * LỖI: nút này nằm trong Tầng 3 mà MỌI học sinh vào được (app.js mở view không kiểm
+       * tra vai trò), và bản cũ chỉ có MỘT hộp confirm(). Một HS bấm OK là ENG.xoaHet() —
+       * tức localStorage.removeItem(KEY) — xoá SẠCH nhật ký của CẢ LỚP trên máy đó: không
+       * phân biệt mã HS, không có bản sao nào, và trình duyệt KHÔNG có thùng rác cho
+       * localStorage. Phòng lab 20 HS/40 máy thì việc một em bấm nhầm gần như chắc chắn.
+       *
+       * HAI lớp phòng vệ, theo thứ tự:
+       * (1) TỰ ĐỘNG tải bản JSON đầy đủ xuống máy TRƯỚC khi hỏi — kể cả khi HS bỏ giữa chừng
+       *     thì dữ liệu đã có một bản nằm ngoài trình duyệt. Đây là lớp quan trọng hơn, vì nó
+       *     không phụ thuộc người bấm có đọc kỹ hay không.
+       * (2) Đổi confirm một-chạm thành GÕ CHỮ "XÓA" — thao tác có chủ đích, không bấm nhầm
+       *     được, và buộc người bấm phải đọc dòng cảnh báo.
+       *
+       * KHÔNG làm "chế độ GV" như phản biện đề xuất: app không có khái niệm vai trò nào
+       * (grep cheDoGV|maGV|isGV|giaoVien trên js/ và index.html = 0 kết quả). Thêm một vai trò
+       * không có chỗ dựa sẽ tạo cảm giác an toàn SAI — HS vẫn đoán được mật khẩu GV nếu đặt,
+       * và GV thật thì bị khoá khỏi máy của chính mình khi quên. Backup là thứ không lừa ai.
+       *
+       * Chuẩn hoá không dấu để HS không bị kẹt vì bộ gõ: "XÓA", "XOA", "xóa" đều nhận. */
+      $("btn-xoa").onclick = ()=>{
+        const ten = `soiai_SAO_LUU_truoc_khi_xoa_${Date.now()}.json`;
+        taiFile(ENG.xuatJSON(), ten, "application/json");
+        const traLoi = prompt(
+            `ĐÃ TỰ ĐỘNG TẢI BẢN SAO LƯU VỀ MÁY:\n${ten}\n\n`
+          + `Hãy mở thử tệp đó, thấy có dữ liệu, RỒI mới gõ chữ XÓA vào ô dưới đây.\n\n`
+          + `Lệnh này xoá nhật ký của CẢ LỚP trên máy này và KHÔNG LẤY LẠI ĐƯỢC.`);
+        if(traLoi === null) return;
+        const chuan = traLoi.trim().toUpperCase()
+                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                        .replace(/Đ/g, "D");
+        if(chuan === "XOA"){ ENG.xoaHet(); veBaoCao(); }
+        else if(traLoi.trim() !== ""){
+          alert("Chưa xoá: phải gõ đúng chữ XÓA. Bản sao lưu vẫn đã được tải về máy.");
+        }
+      };
     } else {
       bcL.innerHTML = '<p class="chu2 nho">Chưa có dữ liệu lớp trên máy này.</p>';
       bcL.style.display="";

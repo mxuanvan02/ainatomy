@@ -85,7 +85,29 @@ Chạy được trên Python 3.8+, không cần thư viện ngoài.
 - Dữ liệu lưu **cục bộ trong trình duyệt của từng máy** (localStorage) — không có máy chủ, không gửi gì ra Internet.
 - GV toàn quyền: có nút **Xuất** (làm bằng chứng) và nút **Xóa dữ liệu trên máy này**.
 - Báo cáo công bố dạng **tổng hợp (aggregate)**.
-- Khuyến nghị: có ý kiến BGH bằng văn bản 1 trang trước khi thu dữ liệu (mẫu trong `ho-so/`).
+- Khuyến nghị: có ý kiến BGH bằng văn bản 1 trang trước khi thu dữ liệu — mẫu văn bản có sẵn
+  ở `ho-so/mau_xin_phep_BGH.md` (chép ra Word, điền phần trong `[NGOẶC VUÔNG]`, in 1 trang).
+- Nút **Xóa dữ liệu trên máy này** tự tải một bản JSON dự phòng về máy TRƯỚC khi hỏi, và yêu
+  cầu gõ chữ XÓA thay vì bấm một lần. Nút này nằm trong Tầng 3 mà học sinh vào được, nên
+  phòng vệ bằng bản sao lưu chứ không phải bằng mật khẩu: app không có khái niệm "vai trò
+  giáo viên", và một mật khẩu đặt ra chỉ tạo cảm giác an toàn sai.
+
+### Giới hạn của phép đo — đọc trước khi dùng số liệu làm minh chứng
+
+Nói thẳng ba điều, vì hồ sơ dùng các con số này làm bằng chứng:
+
+- **Phiên đấu trường có sàn may rủi 33%.** Mỗi phiên 12 câu gồm 8 câu có lỗi và 4 câu đúng;
+  học sinh chỉ phán "không có lỗi" cho cả 12 câu sẽ đúng 4 câu = 33,3%. Vậy hiệu pre/post
+  dưới mức đó không có ý nghĩa, và đừng đọc 33% là "học sinh chưa biết gì". (Đo bằng mô
+  phỏng trên chính `data/cauhoi.js`, không phải ước lượng.)
+- **Post-test nay loại những câu học sinh đã gặp ở pre-test.** Trước đây hai phiên chỉ khác
+  nhau ở seed mà bốc từ cùng một ngân hàng, nên trùng nhau trung bình 1,54/12 câu và 64% số
+  cặp có ít nhất một câu trùng — tức post-test đo một phần trí nhớ câu cũ chứ không đo tiến bộ.
+  Nếu ngân hàng hết câu mới, app NÓI RA ("phiên này có câu lặp lại, không dùng làm bằng chứng")
+  và ghi cờ `phaiLap` vào nhật ký để lọc khi tổng hợp. Không im lặng bỏ qua.
+- **Dữ liệu chỉ nằm trong trình duyệt của từng máy.** Phòng máy có phần mềm đóng băng ổ hoặc
+  profile bị reset giữa hai ca thì dữ liệu biến mất. Vì vậy: cho học sinh **xuất CSV ngay sau
+  mỗi hoạt động**, đừng để dồn tới cuối tiết.
 
 ## 6. Dạy đủ 12 tiết
 
