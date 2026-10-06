@@ -91,8 +91,32 @@
     const theoLoai = {};          // loaiLoi -> {phatHien, tongCoLoi, batOan}
     for(const l in META.loaiLoi) theoLoai[l] = { phatHien:0, tongCoLoi:0, batOan:0 };
     let dtTong=0, dtDung=0, labTong=0, labDung=0, hlTong=0;
+    let ddTong=0, ddKhop=0, ddBoQua=0;
 
     for(const sk of suKien){
+      /* ---- MỨC 3 (DỰ ĐOÁN TRƯỚC KHI CHẠY) — thêm 06/10 ----
+       * LỖI ĐÃ SỬA: 13 ô Mức 3 có ghi sự kiện `loai:"duDoan"` nhưng hàm này KHÔNG có
+       * nhánh nào đọc nó (grep -c "duDoan" js/engine.js trả về 0 trước khi sửa). Hệ quả:
+       * dự đoán không xuất hiện trong Bản đồ năng lực, không có trong baocao_lop, và CSV
+       * của giáo viên không phân biệt được "học sinh dự đoán sai" với "học sinh không
+       * thèm dự đoán". Toàn bộ công sức thiết kế 13 ô chết ở khâu báo cáo — đúng chỗ mà
+       * giáo viên cần nó nhất để biết lớp hiểu bài tới đâu.
+       *
+       * Hai dạng sự kiện được đọc:
+       *   suKien:"doiChieu" + kq.dung  -> đã dự đoán và đã đối chiếu với kết quả thật
+       *   suKien:"boQua"               -> bấm nút chạy mà CHƯA chốt dự đoán (ghi để CSV
+       *                                   nói thật; không có sự kiện này thì số liệu trông
+       *                                   đẹp hơn thực tế vì chỉ đếm người có tham gia)
+       * `kq.dung` do bên ghi chuẩn hoá sẵn (ô số/ô chọn: khop; ô tự luận: chạm >= 60%
+       * phương diện), nên ở đây chỉ đọc một dạng, không phải đoán hình dạng dữ liệu. */
+      if(sk.loai === "duDoan"){
+        if(sk.suKien === "doiChieu" && sk.kq && sk.kq.dung !== undefined){
+          ddTong++;
+          if(sk.kq.dung) ddKhop++;
+        } else if(sk.suKien === "boQua"){
+          ddBoQua++;
+        }
+      }
       if(sk.loai === "dauTruong" && sk.kq){
         const kq = sk.kq;
         dtTong++;
@@ -123,6 +147,12 @@
       dauTruong: { tong: dtTong, dung: dtDung, tiLe: tiLeDT },
       lab: { tong: labTong, dung: labDung },
       huanLuyenSoLan: hlTong,
+      /* Mức 3: ddTong = số lần dự đoán ĐÃ đối chiếu với kết quả thật;
+       * ddBoQua = số lần bấm chạy mà không chốt dự đoán. Cả hai đều phải hiện ra:
+       * chỉ báo ddTong thì một lớp toàn người bỏ qua trông như "chưa dạy tới",
+       * còn báo cả hai thì giáo viên thấy đúng mức độ tham gia. */
+      duDoan: { tong: ddTong, khop: ddKhop, boQua: ddBoQua,
+                tiLe: ddTong ? ddKhop/ddTong : null },
       recallTheoLoai: Object.keys(theoLoai).map(k => ({
         maLoai: k, ten: META.loaiLoi[k].ten,
         phatHien: theoLoai[k].phatHien, tongCoLoi: theoLoai[k].tongCoLoi,
@@ -160,11 +190,23 @@
     for(const k in d){
       if(maLop && d[k].maLop && d[k].maLop !== maLop) continue;
       const th = tongHop(k);
-      if(!th.dauTruong.tong) continue;
+      /* ĐIỀU KIỆN VÀO MẪU — sửa 06/10. Bản cũ là `if(!th.dauTruong.tong) continue;`, tức
+       * một HS CHỈ dự đoán Mức 3 mà chưa vào đấu trường thì bị bỏ hẳn khỏi báo cáo lớp,
+       * và không được đếm vào soHS. Đó là tái tạo đúng lỗ hổng đang sửa ("Mức 3 vô hình
+       * trong báo cáo") ở một tầng khác: dữ liệu có, nhưng bị lọc mất trước khi cộng.
+       * Nay nhận HS có bất kỳ dấu vết tham gia nào trong ba loại. */
+      const coDauVet = th.dauTruong.tong || th.lab.tong
+                    || th.duDoan.tong || th.duDoan.boQua;
+      if(!coDauVet) continue;
       n++;
       if(!gop){
         gop = {
           dauTruong:{tong:0,dung:0}, lab:{tong:0,dung:0},
+          /* duDoan phải được khởi tạo Ở ĐÂY: bản vá đầu tiên chỉ thêm phép tính
+           * `gop.duDoan.tiLe = ...` ở cuối hàm mà quên khai trường này, nên gop.duDoan
+           * là undefined và dòng đó ném TypeError. Lỗi không lộ khi đọc lướt vì cú pháp
+           * hợp lệ — chỉ chạy thật mới nổ. */
+          duDoan:{tong:0,khop:0,boQua:0},
           recall: {}, soHS: 0
         };
         for(const l in META.loaiLoi) gop.recall[l] = {phatHien:0, tongCoLoi:0, batOan:0};
@@ -173,6 +215,9 @@
       gop.dauTruong.dung += th.dauTruong.dung;
       gop.lab.tong += th.lab.tong;
       gop.lab.dung += th.lab.dung;
+      gop.duDoan.tong   += th.duDoan.tong;
+      gop.duDoan.khop   += th.duDoan.khop;
+      gop.duDoan.boQua  += th.duDoan.boQua;
       for(const r of th.recallTheoLoai){
         gop.recall[r.maLoai].phatHien += r.phatHien;
         gop.recall[r.maLoai].tongCoLoi += r.tongCoLoi;
@@ -182,6 +227,12 @@
     if(!gop) return null;
     gop.soHS = n;
     gop.tiLe = gop.dauTruong.tong ? gop.dauTruong.dung/gop.dauTruong.tong : 0;
+    /* GỘP MỨC 3 LÊN CẤP LỚP — thêm 06/10. Trước đây hàm này cộng dauTruong, lab và recall
+     * nhưng KHÔNG cộng duDoan, nên dù tongHop() của từng HS đã có số liệu Mức 3 thì báo cáo
+     * cấp lớp vẫn mù — mà báo cáo lớp mới là thứ giáo viên nhìn để nhận xét cả lớp.
+     * tiLe = null (không phải 0) khi chưa ai đối chiếu, để giao diện in "—" thay vì in
+     * "0%" và khiến giáo viên tưởng cả lớp dự đoán sai hết. */
+    gop.duDoan.tiLe = gop.duDoan.tong ? gop.duDoan.khop/gop.duDoan.tong : null;
     return gop;
   }
 
@@ -218,21 +269,39 @@
   /* ============ XUẤT DỮ LIỆU (cho giáo viên làm bằng chứng hồ sơ) ============ */
   function xuatCSV(maLop){
     const d = doc();
-    const rows = [["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco","dap_an_dung","loai_loi_that","tra_loi","tra_loi_loai","diem","bat_oan","bo_sot","che_do","phien_tong","phien_dung","phien_bat_oan","phien_bo_sot","thoi_gian_ISO"]];
+    /* CỘT `su_kien` — thêm 06/10. Trước đây ba trạng thái của Mức 3 (chot / doiChieu /
+     * boQua) được ghi vào localStorage nhưng CSV KHÔNG có cột nào chứa chúng, nên tệp GV
+     * tải về không phân biệt được "dự đoán sai" với "không thèm dự đoán" — đúng lỗ hổng
+     * mà phản biện vòng 9 chỉ ra. Thêm cột thay vì nhét vào cột sẵn có, vì nhét thì mất
+     * nghĩa của cột cũ.
+     *
+     * ĐẶT CUỐI BẢNG (không chèn giữa): tools/gop_csv.py đọc CSV bằng dict(zip(head, row))
+     * tức THEO TÊN CỘT nên chèn đâu cũng được, nhưng tệp CSV mà GV đã tải về trước đây có
+     * header 19 cột; đặt cột mới ở cuối thì tệp cũ và tệp mới cùng được đọc đúng theo tên,
+     * không phải lo thứ tự. */
+    const rows = [["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco","dap_an_dung","loai_loi_that","tra_loi","tra_loi_loai","diem","bat_oan","bo_sot","che_do","phien_tong","phien_dung","phien_bat_oan","phien_bo_sot","thoi_gian_ISO","su_kien"]];
     for(const k in d){
       if(maLop && d[k].maLop && d[k].maLop !== maLop) continue;
       for(const sk of d[k].suKien){
         const kq = sk.kq || {};
         rows.push([
           k, d[k].maLop || "", sk.loai,
-          kq.itemId || sk.nhiemVuId || "", kq.mach || (sk.nhiemVu?sk.nhiemVu.mach:"") || "",
+          /* item_id: sự kiện Mức 3 không có kq.itemId (nó không phải nhiệm vụ đấu trường)
+           * mà mang mã bài ở sk.baiToan ("BT-10"...). Không fallback thì cả 13 ô đổ về
+           * item_id rỗng và tools/gop_csv.py khử trùng lặp theo (ma_hs, item_id, thoi_gian)
+           * sẽ coi chúng là bản sao của nhau. */
+          kq.itemId || sk.nhiemVuId || sk.baiToan || "",
+          kq.mach || (sk.nhiemVu?sk.nhiemVu.mach:"") || "",
           kq.unesco || (sk.nhiemVu?sk.nhiemVu.unesco:"") || "",
           kq.loaiThat || kq.dapAn || "", kq.loaiLoiThat || "",
-          kq.traLoiVerdict || kq.chon || "", kq.traLoiLoai || "",
+          /* tra_loi: với Mức 3 câu trả lời của HS là kq.duDoan (con số dự đoán, id phương
+           * án, hoặc "6/6" với ô tự luận). Không fallback thì cột trả lời của 13 ô trống. */
+          kq.traLoiVerdict || kq.chon || kq.duDoan || "", kq.traLoiLoai || "",
           kq.diem!==undefined?kq.diem:"", kq.batOan?1:0, kq.boSot?1:0,
           sk.cheDo || "", sk.tong!==undefined?sk.tong:"", sk.dung!==undefined?sk.dung:"",
           sk.batOan!==undefined?sk.batOan:"", sk.boSot!==undefined?sk.boSot:"",
-          new Date(sk.t).toISOString()
+          new Date(sk.t).toISOString(),
+          sk.suKien || ""
         ]);
       }
     }

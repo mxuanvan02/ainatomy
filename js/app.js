@@ -138,8 +138,16 @@
      * `maHS` và có `ENG`. muc3.js cố ý không tự gọi ENG để không phụ thuộc thứ tự nạp
      * script — đúng lớp lỗi mà cổng G11a đang bắt. Gắn lại mỗi lần đăng nhập để mã HS
      * mới được dùng, không giữ mã cũ của lượt trước. */
-    if(M3()) M3().ghiLog((ma, giaTri) => ENG.logSuKien(maHS, {
-      loai:"duDoan", suKien:"chot", baiToan:ma, kq:{ duDoan: giaTri }
+    /* NHẬT KÝ MỨC 3 — 06/10 sửa: chuyển tiếp ĐỦ bốn tham số.
+     * Bản cũ chỉ nhận (ma, giaTri) và hardcode suKien:"chot". Hệ quả: muc3.js ghi
+     * kết quả đối chiếu ra, nhưng tới đây bị vứt mất hai tham số cuối, nên sự kiện
+     * vào localStorage luôn là "chot" và kq không có trường `dung`. engine.js
+     * tongHop() đọc suKien:"doiChieu" + kq.dung -> không bao giờ khớp -> Mức 3
+     * vẫn vô hình trong báo cáo. Sửa một đầu mà quên đầu kia thì bằng chưa sửa.
+     * `Object.assign` để giữ trường duDoan cũ và cộng thêm diem/dung/dapAn. */
+    if(M3()) M3().ghiLog((ma, giaTri, suKien, kqBoSung) => ENG.logSuKien(maHS, {
+      loai:"duDoan", suKien: suKien || "chot", baiToan:ma,
+      kq: Object.assign({ duDoan: giaTri }, kqBoSung || {})
     }));
     $("lbl-user").textContent = `${maHS}${maLop? " · "+maLop : ""}`;
     hien("v-home");
@@ -423,12 +431,26 @@
     const th = ENG.tongHop(maHS);
     const nx = ENG.taoNhanXet(th);
     const box = $("bc-noi-dung");
+    /* MỨC 3 HIỆN RA TRONG BÁO CÁO — thêm 06/10. engine.js tongHop() đã tổng hợp th.duDoan,
+     * nhưng bản cũ của hàm này không in nó ra: dữ liệu có mà giáo viên không thấy, nên 13 ô
+     * dự đoán vẫn vô hình đúng như phản biện vòng 9 chỉ ra. Sửa engine một mình là chưa đủ —
+     * phải sửa cả chỗ vẽ.
+     * `boQua` được in ra cùng lúc, không giấu: chỉ in "khớp x/y" thì một lớp toàn người bỏ
+     * qua trông như "dạy chưa tới", còn in cả hai thì thấy đúng mức độ tham gia. */
+    const dd = th.duDoan;
+    const ddDong = (dd.tong || dd.boQua)
+      ? `<p class="nho"><b>Dự đoán trước khi chạy (Mức 3):</b> ${dd.tong} lượt đã đối chiếu`
+        + (dd.tong ? ` — khớp <b>${dd.khop}/${dd.tong}</b> (${pct(dd.tiLe)})` : ``)
+        + (dd.boQua ? ` · <b>${dd.boQua}</b> lượt bấm chạy mà không chốt dự đoán` : ``)
+        + `</p>`
+      : `<p class="nho chu2"><b>Dự đoán trước khi chạy (Mức 3):</b> chưa có lượt nào.</p>`;
     let html = `
       <div class="grid g3">
         <div class="kpi"><div class="so">${th.dauTruong.tong}</div><div class="nhan">câu đã phán quyết</div></div>
         <div class="kpi"><div class="so">${pct(th.dauTruong.tiLe)}</div><div class="nhan">mức độ đáp ứng<br><span class="nho chu2">(minh chứng, không phải điểm)</span></div></div>
         <div class="kpi"><div class="so">${th.lab.tong}</div><div class="nhan">nhiệm vụ phòng lab</div></div>
       </div>
+      ${ddDong}
       <h3>Khả năng phát hiện theo từng loại lỗi AI</h3>`;
     html += `<table><tr><th>Loại lỗi</th><th>Phát hiện đúng</th><th>Tỉ lệ (recall)</th><th>Bắt oan</th></tr>`;
     for(const r of th.recallTheoLoai){
@@ -485,12 +507,23 @@
     const lop = ENG.tongHopLop(maLop || null);
     const bcL = $("bc-lop");
     if(lop && lop.soHS>0){
+      /* Mức 3 CẤP LỚP — thêm 06/10, cùng lý do như ở báo cáo cá nhân: tongHopLop() đã gộp
+       * lop.duDoan nhưng bản cũ không in ra. Con số này mới là thứ giáo viên dùng để nhận xét
+       * cả lớp và để trả lời giám khảo "học sinh có thật sự dự đoán không". */
+      const ddl = lop.duDoan;
+      const ddLop = (ddl.tong || ddl.boQua)
+        ? `<p class="nho"><b>Mức 3 cả lớp:</b> ${ddl.tong} lượt dự đoán đã đối chiếu`
+          + (ddl.tong ? ` — khớp <b>${ddl.khop}/${ddl.tong}</b> (${pct(ddl.tiLe)})` : ``)
+          + (ddl.boQua ? ` · <b>${ddl.boQua}</b> lượt bấm chạy mà không chốt dự đoán` : ``)
+          + `</p>`
+        : `<p class="nho chu2"><b>Mức 3 cả lớp:</b> chưa có lượt dự đoán nào.</p>`;
       let h2 = `<p class="nho chu2">Tổng hợp ${lop.soHS} học sinh${maLop? " lớp "+esc(maLop):""} — dữ liệu ẩn danh, lưu cục bộ trên máy này.</p>
       <div class="grid g3">
         <div class="kpi"><div class="so">${lop.dauTruong.tong}</div><div class="nhan">tổng phán quyết</div></div>
         <div class="kpi"><div class="so">${pct(lop.tiLe)}</div><div class="nhan">tỉ lệ đúng cả lớp</div></div>
         <div class="kpi"><div class="so">${lop.lab.tong}</div><div class="nhan">nhiệm vụ lab</div></div>
       </div>
+      ${ddLop}
       <table><tr><th>Loại lỗi</th><th>Cả lớp phát hiện</th><th>Recall</th><th>Bắt oan</th></tr>`;
       for(const k of Object.keys(lop.recall)){
         const r = lop.recall[k];

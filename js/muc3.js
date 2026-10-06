@@ -57,9 +57,82 @@
    * ENG.logSuKien. Nếu tệp này tự gọi ENG.logSuKien thì nó hỏng khi engine.js chưa nạp
    * — đúng lớp lỗi mà cổng G11a đang bắt (thứ tự nạp script). */
   let GHI = null;
-  function ghi(ma, giaTri){
+  /* Tập mã bài ĐÃ chốt dự đoán trong phiên đăng nhập hiện tại.
+   * VÌ SAO CẦN (lỗi tìm được khi test end-to-end 06/10): một ô Mức 3 có thể bị DỰNG LẠI
+   * (mo() gọi lần nữa khi giao diện vẽ lại bước tiếp theo), và bản dựng mới có `chot = null`.
+   * Nếu sau đó có lời gọi doiChieu trên bản mới, hàm gốc trả null — và nhánh "học sinh bỏ
+   * qua" sẽ ghi oan cho một em ĐÃ dự đoán. Đã xảy ra thật: mã A901 chốt 65, có cả sự kiện
+   * doiChieu, rồi vẫn bị ghi thêm boQua.
+   * Tập này chặn ca đó: đã chốt rồi thì không bao giờ ghi "bỏ qua" cho mã ấy nữa.
+   * Được XOÁ khi ghiLog() gọi lại (tức lúc đăng nhập), nên không lẫn giữa hai học sinh
+   * dùng chung máy — đúng chu kỳ sống của một phiên. */
+  let DA_CHOT = new Set();
+
+  function ghi(ma, giaTri, suKien, kqBoSung){
     if(!GHI) return;
-    try { GHI(ma, giaTri); } catch(e) { /* log lỗi không được làm hỏng bài học */ }
+    if((suKien || "chot") === "chot") DA_CHOT.add(ma);
+    try { GHI(ma, giaTri, suKien || "chot", kqBoSung || null); }
+    catch(e) { /* log lỗi không được làm hỏng bài học */ }
+  }
+
+  /* Ghi KẾT QUẢ ĐỐI CHIẾU — thêm 06/10.
+
+     LỖI ĐÃ SỬA: trước đây các ô Mức 3 chỉ ghi sự kiện lúc học sinh BẤM CHỐT
+     (suKien:"chot", kq:{duDoan:...}), còn kết quả so với đáp án thật thì KHÔNG ghi.
+     Đồng thời engine.js cũng không có nhánh nào đọc sự kiện "duDoan". Hai đầu cùng hở
+     nên 13 ô Mức 3 không đóng góp gì vào Bản đồ năng lực lẫn báo cáo lớp — giáo viên
+     không biết học sinh dự đoán đúng hay sai, và CSV không phân biệt được "dự đoán sai"
+     với "không thèm dự đoán".
+
+     CHUẨN HOÁ MỘT DẠNG cho cả ba loại ô, vì mỗi loại trả về hình dạng khác nhau:
+       ô trượt  (veTruot)  -> { khop, duDoan, ketQua, lech }
+       ô chọn   (veChon)   -> { khop, duDoan, dapAn }
+       ô tự luận(veTuLuan) -> { cham, dat, tong, tiLe }   (không có "đúng/sai")
+     Bên đọc (engine.js tongHop) chỉ cần một trường `dung` boolean, nên việc suy ra nó
+     phải làm Ở ĐÂY, ngay chỗ biết rõ hình dạng dữ liệu — không đẩy việc đoán cho nơi đọc.
+     Ô tự luận không có đáp án đúng duy nhất, nên lấy ngưỡng 60% phương diện đã chạm
+     (đúng ngưỡng mà giao diện veTuLuan đang dùng để tô màu phản hồi).
+
+     `diem` 0/1 được ghi kèm vì tools/gop_csv.py đọc cột `diem` theo tên — có nó thì báo
+     cáo gộp đa máy tự tính được, không phải sửa công cụ gộp. */
+  /* ĐỔI PHẦN LẺ -> PHẦN TRĂM cho ô trượt, để hai sự kiện nói cùng một thứ tiếng.
+
+     LỖI ĐÃ SỬA (06/10, tìm được bằng test end-to-end chứ không phải bằng đọc): với BT-03,
+     một lần dự đoán sinh ra HAI sự kiện và hai sự kiện đó ghi hai đơn vị khác nhau cho
+     CÙNG một câu trả lời:
+       sự kiện "chot"     -> 65    (vì muc3.js ghi Math.round(v * 100))
+       sự kiện "doiChieu" -> 0.65  (vì duDoan.js trả dc.duDoan = chot, và chot được tính
+                                    bằng parseInt(inp.value,10)/100 tức phần lẻ 0..1)
+     Giáo viên mở CSV sẽ thấy dòng trên ghi 65, dòng dưới ghi 0.65 cho một em — không biết
+     tin dòng nào, và nếu tính trung bình thì sai hẳn. Chuẩn hoá về phần trăm vì đó là đơn vị
+     mà giao diện đang hiện ("Đã chốt: 65%") và là đơn vị mà các chỗ ghi khác đang dùng.
+
+     Chỉ đổi khi giá trị là SỐ nằm trong [0,1]. Ba loại ô trả về ba hình dạng khác nhau:
+       ô trượt   -> số (phần lẻ 0..1)      -> đổi
+       ô chọn    -> chuỗi id ("b")         -> giữ nguyên (không phải số)
+       ô tự luận -> không có, ta dựng "6/6" -> giữ nguyên
+     `dapAn` cũng đi qua hàm này: với ô trượt nó là độ chính xác thật (0..1), và test đã ghi
+     ra `dapAn: 1` cho ca 100% — nếu không đổi thì "dự đoán 65, đáp án 1" đọc như sai 64 điểm
+     trong khi thật ra là sai 35 điểm. */
+  function pct(v){
+    if(typeof v === "number" && v >= 0 && v <= 1) return Math.round(v * 100);
+    return v;
+  }
+
+  function ghiDoiChieu(ma, dc){
+    if(!dc) return;
+    const dung = (dc.khop !== undefined) ? !!dc.khop
+               : (dc.tiLe !== undefined ? dc.tiLe >= 0.6 : false);
+    const duDoan = (dc.duDoan !== undefined) ? pct(dc.duDoan)
+                 : (dc.dat !== undefined ? (dc.dat + "/" + dc.tong) : "");
+    const dapAn  = (dc.dapAn !== undefined) ? pct(dc.dapAn)
+                 : (dc.ketQua !== undefined ? pct(dc.ketQua) : "");
+    ghi(ma, duDoan, "doiChieu", {
+      duDoan: duDoan, dapAn: dapAn,
+      diem: dung ? 1 : 0, dung: dung,
+      phuongDienCham: dc.dat !== undefined ? dc.dat : "",
+      phuongDienTong: dc.tong !== undefined ? dc.tong : ""
+    });
   }
 
   /* Chấm NGAY khi học sinh chốt, cho bốn bài có đáp án tính được từ mã.
@@ -245,7 +318,54 @@
     if(!f) return null;
     host.innerHTML = "";          // dựng lại sạch: mỗi lần vào là một lượt mới
     const api = f(host, tl);
-    if(api) api.tl = tl;
+    if(!api) return null;
+    /* api.tl phải được gắn LẠI ở đây: hàm cham() bên dưới gọi
+     * `chamSau(api, api && api.tl)` và chamSau() return sớm nếu tl rỗng.
+     * Đã từng bị mất khi bọc doiChieu (06/10) — mất nó thì 4 ô tự chấm
+     * (BT-02, BT-05, BT-07, BT-11) không chấm nữa mà KHÔNG báo lỗi nào,
+     * vì cú pháp vẫn hợp lệ. Cổng G11f chỉ kiểm "hàm tồn tại", không kiểm
+     * "hàm có tác dụng", nên lỗi này phải được giữ bằng chú thích ở đây. */
+    api.tl = tl;
+    api.ma = ma;
+
+    /* BỌC doiChieu ĐỂ GHI NHẬT KÝ KẾT QUẢ — thêm 06/10.
+     * VÌ SAO BỌC Ở ĐÂY thay vì thêm lời gọi ghi vào từng ô: có ba loại ô và HAI đường dẫn
+     * dẫn tới đối chiếu — ô số/ô chọn được app.js gọi MX_MUC3.cham() khi kết quả thật đã
+     * có, còn ô tự luận TỰ gọi api.doiChieu() qua setTimeout (tuChamNgay). Thêm lời gọi
+     * ghi vào từng hàm btXX thì sẽ sót đường tự chấm, và ai thêm ô mới sau này cũng sẽ
+     * quên. Bọc ở đúng một chỗ duy nhất mà cả hai đường đều đi qua thì không sót được.
+     * `api.doiChieu` được tra cứu qua đối tượng tại THỜI ĐIỂM GỌI (bên trong duDoan.js
+     * viết `api.doiChieu()`), nên bản bọc này có hiệu lực với cả lời gọi nội bộ. */
+    const goc = api.doiChieu;
+    if(typeof goc === "function"){
+      api.doiChieu = function(){
+        const r = goc.apply(api, arguments);
+        if(r){ ghiDoiChieu(ma, r); return r; }
+
+        /* r == null ⟺ HỌC SINH BẤM CHẠY MÀ CHƯA CHỐT DỰ ĐOÁN — thêm 06/10.
+         * Đã kiểm bằng đọc mã, không suy đoán: trong js/duDoan.js, `doiChieu` chỉ có
+         * MỘT chỗ trả null là `if(chot === null) return null;` (dòng 129, 207, 321 — ba
+         * loại ô). Các `return null` khác (dòng 64, 162, 250) là `if(!host)` nằm trong
+         * hàm DỰNG ô, không nằm trong doiChieu. Nên null ở đây chỉ có một nghĩa duy nhất
+         * và ghi "bỏ qua" là không ghi oan.
+         *
+         * VÌ SAO PHẢI CÓ CỜ daGhiBoQua: nhánh null KHÔNG set `api.daDoiChieu` (cờ đó nằm
+         * sau dòng return null), nên mỗi lần HS bấm chạy lại là doiChieu lại được gọi và
+         * lại trả null. Không có cờ thì một HS bấm 5 lần bị đếm 5 lần bỏ qua — số liệu
+         * phồng theo số lần bấm, đúng loại lỗi mà cổng này tồn tại để chặn.
+         *
+         * GIỚI HẠN (nói thật, không che): ô TỰ LUẬN (BT-10, BT-12) không bao giờ ghi
+         * "bỏ qua", vì doiChieu của chúng chỉ được gọi từ bên trong onclick của nút
+         * "Chốt bài viết" (duDoan.js:313) — HS không bấm nút thì không có lời gọi nào
+         * để mà bắt. Muốn đếm được cả ca đó thì phải móc vào nút chạy của bài tập bên
+         * dưới, là việc lớn hơn và cần làm riêng. */
+        if(!api.daGhiBoQua && !DA_CHOT.has(ma)){
+          api.daGhiBoQua = true;
+          ghi(ma, "", "boQua", null);
+        }
+        return r;
+      };
+    }
     return api;
   }
 
@@ -257,7 +377,14 @@
 
   window.MX_MUC3 = {
     mo, cham, DS: Object.keys(BANG),
-    /* app.js gắn hàm ghi nhật ký lớp vào đây (xem giải thích ở đầu tệp). */
-    ghiLog(fn){ GHI = fn; }
+    /* app.js gắn hàm ghi nhật ký lớp vào đây (xem giải thích ở đầu tệp).
+     * PHẢI xoá DA_CHOT ở đây: app.js gọi ghiLog() mỗi lần ĐĂNG NHẬP, nên đây đúng là
+     * ranh giới giữa hai phiên học sinh. Không xoá thì hai em dùng chung một máy (phòng
+     * lab 20 HS/40 máy, chuyện thường) sẽ kế thừa nhau: em trước đã chốt BT-03 thì em sau
+     * bỏ qua BT-03 cũng không bị ghi "bỏ qua" — số liệu tham gia của lớp phồng lên mà không
+     * có dấu hiệu nào để phát hiện.
+     * Đã từng có comment khai rằng DA_CHOT được xoá ở đây trong khi hàm KHÔNG xoá (06/10).
+     * Sai chỗ đó nguy hiểm hơn là không có comment: người đọc sau sẽ tin và không kiểm lại. */
+    ghiLog(fn){ GHI = fn; DA_CHOT = new Set(); }
   };
 })();
