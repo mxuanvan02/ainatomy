@@ -83,6 +83,26 @@ def than_ma_song(js):
     return js
 
 
+def html_song(idx):
+    """Bỏ chú thích `<!-- ... -->` khỏi HTML để chỉ còn MÃ SỐNG.
+
+    Cùng một bài học với than_ma_song(), nhưng cho HTML — và phải trả giá hai lần mới học được.
+
+    LẦN MỘT (báo OAN): cổng G8d đo thứ tự nạp script bằng `idx.find("js/app.js")`. Tôi viết một
+    chú thích HTML có nhắc tới đường dẫn đó; find() bắt đúng chữ trong chú thích ở vị trí 7811
+    trong khi thẻ <script> thật nằm ở 44048, nên cổng kết luận sai rằng app.js nạp trước
+    kichban.js. Sản phẩm không hỏng, phép kiểm hỏng.
+
+    LẦN HAI (nghiêm trọng hơn — ĐẠT GIẢ): các cổng kiểm "có tồn tại không" bằng
+    `f'id="{i}"' not in idx`. Chỉ cần một chú thích nào đó viết ra chuỗi `id="kt-bt13"` là cổng
+    ĐẠT dù THẺ THẬT ĐÃ BỊ XOÁ. Báo oan thì còn có người đi cãi; đạt giả thì không ai kiểm lại,
+    và lỗ hổng nằm im cho tới lúc học sinh bấm nút không thấy gì.
+
+    Nên mọi phép kiểm sự tồn tại của MÃ trong HTML phải chạy trên bản đã lột chú thích.
+    """
+    return re.sub(r"<!--.*?-->", " ", idx, flags=re.S)
+
+
 def bien_chua_chu_hoc_sinh(js_song):
     """Tên các biến được gán từ `.value` — tức chữ do học sinh gõ vào ô nhập."""
     return set(re.findall(r"(?:const|let|var)\s+(\w+)\s*=\s*[^;\n]*\.value", js_song))
@@ -304,7 +324,9 @@ class Judge:
     # ============ G2 ICON SVG ============
     def g2(self):
         print("\n=== G2 ICON SVG (không emoji làm biểu tượng) ===")
-        idx = doc("index.html")
+        # html_song(): kiểm "có tồn tại không" phải chạy trên MÃ SỐNG. Một dòng chú thích chứa
+        # `symbol id="i-xxx"` hay `<use href="#i-xxx">` sẽ làm cổng ĐẠT khi thẻ thật đã bị xoá.
+        idx = html_song(doc("index.html"))
         # sprite phải tồn tại
         SO_SYMBOL = re.findall(r'symbol id="i-', idx)
         has_sprite = "<svg" in idx and bool(SO_SYMBOL)
@@ -358,7 +380,11 @@ class Judge:
         f01 = os.path.exists(os.path.join(ROOT, "js/nhamay_tram01.js"))
         self.them("G3d", "có js/nhamay_tram01.js", f01)
         if f01:
-            nap = 'src="js/nhamay_tram01.js"' in doc("index.html")
+            # html_song(): đây là kiểm THẺ NẠP MODULE, tức kiểm mã, nên phải chạy trên bản đã
+            # lột chú thích. Nếu không thì một dòng chú thích viết `src="js/nhamay_tram01.js"`
+            # (ví dụ để giải thích) đủ làm cổng ĐẠT dù thẻ thật đã bị xoá — và module biến mất
+            # thì Trạm 0/1 chết im lặng, không exception nào.
+            nap = 'src="js/nhamay_tram01.js"' in html_song(doc("index.html"))
             self.them("G3e", "nhamay_tram01.js được nạp trong index.html", nap)
             m = doc("js/nhamay_tram01.js")
             self.them("G3f", "module trạm 0/1 export window.MX_NHAMAY01",
@@ -496,7 +522,9 @@ console.log(JSON.stringify(out));
     # ============ G6 OFFLINE ============
     def g6(self):
         print("\n=== G6 OFFLINE (không bắt buộc có mạng) ===")
-        idx = doc("index.html")
+        # html_song(): chiều ngược lại của đạt giả — một chú thích ghi ví dụ URL CDN
+        # (`<!-- không nạp từ https://fonts.googleapis.com -->`) sẽ làm cổng BÁO OAN là có CDN.
+        idx = html_song(doc("index.html"))
         # không được có font CDN / thư viện CDN trong thẻ nạp tài nguyên
         cdn = re.findall(r'(?:src|href)="(https?://[^"]+)"', idx)
         self.them("G6a", "không nạp asset từ CDN trong index.html", not cdn,
@@ -573,7 +601,20 @@ console.log(JSON.stringify(out));
             self.them("G8a", "kịch bản tồn tại", False, "thiếu js/kichban.js")
             return
         kb = doc("js/kichban.js")
+        # `idx` giữ nguyên BẢN THÔ: một số phép kiểm cần đúng văn bản đầy đủ.
+        # `idx_song` = index.html ĐÃ LỘT CHÚ THÍCH. Mọi phép kiểm "có tồn tại không" trên tệp
+        # HTML phải chạy trên biến này, KHÔNG chạy trên `idx`.
+        # (Bản vá đầu tiên đã XOÁ luôn dòng `idx = doc(...)` khi thêm `idx_song`, làm idx thành
+        # undefined ở năm chỗ phía dưới — cổng chết bằng NameError. Khi thêm một biến "đã làm
+        # sạch" thì phải giữ biến gốc, không thay thế nó.)
         idx = doc("index.html")
+        # VÌ SAO: HTML có <!-- chú thích -->, và các chuỗi kiểm tra ở đây đều là mã nguồn
+        # (id="...", <script src="...">) — thứ hoàn toàn có thể xuất hiện trong chú thích để
+        # giải thích. Kiểm trên tệp thô thì một dòng chú thích cũng làm cổng ĐẠT khi thẻ thật
+        # đã bị xoá: đó là ĐẠT GIẢ, và nó nguy hiểm hơn báo oan vì không ai đi kiểm tra lại.
+        # G8d vừa bị chính lỗi này ở chiều ngược lại (find() bắt chữ trong chú thích rồi báo
+        # sai thứ tự nạp script). Cùng một gốc: đọc tệp thô thay vì đọc mã sống.
+        idx_song = html_song(idx)
 
         # G8a — độ dài caption mỗi cảnh, đo bằng regex trên mảng CANH
         caps = re.findall(r'caption\s*:\s*"([^"]*)"', kb)
@@ -624,7 +665,10 @@ console.log(JSON.stringify(out));
         # Comment mô tả lịch sử KHÔNG phải tuyên bố với người xem; flag nó sẽ khiến
         # người sau phải xoá mất ghi chú bài học — hại nhiều hơn lợi. Nay chỉ quét
         # phần CHỮ HIỂN THỊ: bỏ <!-- --> trong HTML và bỏ /* */ + // trong JS.
-        idx_hien = re.sub(r"<!--.*?-->", " ", idx, flags=re.S)
+        # `idx_hien` từng là một phép re.sub riêng y hệt html_song(), tạo ra BIẾN THỨ HAI cùng
+        # nghĩa ngay trong hàm đã có `idx_song` (dòng trên). Hai bản sao của một phép làm sạch
+        # thì sớm muộn cũng lệch nhau và không ai biết bản nào đang được dùng. Nay dùng chung.
+        idx_hien = idx_song
         kb_hien = re.sub(r"/\*.*?\*/", " ", kb, flags=re.S)
         kb_hien = re.sub(r"//[^\n]*", " ", kb_hien)
         cung = re.findall(r"\b(\d{2,3})\s*(?:giây|s\b)", idx_hien + "\n" + kb_hien)
@@ -633,16 +677,46 @@ console.log(JSON.stringify(out));
                   "đạt — không thấy số giây cứng trong nội dung hiển thị" if not cung else
                   f"thấy số giây gõ tay: {sorted(set(cung))} — phải để TONG_MS tự cộng từ dur")
 
-        # G8d — thứ tự nạp script
-        a, b = idx.find("js/kichban.js"), idx.find("js/app.js")
+        # G8d — thứ tự nạp script.
+        #
+        # SỬA 07/10 — DƯƠNG TÍNH GIẢ, và chính tôi vừa gây ra nó. Bản cũ dùng
+        # `idx.find("js/app.js")`, tức tìm lần xuất hiện ĐẦU TIÊN của chuỗi đó ở BẤT KỲ đâu
+        # trong tệp. Tôi thêm một chú thích HTML giải thích phần tử chết #btn-dangnhap, và trong
+        # chú thích có viết "được gắn ở js/app.js" — find() bắt đúng chữ đó ở vị trí 7811, trong
+        # khi thẻ <script src="js/app.js"> THẬT nằm ở 44048 (kichban.js ở 43795, tức vẫn nạp
+        # trước đúng như thiết kế). Cổng in "kichban @43795, app @7811" rồi kết luận sai rằng
+        # app.js nạp trước. SẢN PHẨM KHÔNG HỎNG; PHÉP KIỂM HỎNG.
+        #
+        # Đây CHÍNH XÁC là lớp lỗi mà G11b đã ghi lại trong dự án: "phép grep thô trên tệp còn
+        # comment sẽ khớp cả CHỮ TRONG GHI CHÚ ... đó là dương tính giả toàn tập: nó khiến người
+        # đọc đi sửa thứ không hỏng, và tệ nhất là làm mất lòng tin vào các cảnh báo thật".
+        # G11a cũng đã dùng cách đúng — re.finditer trên thẻ <script src="...">. G8d là chỗ sót
+        # lại cuối cùng còn dùng find() thô.
+        #
+        # VÌ SAO SỬA CỔNG CHỨ KHÔNG SỬA CHÚ THÍCH: nếu tôi chỉ đổi chữ trong chú thích thì cổng
+        # vẫn mù — lần sau bất kỳ ai (kể cả tôi) viết một dòng chú thích nhắc tới đường dẫn tệp
+        # là cổng lại báo oan. Sửa chỗ đo thì lỗi không tái diễn được. Và chính dòng chú thích
+        # đang nằm trong index.html lúc này trở thành phép thử thường trực cho bản sửa: nó có chữ
+        # "js/app.js" ở vị trí 7811, nên nếu G8d còn đọc chữ trong comment thì nó sẽ FAIL ngay.
+        # Đọc trên idx_song, KHÔNG đọc idx thô. Regex này đòi cả thẻ `<script src="...">` nên
+        # hiện tại chưa bị chú thích đánh lừa, nhưng đó là ăn may chứ không phải an toàn: chỉ cần
+        # một chú thích nào đó chép nguyên văn thẻ script (rất dễ xảy ra khi viết tài liệu hướng
+        # dẫn ngay trong HTML) là cổng đo sai thứ tự nạp. Đã xảy ra một lần với bản find() thô.
+        vi_tri = {m.group(1): m.start()
+                  for m in re.finditer(r'<script\s+src="([^"]+)"', idx_song)}
+        a, b = vi_tri.get("js/kichban.js", -1), vi_tri.get("js/app.js", -1)
         self.them("G8d", "kichban.js nạp trước app.js",
                   a > -1 and b > -1 and a < b,
-                  f"kichban @{a}, app @{b}" if (a > -1 and b > -1) else "thiếu một trong hai thẻ script")
+                  f"kichban @{a}, app @{b} (đọc từ thẻ <script src>, không đọc chữ trong chú thích)"
+                  if (a > -1 and b > -1)
+                  else f"thiếu một trong hai THẺ SCRIPT thật: kichban={a}, app={b}")
 
-        # G8e — section và nút phải có thật, nếu không thì kịch bản không mở được
+        # G8e — section và nút phải có thật, nếu không thì kịch bản không mở được.
+        # Kiểm trên idx_song (đã lột chú thích): một dòng chú thích nhắc tới `id="kb-host"`
+        # không được phép làm cổng ĐẠT khi thẻ thật đã bị xoá — đó là đạt giả.
         self.them("G8e", "có section #v-kichban + #kb-host + nút #btn-kichban",
-                  all(x in idx for x in ('id="v-kichban"', 'id="kb-host"', 'id="btn-kichban"')),
-                  "đạt" if all(x in idx for x in ('id="v-kichban"', 'id="kb-host"', 'id="btn-kichban"'))
+                  all(x in idx_song for x in ('id="v-kichban"', 'id="kb-host"', 'id="btn-kichban"')),
+                  "đạt" if all(x in idx_song for x in ('id="v-kichban"', 'id="kb-host"', 'id="btn-kichban"'))
                   else "thiếu một trong ba id — nút sẽ không mở được kịch bản")
 
     # ================= G9 — CHẾ ĐỘ ÍT CHỮ & BẢNG RESPONSIVE =================
@@ -756,7 +830,8 @@ console.log(JSON.stringify(out));
                   "; ".join(vi_pham) if vi_pham else "sạch cả 6 nhóm")
 
         TEN = "Phòng thực hành Trí tuệ nhân tạo lớp 10"
-        du = (TEN in idx) and (TEN in meta)
+        # html_song(): tên này phải là chữ HIỂN THỊ thật, không phải chữ nằm trong chú thích.
+        du = (TEN in html_song(idx)) and (TEN in meta)
         self.them("G10b", "tên hiển thị là định danh môn/lớp", du,
                   "có trong index.html và data/meta.js" if du
                   else "thiếu ở index.html hoặc data/meta.js")
@@ -773,7 +848,11 @@ console.log(JSON.stringify(out));
         self.them("G10c", "khẩu hiệu cũ = 0 trong mã sống", con == 0,
                   "sạch" if con == 0 else "còn " + str(con) + " chỗ")
 
-        m_footer = re.search(r"Phiên bản\s+([\d.]+)", idx)
+        # G10d so CHỮ HIỂN THỊ ở chân trang với data/meta.js, nên phải đọc idx_txt (đã lột cả
+        # chú thích lẫn thẻ) chứ không phải idx thô. Đọc thô thì một chú thích nhắc
+        # "Phiên bản 1.0.0" sẽ được coi là chữ chân trang — và nếu chân trang thật đã đổi phiên
+        # bản mà quên sửa meta.js thì cổng vẫn ĐẠT, tức bỏ lọt đúng lỗi nó sinh ra để bắt.
+        m_footer = re.search(r"Phiên bản\s+([\d.]+)", idx_txt)
         m_meta = re.search(r'phienBan\s*:\s*"([\d.]+)"', meta)
         v1 = m_footer.group(1) if m_footer else None
         v2 = m_meta.group(1) if m_meta else None
@@ -809,7 +888,13 @@ console.log(JSON.stringify(out));
                 ghi 8 trong khi mã sống có 9, bt09.js ghi 7 trong khi có 10.
         """
         print("\n=== G11 CÁC MODULE MỨC 3 (bt13.js, bt09.js, muc3.js) ===")
-        idx = doc("index.html")
+        # html_song(): G11a so thứ tự nạp script và G11e kiểm host id có thật. Cả hai đều là
+        # kiểm MÃ, nên phải chạy trên bản đã lột chú thích — nếu không thì một chú thích chứa
+        # `<script src="js/app.js">` hay `id="kt-bt13"` đủ để cổng ĐẠT giả.
+        # Lưu ý: html_song thay mỗi chú thích bằng MỘT khoảng trắng nên offset tuyệt đối sẽ khác
+        # tệp thô, nhưng THỨ TỰ TƯƠNG ĐỐI giữa các thẻ thì giữ nguyên — và G11a/G8d chỉ so
+        # thứ tự, không so offset với bên ngoài.
+        idx = html_song(doc("index.html"))
         sprite = set(re.findall(r'symbol id="(i-[\w-]+)"', idx))
         MODULE = ["js/bt13.js", "js/bt09.js", "js/muc3.js"]
 
@@ -1422,7 +1507,11 @@ console.log(JSON.stringify(out));
         mảng đó thì cổng tự kiểm luôn, không cần sửa cổng.
         """
         app_js = than_ma_song(doc("js/app.js"))
-        idx = doc("index.html")
+        # html_song(): G15b kiểm `id="nm-tramN"` có thật trong index.html. Chính tôi đã viết một
+        # chú thích dài trong index.html nhắc tới các id này khi giải thích phần tử chết
+        # #btn-dangnhap — nếu kiểm trên tệp thô thì chú thích đó đủ làm G15b ĐẠT giả kể cả khi
+        # thẻ trạm bị xoá. Đây là ca có thật trong repo, không phải giả định.
+        idx = html_song(doc("index.html"))
 
         # Danh sách id mà nmMoTram() ẩn đi trước khi mở trạm. Nếu không trích được thì cổng
         # đang hỏng — phải báo LỖI, tuyệt đối không im lặng in ĐẠT (bài học từ G14a).

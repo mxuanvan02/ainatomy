@@ -332,7 +332,11 @@
   }
 
   /* ================= TẦNG 2 — ĐẤU TRƯỜNG BẮT LỖI AI ================= */
-  const dt = { ds:[], i:0, traLoi:{ verdict:null, loaiLoi:null, claimChon:-1 }, ketQua:[], seedNgay:null, mode:"luyen" };
+  const dt = { ds:[], i:0, traLoi:{ verdict:null, loaiLoi:null, claimChon:-1 }, ketQua:[],
+               seedNgay:null, mode:"luyen",
+               /* Số lượt đã chơi ở chế độ LUYỆN TẬP — thêm 07/10, chỉ dùng cho seed.
+                * Xem chú thích ở dtBatDau() vì sao chế độ luyện cần nó mà pre/post thì không. */
+               lanChoi:0 };
 
   /* Chọn phiên 12 câu phân tầng: đủ 5 loại lỗi + ~1/3 câu đúng (đo "bắt oan").
      Tất định theo seed → tái lập được cho pre/post và cho báo cáo hồ sơ.
@@ -414,9 +418,39 @@
     dt.mode = mode || "luyen";
     const today = new Date();
     // seed: pre/post dùng mã phiên khác nhau để không học thuộc vị trí
+    /* SEED THEO LƯỢT CHƠI CHO CHẾ ĐỘ LUYỆN TẬP — thêm 07/10.
+
+       LỖI: seed chỉ gồm NGÀY + MÃ HS, nên mọi lần bấm "Luyện tập" (hoặc "↻ Chơi lại lượt mới"
+       ở cuối phiên) trong cùng một ngày đều ra ĐÚNG MỘT BỘ 12 CÂU. Phản biện vòng 9 đo được
+       bằng mô phỏng trên chính data/cauhoi.js: "pre bấm lại cùng ngày identical: true".
+       Hệ quả với chế độ luyện tập là hỏng mục đích của nó: học sinh làm lại lần hai sẽ NHỚ VỊ
+       TRÍ câu trả lời ("câu thứ ba bấm Có lỗi") chứ không luyện cách nhận ra lỗi. Lần hai trở
+       đi không còn đo được gì, mà giao diện vẫn hiện "↻ Chơi lại lượt mới" như thể có lượt mới.
+
+       CHỈ CỘNG `lanChoi` CHO CHẾ ĐỘ LUYỆN. Pre/post CỐ Ý giữ seed theo ngày, nhưng phải nói
+       rõ seed đó đảm bảo được gì và KHÔNG đảm bảo được gì — bản đầu của chú thích này đã khai
+       quá lên, và khai quá thì nguy hiểm hơn không khai:
+       · Seed tất định nghĩa là: CÙNG ngày + CÙNG mã + CÙNG chế độ + NHẬT KÝ CÒN TRỐNG thì ra
+         đúng một bộ 12 câu. Nhờ vậy việc bốc câu không phải ngẫu nhiên mỗi lần bấm, và một
+         người khác dựng lại từ đầu sẽ tái lập được bộ câu đó.
+       · Nó KHÔNG nghĩa là "bấm lại pre-test lần hai sẽ ra cùng bộ câu". Vì dtDaGap() loại
+         những câu chính mã đó đã trả lời, nên sau khi đã làm một phiên thì tập ứng viên đã
+         co lại và lần bấm sau tất yếu ra bộ khác. Hai yêu cầu này XUNG NHAU về mặt toán, và
+         tôi chọn ưu tiên chống trùng câu: hiệu pre/post là con số dùng làm bằng chứng tác
+         động, nếu post-test lặp câu của pre-test thì nó đo trí nhớ chứ không đo tiến bộ (đã
+         đo được 1,54/12 câu trùng, 64% số cặp — trước khi sửa).
+       · Bằng chứng cho hồ sơ vì thế nằm ở NHẬT KÝ (CSV ghi rõ itemId từng câu, kèm mốc thời
+         gian), không nằm ở việc bấm lại ra cùng bộ câu. Giám khảo đối chiếu CSV, không bấm lại.
+       · Chế độ luyện thì ngược lại: mỗi lượt PHẢI ra bộ mới, nên cộng thêm `lanChoi`. Nếu
+         không thì học sinh làm lại lần hai sẽ nhớ vị trí câu trả lời ("câu ba bấm Có lỗi") chứ
+         không luyện cách nhận ra lỗi — phản biện vòng 9 đo được "pre bấm lại cùng ngày
+         identical: true", tức lượt hai trở đi không còn luyện được gì, trong khi giao diện
+         vẫn hiện "↻ Chơi lại lượt mới" như thể có lượt mới. */
+    if(dt.mode === "luyen") dt.lanChoi++;
     dt.seedNgay = today.getFullYear()*10000 + (today.getMonth()+1)*100 + today.getDate()
       + maHS.split("").reduce((a,c)=>a+c.charCodeAt(0),0)*31
-      + (dt.mode==="pre" ? 101 : dt.mode==="post" ? 202 : 0);
+      + (dt.mode==="pre" ? 101 : dt.mode==="post" ? 202 : 0)
+      + (dt.mode==="luyen" ? dt.lanChoi * 7919 : 0);
     /* seed KHÁC NHAU LÀ CHƯA ĐỦ — thêm 06/10.
      * Seed chỉ đổi THỨ TỰ bốc, còn ngân hàng vẫn là một; nên pre và post vẫn trúng nhau
      * (đo được: 64% cặp có ít nhất một câu trùng). Phải LOẠI TRỪ những câu chính em này đã

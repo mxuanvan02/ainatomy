@@ -67,7 +67,17 @@
       các tiết đó: chạy trên máy tính của trường, không cần Internet, không cần tài khoản.
       Mỗi hoạt động gắn với một yêu cầu cần đạt của lớp 10.</p>
 
-      <button class="btn chinh" id="btn-dangnhap" style="display:none"></button>      <div class="card" style="background:var(--nen2)">
+      <!-- ĐÃ XOÁ phần tử chết `#btn-dangnhap` (07/10). Nó là một <button> ẩn
+           (style="display:none"), KHÔNG có chữ bên trong, và KHÔNG được gắn onclick ở bất kỳ
+           đâu trong js/ (grep toàn repo chỉ ra đúng một kết quả: chính dòng này), có từ commit
+           5c46f41. Nút đăng nhập THẬT là #btn-vao ("Vào học →"), được gắn ở js/app.js:
+           `$("btn-vao").onclick = dangNhap;`.
+           Vì sao phải xoá chứ không để yên: nó đã lừa chính tôi trong lúc kiểm thử — tôi bấm
+           #btn-dangnhap, không có gì xảy ra, rồi kết luận sai rằng "HS không đăng nhập được
+           nữa" và suýt đi sửa một thứ không hỏng. Phần tử chết không chỉ là rác: nó là mồi
+           cho kết luận sai. Ngoài ra nó nằm chen trên cùng một dòng với thẻ <div> bên dưới,
+           nên việc đọc cấu trúc trang cũng khó. -->
+      <div class="card" style="background:var(--nen2)">
         <label for="in-maHS">Mã của em (thầy/cô phát — ví dụ A001)</label>
         <input id="in-maHS" placeholder="A001" maxlength="12" autocomplete="off">
         <label for="in-maLop">Mã lớp (ví dụ 10A1)</label>
