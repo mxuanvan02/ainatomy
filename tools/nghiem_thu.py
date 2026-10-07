@@ -1728,6 +1728,13 @@ console.log(JSON.stringify(out));
           một bản clone sạch nó chưa tồn tại. Đòi nó tồn tại là đòi sai.
         · Chỉ nhận token CÓ phần mở rộng hoặc có dấu /, nên `python3`, `--ghi`, `<thư_mục>`
           (có dấu nhọn), `MX_MUC3.cham()` (có dấu ngoặc) đều không bị coi là đường dẫn.
+
+        Năm tiêu chí con, mỗi cái canh một kiểu lời hứa khác nhau trong cùng một lớp lỗi:
+        · G17b — đường dẫn ĐẦU VÀO phải tồn tại trên đĩa.
+        · G17c — tên tệp ĐẦU RA phải khớp hai chiều giữa tài liệu và mã sinh ra nó.
+        · G17d — cờ CLI phải có thật trong argparse của tool mà dòng lệnh đó gọi.
+        · G17e — danh sách cột CSV phải khớp đúng tên và đúng thứ tự với header mã ghi.
+        · G17f — số đếm trong câu dẫn ("Mười cột") phải khớp số cột thật.
         """
         import glob as _glob
 
@@ -1846,6 +1853,161 @@ console.log(JSON.stringify(out));
                             if loi_hua else "",
                             f"tools/gop_csv.py ghi nhưng tài liệu KHÔNG nhắc: {thieu_doc} — "
                             f"giáo viên sẽ không biết tệp đó dùng để làm gì" if thieu_doc else ""]))))
+
+        # ------------------------------------------------------------------
+        # G17d — CỜ CLI mà tài liệu hứa phải có thật trong argparse của tool đó.
+        #
+        # Cùng lớp lỗi với G17b nhưng mịn hơn: G17b canh ĐƯỜNG DẪN, chỗ này canh CỜ. Khi tôi
+        # viết `python3 tools/gop_csv.py <thư_mục> -o <báo_cáo>` vào tài liệu, cờ `-o` là một lời
+        # hứa không khác gì đường dẫn: giáo viên gõ theo mà cờ không tồn tại thì argparse báo
+        # "unrecognized arguments", và họ dừng ở đúng khâu cuối của tiết học — khâu gộp 20 máy
+        # về một mối để viết nhận xét.
+        #
+        # CHỈ kiểm cờ trong những đoạn lệnh CÓ gọi một tool của repo (tools/*.py). Cờ của lệnh
+        # ngoài — `sha256sum -c`, `git ls-files` — không thuộc thẩm quyền của cổng này và bắt
+        # chúng là bắt oan. Ca phá số 5 là negative control cho đúng việc đó.
+        # Danh sách cờ thật đọc từ `add_argument` trong chính tool, không gõ tay.
+        #
+        # Một chi tiết đo được trước khi viết: lần dò đầu tiên bằng grep thô báo có cả cờ `-c`,
+        # nhưng đó là `sha256sum -c` — lệnh ngoài, không nằm trong backtick kèm tools/*.py. Nếu
+        # tin kết quả grep thô đó mà thiết kế cổng theo hướng "mọi cờ đều phải thuộc tool của
+        # mình" thì cổng sẽ kêu oan ngay lần chạy đầu, giống hệt 14 dương tính giả của G17b.
+        co_hua_loi, so_co_da_kiem = [], 0
+        for f in tai_lieu:
+            if not os.path.isfile(os.path.join(ROOT, f)):
+                continue
+            for m in re.finditer(r"`([^`\n]+)`", doc(f)):
+                seg = m.group(1).strip()
+                if not re.search(r"\s", seg):
+                    continue                                  # một token, không phải dòng lệnh
+                m_tool = re.search(r"(tools/[\w./-]+\.py)", seg)
+                if not m_tool:
+                    continue                                  # lệnh ngoài repo: không thuộc cổng này
+                tool = m_tool.group(1)
+                if not os.path.isfile(os.path.join(ROOT, tool)):
+                    continue                                  # tệp thiếu thì G17b đã bắt, không báo trùng
+                co_that = set()
+                for a in re.findall(r"add_argument\(([^)]*)\)", doc(tool), re.S):
+                    co_that |= set(re.findall(r'"(--?[\w-]+)"', a))
+                for c in re.findall(r"(?<![\w-])(--?[\w][\w-]*)", seg):
+                    so_co_da_kiem += 1
+                    if c not in co_that:
+                        co_hua_loi.append(f"{f} -> `{c}` (của {tool}, cờ thật: {sorted(co_that)})")
+        self.them("G17d", "cờ CLI tài liệu hứa đều có thật trong argparse của tool đó",
+                  not co_hua_loi,
+                  f"{so_co_da_kiem} cờ CLI được nhắc kèm tool của repo, tất cả đều có thật"
+                  if not co_hua_loi
+                  else f"{len(co_hua_loi)} cờ ĐƯỢC HỨA MÀ TOOL KHÔNG CÓ: {co_hua_loi} — gõ theo "
+                       f"tài liệu sẽ nhận 'unrecognized arguments'. Sửa tài liệu theo argparse, "
+                       f"hoặc thêm cờ vào tool.")
+
+        # ------------------------------------------------------------------
+        # G17e — danh sách cột tài liệu in ra phải khớp ĐÚNG TÊN, ĐÚNG THỨ TỰ với header mà
+        # tools/gop_csv.py thật sự ghi cho baocao_ca_nhan.csv.
+        #
+        # VÌ SAO cần cổng riêng: tài liệu hướng dẫn đánh giá liệt kê "Mười cột của
+        # `baocao_ca_nhan.csv`" trong một khối mã, và cả 6 mẫu câu nhận xét đều bảo giáo viên
+        # điền số LẤY THEO TÊN CỘT đó (`ti_le_dung`, `du_doan_khop`, `du_doan_bo_qua`...). Sai
+        # một tên là giáo viên mở CSV không tìm thấy cột và kết luận tài liệu viết cho phiên bản
+        # khác — mất lòng tin vào cả bộ hồ sơ.
+        #
+        # KHÔNG dùng cách khớp token mờ. Bản nháp của tôi định thu mọi token snake_case trong tài
+        # liệu rồi đối chiếu với mọi tên cột của mọi writerow; DÒ BẰNG SỐ LIỆU THẬT thì cách đó
+        # vừa bắt oan vừa bỏ sót:
+        #   (a) bỏ sót `diem` — cột quan trọng nhất, được tài liệu dành hẳn mục 2 để cảnh báo
+        #       "KHÔNG phải là điểm số". Lý do: tài liệu viết `diem = 1`, nên khi tách theo
+        #       khoảng trắng thì `diem` thành từ ĐẦU TIÊN của đoạn và bị phân loại là tên lệnh.
+        #   (b) trích header bằng `writerow([...])` thì gom lẫn header của baocao_lop.csv
+        #       (dòng 321, 333, 344) vào cùng một tập, và BỎ SÓT 7 cột của HDR vì
+        #       nhatky_gop.csv được ghi bằng DictWriter(fieldnames=HDR) chứ không ghi header
+        #       bằng writerow.
+        # Vì vậy ở đây chỉ so ĐÚNG MỘT CẶP: khối cột trong tài liệu ↔ writerow header của p3
+        # (biến giữ đường dẫn baocao_ca_nhan.csv). So có thứ tự nên một phép bắt được cả hai
+        # chiều: tài liệu thừa cột mã không ghi, và mã ghi cột tài liệu không nhắc.
+        cot_ma = []
+        if os.path.isfile(os.path.join(ROOT, "tools", "gop_csv.py")):
+            gop = doc("tools/gop_csv.py")
+            i_p3 = gop.find('"baocao_ca_nhan.csv"')
+            if i_p3 > -1:
+                m3 = re.search(r"writerow\(\s*\[(.*?)\]\s*\)", gop[i_p3:], re.S)
+                if m3:
+                    cot_ma = re.findall(r'"([\w]+)"', m3.group(1))
+        DOC_HD = "huong-dan-danh-gia.md"
+        cot_doc = []
+        if os.path.isfile(os.path.join(ROOT, DOC_HD)):
+            for blk in re.findall(r"```\n(.*?)```", doc(DOC_HD), re.S):
+                toks = [t for t in re.split(r"[,\s]+", blk.strip()) if t]
+                # Khối cột thật: >=5 token, tất cả đều snake_case CÓ dấu gạch dưới. Điều kiện
+                # "có gạch dưới" là thứ loại các khối văn xuôi (6 mẫu nhận xét cũng nằm trong
+                # ``` nhưng chứa chữ tiếng Việt có dấu và dấu [ngoặc vuông]).
+                if (len(toks) >= 5
+                        and all("_" in t and re.match(r"^[a-z][a-z0-9_]*$", t) for t in toks)):
+                    cot_doc = toks
+                    break
+
+        if not cot_ma:
+            self.them("G17e", "danh sách cột baocao_ca_nhan.csv khớp giữa tài liệu và mã", False,
+                      "KHÔNG TRÍCH ĐƯỢC header của baocao_ca_nhan.csv từ tools/gop_csv.py — "
+                      "cổng này hết căn cứ để so, và thà báo LỖI còn hơn in ĐẠT khi chưa kiểm "
+                      "(một cổng ĐẠT mà chưa kiểm là thứ nguy hiểm nhất trong bộ cổng)")
+        elif not cot_doc:
+            self.them("G17e", "danh sách cột baocao_ca_nhan.csv khớp giữa tài liệu và mã", False,
+                      f"không tìm thấy khối liệt kê cột trong {DOC_HD} — tài liệu phải in danh "
+                      f"sách cột để giáo viên biết điền số nào vào mẫu nhận xét")
+        else:
+            khop = (cot_doc == cot_ma)
+            chi_tiet = (f"{len(cot_ma)} cột khớp đúng tên và đúng thứ tự: {cot_ma}") if khop else ""
+            if not khop:
+                thua = [c for c in cot_doc if c not in cot_ma]
+                thieu_c = [c for c in cot_ma if c not in cot_doc]
+                chi_tiet = ("; ".join(filter(None, [
+                    f"tài liệu thừa cột mà mã KHÔNG ghi: {thua}" if thua else "",
+                    f"mã ghi nhưng tài liệu KHÔNG liệt kê: {thieu_c}" if thieu_c else "",
+                    "" if thua or thieu_c else
+                    f"cùng tập cột nhưng LỆCH THỨ TỰ — tài liệu: {cot_doc} · mã: {cot_ma}",
+                    "giáo viên mở CSV sẽ không tìm thấy cột mà mẫu nhận xét bảo điền"])))
+            self.them("G17e", "danh sách cột baocao_ca_nhan.csv khớp giữa tài liệu và mã",
+                      khop, chi_tiet)
+
+        # ------------------------------------------------------------------
+        # G17f — SỐ ĐẾM trong câu dẫn phải khớp số cột thật.
+        #
+        # Tài liệu viết "Mười cột của `baocao_ca_nhan.csv`". Nếu sau này thêm một cột vào
+        # gop_csv.py và cập nhật danh sách trong khối mã mà quên sửa chữ "Mười", thì G17e vẫn
+        # ĐẠT (danh sách đã khớp) trong khi câu dẫn sai — tức hồ sơ tự mâu thuẫn về một con số
+        # mà người đọc đếm được ngay. Đúng lớp lỗi "khai một tổng mà không kiểm tổng đó" đã xảy
+        # ra với con số 52/52 trước đây.
+        # Chỉ kiểm khi tìm được số đếm; nếu câu dẫn viết kiểu "Các cột của ..." thì bỏ qua chứ
+        # không báo oan, vì không có gì để đối chiếu.
+        SO_VIET = {"một": 1, "hai": 2, "ba": 3, "bốn": 4, "năm": 5, "sáu": 6, "bảy": 7,
+                   "tám": 8, "chín": 9, "mười": 10, "mười một": 11, "mười hai": 12,
+                   "mười ba": 13, "mười bốn": 14, "mười lăm": 15, "mười sáu": 16,
+                   "mười bảy": 17, "mười tám": 18, "mười chín": 19, "hai mươi": 20}
+        so_khai, nguon_so = None, ""
+        if os.path.isfile(os.path.join(ROOT, DOC_HD)):
+            d_hd = doc(DOC_HD)
+            i_dem = d_hd.find("cột của `baocao_ca_nhan.csv`")
+            if i_dem > -1:
+                cua_so = d_hd[max(0, i_dem - 30):i_dem].lower()
+                so_chu = re.findall(r"\d+", cua_so)
+                if so_chu:
+                    so_khai, nguon_so = int(so_chu[-1]), f"chữ số '{so_chu[-1]}'"
+                else:
+                    for chu in sorted(SO_VIET, key=len, reverse=True):
+                        if chu in cua_so:
+                            so_khai, nguon_so = SO_VIET[chu], f"chữ '{chu}'"
+                            break
+        if so_khai is None:
+            self.them("G17f", "số đếm trong câu dẫn khớp số cột thật", True,
+                      "câu dẫn không nêu số đếm nên không có gì để đối chiếu (bỏ qua, không báo oan)")
+        else:
+            self.them("G17f", "số đếm trong câu dẫn khớp số cột thật",
+                      so_khai == len(cot_ma),
+                      f"câu dẫn khai {nguon_so} = {so_khai} cột, mã ghi {len(cot_ma)} cột"
+                      if so_khai == len(cot_ma)
+                      else f"câu dẫn khai {nguon_so} = {so_khai} cột nhưng tools/gop_csv.py ghi "
+                           f"{len(cot_ma)} cột — hồ sơ tự mâu thuẫn về một con số người đọc đếm "
+                           f"được ngay. Sửa chữ cho khớp, hoặc đổi câu dẫn thành 'Các cột của'.")
 
     def tong_ket(self):
         print("\n" + "=" * 72)
