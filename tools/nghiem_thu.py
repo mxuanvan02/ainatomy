@@ -1458,6 +1458,129 @@ console.log(JSON.stringify(out));
                        f"thêm `$(\"{thieu_hien[0]}\").style.display = \"\";` vào hàm khởi động "
                        f"của nó. Đây chính là lỗi đã làm Trạm 5 vô hình từ 04/10.")
 
+    def g16(self):
+        """G16 — BA BẢN KHAI CỘT CSV PHẢI KHỚP NHAU (thêm 07/10).
+
+        LỖI THẬT MÀ CỔNG NÀY SINH RA ĐỂ CHẶN. Cùng một bộ nhật ký, giáo viên có HAI nút để tải
+        về: "Xuất CSV" (js/engine.js xuatCSV) và "Xuất JSON" (engine.js xuatJSON, rồi
+        tools/gop_csv.py doc_json đọc lại). Hai đường đó khai danh sách cột ở BA nơi khác nhau:
+          1. `const rows = [[...]]` trong js/engine.js  — header của tệp CSV
+          2. `HDR = [...]` trong tools/gop_csv.py        — header của tệp gộp (DictWriter)
+          3. dict dựng BẰNG TAY trong `doc_json()`       — các cột có được khi đọc JSON
+        Không có gì buộc ba nơi đó khớp nhau. Và chúng ĐÃ lệch: doc_json chỉ xuất 14/21 cột,
+        mất `che_do`, `phien_tong`, `phien_dung` nên bao_cao() bỏ qua MỌI phiên pre/post đến từ
+        tệp JSON — khối "TIẾN TRÌNH PRE/POST" trống trơn, mà hiệu pre/post chính là con số dùng
+        làm bằng chứng tác động trong hồ sơ. Mất luôn `loai_loi_that` nên cả 5 loại lỗi ra
+        recall = 0. Script vẫn in "✅ N sự kiện" và vẫn ghi đủ 3 tệp, không một dòng cảnh báo.
+        Lỗi này có từ khi doc_json được viết, không phải do đợt vá nào gây ra.
+
+        VÌ SAO KIỂM BẰNG CÁCH GỌI THẬT, KHÔNG BẰNG REGEX: bản đầu tôi định trích khoá của dict
+        trong doc_json bằng regex. Nhưng dict đó dựng bằng biểu thức điều kiện (`"" if ... else
+        ...`) và comment nằm XEN giữa các cặp khoá-giá trị, nên regex rất dễ đếm sai — và một
+        phép kiểm đếm sai thì hoặc báo oan (bắt người ta sửa thứ không hỏng) hoặc báo ĐẠT giả.
+        Cách này ghi một tệp JSON tối thiểu ra /tmp rồi GỌI doc_json() và đọc tập khoá của dict
+        trả về: đó là sự thật runtime, không phải suy đoán từ văn bản.
+
+        BẪY KHI SỬA CỔNG NÀY: trích cột từ engine.js phải dùng `[\\w]+`, KHÔNG dùng `[a-z_]+`.
+        Tên cột `thoi_gian_ISO` có CHỮ HOA; bản đầu tôi dùng `[a-z_]+` nên cột đó bị bỏ rơi và
+        cổng báo lệch 20/21 trong khi thật ra khớp 21/21 — một dương tính giả do chính phép đo.
+        """
+        import importlib.util
+
+        # ---- (1) nạp gop_csv.py như một module để lấy HDR và gọi doc_json thật ----
+        # PHẢI kiểm `spec is None`: spec_from_file_location trả None khi đường dẫn không tồn tại
+        # hoặc không phải tệp Python nạp được. Bản đầu bỏ qua bước này và truyền thẳng vào
+        # module_from_spec(spec) rồi gọi spec.loader — tức là nếu tools/gop_csv.py biến mất (đổi
+        # tên, quên commit, checkout sai branch) thì cổng NỔ AttributeError thay vì in một tiêu
+        # chí LỖI. Một cổng chết bằng traceback thì không ai đọc được nó muốn nói gì, và cả
+        # nhóm G16 mất trắng thay vì chỉ báo đúng phép kiểm bị hỏng.
+        duong_gop = os.path.join(ROOT, "tools", "gop_csv.py")
+        mod, hdr = None, []
+        try:
+            spec = importlib.util.spec_from_file_location("gop_csv_g16", duong_gop)
+            if spec is None or spec.loader is None:
+                raise ImportError(f"không nạp được {duong_gop} như một module Python")
+            mod = importlib.util.module_from_spec(spec)
+            spec.loader.exec_module(mod)
+            hdr = list(mod.HDR)
+        except Exception as e:
+            self.them("G16a", "nạp được tools/gop_csv.py để đọc HDR", False,
+                      f"không nạp được: {type(e).__name__}: {e} — cổng G16 không kiểm được gì, "
+                      f"ĐỪNG đọc các phép dưới là ĐẠT")
+            return
+        self.them("G16a", "nạp được tools/gop_csv.py để đọc HDR", bool(hdr),
+                  f"HDR có {len(hdr)} cột" if hdr else "HDR rỗng — cổng không canh được gì")
+        if not hdr:
+            return
+
+        # ---- (2) gọi doc_json THẬT trên một tệp JSON tối thiểu ----
+        # Sự kiện mẫu cố ý mang đủ loại trường (kq của câu đấu trường + trường của phiên) để
+        # mọi nhánh trong dict đều được đi qua. Thiếu một trường thì giá trị rỗng, nhưng TÊN
+        # khoá vẫn phải có — đó chính là thứ đang được kiểm.
+        mau = {"ZZ01": {"maHS": "ZZ01", "maLop": "10Z", "suKien": [
+            {"loai": "phien", "cheDo": "post", "t": 1791296700011, "phaiLap": 0,
+             "tong": 12, "dung": 9, "batOan": 1, "boSot": 2},
+            {"loai": "dauTruong", "t": 1791296700020,
+             "kq": {"itemId": "dt-1", "diem": 1, "loaiThat": "co_loi",
+                    "loaiLoiThat": "thien_kien", "traLoiVerdict": "co_loi",
+                    "traLoiLoai": "so_lieu_bia", "mach": "A1", "unesco": "A1"}},
+            {"loai": "duDoan", "suKien": "doiChieu", "baiToan": "BT-03", "t": 1791296700001,
+             "kq": {"duDoan": 70, "dapAn": 100, "diem": 0, "dung": False}},
+        ]}}
+        import tempfile
+        tmp = None
+        try:
+            fd, tmp = tempfile.mkstemp(prefix="g16_", suffix=".json")
+            with os.fdopen(fd, "w", encoding="utf-8") as f:
+                json.dump(mau, f, ensure_ascii=False)
+            dong = mod.doc_json(tmp)
+            khoa_json = set(dong[0].keys()) if dong else set()
+            loi_goi = None
+        except Exception as e:
+            khoa_json, loi_goi = set(), f"{type(e).__name__}: {e}"
+        finally:
+            if tmp and os.path.isfile(tmp):
+                os.remove(tmp)
+
+        if loi_goi:
+            self.them("G16b", "doc_json() chạy được trên dữ liệu mẫu", False,
+                      f"gọi doc_json() nổ: {loi_goi}")
+            return
+        thieu = [c for c in hdr if c not in khoa_json]
+        thua = sorted(khoa_json - set(hdr))
+        self.them("G16b", "doc_json() xuất ĐỦ mọi cột trong HDR (đường JSON không mất dữ liệu)",
+                  not thieu,
+                  f"doc_json xuất đủ {len(hdr)}/{len(hdr)} cột" if not thieu
+                  else f"{len(thieu)} cột của HDR KHÔNG được doc_json xuất ra: {thieu} — với tệp "
+                       f"JSON, các cột này rỗng nên báo cáo gộp mất dữ liệu ÂM THẦM (đã từng làm "
+                       f"mất toàn bộ tiến trình pre/post và làm recall = 0). Thêm chúng vào dict "
+                       f"trong doc_json().")
+        self.them("G16c", "doc_json() không sinh cột lạ ngoài HDR (cột lạ sẽ bị DictWriter vứt)",
+                  not thua,
+                  "mọi cột doc_json sinh ra đều có trong HDR" if not thua
+                  else f"{len(thua)} cột doc_json sinh ra mà HDR không có: {thua} — chúng sẽ bị "
+                       f"DictWriter(extrasaction='ignore') VỨT âm thầm khi ghi tệp gộp, hoặc làm "
+                       f"lệch thứ tự cột. Thêm vào HDR hoặc bỏ khỏi doc_json.")
+
+        # ---- (3) header của xuatCSV trong js/engine.js phải khớp HDR tuyệt đối ----
+        app_engine = than_ma_song(doc("js/engine.js"))
+        m = re.search(r"const rows = \[\[(.*?)\]\];", app_engine, re.S)
+        if not m:
+            self.them("G16d", "trích được header của xuatCSV trong js/engine.js", False,
+                      "không tìm thấy `const rows = [[...]]` trong js/engine.js — xuatCSV đã đổi "
+                      "cấu trúc, cổng G16 không còn canh được đường CSV. Sửa regex trong g16().")
+            return
+        # [\w]+ chứ KHÔNG phải [a-z_]+ : tên cột thoi_gian_ISO có chữ hoa (xem docstring).
+        cols = re.findall(r'"([\w]+)"', m.group(1))
+        khop = cols == hdr
+        self.them("G16d", "header xuatCSV (engine.js) KHỚP HDR (gop_csv.py) tuyệt đối, cả thứ tự",
+                  khop,
+                  f"cả hai khai {len(hdr)} cột, giống nhau từng cột và đúng thứ tự" if khop
+                  else f"LỆCH: engine.js {len(cols)} cột vs HDR {len(hdr)} cột · "
+                       f"chỉ engine.js có: {[c for c in cols if c not in hdr]} · "
+                       f"chỉ HDR có: {[c for c in hdr if c not in cols]} · "
+                       f"sai thứ tự thì tệp CSV của máy này và máy khác không gộp được theo tên cột")
+
     def tong_ket(self):
         print("\n" + "=" * 72)
         dat = sum(1 for k in self.kq if k["dat"])
@@ -1514,7 +1637,7 @@ def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
     NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13",
-            "G14", "G15"]
+            "G14", "G15", "G16"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.

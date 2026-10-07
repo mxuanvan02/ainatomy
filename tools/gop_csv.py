@@ -51,7 +51,13 @@ HDR = ["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco",
        # extrasaction="ignore"), nên cột nào không nằm ở đây sẽ bị VỨT ÂM THẦM khi ghi ra,
        # dù bên đọc (js/engine.js xuatCSV) đã có nó. Đặt cuối để tệp CSV 19 cột cũ vẫn đọc
        # đúng theo tên (doc_csv dùng dict(zip(head, row)), không phụ thuộc thứ tự).
-       "su_kien"]
+       "su_kien",
+       # Cột `phai_lap` (07/10): cờ cho biết phiên pre/post phải lặp lại câu cũ vì ngân hàng
+       # đã cạn sau khi loại trừ những câu học sinh đã gặp. Cần nó để LOẠI các phiên đó khỏi
+       # tiến trình pre/post trong bao_cao() — một phiên lặp câu không còn là phép đo sạch.
+       # App đã ghi cờ này từ commit trước nhưng CSV không có cột nào mang nó, nên lời hứa
+       # "gop_csv.py lọc được" chưa thành sự thật cho tới khi cột này tồn tại.
+       "phai_lap"]
 
 def doc_csv(path):
     with open(path, encoding="utf-8-sig", newline="") as f:
@@ -134,10 +140,51 @@ def doc_json(path):
                 "diem": "" if kq.get("diem") is None else kq.get("diem"),
                 "bat_oan": 1 if kq.get("batOan") else 0,
                 "bo_sot": 1 if kq.get("boSot") else 0,
+                # BẢY CỘT BỊ MẤT — thêm 07/10. Đây là lỗi nặng nhất tìm được ở công cụ gộp,
+                # và nó KHÔNG do đợt vá này tạo ra: nó có từ khi doc_json được viết.
+                #
+                # doc_json dựng dict BẰNG TAY theo từng trường, nên cột nào không được gõ ra
+                # thì mất hẳn. Trước khi sửa, hàm này chỉ xuất 14/21 cột của HDR; bảy cột thiếu
+                # là: loai_loi_that, tra_loi_loai, che_do, phien_tong, phien_dung,
+                # phien_bat_oan, phien_bo_sot. Hệ quả trên đường JSON (một trong HAI nút giáo
+                # viên bấm được — nút kia là CSV):
+                #   · che_do/phien_tong/phien_dung mất -> bao_cao() lọc `r.get("che_do") in
+                #     phien` nên MỌI phiên pre/post từ JSON bị bỏ qua. Khối "TIẾN TRÌNH
+                #     PRE/POST" trống trơn. Mà hiệu pre/post chính là con số dùng làm bằng
+                #     chứng tác động trong hồ sơ dự thi.
+                #   · loai_loi_that mất -> bao_cao() lấy key = None -> không khối "RECALL THEO
+                #     LOẠI LỖI" nào được đếm, cả 5 loại lỗi ra 0.
+                #   · Không một dòng cảnh báo: script vẫn in "✅ N sự kiện" và vẫn ghi đủ 3 tệp.
+                #
+                # Vì sao đường CSV không dính: xuatCSV (js/engine.js) ghi theo VỊ TRÍ cột từ một
+                # mảng header duy nhất, nên thêm cột là tự có. Chỉ doc_json mới liệt kê bằng tay.
+                #
+                # CÁCH CHỐNG TÁI DIỄN: cổng G16 trong tools/nghiem_thu.py đối chiếu tập cột của
+                # doc_json với HDR và với header của xuatCSV — thêm cột mới mà quên sửa doc_json
+                # thì cổng FAIL. Không dựa vào trí nhớ của người sửa sau.
+                #
+                # LƯU Ý HAI CẶP DỄ NHẦM: `bat_oan`/`bo_sot` đọc từ kq (của từng CÂU đấu trường),
+                # còn `phien_bat_oan`/`phien_bo_sot` đọc từ sk (tổng kết của cả PHIÊN) — đúng
+                # như xuatCSV đang làm. Trộn hai cặp này thì số liệu sai mà không có dấu hiệu.
+                "loai_loi_that": kq.get("loaiLoiThat") or "",
+                "tra_loi_loai": kq.get("traLoiLoai") or "",
+                "che_do": sk.get("cheDo", ""),
+                "phien_tong": "" if sk.get("tong") is None else sk.get("tong"),
+                "phien_dung": "" if sk.get("dung") is None else sk.get("dung"),
+                "phien_bat_oan": "" if sk.get("batOan") is None else sk.get("batOan"),
+                "phien_bo_sot": "" if sk.get("boSot") is None else sk.get("boSot"),
                 "thoi_gian_ISO": sk.get("t_iso") or _iso(sk.get("t")),
                 # Ba trạng thái của Mức 3: chot / doiChieu / boQua. Thiếu cột này thì báo
                 # cáo gộp không phân biệt được "dự đoán sai" với "không thèm dự đoán".
                 "su_kien": sk.get("suKien", ""),
+                # Cờ phiên pre/post phải lặp câu cũ vì ngân hàng đã cạn sau khi loại trừ.
+                # ĐƯỜNG JSON TỪNG MẤT CỜ NÀY (07/10): cột phai_lap được thêm vào HDR và vào
+                # xuatCSV, nhưng doc_json dựng dict THỦ CÔNG theo từng trường nên nó không tự
+                # có — nghĩa là GV xuất CSV thì lọc được phiên bẩn, còn GV xuất JSON thì không.
+                # Cùng một dữ liệu, hai kết quả khác nhau tuỳ nút bấm. Đây là cái giá của việc
+                # doc_json liệt kê trường bằng tay thay vì suy ra từ HDR; mỗi lần thêm cột phải
+                # nhớ sửa cả ba nơi: HDR, xuatCSV (engine.js), doc_json.
+                "phai_lap": "" if sk.get("phaiLap") is None else sk.get("phaiLap"),
             })
     return out
 
@@ -189,7 +236,9 @@ def bao_cao(rows):
     # recall theo loại lỗi (toàn lớp)
     theo_loai = {k: {"dung":0, "co_loi":0, "bat_oan":0} for k in LOAI_LOI}
     unesco = {k: {"dung":0, "tong":0} for k in UNESCO}
-    ca_nhan = defaultdict(lambda: {"tong":0, "dung":0, "lab":0, "lop":"", "pre":[], "post":[]})
+    # `dd_*`: số liệu Mức 3 theo từng học sinh — thêm 07/10. Xem chú thích ở vòng lặp dưới.
+    ca_nhan = defaultdict(lambda: {"tong":0, "dung":0, "lab":0, "lop":"", "pre":[], "post":[],
+                                   "dd_doi_chieu":0, "dd_khop":0, "dd_bo_qua":0})
     for r in rows:
         if r.get("loai_su_kien") == "dauTruong":
             u = r.get("unesco","")
@@ -212,18 +261,55 @@ def bao_cao(rows):
         if r.get("loai_su_kien") == "dauTruong":
             cn["tong"] += 1
             if str(r.get("diem")) == "1": cn["dung"] += 1
+        # MỨC 3 THEO TỪNG HỌC SINH — thêm 07/10.
+        #
+        # VÌ SAO: hai ngày trước tôi nối dây để app GHI được ba trạng thái của ô dự đoán
+        # (chot / doiChieu / boQua) và hiện chúng trong báo cáo trên màn hình. Nhưng
+        # baocao_ca_nhan.csv — tệp giáo viên thật sự dùng để ghi nhận xét cho 40 học sinh —
+        # chỉ có 6 cột về đấu trường và lab, KHÔNG có cột nào về dự đoán. Hệ quả: công sức nối
+        # dây đó chỉ sống trên từng máy một và biến mất ngay khi gộp 20 máy về một mối, đúng
+        # chỗ giáo viên cần nó nhất. Phản biện vòng 9 đã nêu đúng điểm này ("CSV của giáo viên
+        # không phân biệt được dự đoán sai với không thèm dự đoán") và tôi mới sửa được một nửa.
+        #
+        # Đếm `doiChieu` (đã đối chiếu với kết quả thật) chứ không đếm `chot`: `chot` chỉ là
+        # lúc học sinh bấm nút, chưa biết đúng sai. Và giữ `bo_qua` thành cột RIÊNG, không cộng
+        # gộp vào mẫu số — gộp thì một lớp toàn người bỏ qua trông như một lớp dự đoán sai hết,
+        # và giáo viên sẽ dạy sai chỗ. Hai con số trả lời hai câu hỏi khác nhau:
+        # "em có tham gia không" và "em hiểu tới đâu".
+        if r.get("loai_su_kien") == "duDoan":
+            sk_name = r.get("su_kien", "")
+            if sk_name == "doiChieu":
+                cn["dd_doi_chieu"] += 1
+                if str(r.get("diem")) == "1": cn["dd_khop"] += 1
+            elif sk_name == "boQua":
+                cn["dd_bo_qua"] += 1
     # phiên pre/post: mỗi sự kiện loai_su_kien == "phien" là một phiên hoàn tất
+    #
+    # LOẠI PHIÊN BỊ NHIỄM — thêm 07/10, và đây là chỗ biến một lời hứa thành sự thật.
+    # Commit trước tôi cho app loại những câu học sinh đã gặp khi bốc phiên post-test (vì đo
+    # được pre∩post trùng trung bình 1,54/12 câu, 64% số cặp có ít nhất một câu trùng — tức
+    # post-test đang đo trí nhớ chứ không đo tiến bộ). Khi ngân hàng cạn, app cho lặp lại và
+    # ghi cờ phaiLap, kèm lời hứa NGUYÊN VĂN trong comment: "ghi cờ phaiLap vào nhật ký để
+    # tools/gop_csv.py ... lọc bỏ được những phiên không còn là phép đo sạch".
+    # Nhưng hàm này vẫn cộng mọi phiên như nhau, nên lời hứa đó chưa thành sự thật cho tới
+    # dòng này. Một phiên lặp câu mà vẫn được tính vào "tiến trình pre/post" thì con số tiến
+    # bộ trong hồ sơ là con số sai — và sai theo hướng CÓ LỢI, nên sẽ không ai nghi ngờ.
+    # Đếm riêng số phiên bị loại để in ra, không âm thầm vứt dữ liệu.
     phien = {"pre": [], "post": []}
+    phien_loai = {"pre": 0, "post": 0}
     for r in rows:
         if r.get("loai_su_kien") == "phien" and r.get("che_do") in phien:
+            if str(r.get("phai_lap", "")).strip() in ("1", "1.0", "true", "True"):
+                phien_loai[r["che_do"]] += 1
+                continue
             try:
                 t = int(r.get("phien_tong") or 0); dg = int(r.get("phien_dung") or 0)
                 if t: phien[r["che_do"]].append(dg / t)
             except ValueError:
                 pass
-    return theo_loai, unesco, ca_nhan, phien
+    return theo_loai, unesco, ca_nhan, phien, phien_loai
 
-def ghi(rows, theo_loai, unesco, ca_nhan, phien, outdir):
+def ghi(rows, theo_loai, unesco, ca_nhan, phien, phien_loai, outdir):
     p1 = os.path.join(outdir, "nhatky_gop.csv")
     with open(p1, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=HDR, extrasaction="ignore"); w.writeheader()
@@ -239,11 +325,17 @@ def ghi(rows, theo_loai, unesco, ca_nhan, phien, outdir):
                         f"{rec:.3f}" if rec != "" else "", v["bat_oan"]])
         w.writerow([])
         w.writerow(["== TIẾN TRÌNH PRE/POST (trung bình tỉ lệ đúng của các phiên) =="])
-        w.writerow(["phien","so_phien","trung_binh_ti_le_dung"])
+        # Cột `phien_bi_loai` — thêm 07/10. Phiên bị loại là phiên mà ngân hàng đã cạn câu mới
+        # nên phải lặp lại câu học sinh đã gặp; phiên đó không còn là phép đo sạch và bị bỏ ra
+        # khỏi trung bình (xem bao_cao()). IN CON SỐ NÀY RA thay vì âm thầm vứt: giáo viên nhìn
+        # thấy "post: 18 phiên, bị loại 3" thì biết ngay 3 phiên nào đáng ngờ, còn nếu chỉ thấy
+        # "post: 18" thì không ai biết dữ liệu đã bị lọc.
+        w.writerow(["phien","so_phien_tinh","trung_binh_ti_le_dung","so_phien_bi_loai_vi_lap_cau"])
         for mode in ("pre", "post"):
             arr = phien.get(mode, [])
             avg = sum(arr) / len(arr) if arr else ""
-            w.writerow([mode, len(arr), f"{avg:.3f}" if avg != "" else ""])
+            w.writerow([mode, len(arr), f"{avg:.3f}" if avg != "" else "",
+                        phien_loai.get(mode, 0)])
         w.writerow([])
         w.writerow(["== BẢN ĐỒ 12 KHỐI NĂNG LỰC UNESCO × QĐ 2422 =="])
         w.writerow(["khoi","ten","dung","tong","ti_le"])
@@ -253,15 +345,34 @@ def ghi(rows, theo_loai, unesco, ca_nhan, phien, outdir):
     p3 = os.path.join(outdir, "baocao_ca_nhan.csv")
     with open(p3, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
-        w.writerow(["ma_hs","ma_lop","so_cau_dau_truong","so_cau_dung","ti_le_dung","so_nhiem_vu_lab"])
+        # BA CỘT DỰ ĐOÁN — thêm 07/10. Trước đây tệp này chỉ có 6 cột về đấu trường và lab,
+        # nên toàn bộ công sức nối dây Mức 3 (app ghi chot/doiChieu/boQua, engine tổng hợp,
+        # báo cáo trên màn hình hiện ra) BIẾN MẤT ngay khi gộp 20 máy về một mối — đúng chỗ
+        # giáo viên cần nó nhất để ghi nhận xét cho từng em.
+        #
+        # `du_doan_da_doi_chieu` và `du_doan_khop` là MỘT CẶP (tử/mẫu), không phải hai số rời:
+        # chỉ nhìn `khop` thì không biết em đó đối chiếu 1 lần hay 10 lần.
+        # `du_doan_bo_qua` để CỘT RIÊNG và cố ý KHÔNG cộng vào mẫu số của `khop`: cộng gộp thì
+        # một lớp toàn người bỏ qua sẽ trông như một lớp dự đoán sai hết, và giáo viên sẽ dạy
+        # sai chỗ. Hai con số trả lời hai câu hỏi khác nhau — "em có tham gia không" và
+        # "em hiểu tới đâu" — nên phải tách ra.
+        w.writerow(["ma_hs","ma_lop","so_cau_dau_truong","so_cau_dung","ti_le_dung",
+                    "so_nhiem_vu_lab","du_doan_da_doi_chieu","du_doan_khop",
+                    "ti_le_du_doan_khop","du_doan_bo_qua"])
         for ma, v in sorted(ca_nhan.items()):
             if not ma: continue
             t = (v["dung"]/v["tong"]) if v["tong"] else ""
-            w.writerow([ma, v["lop"], v["tong"], v["dung"], f"{t:.3f}" if t != "" else "", v["lab"]])
+            ddc = v["dd_doi_chieu"]
+            tk = (v["dd_khop"]/ddc) if ddc else ""
+            w.writerow([ma, v["lop"], v["tong"], v["dung"],
+                        f"{t:.3f}" if t != "" else "", v["lab"],
+                        ddc, v["dd_khop"], f"{tk:.3f}" if tk != "" else "",
+                        v["dd_bo_qua"]])
     return p1, p2, p3
 
 def main():
-    ap = argparse.ArgumentParser(description="Gộp nhật ký MỔ XẺ AI từ nhiều máy phòng lab.")
+    ap = argparse.ArgumentParser(
+        description="Gộp nhật ký SOI AI từ nhiều máy phòng lab thành một báo cáo lớp.")
     ap.add_argument("thu_muc", help="Thư mục chứa các file CSV/JSON xuất từ các máy")
     ap.add_argument("-o", "--outdir", default=".", help="Thư mục xuất báo cáo (mặc định: hiện tại)")
     args = ap.parse_args()
@@ -273,11 +384,25 @@ def main():
     if not rows:
         print("KHÔNG có dữ liệu nào. Kiểm tra thư mục có file CSV/JSON xuất từ app không.", file=sys.stderr)
         sys.exit(1)
-    theo_loai, unesco, ca_nhan, phien = bao_cao(rows)
+    # `bao_cao()` nay trả 5 giá trị (thêm phien_loai) và `ghi()` nhận 7 tham số — sửa 07/10.
+    # Kiểu trả về của một hàm đổi thì MỌI chỗ gọi phải đổi theo; nếu quên thì script chết ngay
+    # khi chạy thật (ValueError: too many values to unpack), và đây là công cụ giáo viên dùng
+    # sau tiết học — hỏng lúc đó thì không còn thời gian để sửa.
+    theo_loai, unesco, ca_nhan, phien, phien_loai = bao_cao(rows)
     os.makedirs(args.outdir, exist_ok=True)
-    p1, p2, p3 = ghi(rows, theo_loai, unesco, ca_nhan, phien, args.outdir)
+    p1, p2, p3 = ghi(rows, theo_loai, unesco, ca_nhan, phien, phien_loai, args.outdir)
     print(f"\n✅ {len(rows)} sự kiện từ {len(nguon)} máy, {len(ca_nhan)} mã HS.")
     print(f"   {p1}\n   {p2}\n   {p3}")
+    # Nói ra nếu có phiên bị loại khỏi tiến trình pre/post. Không in thì giáo viên chỉ thấy
+    # con số tiến bộ đẹp mà không biết nó đã bị lọc — và lọc vì lý do chính đáng (phiên đó lặp
+    # câu học sinh đã gặp nên không còn đo được tiến bộ) thì càng phải nói rõ, không giấu.
+    loai = sum(phien_loai.values())
+    if loai:
+        print(f"\n⚠ Đã LOẠI {loai} phiên khỏi tiến trình pre/post vì phải lặp lại câu học sinh "
+              f"đã gặp (ngân hàng hết câu mới): "
+              + ", ".join(f"{k}: {v}" for k, v in phien_loai.items() if v)
+              + ". Những phiên đó không đo được tiến bộ thật — xem cột "
+                "'so_phien_bi_loai_vi_lap_cau' trong baocao_lop.csv.")
 
 if __name__ == "__main__":
     main()

@@ -279,7 +279,7 @@
      * tức THEO TÊN CỘT nên chèn đâu cũng được, nhưng tệp CSV mà GV đã tải về trước đây có
      * header 19 cột; đặt cột mới ở cuối thì tệp cũ và tệp mới cùng được đọc đúng theo tên,
      * không phải lo thứ tự. */
-    const rows = [["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco","dap_an_dung","loai_loi_that","tra_loi","tra_loi_loai","diem","bat_oan","bo_sot","che_do","phien_tong","phien_dung","phien_bat_oan","phien_bo_sot","thoi_gian_ISO","su_kien"]];
+    const rows = [["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco","dap_an_dung","loai_loi_that","tra_loi","tra_loi_loai","diem","bat_oan","bo_sot","che_do","phien_tong","phien_dung","phien_bat_oan","phien_bo_sot","thoi_gian_ISO","su_kien","phai_lap"]];
     for(const k in d){
       if(maLop && d[k].maLop && d[k].maLop !== maLop) continue;
       for(const sk of d[k].suKien){
@@ -301,7 +301,19 @@
           sk.cheDo || "", sk.tong!==undefined?sk.tong:"", sk.dung!==undefined?sk.dung:"",
           sk.batOan!==undefined?sk.batOan:"", sk.boSot!==undefined?sk.boSot:"",
           new Date(sk.t).toISOString(),
-          sk.suKien || ""
+          sk.suKien || "",
+          /* CỘT `phai_lap` — thêm 07/10, và đây là lỗi do CHÍNH đợt vá trước tạo ra.
+           * Ở commit trước tôi cho dtBatDau() loại những câu học sinh đã gặp, và khi ngân
+           * hàng cạn thì ghi `phaiLap: 1` vào sự kiện phiên, kèm lời hứa NGUYÊN VĂN trong
+           * comment: "ghi cờ phaiLap vào nhật ký để tools/gop_csv.py và bất kỳ ai đọc số liệu
+           * sau này lọc bỏ được những phiên không còn là phép đo sạch".
+           * NHƯNG hàm xuất CSV này không có cột nào mang cờ đó — nên lời hứa không thành sự
+           * thật: công cụ gộp không có gì để lọc, và những phiên phải lặp câu vẫn bị trộn vào
+           * hiệu pre/post như thường. Writer ghi một trường mà reader không xuất thì trường đó
+           * không tồn tại với người dùng cuối — cùng lớp lỗi với việc engine.js từng không đọc
+           * sự kiện duDoan, và cùng lớp với G14c từng có một chiều là code chết.
+           * Đặt CUỐI bảng để tệp CSV cũ (19 và 20 cột) vẫn đọc đúng theo tên. */
+          sk.phaiLap !== undefined ? sk.phaiLap : ""
         ]);
       }
     }
