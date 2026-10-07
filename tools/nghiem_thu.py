@@ -1481,6 +1481,38 @@ console.log(JSON.stringify(out));
                             f"thiếu trong gop_csv.py (loại lỗi này mất khỏi baocao_lop.csv): "
                             f"{thieu[:4]}" if thieu else ""]))))
 
+        # G14d — BẢN SAO NHÃN THỨ TƯ: huong-dan-danh-gia.md (thêm 07/10).
+        #
+        # VÌ SAO: khi viết tài liệu hướng dẫn đánh giá, tôi đã CHÉP TAY năm tên loại lỗi vào đó
+        # ("Số liệu bịa đặt · Nguồn/văn bản không tồn tại · ...") để giáo viên dùng đúng chữ mà
+        # học sinh thấy trên màn hình. Thế là nhãn có bốn bản sao chứ không phải ba, và G14b/G14c
+        # chỉ canh ba. Đổi tên ở data/meta.js (như đã đổi "Xui" -> "Xúi") thì tài liệu lệch âm
+        # thầm: giáo viên viết nhận xét bằng một cái tên không còn xuất hiện trong app, và phụ
+        # huynh/hội đồng đối chiếu sẽ không nối được.
+        # Đúng lớp lỗi mà cả cổng G14 sinh ra để chặn, chỉ khác chỗ bản sao thứ tư nằm trong .md.
+        #
+        # Không đòi tài liệu phải liệt kê theo cấu trúc nào — chỉ đòi mỗi tên nhãn xuất hiện
+        # NGUYÊN VĂN ở đâu đó trong tệp. Tài liệu là văn xuôi cho người đọc, không phải dữ liệu;
+        # bắt nó theo khuôn thì sẽ sinh ra dương tính giả mỗi lần ai đó viết lại câu chữ.
+        duong_doc = "huong-dan-danh-gia.md"
+        p_doc = os.path.join(ROOT, duong_doc)
+        if not os.path.isfile(p_doc):
+            self.them("G14d", f"nhãn 5 loại lỗi khớp trong {duong_doc}", False,
+                      f"không thấy {duong_doc} trong repo — README §2 dẫn giáo viên tới tệp đó "
+                      f"để đọc số liệu, nên thiếu tệp là một lời hứa gãy (cùng lớp lỗi với "
+                      f"gop_csv.py và ho-so/ từng bị hứa mà không có)")
+        else:
+            doc_md = doc(duong_doc)
+            thieu_doc = [meta[k] for k in sorted(meta) if meta[k] not in doc_md]
+            self.them("G14d", f"nhãn 5 loại lỗi khớp trong {duong_doc}", not thieu_doc,
+                      f"cả {len(meta)} tên loại lỗi của data/meta.js đều xuất hiện nguyên văn "
+                      f"trong tài liệu hướng dẫn đánh giá" if not thieu_doc
+                      else f"{len(thieu_doc)} nhãn trong {duong_doc} LỆCH với data/meta.js: "
+                           f"{thieu_doc} — giáo viên sẽ viết nhận xét bằng cái tên không còn "
+                           f"hiện trên màn hình. Sửa tài liệu theo meta.js (hoặc ngược lại, "
+                           f"nhưng phải sửa CẢ BỐN nơi: meta.js, nhamay_text.js, gop_csv.py, "
+                           f"{duong_doc})")
+
     def g15(self):
         """G15 — MỌI TRẠM/VIEW ẨN BAN ĐẦU PHẢI CÓ LỆNH HIỆN LẠI (thêm 07/10).
 
@@ -1670,6 +1702,151 @@ console.log(JSON.stringify(out));
                        f"chỉ HDR có: {[c for c in hdr if c not in cols]} · "
                        f"sai thứ tự thì tệp CSV của máy này và máy khác không gộp được theo tên cột")
 
+    def g17(self):
+        """G17 — MỌI ĐƯỜNG DẪN MÀ TÀI LIỆU HỨA PHẢI TỒN TẠI THẬT (thêm 07/10).
+
+        LỖI THẬT, XẢY RA HAI LẦN, VÀ HAI LẦN ĐỀU DO REVIEWER ĐỘC LẬP PHÁT HIỆN CHỨ KHÔNG PHẢI
+        DO CỔNG:
+        · README §4 hướng dẫn giáo viên chạy `python3 tools/gop_csv.py`, nhưng tệp đó NẰM NGOÀI
+          repo (ở thư mục cha). Giáo viên trường khác clone về, làm đúng từng chữ, và nhận
+          "No such file or directory" ở đúng khâu cuối của tiết học. Gãy đúng mắt xích nhân rộng.
+        · README §5 hứa "mẫu văn bản BGH trong `ho-so/`", nhưng repo không có thư mục ho-so/ và
+          mẫu đó chưa từng được viết. Lời hứa xuất hiện ở HAI chỗ (README và proposal).
+        Cả hai đều là: TÀI LIỆU HỨA MỘT ĐƯỜNG DẪN, ĐƯỜNG DẪN KHÔNG CÓ. Không cổng nào bắt được,
+        vì mọi cổng khác đều đọc mã, không đọc lời hứa.
+
+        VÌ SAO NGUY HIỂM: đây là thứ giáo viên và giám khảo làm theo ĐẦU TIÊN. Một lệnh fail thì
+        mất lòng tin vào toàn bộ phần còn lại, dù phần đó đúng. Và nó chỉ lộ ra khi có người
+        thật ở máy khác làm theo — tức là lộ ra đúng lúc tệ nhất.
+
+        CÁCH KIỂM. Quét các đoạn trong dấu ` (backtick) của tài liệu, lấy token trông như đường
+        dẫn (có phần mở rộng tệp, hoặc có dấu / và không chứa khoảng trắng), rồi kiểm tồn tại.
+        Ba điểm phải nói rõ để không tạo dương tính giả:
+        · Chấp nhận cả THƯ MỤC CHA: README §6 cố ý dẫn `ke-hoach-12-tiet.md` và ghi rõ "(thư mục
+          cha)" — tệp đó nằm ngoài repo theo thiết kế, không phải lời hứa gãy.
+        · Bỏ qua `out/`: đó là đầu ra do cổng sinh lúc chạy và đã nằm trong .gitignore, nên trên
+          một bản clone sạch nó chưa tồn tại. Đòi nó tồn tại là đòi sai.
+        · Chỉ nhận token CÓ phần mở rộng hoặc có dấu /, nên `python3`, `--ghi`, `<thư_mục>`
+          (có dấu nhọn), `MX_MUC3.cham()` (có dấu ngoặc) đều không bị coi là đường dẫn.
+        """
+        import glob as _glob
+
+        tai_lieu = ["README.md", "huong-dan-danh-gia.md"]
+        tai_lieu += sorted(os.path.relpath(p, ROOT)
+                           for p in _glob.glob(os.path.join(ROOT, "ho-so", "*.md")))
+        # Đầu ra sinh lúc chạy, đã gitignore: trên bản clone sạch chưa có, đòi nó là đòi sai.
+        BO_QUA = ("out/",)
+        # Token trông như đường dẫn tệp. Cố ý hẹp: thà bỏ sót một cách viết lạ còn hơn bắt oan,
+        # vì mỗi lần báo oan là một lần người đọc mất tin vào các cảnh báo thật (bài học G11b).
+        RE_DDP = re.compile(
+            r"^[\w.\-/]+/[\w.\-/]+$"                       # có dấu / : path/to/file.ext
+            r"|^[\w\-]+\.(?:py|js|md|json|txt|html|css|csv|pdf|png|svg)$")  # hoặc tệp ở gốc
+
+        cha = os.path.dirname(ROOT)
+
+        # TÊN TỆP DO tools/gop_csv.py THẬT SỰ GHI RA — đọc từ mã, không gõ tay.
+        # VÌ SAO BẮT BUỘC CÓ: bản đầu của cổng này coi MỌI đường dẫn trong tài liệu là thứ
+        # phải tồn tại sẵn, và báo LỖI cho `nhatky_gop.csv`, `baocao_lop.csv`,
+        # `baocao_ca_nhan.csv` — 14 dương tính giả trong lần chạy đầu. Ba tên đó là ĐẦU RA mà
+        # lệnh gộp SINH RA; giáo viên không mở chúng trước khi chạy lệnh, họ chạy lệnh rồi mới
+        # có tệp. Đòi chúng tồn tại sẵn là đòi sai, và một cổng báo oan thì tệ gần bằng cổng mù:
+        # người đọc phải tự đi phân loại từng dòng, rồi dần dần bỏ qua cả cảnh báo thật
+        # (đúng bài học G11b đã ghi trong dự án này).
+        # NHƯNG không vì thế mà bỏ qua chúng. Đầu ra phải được kiểm theo CÁCH KHÁC và CHẶT HƠN:
+        # xem G17c — tên tài liệu hứa phải do mã thật sự ghi, và ngược lại.
+        py_gop = doc("tools/gop_csv.py")
+        sinh_ra = set(re.findall(r'os\.path\.join\(outdir,\s*"([^"]+)"\)', py_gop))
+
+        # TÊN TỆP APP TỰ CHO TẢI VỀ là TÊN ĐỘNG, không phải hằng số: js/app.js:711 ghép
+        # `soiai_nhatky_${maLop||'lop'}_${Date.now()}.csv`. Nếu tài liệu viết một ví dụ tên tệp
+        # như vậy thì không được coi là "hứa một tệp phải có sẵn trên đĩa". Lấy phần chữ cố định
+        # đứng trước ${...} ngay trong mã JS — đọc từ mã chứ không gõ tay, để app đổi tên thì
+        # cổng tự đổi theo (gõ tay là tạo bản sao thứ năm của một cái tên, đúng lỗi G14 canh).
+        js_nguon = "\n".join(doc(p) for p in ("js/app.js", "js/engine.js")
+                             if os.path.isfile(os.path.join(ROOT, p)))
+        tien_to_app = set(re.findall(r"`([A-Za-z0-9_\-]+)\$\{[^`]*\.csv`", js_nguon))
+
+        loi, da_kiem, tai_lieu_thieu = [], 0, []
+        # MỌI tên .csv tài liệu nhắc, bất kể mã có ghi hay không. Xem chú thích ở chỗ thu thập.
+        csv_doc_nhac = set()
+        for f in tai_lieu:
+            if not os.path.isfile(os.path.join(ROOT, f)):
+                tai_lieu_thieu.append(f)
+                continue
+            for m in re.finditer(r"`([^`\n]+)`", doc(f)):
+                for tok in re.split(r"\s+", m.group(1).strip()):
+                    tok = tok.strip(".,;:")
+                    # Bỏ qua: chuỗi rỗng, tuỳ chọn dòng lệnh (`--ghi`), placeholder có dấu nhọn
+                    # (`<thư_mục>`), lời gọi hàm (`MX_MUC3.cham()`), và đầu ra đã gitignore (`out/`).
+                    # `str.startswith` nhận được cả tuple nên một lời gọi là đủ cho BO_QUA.
+                    if (not tok or tok.startswith("-") or tok.startswith("<")
+                            or tok.startswith("(") or tok.startswith(BO_QUA)):
+                        continue
+                    if not RE_DDP.match(tok):
+                        continue
+                    ten_tron = tok.rsplit("/", 1)[-1]
+                    # Thu MỌI tên .csv, kể cả tên mã KHÔNG ghi. Đây chính là chỗ bản cũ làm
+                    # chết chiều 1 của G17c: bản cũ chỉ thêm token khi nó ĐÃ nằm trong sinh_ra,
+                    # nên tập thu được luôn là tập con của sinh_ra, và phép
+                    # `dau_ra_doc_nhac - sinh_ra` không thể khác rỗng — một nhánh kiểm tra không
+                    # bao giờ có khả năng fail, tức code chết (Luật A, skill agentic-efficiency-loop).
+                    # Tôi còn viết chú thích biện minh cho nó ("luôn rỗng nhưng vẫn giữ"), là cách
+                    # tệ nhất: nó làm nhánh chết trông như đã được cân nhắc.
+                    if ten_tron.endswith(".csv"):
+                        csv_doc_nhac.add(ten_tron)
+                    # Đầu ra của lệnh gộp, hoặc tên app tự cho tải về, thì không đòi tồn tại sẵn
+                    # trên đĩa; G17c kiểm chúng theo cách khác và chặt hơn.
+                    if ten_tron in sinh_ra or any(ten_tron.startswith(p) for p in tien_to_app):
+                        continue
+                    da_kiem += 1
+                    if (not os.path.exists(os.path.join(ROOT, tok))
+                            and not os.path.exists(os.path.join(cha, tok))):
+                        loi.append(f"{f} -> `{tok}`")
+
+        self.them("G17a", "mọi tệp tài liệu được cổng này quét đều tồn tại",
+                  not tai_lieu_thieu,
+                  f"{len(tai_lieu) - len(tai_lieu_thieu)}/{len(tai_lieu)} tệp tài liệu có thật"
+                  if not tai_lieu_thieu
+                  else f"thiếu chính tệp tài liệu: {tai_lieu_thieu}")
+
+        self.them("G17b", "mọi đường dẫn ĐẦU VÀO mà tài liệu hứa đều tồn tại thật",
+                  not loi,
+                  f"{da_kiem} đường dẫn đầu vào được nhắc trong tài liệu, tất cả đều có thật "
+                  f"(repo hoặc thư mục cha)" if not loi
+                  else f"{len(loi)} đường dẫn ĐƯỢC HỨA MÀ KHÔNG CÓ: {loi} — giáo viên làm theo sẽ "
+                       f"gặp 'No such file or directory'. Hoặc đưa tệp vào repo (`git add`), hoặc "
+                       f"sửa tài liệu cho hết hứa. Đây đúng là lỗi đã xảy ra với tools/gop_csv.py "
+                       f"và với lời hứa 'mẫu trong ho-so/'.")
+
+        # G17c — ĐẦU RA phải khớp hai chiều giữa tài liệu và mã.
+        # Kiểm hai chiều vì mỗi chiều bắt một lỗi khác nhau, và theo Luật A (mục 6 skill
+        # agentic-efficiency-loop) một cổng tuyên bố "khớp nhau" mà chỉ kiểm một chiều thì chiều
+        # còn lại là code chết — cổng vẫn in ĐẠT và không ai biết.
+        #   chiều 1: tài liệu hứa một tệp đầu ra mà mã KHÔNG ghi -> giáo viên chạy lệnh xong
+        #           không thấy tệp đó, tưởng mình làm sai.
+        #   chiều 2: mã ghi ra một tệp mà tài liệu KHÔNG nhắc -> giáo viên không biết tệp đó để
+        #           làm gì, và baocao_ca_nhan.csv (thứ dùng để viết nhận xét) có thể bị bỏ qua.
+        # CẢ HAI CHIỀU ĐỀU ĐÃ ĐƯỢC CA PHÁ KIỂM CHỨNG (mutation ca 2 và ca 3). Chiều 1 từng chết
+        # trong bản đầu và chỉ lộ ra khi ca phá 2 được dựng; xem chú thích ở chỗ thu thập.
+        # Tên app tự cho tải về (tien_to_app) được loại khỏi chiều 1 vì đó là tên động ghép lúc
+        # chạy, không có tệp nào tên như vậy tồn tại sẵn để mà đòi.
+        loi_hua = sorted(csv_doc_nhac - sinh_ra
+                         - {t for t in csv_doc_nhac
+                            if any(t.startswith(p) for p in tien_to_app)})
+        thieu_doc = sorted(sinh_ra - csv_doc_nhac)
+        self.them("G17c", "tên tệp đầu ra khớp hai chiều giữa tài liệu và tools/gop_csv.py",
+                  not loi_hua and not thieu_doc,
+                  f"{len(sinh_ra)} tệp đầu ra ({sorted(sinh_ra)}) đều được tài liệu nói tới "
+                  f"(tài liệu nhắc {len(csv_doc_nhac)} tên .csv), và tài liệu không hứa tệp nào "
+                  f"mà mã không ghi"
+                  if not loi_hua and not thieu_doc
+                  else ("; ".join(filter(None, [
+                            f"tài liệu hứa nhưng tools/gop_csv.py KHÔNG ghi: {loi_hua} — giáo viên "
+                            f"chạy lệnh xong sẽ không thấy tệp đó và tưởng mình làm sai"
+                            if loi_hua else "",
+                            f"tools/gop_csv.py ghi nhưng tài liệu KHÔNG nhắc: {thieu_doc} — "
+                            f"giáo viên sẽ không biết tệp đó dùng để làm gì" if thieu_doc else ""]))))
+
     def tong_ket(self):
         print("\n" + "=" * 72)
         dat = sum(1 for k in self.kq if k["dat"])
@@ -1726,7 +1903,7 @@ def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
     NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13",
-            "G14", "G15", "G16"]
+            "G14", "G15", "G16", "G17"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.

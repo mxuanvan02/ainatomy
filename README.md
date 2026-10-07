@@ -49,20 +49,67 @@ Yêu cầu: trình duyệt bất kỳ (Chrome 60+, Firefox 60+, Edge). Máy cấ
 
 ## 2. Tổ chức 1 tiết học (45 phút)
 
-1. **Phát mã**: GV phát mỗi HS một mã ẩn danh (A001, A002... — KHÔNG dùng họ tên) + mã lớp (10A1).
-2. **Vào app**: HS mở `index.html`, nhập mã → vào Trang chủ.
-3. **Chọn hoạt động**:
-   - **Tầng 1 — Xưởng huấn luyện**: tạo dữ liệu → huấn luyện mô hình nhận diện mũ bảo hiểm → phát hiện mô hình "giỏi ban ngày, dốt ban đêm" → sửa bằng dữ liệu cân bằng → làm 4 nhiệm vụ phân tích. *(~20 phút — dạy khái niệm thiên kiến dữ liệu, mạch C+D)*
-   - **Tầng 2 — Đấu trường bắt lỗi AI**: phiên 12 câu (8 câu có lỗi thuộc 5 loại + 4 câu đúng mồi nhử). HS đọc câu trả lời của "trợ lý AI", bấm vào câu nghi sai, phán quyết có lỗi/không + chọn loại lỗi. Hệ chấm ngay và giải thích. *(~15 phút)*
-   - **Tầng 3 — Bản đồ năng lực**: HS xem recall theo 5 loại lỗi + tiến trình theo 12 khối năng lực + nhận xét tự động. *(~5 phút)*
-4. **Pre/post**: đầu chuyên đề bấm **Pre-test (đầu vào)**, cuối chuyên đề bấm **Post-test (đầu ra)** (cùng hệ đo, phiên khác nhau — đo tiến bộ).
-5. **Thu dữ liệu**: cuối tiết, trên mỗi máy bấm **Báo cáo → Xuất CSV nhật ký lớp (minh chứng)**, GV gom file vào USB (mỗi máy 1 file).
+**ĐỌC MỤC NÀY TRƯỚC: ba Tầng là MENU CHỌN MỘT, không phải ba việc làm liên tiếp trong một tiết.**
 
-> Nhãn nút ở bước 4–5 chép NGUYÊN VĂN từ `index.html:211-212` và `js/app.js:494`.
-> Trước đây README ghi "Pre-test" / "Post-test" / "Xuất CSV" (rút gọn) nên giáo viên
-> tìm không ra nút trên màn hình. Đã bỏ luôn 7 emoji ở mục này vì MASTER.md cấm emoji
-> làm biểu tượng — README là thứ giám khảo và đồng nghiệp đọc ĐẦU TIÊN trên GitHub,
-> nên nó phải theo cùng chuẩn với giao diện.
+Bản cũ của README kê Tầng 1 ~20 phút + Tầng 2 ~15 phút + Tầng 3 ~5 phút = **40 phút thực hành**.
+Nhưng `ke-hoach-12-tiet.md` (bảng "CẤU TRÚC MỘT TIẾT 45 PHÚT") chỉ dành phút **13–33 = 20 phút**
+cho học sinh thực hành; 25 phút còn lại là khởi động, hình thành khái niệm, thảo luận và chốt.
+Tức README hứa **gấp đôi** thời gian có thật, và giáo viên làm theo sẽ vỡ tiết ngay lần đầu.
+Đã sửa thành menu theo tiết ở dưới — con số lấy từ chính bảng cấu trúc tiết, không ước lượng.
+
+### Khung thời gian thật của một tiết (theo `ke-hoach-12-tiet.md`)
+
+| Phút | Việc | App dùng thế nào |
+|---|---|---|
+| 0–5 | Khởi động: một tình huống thật | Không dùng app (giáo viên dẫn dắt) |
+| 5–13 | Hình thành khái niệm của tiết | Chiếu app lên cho cả lớp xem, chưa cho làm |
+| **13–33** | **Học sinh thực hành (20 phút)** | **Mỗi em một mã, làm MỘT hoạt động chọn bên dưới** |
+| 33–41 | Thảo luận: dấu hiệu nào giúp em nhận ra | Học sinh nói, giáo viên ghi bảng |
+| 41–45 | Chốt và nhận xét tiến trình | Chiếu **Báo cáo lớp** (Tầng 3), không đọc kết quả từng em |
+
+### Chọn MỘT hoạt động cho 20 phút thực hành
+
+- **Tầng 1 — Xưởng huấn luyện** *(hết ~18–20 phút nếu làm trọn; nên cắt còn tạo dữ liệu →
+  huấn luyện → thấy "giỏi ban ngày, dốt ban đêm", bỏ phần cân bằng dữ liệu sang tiết sau)*.
+  Dạy thiên kiến dữ liệu, mạch C+D.
+- **Tầng 2 — Đấu trường bắt lỗi AI**: phiên 12 câu (8 câu có lỗi thuộc 5 loại + 4 câu đúng mồi
+  nhử), ~1,5 phút/câu nếu đọc kỹ → **~18 phút**. Vừa khít 20 phút, không nên ghép thêm gì.
+- **Nhà máy AI (7 trạm)**: mỗi trạm 5–8 phút → **một tiết chỉ đi 2–3 trạm**, không đi hết.
+- **Phòng 3D / Ống dẫn AI**: ~10 phút mỗi cái, hợp với tiết có phần thực hành ngắn.
+
+Tầng 3 (Bản đồ năng lực) **không phải một hoạt động 5 phút của học sinh** — nó là màn hình giáo
+viên chiếu ở phút 41–45 để chốt tiết.
+
+### Thu dữ liệu: việc này tốn thời gian hơn bạn nghĩ, hãy xếp lịch cho nó
+
+Đo bằng thao tác thật: mở Tầng 3 → bấm **Xuất CSV nhật ký lớp (minh chứng)** → tệp rơi vào
+thư mục Downloads → giáo viên phải tìm tệp rồi chép sang USB. Tối thiểu 30–60 giây/máy nếu
+suôn sẻ; với 20 máy là **10–20 phút**, trong khi phút 41–45 chỉ có **4 phút**. Bản cũ của
+README xếp việc thu vào "cuối tiết" mà không tính phút nào cho nó — đó là lý do giáo viên sẽ
+phải thu vội và mất dữ liệu 5 phút cuối của học sinh.
+
+**Cách làm đã kiểm:** cho học sinh **tự bấm Xuất CSV ngay khi làm xong hoạt động** (khoảng phút
+30–33, khi các em xong sớm lệch nhau), tệp tự tải về máy; giáo viên chỉ đi **một vòng thu USB**
+trong lúc lớp thảo luận (phút 33–41). Đừng dồn tất cả về phút 45.
+
+Hai rủi ro phải biết trước:
+- Máy phòng lab thường **đóng băng ổ** (Deep Freeze) hoặc reset profile giữa hai ca → tệp trong
+  Downloads và cả localStorage **có thể biến mất**. Thu trong tiết, đừng để sang tiết sau.
+- Nút **Xóa dữ liệu trên máy này** nằm trong Tầng 3 mà học sinh vào được. Nó đã được phòng vệ
+  (tự tải bản JSON dự phòng về máy trước khi hỏi, và phải gõ chữ XÓA thay vì bấm một lần),
+  nhưng giáo viên vẫn nên dặn lớp không bấm nút đỏ.
+
+### Pre/post
+
+Đầu chuyên đề bấm **Pre-test (đầu vào)**, cuối chuyên đề bấm **Post-test (đầu ra)**. Hai phiên
+dùng cùng hệ đo nhưng **bộ câu khác nhau** — hệ tự loại những câu học sinh đó đã gặp, để
+post-test đo tiến bộ chứ không đo trí nhớ. Số liệu chi tiết và giới hạn của phép đo: xem
+`huong-dan-danh-gia.md` (cùng thư mục).
+
+> Nhãn nút chép NGUYÊN VĂN từ giao diện. Trước đây README ghi "Pre-test" / "Post-test" /
+> "Xuất CSV" (rút gọn) nên giáo viên tìm không ra nút trên màn hình. Đã bỏ luôn 7 emoji ở mục
+> này vì MASTER.md cấm emoji làm biểu tượng — README là thứ giám khảo và đồng nghiệp đọc ĐẦU
+> TIÊN trên GitHub, nên nó phải theo cùng chuẩn với giao diện.
 
 ## 3. Không có phòng máy? (phương án in — đúng tinh thần CV 5588 "phiên bản in ấn")
 
