@@ -33,6 +33,61 @@
   const M3 = () => window.MX_MUC3;
   const m3 = { bt01:null, bt03:null, bt06:null, bt07:null, bt08:null, bt10:null, bt12:null };
 
+  /* CỔNG ÉP DỰ ĐOÁN — thêm 07/10.
+
+     VÌ SAO CÓ HÀM NÀY. Phản biện vòng 9 kết luận: "Giá trị của sản phẩm phụ thuộc vào việc
+     nó ÉP được học sinh đi qua vòng dự đoán – đối chiếu, mà hiện tại nó không ép." Đã tự kiểm
+     lại bằng thao tác thật trên app: bỏ qua hẳn ô dự đoán BT-03 rồi bấm "Huấn luyện" thì mọi
+     thứ vẫn chạy bình thường và nhật ký không ghi gì. Vòng dự đoán – đối chiếu là cơ chế sư
+     phạm chủ lực của cả 13 bài; nếu học sinh bấm thẳng qua được thì phần còn lại chỉ là một
+     mô phỏng có nút bấm — đúng câu "thoái hoá về gần bằng slide có nút bấm" mà phản biện nêu.
+
+     VÌ SAO KHÔNG KHOÁ CỨNG NÚT (nut.disabled = true).
+     (1) Đáp án của BT-01 và BT-07 chỉ tồn tại CÓ ĐIỀU KIỆN, và điều kiện do CHÍNH học sinh
+         tạo ra: traLoiBT01() trả null khi bộ ảnh không có cặp cùng loại khác ánh sáng (học
+         sinh chỉnh slider số ảnh / tỉ lệ ngày), traLoiBT07() trả null khi câu hỏi nằm TRONG
+         ngữ liệu (học sinh tự gõ câu hỏi). Khoá theo "đã có đáp án chưa" thì có ca học sinh
+         bị kẹt vĩnh viễn mà không hiểu vì sao — tệ hơn hiện trạng.
+     (2) Ô dự đoán có thể chưa được dựng (thiếu host trong HTML, thiếu module). Cổng phải im
+         lặng nhường đường trong ca đó; nếu không thì một lỗi nạp script biến thành "nút chết"
+         và cả bài học dừng lại.
+
+     CÁCH LÀM: CHẶN HÀNH ĐỘNG rồi hỏi. Học sinh chọn một trong hai và CẢ HAI đều đi tiếp được,
+     nên không có đường nào dẫn tới ngõ cụt:
+       · quay lại điền dự đoán -> cuộn tới ô và đặt con trỏ vào ô nhập
+       · bỏ qua CÓ CHỦ ĐÍCH    -> ghi sự kiện boQua vào nhật ký lớp, rồi mới chạy
+     Việc GHI boQua quan trọng ngang việc chặn: bỏ qua mà không ghi thì báo cáo lớp không phân
+     biệt được "không dự đoán" với "dự đoán sai", và con số tham gia trông đẹp hơn thực tế.
+     Đây cũng là lý do không khoá cứng tuyệt đối — khoá cứng thì boQua không bao giờ xảy ra,
+     tức nhánh ghi boQua vừa nối dây ở commit trước thành CODE CHẾT (lớp lỗi G11c/G14c).
+
+     `daChot` phải truyền vào được vì BT-02 dựng ô trực tiếp từ MX_DUDOAN (biến ddT1), không
+     đi qua BANG của muc3.js, nên trạng thái chốt của nó nằm ở ddT1.daChot() chứ không trong
+     DA_CHOT. Còn việc ghi boQua thì vẫn mượn M3().boQuaCoY(ma) được cho mọi mã bài, vì hàm đó
+     chỉ cần mã để ghi nhật ký — engine.js đếm boQua theo `loai:"duDoan"` chứ không theo module. */
+  function epDuDoan(ma, hostId, chay, daChot){
+    const host = $(hostId);
+    const M = M3();
+    const daChotRoi = daChot ? !!daChot() : (M ? M.daChotRoi(ma) : true);
+    const daBoQuaRoi = M ? M.daBoQua(ma) : true;
+    // ô chưa dựng, hoặc đã chốt, hoặc đã chủ động bỏ qua -> chạy ngay, không hỏi lại lần hai
+    if(!host || !host.children.length || daChotRoi || daBoQuaRoi){ chay(); return; }
+    const ok = confirm(
+        "Em chưa chốt dự đoán cho bài này.\n\n"
+      + "Dự đoán TRƯỚC khi thấy kết quả là phần quan trọng nhất của bài: kết quả thật hiện ra\n"
+      + "sẽ chỉ cho em thấy mình đã hiểu sai ở chỗ nào.\n\n"
+      + "· Bấm OK = BỎ QUA dự đoán (việc này được ghi vào nhật ký lớp).\n"
+      + "· Bấm Huỷ = quay lại điền dự đoán.");
+    if(ok){
+      if(M) M.boQuaCoY(ma);
+      chay();
+      return;
+    }
+    host.scrollIntoView({ behavior:"smooth", block:"center" });
+    const o = host.querySelector("input[type=range], textarea, .chip");
+    if(o) o.focus();
+  }
+
   /* BT-01 — đáp án ĐO ĐƯỢC: so bốn đặc trưng của hai ảnh CÙNG nhãn, CÙNG loại đối tượng,
    * chỉ khác điều kiện sáng, lấy từ CHÍNH bộ dữ liệu Trạm 0 đang hiển thị
    * (MX_NHAMAY01.dsT0). Cùng nhãn + cùng kind để cô lập DUY NHẤT biến ánh sáng; nếu để
@@ -1251,6 +1306,38 @@
     const N = window.MX_NHAMAY_TEXT;
     if(!N){ $("nm-tram5").style.display = "none"; return; }
 
+    /* HIỆN LẠI TRẠM 5 — thêm 07/10. LỖI NẶNG NHẤT tìm được trong cả đợt phản biện này.
+
+       nmMoTram() ẩn cả ba trạm (`["nm-tram0","nm-tram1","nm-tram5"].forEach(el => el.style.display
+       = "none")`) rồi gọi hàm khởi động của trạm được chọn; hàm đó PHẢI hiện lại trạm của mình.
+       nmKhoiDongTram0() có `$("nm-tram0").style.display = ""`, nmKhoiDongTram1() có dòng tương
+       ứng — còn hàm này CHỈ CÓ DÒNG ẨN (ở nhánh thiếu module), không có dòng nào hiện. Mà
+       index.html:563 khai `<div id="nm-tram5" style="display:none">`, nên trạm bị ẩn hai lần và
+       không bao giờ được bật lại.
+
+       Lỗi này có từ commit f0936c8 (04/10) — CHÍNH LÀ COMMIT TẠO RA Trạm 5. Tức là trạm này
+       CHƯA TỪNG HIỂN THỊ một lần nào, với bất kỳ ai. Đo lại trên trình duyệt: bấm nút TRẠM 5
+       thì nm-tram5 vẫn display:none, 0×0px; #nm-prompt, #nm-sinh, #nm-muc3-bt07, #nm-muc3-bt08
+       đều offsetParent === null.
+
+       HẬU QUẢ, và vì sao nó nặng hơn một cái div bị ẩn:
+       · Trạm 5 phủ BỐN yêu cầu cần đạt: 10.C2.MR2 · 10.C3.1 · 10.C3.2 · 10.B2.MR1. Đây là trạm
+         duy nhất cho học sinh DÙNG AI THẬT (gõ câu hỏi, thấy máy bịa), và 10.C2.MR2 trước đây
+         từng bị xếp NGOÀI PHẠM VI vì "cần AI thật + mạng" — chính tệp nhamay_text.js được viết
+         ra để phủ nó. Trạm ẩn thì bốn YCCĐ đó không được dạy, dù hồ sơ vẫn khai là có.
+       · Hai ô dự đoán BT-07 và BT-08 nằm trong trạm này → 2/13 ô của cơ chế Mức 3 không tới được.
+       · tools/tinh_do_phu.py vẫn báo 22/22 PHỦ: nó đếm YCCĐ xuất hiện trong MÃ, không kiểm mã
+         đó HỌC SINH CÓ TỚI ĐƯỢC KHÔNG. Đây là bằng chứng phủ GIẢ — đúng lớp lỗi mà dự án này
+         tự nhận là đang chống. Cổng G15 (mới) chặn cả lớp lỗi đó.
+       · Vì sao không ai phát hiện: không có cổng nào kiểm "trạm có hiện được không" (grep
+         nm-tram5 trong tools/nghiem_thu.py = 0 kết quả), và cổng G11e chỉ kiểm host id CÓ trong
+         index.html — id có thật, chỉ là cha của nó bị ẩn. Một phép kiểm tĩnh kiểu "có tồn tại
+         không" không bao giờ bắt được lỗi "tồn tại mà không tới được".
+       · Vì sao tác giả tự thử vẫn không thấy: `.click()` bằng JS hoạt động trên phần tử ẩn, nên
+         mọi test tự động (kể cả của tôi ở lượt trước) đều "đạt". Học sinh thật thì không bấm
+         được một cái nút không nhìn thấy. */
+    $("nm-tram5").style.display = "";
+
     // thông tin máy: minh bạch theo yêu cầu của Khung (nói rõ AI làm gì, chạy ở đâu)
     const info = N.thongTin();
     $("nm-thong-tin-may").innerHTML =
@@ -1443,10 +1530,16 @@
     $("t0-so").oninput   = e=>{ $("t0-so-num").textContent = e.target.value; };
     /* --- Trạm 1: DÁN NHÃN --- */
     $("t1-tao").onclick   = ()=> nmKhoiDongTram1(true);
-    $("t1-cham").onclick  = ()=> nmT1Cham();
+    /* BT-02: ô dự đoán dựng trực tiếp từ MX_DUDOAN (biến ddT1) chứ không qua BANG của
+     * muc3.js, nên phải truyền hàm đọc trạng thái chốt của chính nó — M3().daChotRoi("BT-02")
+     * sẽ luôn false vì mã đó không nằm trong DA_CHOT. ddT1 có thể null (chưa tạo bộ ảnh),
+     * nên đọc qua vòng ?. và coi null là "chưa chốt". */
+    $("t1-cham").onclick  = ()=> epDuDoan("BT-02", "t1-duDoan", nmT1Cham,
+                                          ()=> ddT1 ? ddT1.daChot() : false);
     $("t1-lamlai").onclick= ()=> nmKhoiDongTram1(true);
     /* --- Trạm 5: ỨNG DỤNG --- */
-    $("nm-sinh").onclick  = ()=> nmSinh();
+    /* BT-07: nút này sinh ra câu trả lời mà dự đoán của học sinh sẽ được đối chiếu với nó. */
+    $("nm-sinh").onclick  = ()=> epDuDoan("BT-07", "nm-muc3-bt07", nmSinh);
     $("nm-xoa5").onclick  = ()=>{ nmItem = null; $("nm-prompt").value = "";
       $("nm-dau-ra").style.display = "none"; $("nm-rubric").innerHTML = "";
       $("nm-kq5").innerHTML = ""; $("nm-van-ban").textContent = ""; };
@@ -1457,8 +1550,11 @@
       $("pipe3d-chitiet").innerHTML=""; $("pipe3d-note").innerHTML="Đã đặt lại. Bấm <b>Làm hỏng một trạm</b> để chơi lượt mới."; pipe3dHud(); };
     $("btn-gioithieu").onclick = ()=>hien("v-gioithieu");
     $("btn-tao-dulieu").onclick = labTaoDuLieu;
-    $("btn-huanluyen").onclick = labHuanLuyen;
-    $("btn-sosanh").onclick = labSoSanh;
+    /* CỔNG ÉP DỰ ĐOÁN (07/10): nút này chạy ra con số mà BT-03 dùng làm đáp án, nên nếu cho
+     * bấm trước khi học sinh chốt dự đoán thì ô dự đoán thành trang trí — học sinh thấy kết quả
+     * rồi mới "dự đoán" là dự đoán ngược. Bọc chứ không khoá cứng nút: xem epDuDoan(). */
+    $("btn-huanluyen").onclick = ()=> epDuDoan("BT-03", "lab-muc3-bt03", labHuanLuyen);
+    $("btn-sosanh").onclick    = ()=> epDuDoan("BT-06", "lab-muc3-bt06", labSoSanh);
     $("btn-lab-cauhoi").onclick = labCauHoi;
     $("dt-nop").onclick = dtNop;
     $("dt-tiep").onclick = dtTiep;

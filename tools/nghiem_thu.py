@@ -1396,6 +1396,68 @@ console.log(JSON.stringify(out));
                             f"thiếu trong gop_csv.py (loại lỗi này mất khỏi baocao_lop.csv): "
                             f"{thieu[:4]}" if thieu else ""]))))
 
+    def g15(self):
+        """G15 — MỌI TRẠM/VIEW ẨN BAN ĐẦU PHẢI CÓ LỆNH HIỆN LẠI (thêm 07/10).
+
+        LỖI THẬT MÀ CỔNG NÀY SINH RA ĐỂ CHẶN. index.html khai ba trạm nhà máy với
+        `style="display:none"`. nmMoTram() ẩn cả ba rồi gọi hàm khởi động của trạm được chọn;
+        hàm đó PHẢI hiện lại trạm của mình. nmKhoiDongTram0() và nmKhoiDongTram1() có dòng
+        `$("nm-tramN").style.display = ""` — còn nmKhoiDongTram5() KHÔNG CÓ, chỉ có dòng ẩn ở
+        nhánh thiếu module. Kết quả: TRẠM 5 — ỨNG DỤNG vô hình vĩnh viễn kể từ commit f0936c8
+        (04/10), tức từ chính commit tạo ra nó. Trạm đó phủ bốn YCCĐ (10.C2.MR2 · 10.C3.1 ·
+        10.C3.2 · 10.B2.MR1) và chứa hai ô dự đoán BT-07/BT-08.
+
+        VÌ SAO SUỐT BẤY LÂU KHÔNG AI BIẾT:
+        · Không cổng nào kiểm tính HIỂN THỊ. G11e chỉ kiểm host id CÓ trong index.html — và id
+          `nm-muc3-bt07` có thật, chỉ là tổ tiên của nó bị ẩn. Phép kiểm "có tồn tại không"
+          không bao giờ bắt được lỗi "tồn tại mà không tới được".
+        · tools/tinh_do_phu.py vẫn báo 22/22 PHỦ vì nó đếm YCCĐ xuất hiện trong MÃ, không kiểm
+          mã đó học sinh có tới được không → BẰNG CHỨNG PHỦ GIẢ.
+        · `.click()` bằng JS chạy được trên phần tử ẩn, nên mọi test tự động đều "đạt". Chỉ có
+          người thật nhìn màn hình mới thấy trạm trống.
+
+        CÁCH KIỂM (cố ý hẹp để không có dương tính giả): đọc DANH SÁCH ID BỊ ẨN từ chính mảng
+        trong nmMoTram() — không gõ tay. Với mỗi id: (a) phải có trong index.html, (b) phải có
+        lệnh hiện lại `$("id").style.display = ""` ở đâu đó trong js/app.js. Thêm trạm mới vào
+        mảng đó thì cổng tự kiểm luôn, không cần sửa cổng.
+        """
+        app_js = than_ma_song(doc("js/app.js"))
+        idx = doc("index.html")
+
+        # Danh sách id mà nmMoTram() ẩn đi trước khi mở trạm. Nếu không trích được thì cổng
+        # đang hỏng — phải báo LỖI, tuyệt đối không im lặng in ĐẠT (bài học từ G14a).
+        m = re.search(r'\[\s*((?:"nm-tram\d+"\s*,?\s*)+)\]\s*\.forEach', app_js)
+        if not m:
+            self.them("G15a", "trích được danh sách trạm bị ẩn trong nmMoTram()", False,
+                      "không tìm thấy mảng [\"nm-tram…\"].forEach trong js/app.js — cấu trúc đã "
+                      "đổi, cổng G15 không còn canh được gì. Sửa regex trong g15().")
+            return
+        ids = re.findall(r'"([\w-]+)"', m.group(1))
+        self.them("G15a", "trích được danh sách trạm bị ẩn trong nmMoTram()", bool(ids),
+                  f"{len(ids)} trạm: {ids}" if ids else "mảng rỗng — cổng không canh gì")
+
+        thieu_html, thieu_hien = [], []
+        for i in ids:
+            if f'id="{i}"' not in idx:
+                thieu_html.append(i)
+            # lệnh hiện lại: $("id").style.display = "" (hoặc 'block')
+            if not re.search(rf'\$\("{re.escape(i)}"\)\s*\.\s*style\s*\.\s*display\s*=\s*(""|\'\'|"block")',
+                             app_js):
+                thieu_hien.append(i)
+
+        self.them("G15b", "mọi trạm đều có id thật trong index.html", not thieu_html,
+                  f"{len(ids)}/{len(ids)} id có trong index.html" if not thieu_html
+                  else f"thiếu id trong index.html: {thieu_html}")
+
+        self.them("G15c", "mọi trạm bị ẩn đều có lệnh HIỆN LẠI (không trạm nào vô hình)",
+                  not thieu_hien,
+                  f"cả {len(ids)} trạm đều có lệnh hiện lại — không trạm nào kẹt ở display:none"
+                  if not thieu_hien
+                  else f"{len(thieu_hien)} trạm BỊ ẨN VĨNH VIỄN (không có lệnh hiện lại): "
+                       f"{thieu_hien} — học sinh bấm nút trạm đó sẽ thấy một khoảng TRỐNG; "
+                       f"thêm `$(\"{thieu_hien[0]}\").style.display = \"\";` vào hàm khởi động "
+                       f"của nó. Đây chính là lỗi đã làm Trạm 5 vô hình từ 04/10.")
+
     def tong_ket(self):
         print("\n" + "=" * 72)
         dat = sum(1 for k in self.kq if k["dat"])
@@ -1451,7 +1513,8 @@ console.log(JSON.stringify(out));
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
-    NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13", "G14"]
+    NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13",
+            "G14", "G15"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.

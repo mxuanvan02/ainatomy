@@ -67,12 +67,35 @@
    * Được XOÁ khi ghiLog() gọi lại (tức lúc đăng nhập), nên không lẫn giữa hai học sinh
    * dùng chung máy — đúng chu kỳ sống của một phiên. */
   let DA_CHOT = new Set();
+  /* Tập mã bài mà học sinh ĐÃ CHỦ ĐỘNG bấm "bỏ qua dự đoán" — thêm 07/10.
+   *
+   * VÌ SAO CẦN. Đợt vá này khoá nút chạy cho tới khi học sinh chốt dự đoán. Nếu khoá cứng
+   * không lối thoát thì sự kiện `boQua` (vừa được nối dây ở commit trước) không bao giờ ghi
+   * được nữa — tức biến nó thành NHÁNH CHẾT, đúng lớp lỗi mà cổng G11c và G14c sinh ra để bắt.
+   * Nên bỏ qua phải là một hành động CÓ CHỦ ĐÍCH: học sinh bấm, xác nhận, và việc đó được ghi
+   * vào nhật ký lớp. Giáo viên nhờ vậy phân biệt được "em này không dự đoán vì không hiểu"
+   * với "em này không thèm dự đoán" — hai việc cần hai cách dạy khác nhau.
+   *
+   * Được xoá cùng DA_CHOT trong ghiLog() (ranh giới đăng nhập), để hai học sinh dùng chung
+   * máy không kế thừa trạng thái của nhau. */
+  let DA_BO_QUA = new Set();
 
   function ghi(ma, giaTri, suKien, kqBoSung){
     if(!GHI) return;
     if((suKien || "chot") === "chot") DA_CHOT.add(ma);
+    if((suKien || "chot") === "boQua") DA_BO_QUA.add(ma);
     try { GHI(ma, giaTri, suKien || "chot", kqBoSung || null); }
     catch(e) { /* log lỗi không được làm hỏng bài học */ }
+  }
+
+  /* Học sinh CHỦ ĐỘNG bỏ qua dự đoán cho bài `ma`. Trả về false nếu không ghi được
+   * (đã chốt rồi, hoặc đã ghi bỏ qua rồi) để bên gọi không ghi trùng — ghi trùng thì số
+   * "lượt bỏ qua" trong báo cáo lớp phồng lên theo số lần bấm. */
+  function boQuaCoY(ma){
+    if(DA_CHOT.has(ma)) return false;   // đã dự đoán rồi thì không thể "bỏ qua"
+    if(DA_BO_QUA.has(ma)) return false; // đã ghi một lần, không ghi lại
+    ghi(ma, "", "boQua", null);
+    return true;
   }
 
   /* Ghi KẾT QUẢ ĐỐI CHIẾU — thêm 06/10.
@@ -359,7 +382,7 @@
          * "Chốt bài viết" (duDoan.js:313) — HS không bấm nút thì không có lời gọi nào
          * để mà bắt. Muốn đếm được cả ca đó thì phải móc vào nút chạy của bài tập bên
          * dưới, là việc lớn hơn và cần làm riêng. */
-        if(!api.daGhiBoQua && !DA_CHOT.has(ma)){
+        if(!api.daGhiBoQua && !DA_CHOT.has(ma) && !DA_BO_QUA.has(ma)){
           api.daGhiBoQua = true;
           ghi(ma, "", "boQua", null);
         }
@@ -377,14 +400,21 @@
 
   window.MX_MUC3 = {
     mo, cham, DS: Object.keys(BANG),
+    /* Ba hàm phục vụ CỔNG ÉP DỰ ĐOÁN bên app.js (xem epDuDoan trong js/app.js).
+     * daChotRoi/daBoQua tra theo MÃ BÀI chứ không theo đối tượng api, vì một ô có thể bị
+     * dựng lại (khi giao diện vẽ bước kế tiếp) và bản dựng mới thì daChot() = false trong khi
+     * học sinh ĐÃ chốt ở bản trước. Tra theo mã thì không bị hỏi lại lần hai. */
+    daChotRoi: (ma) => DA_CHOT.has(ma),
+    daBoQua:   (ma) => DA_BO_QUA.has(ma),
+    boQuaCoY,
     /* app.js gắn hàm ghi nhật ký lớp vào đây (xem giải thích ở đầu tệp).
-     * PHẢI xoá DA_CHOT ở đây: app.js gọi ghiLog() mỗi lần ĐĂNG NHẬP, nên đây đúng là
-     * ranh giới giữa hai phiên học sinh. Không xoá thì hai em dùng chung một máy (phòng
-     * lab 20 HS/40 máy, chuyện thường) sẽ kế thừa nhau: em trước đã chốt BT-03 thì em sau
-     * bỏ qua BT-03 cũng không bị ghi "bỏ qua" — số liệu tham gia của lớp phồng lên mà không
-     * có dấu hiệu nào để phát hiện.
+     * PHẢI xoá DA_CHOT VÀ DA_BO_QUA ở đây: app.js gọi ghiLog() mỗi lần ĐĂNG NHẬP, nên đây
+     * đúng là ranh giới giữa hai phiên học sinh. Không xoá thì hai em dùng chung một máy
+     * (phòng lab 20 HS/40 máy, chuyện thường) sẽ kế thừa nhau: em trước đã chốt BT-03 thì em
+     * sau bỏ qua BT-03 cũng không bị ghi "bỏ qua" — số liệu tham gia của lớp phồng lên mà
+     * không có dấu hiệu nào để phát hiện.
      * Đã từng có comment khai rằng DA_CHOT được xoá ở đây trong khi hàm KHÔNG xoá (06/10).
      * Sai chỗ đó nguy hiểm hơn là không có comment: người đọc sau sẽ tin và không kiểm lại. */
-    ghiLog(fn){ GHI = fn; DA_CHOT = new Set(); }
+    ghiLog(fn){ GHI = fn; DA_CHOT = new Set(); DA_BO_QUA = new Set(); }
   };
 })();
