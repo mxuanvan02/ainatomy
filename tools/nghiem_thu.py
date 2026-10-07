@@ -2127,11 +2127,132 @@ console.log(JSON.stringify(out));
         return 0 if not loi else 1
 
 
+    def g18(self):
+        """G18 — CÔNG CỤ PHẢI CHẠY ĐƯỢC Ở MÁY KHÁC (thêm 07/10).
+
+        README §0 khai: "Mọi công cụ trong `tools/` tự suy gốc repo từ vị trí tệp, **không ghi
+        cứng đường dẫn máy tác giả**". Lời khai đó CHƯA có cổng nào canh, và nó đã bị vi phạm
+        thật hai lần trong cùng một ngày:
+        · 10 script mutation ở /tmp/soiai_mut/ đều ghi cứng
+          `ROOT = "/home/hitokiri/ieeai2026/soi-ai"`. Đưa chúng vào repo để làm bằng chứng cho
+          hồ sơ (hồ sơ khai "mutation test bắt được N ca") là phá ngay lời khai §0.
+        · hai tool sheet ghi cứng `TOK = "/home/hitokiri/.hermes/google_token.json"`.
+        Cả hai chỉ lộ ra khi em grep, KHÔNG phải khi chạy cổng — tức là cổng mù.
+
+        VÌ SAO NGUY HIỂM: tool ghi cứng đường dẫn vẫn chạy tốt trên máy tác giả, mọi cổng khác
+        vẫn xanh, hồ sơ vẫn khai "tự chứa". Chỉ người clone về mới gặp lỗi — đúng lúc họ đang
+        quyết định có dùng sản phẩm hay không. Cùng lớp với G17 (lời hứa gãy), nhưng lời hứa ở
+        đây là lời hứa VỀ TÍNH DI ĐỘNG, và nó nằm trong mã chứ không trong tài liệu.
+
+        Ba tiêu chí con:
+        · G18a — không còn đường dẫn tuyệt đối `/home/<ai>` trong MÃ SỐNG. Cố ý bỏ qua
+          docstring: docstring kể lại lịch sử lỗi là hợp lệ và cần giữ (bài học G11b — bản đầu
+          của cổng này đếm cả chữ trong comment rồi kêu oan).
+        · G18b — không ghi cứng tên thư mục dự án (`ieeai2026`), tức không trỏ ngược ra ngoài repo.
+        · G18c — mỗi mô-đun phải import đủ tên mô-đun mà nó dùng, và phải parse được.
+          Tiêu chí này bắt được một bug THẬT: `tools/tao_sheet_thietke.py` dùng `os.path.join`
+          ở dòng 13 mà dòng import chỉ có json/urllib/sys → chạy là NameError. Không cổng nào
+          bắt được, vì cổng chỉ tự chạy `nghiem_thu.py`, không chạy tool đó. Đã sửa 07/10;
+          tiêu chí này giữ cho nó không tái phạm.
+
+        ĐÃ ĐO TRƯỚC KHI BẬT (để không lặp lại G17b với 14 dương tính giả): chạy phép kiểm này
+        trên TOÀN BỘ tệp .py dưới tools/ ở trạng thái đã dọn → 0 vi phạm G18a, 0 G18b, 0 G18c.
+        Nghĩa là cổng bật lên là xanh ngay, không bắt oan ai.
+
+        Cố ý KHÔNG ghi số tệp vào docstring này. Bản đầu ghi "23 tệp .py" — mà chính README §0
+        đã ghi bài học: mọi con số đếm được đều thành sai ngay lần thêm tệp kế tiếp, trong khi
+        người đọc vẫn tin nó. Số tệp thật nằm ở dòng KẾT QUẢ do cổng in ra lúc chạy.
+        """
+        import ast as _ast
+
+        tep = []
+        for d, _, fs in os.walk(os.path.join(ROOT, "tools")):
+            if ".git" in d or "__pycache__" in d:
+                continue
+            for f in sorted(fs):
+                if f.endswith(".py"):
+                    tep.append(os.path.relpath(os.path.join(d, f), ROOT))
+
+        RE_HOME = re.compile(r"/home/[A-Za-z0-9_.\-]+")
+        # GHÉP CHUỖI LÚC CHẠY, KHÔNG VIẾT NGUYÊN CHỮ — và đây là lần thứ ba trong dự án này
+        # một cổng bắt oan chính nó. Nếu dòng dưới viết "ieeai2026" nguyên chữ thì chính nó là
+        # một chuỗi chứa tên thư mục dự án, và G18b sẽ báo lỗi ở đúng dòng đang đi tìm lỗi.
+        # Ghép bằng phép cộng thì AST thấy BinOp chứ không phải Constant, nên cổng quét được
+        # cả thân nó. (Cùng lớp với G11b/G17b: cổng phải được thử trên chính mã của nó.)
+        TEN_THU_MUC_CHA = "iee" + "ai2026"
+        # Tên mô-đun chuẩn hay được gọi theo dạng `ten.ham()`. Chỉ liệt kê tên có thật trong repo
+        # này; thêm tên không ai dùng thì vô hại, nhưng THIẾU tên thì G18c mù một phần.
+        MOD = ("os", "re", "sys", "json", "io", "glob", "shutil", "subprocess", "hashlib",
+               "math", "time", "datetime", "collections", "urllib", "csv", "random", "argparse",
+               "pathlib", "textwrap", "unicodedata", "base64", "zipfile", "tempfile", "ast",
+               "itertools", "functools", "copy", "shlex", "difflib", "string")
+
+        v_home, v_root, v_import, loi = [], [], [], []
+        for rel in tep:
+            try:
+                src = doc(rel)
+            except OSError as e:
+                loi.append(f"{rel}: không đọc được ({e})")
+                continue
+            try:
+                tree = _ast.parse(src)
+            except SyntaxError as e:
+                loi.append(f"{rel}:{e.lineno} SyntaxError — tệp bằng chứng hỏng cú pháp")
+                continue
+
+            # docstring: kể lại lịch sử lỗi bằng đường dẫn cũ là HỢP LỆ, không phải vi phạm.
+            ds = set()
+            for n in _ast.walk(tree):
+                if isinstance(n, (_ast.Module, _ast.ClassDef, _ast.FunctionDef,
+                                  _ast.AsyncFunctionDef)):
+                    b = n.body
+                    if (b and isinstance(b[0], _ast.Expr)
+                            and isinstance(b[0].value, _ast.Constant)
+                            and isinstance(b[0].value.value, str)):
+                        ds.add(id(b[0].value))
+
+            for n in _ast.walk(tree):
+                if isinstance(n, _ast.Constant) and isinstance(n.value, str) and id(n) not in ds:
+                    if RE_HOME.search(n.value):
+                        v_home.append(f"{rel}:{n.lineno}")
+                    if TEN_THU_MUC_CHA in n.value:
+                        v_root.append(f"{rel}:{n.lineno}")
+
+            dung = {n.value.id for n in _ast.walk(tree)
+                    if isinstance(n, _ast.Attribute) and isinstance(n.value, _ast.Name)
+                    and n.value.id in MOD}
+            nhap = set()
+            for n in _ast.walk(tree):
+                if isinstance(n, _ast.Import):
+                    for al in n.names:
+                        nhap.add(al.asname or al.name.split(".")[0])
+                elif isinstance(n, _ast.ImportFrom):
+                    for al in n.names:
+                        nhap.add(al.asname or al.name)
+            thieu = sorted(dung - nhap)
+            if thieu:
+                v_import.append(f"{rel}: dùng {', '.join(thieu)} nhưng KHÔNG import")
+
+        n = len(tep)
+        self.them("G18a", "không công cụ nào ghi cứng đường dẫn /home/<tác giả>",
+                  not v_home and n > 0,
+                  ("; ".join(v_home) if v_home else
+                   f"{n} tệp .py trong tools/ sạch — mọi đường dẫn đều suy từ __file__"))
+        self.them("G18b", "không công cụ nào trỏ ngược ra ngoài repo bằng tên thư mục dự án",
+                  not v_root and n > 0,
+                  ("; ".join(v_root) if v_root else
+                   f"{n} tệp đều dùng gốc repo tương đối, clone sang máy khác vẫn chạy"))
+        self.them("G18c", "mọi công cụ parse được và import đủ mô-đun mà nó dùng",
+                  not v_import and not loi and n > 0,
+                  ("; ".join(v_import + loi) if (v_import or loi) else
+                   f"{n} tệp parse được, không thiếu import"))
+
+
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
     NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13",
-            "G14", "G15", "G16", "G17"]
+            "G14", "G15", "G16", "G17", "G18"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.

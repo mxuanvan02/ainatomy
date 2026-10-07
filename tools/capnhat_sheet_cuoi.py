@@ -11,7 +11,7 @@ Lí do: các lần trước số ghi tay trong tài liệu đã lệch với mã
 """
 import json, os, subprocess, urllib.request, urllib.parse, sys
 
-TOK = "/home/hitokiri/.hermes/google_token.json"
+TOK = os.environ.get("GOOGLE_TOKEN_JSON") or os.path.expanduser("~/.hermes/google_token.json")
 SID = "1SzJwN1Pt3CQwxfS5QJP3SP6t_cR23ZZOuLRJIMM4sSU"
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
 SOI = ROOT  # sau khi làm repo tự chứa, gốc repo CHÍNH LÀ thư mục sản phẩm

@@ -7,9 +7,9 @@ Sheet cũ (1MxGyHgOD0AK_TZ8chm_XzDl7rINCxVyx9tjpSVEecU0) chứa YCCĐ bản v1 B
 Sheet này lấy YCCĐ từ yccd_lop10_sach.json (đã verify 22/22) và TÍNH LẠI tương phản
 màu tại chỗ thay vì chép số, để không có số liệu transcription sai.
 """
-import json, urllib.request, urllib.parse, sys
+import json, os, urllib.request, urllib.parse, sys
 
-TOK = "/home/hitokiri/.hermes/google_token.json"
+TOK = os.environ.get("GOOGLE_TOKEN_JSON") or os.path.expanduser("~/.hermes/google_token.json")
 OUT = os.path.join(os.path.dirname(os.path.dirname(os.path.abspath(__file__))),
                    "out", "sheet_thietke.json")
 
@@ -60,7 +60,7 @@ def build():
         ["Khẩu hiệu", "Soi AI để hiểu AI", "Học sinh không hỏi AI — học sinh bắt lỗi AI"],
         ["Repo", "github.com/mxuanvan02/soi-ai-lop10", "public"],
         ["Website", "https://mxuanvan02.github.io/soi-ai-lop10/", "đã verify HTTP 200 + nội dung đúng"],
-        ["Tài liệu thiết kế", "~/ieeai2026/THIET_KE_TONG_QUAN.md", "30 KB, 8 phần"],
+        ["Tài liệu thiết kế", "THIET_KE_TONG_QUAN.md — thư mục làm việc cha, NGOÀI repo", "30 KB, 8 phần"],
         ["Design system", "soi-ai/design-system/soi-ai/MASTER.md", "sinh bởi ui-ux-pro-max (repo ai-agent-tools của anh Văn)"],
         ["Chuẩn viết nội dung", "academic-prose (repo ai-agent-tools)", "giữ lực nhận thức, tránh văn phong quảng cáo"],
         [""],
