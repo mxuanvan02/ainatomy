@@ -1,8 +1,10 @@
-# SOI AI · Lớp 10 — Hướng dẫn giáo viên (v1.0.0)
+# SOI AI — Hướng dẫn giáo viên cấp THPT (v1.0.0)
 
 Phòng thí nghiệm AI **offline, tiếng Việt, không tài khoản, không thu phí** cho học sinh phổ thông.
 Bám Khung nội dung giáo dục AI (QĐ 2422/QĐ-BGDĐT 18/8/2026) — 4 mạch × 12 khối năng lực UNESCO.
 Học sinh **bắt lỗi AI** thay vì hỏi AI; hệ thống **tự chấm** vì lỗi do chính hệ cài sẵn.
+
+**Phạm vi dữ liệu đã kiểm chứng.** Định danh là cấp trung học phổ thông vì app không khoá lớp (mã lớp nhập tự do) và Khung 2422/QĐ-BGDĐT có phụ lục yêu cầu cần đạt cho cả lớp 10, 11, 12. Nhưng bản đồ yêu cầu cần đạt đang nhúng trong app là của **lớp 10** — 22 yêu cầu, trích nguyên văn, đã kiểm chứng tự động 22/22 với văn bản Bộ bằng `tools/verify_yccd.py`. Nói rõ ranh giới này để hồ sơ không khai rộng hơn dữ liệu thật; mở rộng sang lớp 11 và 12 là việc trích thêm phụ lục, không phải việc đổi chữ.
 
 **Repo:** https://github.com/mxuanvan02/soi-ai-lop10 · **Bản chạy thử:** https://mxuanvan02.github.io/soi-ai-lop10/
 

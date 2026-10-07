@@ -790,6 +790,7 @@ console.log(JSON.stringify(out));
         G10c  khẩu hiệu cũ "Soi AI để hiểu AI" = 0 trong mã sống (comment ghi chú được phép)
         G10d  phiên bản ở chân trang và trong data/meta.js phải khớp
         G10e  kịch bản không nói sai số trạm (đã từng ghi "9 trạm" trong khi nhà máy có 7)
+        G10f  định danh mới KHÔNG được khai quá phạm vi dữ liệu đã kiểm chứng (thêm 07/10)
         """
         idx = doc("index.html")
         meta = doc("data/meta.js")
@@ -829,12 +830,77 @@ console.log(JSON.stringify(out));
                   not vi_pham,
                   "; ".join(vi_pham) if vi_pham else "sạch cả 6 nhóm")
 
-        TEN = "Phòng thực hành Trí tuệ nhân tạo lớp 10"
-        # html_song(): tên này phải là chữ HIỂN THỊ thật, không phải chữ nằm trong chú thích.
-        du = (TEN in html_song(idx)) and (TEN in meta)
-        self.them("G10b", "tên hiển thị là định danh môn/lớp", du,
-                  "có trong index.html và data/meta.js" if du
-                  else "thiếu ở index.html hoặc data/meta.js")
+        TEN = "Phòng thực hành Trí tuệ nhân tạo cấp THPT"
+        # BA NƠI, KHÔNG PHẢI HAI — sửa 07/10 khi đổi định danh "lớp 10" -> "cấp THPT".
+        # Định danh này có BA bản sao: <title>/tagline/chân trang trong index.html, khoá
+        # `dinhDanh` trong data/meta.js, và chuỗi logo `kb-logo-soi` ở js/kichban.js:309.
+        # Bản cũ của cổng chỉ kiểm HAI nơi đầu. Tôi đổi trúng chỗ thứ ba là nhờ khảo sát tay
+        # bằng grep trước khi sửa, chứ KHÔNG nhờ cổng — tức cổng đã bỏ lọt nó suốt thời gian
+        # trước. Đó đúng là lớp lỗi G14d sinh ra để chặn (bản sao nhãn thứ N không ai canh),
+        # chỉ khác ở chỗ bản sao này nằm trong lời kịch bản thuyết trình: nếu sót thì giám khảo
+        # xem video thấy logo ghi tên cũ trong khi mọi nơi khác ghi tên mới.
+        # html_song()/than_ma_song(): tên phải là chữ trong MÃ SỐNG, không phải trong chú thích.
+        kb_song = than_ma_song(kb)
+        meta_song = than_ma_song(meta)
+        co = {"index.html": TEN in html_song(idx),
+              "data/meta.js": TEN in meta_song,
+              "js/kichban.js": TEN in kb_song}
+        thieu = [k for k, v in co.items() if not v]
+        self.them("G10b", "định danh hiển thị khớp nhau ở CẢ BA nơi", not thieu,
+                  f"có trong cả {len(co)} nơi: {list(co)}" if not thieu
+                  else f"thiếu ở {thieu} — các nơi còn lại: {[k for k in co if co[k]]}. "
+                       f"Định danh lệch nhau giữa giao diện và lời kịch bản thì giám khảo sẽ "
+                       f"thấy hai tên cho một sản phẩm")
+
+        # ------------------------------------------------------------------
+        # G10f — ĐỊNH DANH MỚI KHÔNG ĐƯỢC KHAI QUÁ PHẠM VI DỮ LIỆU ĐÃ KIỂM CHỨNG.
+        #
+        # CỔNG NÀY SINH RA TỪ MỘT QUYẾT ĐỊNH, KHÔNG PHẢI TỪ MỘT LỖI. Ngày 07/10 anh Văn yêu
+        # cầu "đổi tên cho phù hợp, không giới hạn lớp". Đổi định danh thành "cấp THPT" là đúng
+        # vì app không khoá lớp (mã lớp nhập tự do) và Khung 2422 có phụ lục yêu cầu cần đạt
+        # cho cả ba lớp. NHƯNG bản đồ yêu cầu cần đạt đang nhúng trong app là của LỚP 10: 22
+        # yêu cầu, đã verify 22/22 bằng tools/verify_yccd.py. Chưa có dữ liệu lớp 11 hay 12.
+        #
+        # Vậy ranh giới phải được KHOÁ BẰNG CỔNG, vì nó rất dễ bị xoá một cách vô ý: ai đó
+        # chạy replace("lớp 10", "cấp THPT") toàn cục cho "nhất quán" là hồ sơ lập tức khai
+        # rộng hơn dữ liệu thật, mà MỌI cổng khác vẫn ĐẠT vì không cổng nào so định danh với
+        # phạm vi dữ liệu. Đây là biến thể của lỗi "khai có mà mã không làm" — ở mức hồ sơ.
+        #
+        # Kiểm HAI CHIỀU, mỗi chiều bắt một lỗi khác nhau:
+        #   (a) định danh cũ phải HẾT ở ba tệp thương hiệu — bắt lỗi đổi tên nửa vời.
+        #   (b) data/yccd.js phải CÒN nói rõ đó là yêu cầu cần đạt của LỚP 10 — bắt lỗi
+        #       replace toàn cục làm mất dấu phạm vi dữ liệu. Đây là chiều mà một cổng
+        #       "kiểm tên mới đã thay hết chưa" KHÔNG BAO GIỜ bắt được, vì replace toàn cục
+        #       làm cho chiều (a) càng đẹp.
+        #   (c) README phải còn câu khai phạm vi — chỗ duy nhất người đọc hồ sơ được biết
+        #       ranh giới thật.
+        # Khi nào mở rộng thật sang lớp 11/12 (trích thêm phụ lục Khung, chạy verify_yccd.py
+        # cho đủ) thì PHẢI chủ động sửa cổng này. Đó là cố ý: cổng buộc việc mở rộng phạm vi
+        # thành một quyết định có ý thức, không phải một cú replace.
+        TEN_CU = "Phòng thực hành Trí tuệ nhân tạo lớp 10"
+        con_cu = {f: html_song(doc(f)).count(TEN_CU) if f.endswith(".html")
+                  else than_ma_song(doc(f)).count(TEN_CU)
+                  for f in ("index.html", "data/meta.js", "js/kichban.js")}
+        loai_a = [f for f, n in con_cu.items() if n]
+
+        yccd = doc("data/yccd.js")
+        # "lớp 10" phải còn trong tệp dữ liệu, và phải còn ở chỗ khai NGUỒN (khoá `nguon`),
+        # vì đó là dòng nói rõ 22 yêu cầu này lấy từ phụ lục lớp nào của Khung.
+        loai_b = [] if ("lớp 10" in yccd and re.search(r'nguon\s*:.*lớp 10', yccd, re.S)) \
+            else ["data/yccd.js không còn khai rõ phạm vi LỚP 10"]
+
+        readme = doc("README.md") if os.path.isfile(os.path.join(ROOT, "README.md")) else ""
+        loai_c = [] if "Phạm vi dữ liệu đã kiểm chứng" in readme \
+            else ["README.md thiếu đoạn khai 'Phạm vi dữ liệu đã kiểm chứng'"]
+
+        loi_f = (["định danh cũ còn sót ở " + ", ".join(f"{f}×{n}" for f, n in con_cu.items() if n)
+                  + " — đổi tên nửa vời: giám khảo thấy hai định danh cho một sản phẩm"]
+                 if loai_a else []) + loai_b + loai_c
+        self.them("G10f", "định danh 'cấp THPT' không khai quá phạm vi dữ liệu (YCCĐ mới có lớp 10)",
+                  not loi_f,
+                  "định danh cũ đã hết ở cả 3 tệp thương hiệu, data/yccd.js vẫn khai rõ phạm vi "
+                  "LỚP 10, và README còn câu khai phạm vi dữ liệu đã kiểm chứng"
+                  if not loi_f else " · ".join(loi_f))
 
         # G10c: khẩu hiệu cũ — bỏ comment rồi mới đếm, vì comment ghi lại bài học là hợp lệ
         khau = "Soi AI để hiểu AI"

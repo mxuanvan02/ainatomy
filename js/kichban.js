@@ -306,7 +306,7 @@
       logo.appendChild(m);
       logo.appendChild(el("span", null, "SOI AI"));
       s.appendChild(logo);
-      s.appendChild(el("div", "kb-logo-soi", "Phòng thực hành Trí tuệ nhân tạo lớp 10"));
+      s.appendChild(el("div", "kb-logo-soi", "Phòng thực hành Trí tuệ nhân tạo cấp THPT"));
     },
 
     nhaplieu(s){
