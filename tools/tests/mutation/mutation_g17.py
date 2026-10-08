@@ -46,6 +46,19 @@ def loai_kq(out, ma):
 GOC = {p: sha(p) for p in (README, GOP)}
 ket_luan = []
 
+
+def ghi(ten, dat, dc=False):
+    """Ghi kết quả một ca. `dc=True` = ĐỐI CHỨNG ÂM, tức kỳ vọng cổng phải IM.
+
+    VÌ SAO PHẢI CÓ CỜ NÀY (sửa 08/10). Bản trước giữ (tên, kết quả) rồi in
+    `'BẮT ĐƯỢC' if b else 'CỔNG IM'` cho MỌI ca, nên ca 4 — vốn là đối chứng âm, đúng nghĩa là
+    cổng phải im — lại được in "BẮT ĐƯỢC". Đọc lên thành "cổng bắt được lỗi", và dòng KẾT LUẬN
+    vì thế khai "4/4 ca phá bị G17 bắt" trong khi chỉ 3 ca là phá: KHAI QUÁ, đúng kiểu mà hồ sơ
+    dự án đang cảnh báo. Phân loại ca phải bằng DỮ LIỆU (cờ này), không bằng chữ trong tên ca —
+    suy "có phát hiện hay không" từ văn bản thông báo chính là lỗi đã ghi ở Luật 5o.
+    """
+    ket_luan.append((ten, dat, dc))
+
 # ---------- CA 1: README hứa một tệp không tồn tại ----------
 print("=" * 88)
 print("CA 1 — README hứa tệp `tools/khong_co_that.py` (không tồn tại)")
@@ -61,7 +74,7 @@ try:
         for ln in out.splitlines():
             if "G17b" in ln:
                 print("   |", ln.strip()[:200])
-    ket_luan.append(("1 README hứa tệp ma", bat))
+    ghi("1 README hứa tệp ma", bat)
 finally:
     open(README, "w", encoding="utf-8").write(s)
     print("  khôi phục README.md:", "hash KHỚP gốc" if sha(README) == GOC[README] else "!!! LỆCH")
@@ -74,7 +87,7 @@ GOC_DOC = sha(os.path.join(REPO, "huong-dan-danh-gia.md"))
 doc2 = doc.replace("`nhatky_gop.csv`", "`baocao_tuan.csv`", 1)
 if doc2 == doc:
     print("  !!! không tìm thấy chỗ thay; bỏ qua ca này")
-    ket_luan.append(("2 doc hứa đầu ra ma", None))
+    ghi("2 doc hứa đầu ra ma", None)
 else:
     open(os.path.join(REPO, "huong-dan-danh-gia.md"), "w", encoding="utf-8").write(doc2)
     try:
@@ -86,7 +99,7 @@ else:
             for ln in out.splitlines():
                 if "G17c" in ln:
                     print("   |", ln.strip()[:220])
-        ket_luan.append(("2 doc hứa đầu ra ma", bat))
+        ghi("2 doc hứa đầu ra ma", bat)
     finally:
         p = os.path.join(REPO, "huong-dan-danh-gia.md")
         open(p, "w", encoding="utf-8").write(doc)
@@ -100,7 +113,7 @@ g = open(GOP, encoding="utf-8").read()
 mo = 'p1 = os.path.join(outdir, "nhatky_gop.csv")'
 if mo not in g:
     print("  !!! không thấy dòng neo để chèn; bỏ qua ca này")
-    ket_luan.append(("3 mã ghi đầu ra không ai nhắc", None))
+    ghi("3 mã ghi đầu ra không ai nhắc", None)
 else:
     g2 = g.replace(mo, mo + '\n    _p_bi_mat = os.path.join(outdir, "baocao_bi_mat.csv")', 1)
     open(GOP, "w", encoding="utf-8").write(g2)
@@ -117,7 +130,7 @@ else:
             for ln in out.splitlines():
                 if "G17c" in ln:
                     print("   bằng chứng:", ln.strip()[-170:])
-        ket_luan.append(("3 mã ghi đầu ra không ai nhắc", bat))
+        ghi("3 mã ghi đầu ra không ai nhắc", bat)
     finally:
         open(GOP, "w", encoding="utf-8").write(g)
         print("  khôi phục gop_csv.py:", "hash KHỚP gốc" if sha(GOP) == GOC[GOP] else "!!! LỆCH")
@@ -140,21 +153,29 @@ try:
         for ln in out.splitlines():
             if "G17b" in ln or "G17c" in ln:
                 print("   |", ln.strip()[:230])
-    ket_luan.append(("4 tên CSV động của app (không được bắt oan)", khong_oan))
+    ghi("4 tên CSV động của app (không được bắt oan)", khong_oan, dc=True)
 finally:
     open(README, "w", encoding="utf-8").write(s)
     print("  khôi phục README.md:", "hash KHỚP gốc" if sha(README) == GOC[README] else "!!! LỆCH")
 
 # ---------- TỔNG KẾT ----------
 print("=" * 88)
-so = sum(1 for _, b in ket_luan if b is True)
-tong = sum(1 for _, b in ket_luan if b is not None)
-print(f"KẾT LUẬN: {so}/{tong} ca phá bị G17 bắt")
-for ten, b in ket_luan:
+# Đếm TÁCH HAI LOẠI. Gộp ca phá với ca đối chứng âm thành "N/N ca phá bị bắt" là khai quá:
+# ca đối chứng âm đúng nghĩa là cổng PHẢI IM, gộp nó vào số "cổng bắt được" là nói sai về chính
+# phép kiểm. Nay in rõ bao nhiêu ca phá bị bắt, bao nhiêu ca đối chứng âm cổng đã im đúng.
+so = sum(1 for _, b, _ in ket_luan if b is True)
+tong = sum(1 for _, b, _ in ket_luan if b is not None)
+so_pha = sum(1 for _, b, dc in ket_luan if b is True and not dc)
+so_dc = sum(1 for _, b, dc in ket_luan if b is True and dc)
+print(f"KẾT LUẬN: {so}/{tong} ca đúng như kỳ vọng ({so_pha} ca PHÁ bị cổng bắt"
+      f" + {so_dc} ca ĐỐI CHỨNG ÂM cổng im đúng)")
+for ten, b, dc in ket_luan:
     if b is None:
         print(f"  {ten}: BỎ QUA (không dựng được ca)")
+    elif dc:
+        print(f"  {ten}: {'KHÔNG BẮT OAN (đúng)' if b else 'BẮT OAN — luật miễn trừ hỏng'}")
     else:
-        print(f"  {ten}: {'BẮT ĐƯỢC' if b else 'CỔNG IM'}")
+        print(f"  {ten}: {'BẮT ĐƯỢC' if b else 'CỔNG IM (không có răng)'}")
 
 # Xác nhận sau cùng: cây phải về ĐẠT và không còn dấu vết mutation.
 rc, out = chay_cong()

@@ -81,9 +81,21 @@ DOC_STR = open(DOC, encoding="utf-8").read()
 GOP_STR = open(GOP, encoding="utf-8").read()
 
 
-def bao_cao(ten, bat, ghi_chu=""):
-    print(f"  ->  {'BẮT ĐƯỢC' if bat else 'KHÔNG NHƯ KỲ VỌNG'}" + (f"  {ghi_chu}" if ghi_chu else ""))
-    ket_luan.append((ten, bat))
+def bao_cao(ten, bat, ghi_chu="", dc=False):
+    """Ghi kết quả một ca. `dc=True` = ĐỐI CHỨNG ÂM: kỳ vọng cổng IM.
+
+    Sửa 08/10 cùng lúc với mutation_g17.py, cùng một lỗi nhãn: in "BẮT ĐƯỢC" cho một ca mà đúng
+    nghĩa là "cổng phải im" làm dòng kết quả tự nói sai về chính nó, và người đọc sau sẽ đếm nó
+    thành ca phá. Ca 6, 12, 14 dùng `dc=True`.
+    """
+    if bat is None:
+        nhan = "BỎ QUA"
+    elif dc:
+        nhan = "KHÔNG BẮT OAN (đúng)" if bat else "BẮT OAN — luật miễn trừ hỏng"
+    else:
+        nhan = "BẮT ĐƯỢC" if bat else "KHÔNG NHƯ KỲ VỌNG"
+    print(f"  ->  {nhan}" + (f"  {ghi_chu}" if ghi_chu else ""))
+    ket_luan.append((ten, bat, dc))
 
 
 # ============================== CA 5 ==============================
@@ -126,7 +138,7 @@ try:
         for ln in out.splitlines():
             if "G17b" in ln or "G17d" in ln:
                 print("   |", ln.strip()[:230])
-    bao_cao("6 cờ của lệnh NGOÀI repo (G17d phải IM)", im)
+    bao_cao("6 cờ của lệnh NGOÀI repo (G17d phải IM)", im, dc=True)
 finally:
     khoi_phuc(DOC, DOC_STR)
     print("  khôi phục:", "hash KHỚP gốc" if sha(DOC) == GOC[DOC] else "!!! LỆCH")
@@ -263,7 +275,7 @@ else:
         for ln in out.splitlines():
             if "G17b" in ln and "[LỖI]" in ln and "khong" not in ln.lower():
                 print("   TỐ OAN:", ln.strip()[-150:])
-        bao_cao("12 đối chứng âm: đường dẫn ../ CÓ thật (G17b phải im)", gb == "ĐẠT")
+        bao_cao("12 đối chứng âm: đường dẫn ../ CÓ thật (G17b phải im)", gb == "ĐẠT", dc=True)
     finally:
         khoi_phuc(DOC, s)
         print("  khôi phục:", "hash KHỚP gốc" if sha(DOC) == GOC[DOC] else "!!! LỆCH")
@@ -310,19 +322,31 @@ else:
         for ln in out.splitlines():
             if "G17d" in ln and "[LỖI]" in ln:
                 print("   TỐ OAN:", ln.strip()[-160:])
-        bao_cao("14 đối chứng âm: cờ `--ghi` CÓ thật (G17d phải im)", gd == "ĐẠT")
+        bao_cao("14 đối chứng âm: cờ `--ghi` CÓ thật (G17d phải im)", gd == "ĐẠT", dc=True)
     finally:
         khoi_phuc(DOC, s)
         print("  khôi phục:", "hash KHỚP gốc" if sha(DOC) == GOC[DOC] else "!!! LỆCH")
 
 # ============================== TỔNG KẾT ==============================
 print("=" * 88)
-so = sum(1 for _, b in ket_luan if b is True)
-tong = sum(1 for _, b in ket_luan if b is not None)
-print(f"KẾT LUẬN: {so}/{tong} ca đúng như kỳ vọng")
-for ten, b in ket_luan:
+# Đếm TÁCH HAI LOẠI, và chịu được cả tuple 2 phần tử: các nhánh "không dựng được ca" chỉ ghi
+# (tên, None). Đọc cờ ở vị trí 2 nếu có, KHÔNG suy từ chữ trong tên ca.
+def _dc(t):
+    return t[2] if len(t) > 2 else False
+
+
+so = sum(1 for t in ket_luan if t[1] is True)
+tong = sum(1 for t in ket_luan if t[1] is not None)
+so_pha = sum(1 for t in ket_luan if t[1] is True and not _dc(t))
+so_dc = sum(1 for t in ket_luan if t[1] is True and _dc(t))
+print(f"KẾT LUẬN: {so}/{tong} ca đúng như kỳ vọng ({so_pha} ca PHÁ bị cổng bắt"
+      f" + {so_dc} ca ĐỐI CHỨNG ÂM cổng im đúng)")
+for t in ket_luan:
+    ten, b = t[0], t[1]
     if b is None:
         print(f"  {ten}: BỎ QUA (không dựng được ca)")
+    elif _dc(t):
+        print(f"  {ten}: {'KHÔNG BẮT OAN (đúng)' if b else 'BẮT OAN — luật miễn trừ hỏng'}")
     else:
         print(f"  {ten}: {'ĐÚNG' if b else 'SAI KỲ VỌNG'}")
 
