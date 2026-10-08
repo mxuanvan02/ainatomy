@@ -38,6 +38,43 @@ Không cần cài gì ngoài Python 3.8+ và một trình duyệt. Đầu vào d
 nằm trong `data-source/` (Khung 2422 PDF + bản chữ, danh sách 22 YCCĐ). Kết quả kiểm
 sinh ra ở `out/`.
 
+### Cổng này tự chứng minh là nó có răng: bộ mutation test
+
+Một cổng ĐẠT ở lần chạy đầu **không chứng minh gì** — nó có thể đang mù. Đã xảy ra thật trong
+dự án này: cổng `G17b` báo 14 vi phạm và **cả 14 đều là dương tính giả**; còn cổng `G18` đạt
+3/3 ngay lần đầu, phải viết bài phá cho nó mới biết nó thật sự thấy được lỗi. Nên mỗi cổng đều
+có script mutation riêng, nằm ở `tools/tests/mutation/`.
+
+```bash
+cd soi-ai
+python3 tools/nghiem_thu.py                          # CA 0: nguyên trạng PHẢI xanh trước đã
+python3 tools/tests/mutation/mutation_g18.py         # rồi mới phá từng cổng
+```
+
+Mỗi script phá đúng thứ cổng khai là đang canh, rồi **tự khôi phục** để cây về nguyên trạng.
+Điều kiện đạt, không phải con số: mọi script in `rc=0`, dòng `KẾT LUẬN` khớp số ca, và **cây
+sạch sau khi chạy xong** (`git status --short` rỗng).
+
+Hai điều bắt buộc khi đọc kết quả, vì cả hai đã gây kết luận sai:
+
+- **Phân biệt ca PHÁ với ca ĐỐI CHỨNG ÂM.** Ca phá là ca **cổng phải kêu** (script in
+  `BẮT ĐƯỢC`, `rc=1`). Ca đối chứng âm là ca **cổng phải IM** vì đầu vào hợp lệ — ví dụ
+  `G18` phải bỏ qua đường dẫn cũ khi nó nằm trong docstring, hay `G10f` phải im ở chỗ `G10b`
+  đã bắt. Đếm gộp hai loại thành "N/N ca phá bị bắt" là **khai quá**; chính một dòng `KẾT LUẬN`
+  trong repo từng gộp như vậy.
+- **Đếm theo CẤP CA, không đếm dòng chứa từ khoá.** Đếm theo dòng cho ra ba con số khác nhau
+  trên cùng một bộ log (29 rồi 40 rồi sai phân loại), vì một ca được mô tả trên nhiều dòng.
+- **Nếu vừa sửa `tools/`: chạy `python3 tools/sinh_manifest.py --ghi` TRƯỚC.** Cổng có phép
+  kiểm toàn vẹn tệp, nên manifest cũ làm CA 0 đỏ vì lý do không phải lỗi sản phẩm — và đọc
+  nhầm CA 0 đỏ thành "cổng hỏng" đã tốn hai lần chạy.
+
+Cổng `G18` là cổng canh chính lời khai ở §0 đầu tài liệu này: `G18a` không công cụ nào ghi cứng
+đường dẫn `/home/<tác giả>`, `G18b` không công cụ nào trỏ ngược ra ngoài repo bằng tên thư mục
+dự án, `G18c` mọi công cụ parse được và import đủ mô-đun nó dùng. `G18c` bắt được một lỗi thật
+ngay khi bật: `../tools/tao_sheet_thietke.py` (công cụ của THƯ MỤC HỒ SƠ, ngoài repo này) dùng
+`os.path.join` mà không import `os` — chạy là chết, và không cổng nào thấy vì cổng chỉ tự chạy
+chính nó. Ghi rõ đường dẫn `../` ở đây để không ai đi tìm nó trong repo này mà không thấy.
+
 ## 1. Chạy (3 cách, không cần Internet)
 
 | Cách | Làm gì | Dùng khi |
@@ -182,9 +219,25 @@ Quy tắc: đúng 1 claim chứa lỗi khi `loai="co_loi"`; cả 3 claim đúng 
 
 ## 8. Trạng thái phiên bản
 
-- **v0.2.0** (04/10/2026): 78 item (22 gốc + 56 LLM có QC), phiên phân tầng 12 câu, pre/post-test, CSV 19 cột có sự kiện phiên, script gộp đa máy. Đã smoke-test toàn bộ 3 tầng + pre/post + gộp CSV trên trình duyệt thật.
+**Bản hiện hành là v1.0.0**, và nó có mốc trong git: commit `5c46f41` (04/10/2026) — đổi tên từ
+"MỔ XẺ AI" thành "SOI AI", trục báo cáo = 13 chủ đề QĐ 2422, bỏ ngôn ngữ điểm số. Sau mốc đó là
+38 commit sửa lỗi và thêm cổng (đọc `git log --oneline` để có danh sách thật).
+
+Hai điều nói rõ để hồ sơ không khai quá:
+
+- **Không có git tag cho v1.0.0.** Mốc chỉ là một commit trên `main`, không phải tag — nên đừng
+  chép lệnh `git checkout v1.0.0` ở đâu cả, nó sẽ không tìm thấy gì. Muốn lấy đúng bản đó thì
+  dùng hash `5c46f41`.
+- **Các mục dưới đây là mốc CŨ, giữ nguyên làm lịch sử**: chúng ghi bản trước khi đổi tên, và
+  tên "MỔ XẺ AI" trong đó đúng với thời điểm nó được viết.
+
+- **v1.0.0** (04/10/2026): đổi tên thành SOI AI, trục báo cáo theo 13 chủ đề QĐ 2422, bỏ ngôn
+  ngữ điểm số. Mốc: commit `5c46f41` (không có tag).
+- **v0.2.0** (04/10/2026): 78 item (22 gốc + 56 LLM có QC), phiên phân tầng 12 câu,
+  pre/post-test, CSV 19 cột có sự kiện phiên, script gộp đa máy. Đã smoke-test toàn bộ 3 tầng +
+  pre/post + gộp CSV trên trình duyệt thật.
 - **v0.1.0** (04/10/2026): bản đầu 3 tầng, 22 item.
-- Git: mỗi phiên bản có commit + SHA256SUMS (bằng chứng mốc thời gian & toàn vẹn).
+- Git: mỗi phiên bản có commit + `SHA256SUMS` (bằng chứng mốc thời gian & toàn vẹn).
 
 ## 9. Căn cứ chương trình
 

@@ -1848,7 +1848,17 @@ console.log(JSON.stringify(out));
                 continue
             for m in re.finditer(r"`([^`\n]+)`", doc(f)):
                 for tok in re.split(r"\s+", m.group(1).strip()):
-                    tok = tok.strip(".,;:")
+                    # RSTRIP, KHÔNG STRIP — và đây là lỗi cổng thật, đo được (08/10).
+                    # `strip(".,;:")` xoá ký tự ở CẢ HAI ĐẦU, nên một đường dẫn bắt đầu bằng
+                    # `../` bị ăn mất hai dấu chấm và biến thành đường dẫn TUYỆT ĐỐI:
+                    #     '../tools/tao_sheet_thietke.py'  ->  '/tools/tao_sheet_thietke.py'
+                    # Đo bằng lệnh: os.path.join(ROOT, '/tools/...') = '/tools/...' → KHÔNG tồn tại,
+                    # trong khi chính token gốc thì tồn tại thật. Nên cổng tố oan README đang đúng,
+                    # với thông báo "giáo viên làm theo sẽ gặp No such file or directory" — tức nó
+                    # bảo mình đi sửa một dòng vốn đã đúng.
+                    # Chỉ cần bỏ dấu câu ở CUỐI (dấu chấm hết câu sau đường dẫn); không có lý do gì
+                    # phải bỏ ở đầu, vì mọi dấu mở ngoặc/backtick đã bị lọc bằng `startswith` ở trên.
+                    tok = tok.rstrip(".,;:")
                     # Bỏ qua: chuỗi rỗng, tuỳ chọn dòng lệnh (`--ghi`), placeholder có dấu nhọn
                     # (`<thư_mục>`), lời gọi hàm (`MX_MUC3.cham()`), và đầu ra đã gitignore (`out/`).
                     # `str.startswith` nhận được cả tuple nên một lời gọi là đủ cho BO_QUA.
@@ -1932,12 +1942,23 @@ console.log(JSON.stringify(out));
         # CHỈ kiểm cờ trong những đoạn lệnh CÓ gọi một tool của repo (tools/*.py). Cờ của lệnh
         # ngoài — `sha256sum -c`, `git ls-files` — không thuộc thẩm quyền của cổng này và bắt
         # chúng là bắt oan. Ca phá số 5 là negative control cho đúng việc đó.
-        # Danh sách cờ thật đọc từ `add_argument` trong chính tool, không gõ tay.
+        # Danh sách cờ thật đọc TỪ CHÍNH TOOL, không gõ tay — nhưng phải đọc ĐỦ HAI KIỂU khai.
         #
-        # Một chi tiết đo được trước khi viết: lần dò đầu tiên bằng grep thô báo có cả cờ `-c`,
-        # nhưng đó là `sha256sum -c` — lệnh ngoài, không nằm trong backtick kèm tools/*.py. Nếu
-        # tin kết quả grep thô đó mà thiết kế cổng theo hướng "mọi cờ đều phải thuộc tool của
-        # mình" thì cổng sẽ kêu oan ngay lần chạy đầu, giống hệt 14 dương tính giả của G17b.
+        # LỖI ĐÃ SỬA (08/10) — dương tính giả, và là một kiểu mù mới. Bản đầu chỉ đọc
+        # `add_argument(...)`, nên nó tố oan `tools/sinh_manifest.py` là không có cờ `--ghi`:
+        #   README.md -> `--ghi` (của tools/sinh_manifest.py, cờ thật: [])
+        # Nhưng tool đó CÓ cờ, chỉ là nó đọc cờ bằng `ghi = "--ghi" in sys.argv` (dòng 75) thay
+        # vì argparse. Chạy thử `python3 tools/sinh_manifest.py --ghi` → rc=0, ghi manifest thật.
+        # Tức cờ tồn tại, tài liệu đúng, cổng sai. Một cổng chỉ biết MỘT cách khai cờ sẽ tố oan
+        # mọi tool dùng cách còn lại, và cách nó tố oan lại đúng là "tool không có cờ đó" —
+        # người đọc sẽ đi sửa tài liệu đang đúng.
+        #
+        # Cách đọc cờ thứ hai, có chủ ý HẸP: chỉ nhận chuỗi cờ nằm TRÊN CHÍNH DÒNG có `sys.argv`.
+        # Không quét cả tệp, vì docstring của chính các tool này có nhắc `--ghi` (để giải thích
+        # cách dùng) — quét cả tệp thì một tài liệu hứa cờ không tồn tại vẫn được cổng bỏ qua,
+        # tức cổng thành con dấu rỗng. Điều kiện "cùng dòng với sys.argv" giữ được răng: viết
+        # `--khong-ton-tai` cho sinh_manifest.py thì không dòng nào chứa chuỗi đó cạnh sys.argv,
+        # nên cổng vẫn kêu. Ca phá số 6 kiểm đúng chiều này.
         co_hua_loi, so_co_da_kiem = [], 0
         for f in tai_lieu:
             if not os.path.isfile(os.path.join(ROOT, f)):
@@ -1952,14 +1973,20 @@ console.log(JSON.stringify(out));
                 tool = m_tool.group(1)
                 if not os.path.isfile(os.path.join(ROOT, tool)):
                     continue                                  # tệp thiếu thì G17b đã bắt, không báo trùng
+                ma_tool = doc(tool)
                 co_that = set()
-                for a in re.findall(r"add_argument\(([^)]*)\)", doc(tool), re.S):
+                # Kiểu 1: argparse
+                for a in re.findall(r"add_argument\(([^)]*)\)", ma_tool, re.S):
                     co_that |= set(re.findall(r'"(--?[\w-]+)"', a))
+                # Kiểu 2: đọc thẳng sys.argv — chỉ trên dòng có sys.argv (xem lý do ở trên)
+                for dong in ma_tool.split("\n"):
+                    if "sys.argv" in dong:
+                        co_that |= set(re.findall(r"""["'](--?[\w-]+)["']""", dong))
                 for c in re.findall(r"(?<![\w-])(--?[\w][\w-]*)", seg):
                     so_co_da_kiem += 1
                     if c not in co_that:
                         co_hua_loi.append(f"{f} -> `{c}` (của {tool}, cờ thật: {sorted(co_that)})")
-        self.them("G17d", "cờ CLI tài liệu hứa đều có thật trong argparse của tool đó",
+        self.them("G17d", "cờ CLI tài liệu hứa đều có thật trong tool mà nó gọi",
                   not co_hua_loi,
                   f"{so_co_da_kiem} cờ CLI được nhắc kèm tool của repo, tất cả đều có thật"
                   if not co_hua_loi

@@ -2,7 +2,7 @@
 # -*- coding: utf-8 -*-
 r"""MUTATION TEST cho G17d / G17e / G17f — ba tiêu chí mới thêm 07/10.
 
-SÁU CA, gồm HAI negative control (Luật C trong skill agentic-efficiency-loop: thiếu ca "đầu vào
+MƯỜI CA, gồm BỐN negative control (Luật C trong skill agentic-efficiency-loop: thiếu ca "đầu vào
 hợp lệ trông giống lỗi thì cổng phải IM" thì không phân biệt được cổng có răng với cổng bắt oan).
 
   ca 5  — tài liệu hứa cờ `--xlsx` mà gop_csv.py không có      -> G17d PHẢI BẮT
@@ -12,6 +12,23 @@ hợp lệ trông giống lỗi thì cổng phải IM" thì không phân biệt 
   ca 9  — tài liệu sửa chữ "Mười cột" thành "Chín cột"         -> G17f BẮT mà G17e VẪN ĐẠT
           (ca này chứng minh G17f KHÔNG THỪA: nếu nó chỉ lặp lại G17e thì G17e đã bắt rồi)
   ca 10 — gop_csv.py ghi THÊM một cột vào baocao_ca_nhan.csv   -> G17e VÀ G17f cùng BẮT
+
+BỐN CA THÊM 08/10, sau khi vá hai dương tính giả của chính cổng này. Mỗi bản vá được cắm ĐÚNG
+HAI CA: một ca phá (cổng phải kêu) và một ca đối chứng âm (cổng phải im). Thiếu ca thứ hai thì
+không phân biệt được bản vá với việc vừa làm cổng mù hẳn — mà "làm cổng mù" lại luôn cho ra
+màn hình xanh, nên nó là kiểu hỏng dễ bị bỏ qua nhất.
+
+  ca 11 — tài liệu nhắc đường dẫn `../` KHÔNG tồn tại            -> G17b PHẢI BẮT
+  ca 12 — tài liệu nhắc đường dẫn `../` CÓ tồn tại (đối chứng âm) -> G17b PHẢI IM
+          Cặp này kiểm bản vá `strip(".,;:")` -> `rstrip(".,;:")`. Bản cũ ăn mất hai dấu chấm ở
+          ĐẦU token, biến `../tools/x.py` thành `/tools/x.py` (đường dẫn tuyệt đối), nên nó tố
+          oan mọi đường dẫn `../` — kể cả đường dẫn đúng. Ca 12 là chính ca đã bị tố oan.
+  ca 13 — tài liệu hứa cờ `--khong-co-co-nay` của sinh_manifest -> G17d PHẢI BẮT
+  ca 14 — tài liệu hứa cờ `--ghi` của sinh_manifest (đối chứng âm) -> G17d PHẢI IM
+          Cặp này kiểm bản vá đọc cờ theo HAI kiểu khai. `sinh_manifest.py` đọc cờ bằng
+          `ghi = "--ghi" in sys.argv` chứ không dùng argparse, nên bản cổng cũ tố oan nó là
+          "không có cờ --ghi". Ca 14 là chính ca đã bị tố oan; ca 13 chứng minh bản vá KHÔNG
+          mở toang cổng (nếu quét cả tệp thay vì chỉ dòng có `sys.argv` thì ca 13 sẽ lọt).
 
 Mọi ca đều khôi phục tệp và xác nhận hash về đúng bản gốc trước khi sang ca sau.
 """
@@ -204,6 +221,99 @@ else:
     finally:
         khoi_phuc(GOP, s)
         print("  khôi phục:", "hash KHỚP gốc" if sha(GOP) == GOC[GOP] else "!!! LỆCH")
+
+# ============================== CA 11 + CA 12 ==============================
+# Cặp ca cho bản vá `strip(".,;:")` -> `rstrip(".,;:")` của G17b.
+print("=" * 88)
+print("CA 11 — tài liệu nhắc đường dẫn `../` KHÔNG tồn tại")
+print("        kỳ vọng: G17b LỖI")
+cu = "  nói rõ điều đó."
+moi = ("  nói rõ điều đó.\n\n  Tham chiếu cần kiểm: `../tools/khong-co-tap-tin-nay.py`.")
+s = thay(DOC, cu, moi)
+if s is None:
+    print("  !!! không tìm thấy chỗ thay; bỏ qua")
+    ket_luan.append(("11 đường dẫn ../ không tồn tại", None))
+else:
+    try:
+        rc, out = chay_cong()
+        gb = ket(out, "G17b")
+        print(f"  rc={rc}  G17b={gb}")
+        for ln in out.splitlines():
+            if "G17b" in ln and "[LỖI]" in ln:
+                print("   bằng chứng:", ln.strip()[-150:])
+        bao_cao("11 đường dẫn ../ KHÔNG tồn tại (G17b phải bắt)", gb == "LỖI")
+    finally:
+        khoi_phuc(DOC, s)
+        print("  khôi phục:", "hash KHỚP gốc" if sha(DOC) == GOC[DOC] else "!!! LỆCH")
+
+print("=" * 88)
+print("CA 12 — NEGATIVE CONTROL: tài liệu nhắc đường dẫn `../` CÓ tồn tại thật")
+print("        kỳ vọng: G17b IM  (đây là chính ca bị bản cũ tố oan)")
+cu = "  nói rõ điều đó."
+moi = ("  nói rõ điều đó.\n\n  Tham chiếu cần kiểm: `../tools/tao_sheet_thietke.py`.")
+s = thay(DOC, cu, moi)
+if s is None:
+    print("  !!! không tìm thấy chỗ thay; bỏ qua")
+    ket_luan.append(("12 đối chứng âm: đường dẫn ../ có thật", None))
+else:
+    try:
+        rc, out = chay_cong()
+        gb = ket(out, "G17b")
+        print(f"  rc={rc}  G17b={gb}")
+        for ln in out.splitlines():
+            if "G17b" in ln and "[LỖI]" in ln and "khong" not in ln.lower():
+                print("   TỐ OAN:", ln.strip()[-150:])
+        bao_cao("12 đối chứng âm: đường dẫn ../ CÓ thật (G17b phải im)", gb == "ĐẠT")
+    finally:
+        khoi_phuc(DOC, s)
+        print("  khôi phục:", "hash KHỚP gốc" if sha(DOC) == GOC[DOC] else "!!! LỆCH")
+
+# ============================== CA 13 + CA 14 ==============================
+# Cặp ca cho bản vá đọc cờ CLI theo HAI kiểu khai (argparse và sys.argv) của G17d.
+print("=" * 88)
+print("CA 13 — tài liệu hứa cờ `--khong-co-co-nay` cho sinh_manifest.py")
+print("        kỳ vọng: G17d LỖI  (chứng minh bản vá KHÔNG mở toang cổng)")
+cu = "  nói rõ điều đó."
+moi = ("  nói rõ điều đó.\n\n  Lệnh cần kiểm: `python3 tools/sinh_manifest.py --khong-co-co-nay`.")
+s = thay(DOC, cu, moi)
+if s is None:
+    print("  !!! không tìm thấy chỗ thay; bỏ qua")
+    ket_luan.append(("13 cờ bịa của sinh_manifest", None))
+else:
+    try:
+        rc, out = chay_cong()
+        gd = ket(out, "G17d")
+        print(f"  rc={rc}  G17d={gd}")
+        for ln in out.splitlines():
+            if "G17d" in ln and "[LỖI]" in ln:
+                print("   bằng chứng:", ln.strip()[-160:])
+        bao_cao("13 cờ bịa `--khong-co-co-nay` (G17d phải bắt)", gd == "LỖI")
+    finally:
+        khoi_phuc(DOC, s)
+        print("  khôi phục:", "hash KHỚP gốc" if sha(DOC) == GOC[DOC] else "!!! LỆCH")
+
+print("=" * 88)
+print("CA 14 — NEGATIVE CONTROL: tài liệu hứa cờ `--ghi` mà sinh_manifest THẬT SỰ có")
+print("        (tool đọc cờ bằng `ghi = \"--ghi\" in sys.argv`, KHÔNG dùng argparse)")
+print("        kỳ vọng: G17d IM  (đây là chính ca bị bản cũ tố oan)")
+cu = "  nói rõ điều đó."
+moi = ("  nói rõ điều đó.\n\n  Lệnh cần kiểm: `python3 tools/sinh_manifest.py --ghi`.")
+s = thay(DOC, cu, moi)
+if s is None:
+    print("  !!! không tìm thấy chỗ thay; bỏ qua")
+    ket_luan.append(("14 đối chứng âm: cờ --ghi của sinh_manifest", None))
+else:
+    try:
+        rc, out = chay_cong()
+        gd = ket(out, "G17d")
+        print(f"  rc={rc}  G17d={gd}")
+        for ln in out.splitlines():
+            if "G17d" in ln and "[LỖI]" in ln:
+                print("   TỐ OAN:", ln.strip()[-160:])
+        bao_cao("14 đối chứng âm: cờ `--ghi` CÓ thật (G17d phải im)", gd == "ĐẠT")
+    finally:
+        khoi_phuc(DOC, s)
+        print("  khôi phục:", "hash KHỚP gốc" if sha(DOC) == GOC[DOC] else "!!! LỆCH")
 
 # ============================== TỔNG KẾT ==============================
 print("=" * 88)
