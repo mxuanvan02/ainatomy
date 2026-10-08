@@ -319,7 +319,22 @@
     }
     return rows.map(r => r.map(x => {
       const s = String(x===undefined||x===null?"":x);
-      return /[",\n]/.test(s) ? '"' + s.replace(/"/g,'""') + '"' : s;
+      /* CHỐNG FORMULA INJECTION (thêm 08/10, đã chứng minh lỗ thật bằng app sống):
+       * `ma_hs`/`ma_lop` là VĂN BẢN TỰ DO học sinh gõ (app.js dangNhap chỉ trim +
+       * uppercase, không validate ký tự). Bản cũ chỉ thoát `" , \n` nên HS gõ
+       * `=HYPERLINK(...)` hay `+1+1` làm mã của mình thì chuỗi đó đi TRẦN vào ô CSV,
+       * và Excel/LibreOffice THỰC THI ô bắt đầu bằng = + - @ khi giáo viên mở tệp.
+       * Đo thật bằng browser trước khi vá: payload vào nguyên văn cột 1-2 (HO_FORMULA=true).
+       *
+       * CÁCH CHẶN: thêm dấu nháy đơn `'` vào ĐẦU ô — cách chuẩn OWASP, Excel/LibreOffice
+       * hiển thị `'` là ký tự văn bản và ô thành text chết. CHỈ chặn khi chuỗi KHÔNG PHẢI
+       * SỐ HỢP LỆ (isFinite(Number(s))): các cột số của chính app này (diem, tong, dung,
+       * bat_oan...) có thể âm hoặc 0/1, và `-1` trong CSV là SỐ chứ không phải formula —
+       * prefix vô điều kiện mọi ô bắt đầu bằng `-` sẽ phá dữ liệu thật của giáo viên.
+       * Mã HS/lớp hợp lệ (A001, 10A1) không bao giờ bắt đầu bằng = + - @ nên dữ liệu
+       * sạch không đổi một byte nào, tools/gop_csv.py đọc theo tên cột không bị ảnh hưởng. */
+      const t = (/^[=+\-@\t\r]/.test(s) && !(s !== "" && isFinite(Number(s)))) ? "'" + s : s;
+      return /[",\n]/.test(t) ? '"' + t.replace(/"/g,'""') + '"' : t;
     }).join(",")).join("\n");
   }
 
