@@ -1,4 +1,4 @@
-/* HỌC AI — dữ liệu 13 chủ đề + 22 yêu cầu cần đạt (YCCĐ) của LỚP 10.
+/* AInatomy — dữ liệu 13 chủ đề + 22 yêu cầu cần đạt (YCCĐ) của LỚP 10.
  * NGUỒN: Khung nội dung giáo dục Trí tuệ nhân tạo cho học sinh phổ thông,
  *        ban hành kèm QĐ 2422/QĐ-BGDĐT ngày 18/8/2026 (phụ lục, lớp 10).
  * Nội dung YCCĐ là NGUYÊN VĂN, đã verify tự động bằng tools/verify_yccd.py

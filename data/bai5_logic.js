@@ -1,4 +1,4 @@
-/* HỌC AI — BÀI TẬP BÀI 5 "DỮ LIỆU LÔGIC" (Tin học 10, Chủ đề 1)
+/* AInatomy — BÀI TẬP BÀI 5 "DỮ LIỆU LÔGIC" (Tin học 10, Chủ đề 1)
  * Bám nội dung Bài 5 sách Kết nối tri thức / Chân trời sáng tạo:
  *   (1) Các giá trị chân lí và các phép toán lôgic (AND, OR, NOT)
  *   (2) Biểu diễn dữ liệu lôgic (1 bit: 1 = TRUE, 0 = FALSE)
@@ -76,7 +76,7 @@ window.MX_BAI5 = [
       { id: "d", text: "(NOT T) AND (NOT P)" }
     ],
     dapAn: "b",
-    giaiThich: "'Bài thật ra đúng' = NOT T; 'hệ báo có lỗi' = P. Vậy bắt oan = (NOT T) AND P. Bốn tổ hợp này tạo thành BẢNG NHẦM LẪN: T∧P = bắt đúng, (¬T)∧P = bắt oan, T∧(¬P) = bỏ sót, (¬T)∧(¬P) = xác nhận đúng. Em xem bảng của chính mình ở mục 3 trang này."
+    giaiThich: "'Bài thật ra đúng' = NOT T; 'hệ báo có lỗi' = P. Vậy bắt oan = (NOT T) AND P. Bốn tổ hợp này tạo thành BẢNG NHẦM LẪN: T∧P = bắt đúng, (¬T)∧P = bắt oan, T∧(¬P) = bỏ sót, (¬T)∧(¬P) = xác nhận đúng. Bảng của chính người học nằm ở mục 3 trang này."
   },
   {
     id: "b5-07", mach: "B", unesco: "B2",

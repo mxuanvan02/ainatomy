@@ -445,7 +445,7 @@ def main():
                 .replace("<", "\\u003c").replace(">", "\\u003e"))
 
     html = (TEMPLATE
-            .replace("__TEN__", "HỌC AI")
+            .replace("__TEN__", "AInatomy")
             .replace("__SO__", str(len(items)))
             .replace("__KHOA__", KHOA_LUU)
             .replace("__NHAN__", nhungs(nhan))

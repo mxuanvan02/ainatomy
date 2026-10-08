@@ -1,4 +1,4 @@
-/* HỌC AI — bt09.js : BT-09 Mức 3 "Tự soạn một câu trả lời AI có cài đúng MỘT lỗi".
+/* AInatomy — bt09.js : BT-09 Mức 3 "Tự soạn một câu trả lời AI có cài đúng MỘT lỗi".
  *
  * VÌ SAO CÓ TỆP NÀY
  *   THIET_KE_BAI_TOAN.md PHẦN 4.4 ghi Mức 3 của BT-09 là: "Tự soạn một câu trả lời AI có
@@ -167,28 +167,28 @@
      * sinh đây là một con số vô nghĩa đứng trước một câu đã rõ nghĩa. Học sinh cần biết mình
      * phải LÀM gì, còn khung ba mức là chuyện của giáo viên và của hồ sơ chuyên môn
      * (README + THIET_KE_BAI_TOAN.md vẫn giữ nguyên cách gọi đó để giám khảo đối chiếu). */
-    h.innerHTML = svgIco("lightbulb") + " <b>Em tự cài một lỗi cho bạn bắt</b>";
+    h.innerHTML = svgIco("lightbulb") + " <b>Tự cài một lỗi cho bạn cùng lớp bắt</b>";
     card.appendChild(h);
 
     const q = document.createElement("p");
     q.className = "de-bai";
-    q.textContent = "Viết một câu trả lời của AI có cài ĐÚNG MỘT lỗi, rồi chọn loại lỗi em "
+    q.textContent = "Viết một câu trả lời của AI có cài ĐÚNG MỘT lỗi, rồi chọn loại lỗi đã "
       + "đã cài. Sau đó đưa cho một bạn cùng lớp đọc và bắt lỗi — bạn bắt được thì bài của "
-      + "em đạt.";
+      + "bài đạt yêu cầu.";
     card.appendChild(q);
 
     const ghichu = document.createElement("p");
     ghichu.className = "nho chu2";
     ghichu.textContent = "Hệ thống KHÔNG chấm đúng/sai và không cho điểm bài này: để biết "
-      + "câu em viết có lỗi hay không thì phải hiểu nội dung, mà máy không đọc hiểu thay em "
-      + "được. Hệ chỉ kiểm câu em viết có chứa những DẤU HIỆU của loại lỗi em khai hay không. "
+      + "câu đã viết có lỗi hay không thì phải hiểu nội dung, mà máy không đọc hiểu thay người viết "
+      + "được. Hệ chỉ kiểm câu đã viết có chứa những DẤU HIỆU của loại lỗi đã khai hay không. "
       + "Người phán cuối cùng là bạn cùng lớp và thầy/cô.";
     card.appendChild(ghichu);
 
     /* --- chọn loại lỗi định cài --- */
     const labLoai = document.createElement("p");
     labLoai.className = "de-bai";
-    labLoai.textContent = "1. Em định cài loại lỗi nào?";
+    labLoai.textContent = "1. Chọn loại lỗi định cài";
     card.appendChild(labLoai);
 
     const chips = document.createElement("div");
@@ -226,7 +226,7 @@
 
       const p2 = document.createElement("p");
       p2.className = "chu2";
-      p2.innerHTML = "<b>Câu của em cần:</b> ";
+      p2.innerHTML = "<b>Câu viết ra cần có</b> ";
       const s2 = document.createElement("span");
       s2.textContent = l.dauHieu.moTaBatBuoc;
       p2.appendChild(s2);
@@ -247,7 +247,7 @@
     /* --- viết câu --- */
     const labCau = document.createElement("label");
     labCau.setAttribute("for", "bt09-cau");
-    labCau.textContent = "2. Câu trả lời của AI do em viết (cài đúng một lỗi)";
+    labCau.textContent = "2. Câu trả lời của AI tự viết (cài đúng một lỗi)";
     card.appendChild(labCau);
 
     const taCau = document.createElement("textarea");
@@ -257,7 +257,7 @@
 
     const labBan = document.createElement("label");
     labBan.setAttribute("for", "bt09-ban");
-    labBan.textContent = "3. Em đưa câu này cho bạn nào bắt? (ghi mã hoặc tên bạn)";
+    labBan.textContent = "3. Đưa câu này cho bạn nào bắt? (ghi mã hoặc tên bạn)";
     card.appendChild(labBan);
 
     const inBan = document.createElement("input");
@@ -267,7 +267,7 @@
 
     const nutKiem = document.createElement("button");
     nutKiem.className = "btn chinh";
-    nutKiem.textContent = "Kiểm dấu hiệu trong câu của em";
+    nutKiem.textContent = "Kiểm dấu hiệu trong câu đã viết";
     card.appendChild(nutKiem);
 
     const fb = document.createElement("div");
@@ -278,17 +278,17 @@
       const ban = inBan.value.trim();
       if(!chon){
         fb.className = "phanhoi sai";
-        fb.textContent = "Em hãy chọn loại lỗi em định cài trước đã.";
+        fb.textContent = "Cần chọn loại lỗi định cài trước.";
         return;
       }
       if(text.length < 20){
         fb.className = "phanhoi sai";
-        fb.textContent = "Câu còn quá ngắn (dưới 20 kí tự). Hãy viết một câu trả lời AI đủ để bạn em đọc và bắt lỗi.";
+        fb.textContent = "Câu còn quá ngắn (dưới 20 kí tự). Hãy viết một câu trả lời AI đủ để bạn cùng lớp đọc và bắt lỗi.";
         return;
       }
       if(ban.length < 2){
         fb.className = "phanhoi sai";
-        fb.textContent = "Em hãy ghi bạn sẽ đưa câu này cho ai bắt.";
+        fb.textContent = "Cần ghi rõ sẽ đưa câu này cho ai bắt.";
         return;
       }
 
@@ -315,8 +315,8 @@
 
       const p1 = document.createElement("p");
       p1.innerHTML = (kq.dat ? svgIco("check") : svgIco("x")) + " <b>"
-        + (kq.dat ? "Câu của em có dấu hiệu của loại lỗi đã khai."
-                  : "Chưa thấy dấu hiệu của loại lỗi em khai.") + "</b>";
+        + (kq.dat ? "Câu đã viết có dấu hiệu của loại lỗi đã khai."
+                  : "Chưa thấy dấu hiệu của loại lỗi đã khai.") + "</b>";
       fb.appendChild(p1);
 
       const p2 = document.createElement("p");
@@ -327,7 +327,7 @@
        * "cần 6 dấu hiệu chưa thấy" và học sinh đọc thành "em phải nêu đủ cả 6 cách diễn
        * đạt" — trong khi đề bài chỉ cần MỘT cách. Nay nói đúng bản chất: cần ít nhất một
        * trong N cách, hệ đã tìm thấy K. */
-      p2.textContent = "Loại em khai: " + tenLoai(chon)
+      p2.textContent = "Loại đã khai: " + tenLoai(chon)
         + " — chỉ cần có MỘT trong " + (kq.thayDuoc.length + kq.thieu.length)
         + " cách nêu, hệ tìm thấy " + kq.thayDuoc.length + ".";
       fb.appendChild(p2);
@@ -341,7 +341,7 @@
       if(kq.vuong.length){
         const p4 = document.createElement("p");
         p4.className = "chu2";
-        p4.textContent = "Nhưng câu em có cả: " + kq.vuong.join(", ") + " — có nguồn kiểm "
+        p4.textContent = "Nhưng câu viết ra có cả: " + kq.vuong.join(", ") + ", mà có nguồn kiểm "
           + "chứng được thì không còn là số liệu bịa nữa.";
         fb.appendChild(p4);
       }
@@ -352,15 +352,15 @@
         w.className = "nho chu2";
         w.innerHTML = svgIco("triangle-alert") + " <b>Cảnh báo (không phải kết luận):</b> ";
         const sw = document.createElement("span");
-        sw.textContent = "câu em viết còn có dấu hiệu của " + kq.loaiKhac.length + " loại lỗi "
+        sw.textContent = "câu đã viết còn có dấu hiệu của " + kq.loaiKhac.length + " loại lỗi "
           + "khác (" + kq.loaiKhac.map(x => x.ten).join(", ") + "). Đề bài yêu cầu ĐÚNG MỘT lỗi "
-          + "— cài nhiều lỗi thì bạn em không biết phải bắt lỗi nào.";
+          "+ cài nhiều lỗi thì bạn đọc không biết phải bắt lỗi nào.";
         w.appendChild(sw);
         fb.appendChild(w);
       }else if(kq.dat){
         const ok = document.createElement("p");
         ok.className = "nho chu2";
-        ok.textContent = "Không thấy dấu hiệu của các loại lỗi khác — câu em viết đang cài "
+        ok.textContent = "Không thấy dấu hiệu của các loại lỗi khác, câu đã viết đang cài "
           + "đúng một loại lỗi, đúng như đề bài.";
         fb.appendChild(ok);
       }
@@ -370,9 +370,9 @@
       p5.innerHTML = "<b>Cách chấm và giới hạn:</b> ";
       const s5 = document.createElement("span");
       s5.textContent = "hệ ĐẾM dấu hiệu hình thức đã định nghĩa trước, hệ không đọc hiểu nội "
-        + "dung câu em viết, nên hệ không khẳng định được câu này có lỗi hay không. Bước cuối "
-        + "vẫn là bạn " + (ban || "cùng lớp") + " đọc và bắt lỗi. Câu của em không được lưu "
-        + "vào nhật ký — chỉ loại lỗi và số dấu hiệu được ghi lại.";
+        + "dung câu đã viết, nên hệ không khẳng định được câu này có lỗi hay không. Bước cuối "
+        + "vẫn là bạn " + (ban || "cùng lớp") + " đọc và bắt lỗi. Câu đã viết không được lưu "
+        + "vào nhật ký, chỉ loại lỗi và số dấu hiệu được ghi lại.";
       p5.appendChild(s5);
       fb.appendChild(p5);
     };

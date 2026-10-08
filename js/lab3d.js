@@ -1,4 +1,4 @@
-/* HỌC AI — lab3d.js : CẢNH ② "XƯỞNG SOI MÔ HÌNH" (3D).
+/* AInatomy — lab3d.js : CẢNH ② "XƯỞNG SOI MÔ HÌNH" (3D).
  *
  * YCCĐ phủ (nguyên văn Khung 2422/QĐ-BGDĐT, lớp 10 — đã verify 22/22):
  *   10.C4.1  Phân tích được sự ảnh hưởng của chất lượng dữ liệu đến chất lượng AI.
@@ -109,7 +109,7 @@
       if(root) root.innerHTML =
         `<div class="card" style="border-left:4px solid var(--vang)">
            <b>${svgIco("triangle-alert")} Máy này không chạy được đồ hoạ 3D</b> <span class="nho chu2">(${esc(k.liDo)})</span><br>
-           <span class="chu2">Không sao — <b>nội dung bài học không đổi</b>. Em hãy dùng
+           <span class="chu2">Không sao — <b>nội dung bài học không đổi</b>. Hãy dùng
            <b>Tầng 1 — Xưởng huấn luyện</b> ở trang chủ: cùng một mô hình, cùng bộ dữ liệu
            và cùng con số, chỉ hiển thị dạng 2D. Mọi kết quả vẫn được ghi vào nhật ký lớp.</span>
          </div>`;

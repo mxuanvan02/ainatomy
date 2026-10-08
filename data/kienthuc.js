@@ -1,4 +1,4 @@
-/* HỌC AI — MODULE KIẾN THỨC NỀN (phủ 6 YCCĐ cốt lõi lớp 10)
+/* AInatomy — MODULE KIẾN THỨC NỀN (phủ 6 YCCĐ cốt lõi lớp 10)
  * Nguồn: Khung nội dung giáo dục AI cho HS phổ thông, ban hành kèm QĐ 2422/QĐ-BGDĐT (18/8/2026).
  * Mã YCCĐ theo quy ước của Khung: [Lớp].[Mã chủ đề].[Số thứ tự]; tiền tố MR = nội dung mở rộng.
  *
@@ -22,7 +22,7 @@ window.MX_KT = {
       so: "24/2018/QH14",
       ngay: "Quốc hội thông qua 12/6/2018, hiệu lực 01/01/2019",
       baoVe: "Bảo vệ an ninh quốc gia và trật tự an toàn xã hội trên không gian mạng; quy định hành vi bị nghiêm cấm (đăng thông tin sai sự thật, xúc phạm, tấn công mạng...), trách nhiệm của doanh nghiệp cung cấp dịch vụ.",
-      lienHe: "Khi em đăng nội dung lên mạng, em chịu trách nhiệm về nội dung đó theo luật này.",
+      lienHe: "Khi đăng nội dung lên mạng, người đăng chịu trách nhiệm về nội dung đó theo luật này.",
       nguon: "vanban.chinhphu.vn (Luật số 24/2018/QH14). Năm 2025 Quốc hội thông qua Luật An ninh mạng sửa đổi (số 116/2025/QH15) — baochinhphu.vn 10/12/2025."
     },
     {
@@ -30,7 +30,7 @@ window.MX_KT = {
       so: "60/2024/QH15",
       ngay: "Quốc hội thông qua 30/11/2024, hiệu lực 01/7/2025",
       baoVe: "Đạo luật đầu tiên quy định toàn diện về dữ liệu số (5 chương, 46 điều), bao gồm xây dựng, phát triển, bảo vệ, quản trị, xử lí và sử dụng dữ liệu; Cơ sở dữ liệu tổng hợp quốc gia.",
-      lienHe: "Dữ liệu em tạo ra khi học (bài làm, nhật ký học tập) cũng là dữ liệu số và được luật điều chỉnh.",
+      lienHe: "Dữ liệu tạo ra khi học (bài làm, nhật ký học tập) cũng là dữ liệu số và được luật điều chỉnh.",
       nguon: "luatvietnam.vn; vnetwork.vn; hcmussh.edu.vn; congan.camau.gov.vn — đồng nhất về số hiệu và ngày hiệu lực."
     },
     {
@@ -92,31 +92,31 @@ window.MX_KT = {
   hoTroHocTap: [
     {
       id: "ht-01",
-      tinhHuong: "Em chụp ảnh bài giải viết tay của mình, hệ đọc chữ trong ảnh rồi gán bài đó vào một trong ba nhóm có sẵn: \"đã hiểu\", \"cần xem lại\", \"chưa đạt\".",
+      tinhHuong: "Chụp ảnh bài giải viết tay, hệ đọc chữ trong ảnh rồi gán bài đó vào một trong ba nhóm có sẵn: \"đã hiểu\", \"cần xem lại\", \"chưa đạt\".",
       nhomDung: "phan_loai",
       dauVaoMau: "Ảnh chụp bài giải viết tay của học sinh (cùng một tập nhãn cố định 3 nhóm).",
       dauRaMau: "Một nhãn trong ba nhãn có sẵn — ví dụ \"cần xem lại\". Không sinh ra nội dung mới nào.",
       tuKhoaVao: ["ảnh", "bài giải", "chụp", "viết tay", "chữ", "bài làm"],
       tuKhoaRa: ["nhãn", "nhóm", "một trong ba", "xếp", "gán", "đã hiểu", "cần xem lại", "chưa đạt"],
       viSao: "Đối tượng được gán vào một nhóm CÓ SẴN, nên đây là phân loại. Dấu hiệu nhận biết: nếu hệ chỉ chọn đáp án trong danh sách đã có thì là phân loại.",
-      canhBao: "Hệ đọc chữ viết tay có thể sai với chữ xấu hoặc ảnh mờ. Em cần biết ngưỡng này tồn tại trước khi tin kết quả."
+      canhBao: "Hệ đọc chữ viết tay có thể sai với chữ xấu hoặc ảnh mờ. Ngưỡng sai này cần được biết trước khi tin kết quả."
     },
     {
       id: "ht-02",
-      tinhHuong: "Hệ đọc bảng điểm giữa kì của em ở các môn, so với điểm các tuần trước, rồi cảnh báo môn nào có nguy cơ sa sút trong tháng tới.",
+      tinhHuong: "Hệ đọc bảng điểm giữa kì ở các môn, so với điểm các tuần trước, rồi cảnh báo môn nào có nguy cơ sa sút trong tháng tới.",
       nhomDung: "du_doan",
       dauVaoMau: "Bảng điểm quá khứ của học sinh theo thời gian (dữ liệu đã có, không phải dữ liệu tương lai).",
       dauRaMau: "Một tỉ lệ hoặc mức nguy cơ cho từng môn — ví dụ \"môn Toán: nguy cơ sa sút 62%\".",
       tuKhoaVao: ["điểm", "bảng điểm", "các tuần", "quá khứ", "giữa kì", "kết quả cũ"],
       tuKhoaRa: ["nguy cơ", "tỉ lệ", "dự báo", "phần trăm", "xác suất", "mức độ", "cảnh báo"],
       viSao: "Đầu ra là một ước lượng về chuyện CHƯA xảy ra, tính từ dữ liệu đã xảy ra, nên đây là dự đoán. Dấu hiệu nhận biết: có chữ \"sẽ\", \"nguy cơ\", \"dự báo\" đi kèm một con số.",
-      canhBao: "Dự đoán không phải bản án. Một con số nguy cơ cao không có nghĩa là em chắc chắn sẽ sa sút — nó chỉ nói dữ liệu hiện có giống những trường hợp trước đây."
+      canhBao: "Dự đoán không phải bản án. Một con số nguy cơ cao không có nghĩa chắc chắn sẽ sa sút, nó chỉ nói dữ liệu hiện có giống những trường hợp trước đây."
     },
     {
       id: "ht-03",
-      tinhHuong: "Em nhờ trợ lý AI soạn cho mình 10 câu luyện tập MỚI về chương đang học, kèm lời giải, để tự làm thêm ở nhà.",
+      tinhHuong: "Nhờ trợ lý AI soạn 10 câu luyện tập MỚI về chương đang học, kèm lời giải, để tự làm thêm ở nhà.",
       nhomDung: "tao_sinh",
-      dauVaoMau: "Câu mô tả yêu cầu của học sinh (chương nào, dạng bài nào, mức độ khó) và tài liệu em dán vào.",
+      dauVaoMau: "Câu mô tả yêu cầu của học sinh (chương nào, dạng bài nào, mức độ khó) và tài liệu được dán vào.",
       dauRaMau: "Văn bản hoàn toàn mới: 10 câu hỏi và lời giải chưa từng tồn tại trước đó.",
       tuKhoaVao: ["yêu cầu", "mô tả", "chương", "dạng bài", "tài liệu", "dán", "nhờ"],
       tuKhoaRa: ["câu hỏi mới", "đề mới", "văn bản", "lời giải", "nội dung mới", "soạn", "sinh ra"],
@@ -128,33 +128,33 @@ window.MX_KT = {
       tinhHuong: "Hệ đọc nhật ký làm bài của cả lớp trong học kì, rồi chỉ ra rằng nhóm học sinh hay sai cùng một dạng câu hỏi về dữ liệu lệch.",
       nhomDung: "nhan_dang_mau",
       dauVaoMau: "Nhật ký làm bài của NHIỀU học sinh, nhiều lượt, tích lại theo thời gian (dữ liệu lớn).",
-      dauRaMau: "Một quy luật lặp lại: nhóm học sinh nào hay sai dạng câu nào — không phải điểm của một em.",
+      dauRaMau: "Một quy luật lặp lại: nhóm học sinh nào hay sai dạng câu nào — không phải điểm của một học sinh.",
       tuKhoaVao: ["nhật ký", "nhiều", "cả lớp", "nhiều lượt", "dữ liệu lớn", "lịch sử làm bài"],
       tuKhoaRa: ["quy luật", "nhóm học sinh", "lặp lại", "xu hướng", "phân cụm", "hay sai"],
       viSao: "Việc cần làm là TÌM QUY LUẬT LẶP LẠI trong dữ liệu lớn, chứ không phải gán nhãn cho một bài hay đoán một con số, nên đây là nhận dạng mẫu.",
-      canhBao: "Quy luật tìm trên dữ liệu của lớp em có thể không đúng cho lớp khác. Mẫu tìm được là giả thuyết để kiểm, không phải kết luận."
+      canhBao: "Quy luật tìm trên dữ liệu của lớp mình có thể không đúng cho lớp khác. Mẫu tìm được là giả thuyết để kiểm, không phải kết luận."
     },
     {
       id: "ht-05",
-      tinhHuong: "Em dán một bài đọc tiếng Anh vào trợ lý AI, nhờ dịch sang tiếng Việt và tóm tắt còn 5 gạch đầu dòng để kịp đọc trước giờ học.",
+      tinhHuong: "Dán một bài đọc tiếng Anh vào trợ lý AI, nhờ dịch sang tiếng Việt và tóm tắt còn 5 gạch đầu dòng để kịp đọc trước giờ học.",
       nhomDung: "xu_li_ngon_ngu",
-      dauVaoMau: "Văn bản tiếng Anh em dán vào (ngôn ngữ tự nhiên, có thể dài).",
+      dauVaoMau: "Văn bản tiếng Anh được dán vào (ngôn ngữ tự nhiên, có thể dài).",
       dauRaMau: "Bản dịch tiếng Việt và bản tóm tắt 5 gạch đầu dòng.",
       tuKhoaVao: ["bài đọc", "tiếng anh", "văn bản", "dán", "đoạn văn"],
       tuKhoaRa: ["dịch", "tiếng việt", "tóm tắt", "gạch đầu dòng", "bản dịch"],
       viSao: "Việc cần làm là HIỂU và SINH ngôn ngữ tự nhiên (dịch, tóm tắt), nên đây là xử lí ngôn ngữ. Dấu hiệu nhận biết: đầu vào và đầu ra đều là chữ của con người.",
-      canhBao: "Bản dịch có thể trôi chảy nhưng lệch nghĩa ở câu khó. Với bài đọc quan trọng, em nên đối chiếu lại vài câu then chốt."
+      canhBao: "Bản dịch có thể trôi chảy nhưng lệch nghĩa ở câu khó. Với bài đọc quan trọng, cần đối chiếu lại vài câu then chốt."
     },
     {
       id: "ht-06",
-      tinhHuong: "Hệ nhận thời gian trống của em trong tuần và hạn nộp của từng bài, rồi gợi ý một thời khóa biểu tự học, xếp việc gấp lên trước.",
+      tinhHuong: "Hệ nhận thời gian trống trong tuần và hạn nộp của từng bài, rồi gợi ý một thời khóa biểu tự học, xếp việc gấp lên trước.",
       nhomDung: "toi_uu",
       dauVaoMau: "Các ràng buộc: thời gian trống từng ngày, hạn nộp từng bài, thời lượng mỗi việc cần.",
       dauRaMau: "Một phương án lịch cụ thể cho cả tuần — chọn trong vô số cách xếp, theo tiêu chí đã đặt.",
       tuKhoaVao: ["thời gian trống", "hạn nộp", "ràng buộc", "lịch", "thời lượng", "mấy giờ"],
       tuKhoaRa: ["thời khóa biểu", "phương án", "xếp lịch", "tối ưu", "gợi ý lịch", "cách sắp xếp"],
       viSao: "Việc cần làm là CHỌN PHƯƠNG ÁN TỐT NHẤT trong nhiều cách xếp, dưới các ràng buộc, nên đây là tối ưu và ra quyết định.",
-      canhBao: "Lịch do hệ xếp tối ưu theo tiêu chí của hệ, không theo sức học của em. Em vẫn là người quyết định có theo hay không."
+      canhBao: "Lịch do hệ xếp tối ưu theo tiêu chí của hệ, không theo sức học của từng người. Người học vẫn là người quyết định có theo hay không."
     }
   ],
 
@@ -179,7 +179,7 @@ window.MX_KT = {
     { id: "du_lieu", ten: "Cung cấp DỮ LIỆU / tư liệu cần dùng", viDu: "dán đoạn văn bản, số liệu, danh sách cần xử lí" },
     { id: "dinh_dang", ten: "Chỉ rõ ĐỊNH DẠNG đầu ra", viDu: "'trả lời bằng bảng 3 cột', 'liệt kê 5 gạch đầu dòng', 'tối đa 150 chữ'" },
     { id: "rang_buoc", ten: "Nêu RÀNG BUỘC và điều phải tránh", viDu: "'không bịa số liệu', 'chỉ dùng thông tin trong đoạn văn', 'nêu rõ chỗ không chắc chắn'" },
-    { id: "kiem_chung", ten: "Yêu cầu KIỂM CHỨNG / nêu nguồn", viDu: "'cho biết mỗi thông tin lấy từ đâu', 'đánh dấu chỗ nào em không chắc'" }
+    { id: "kiem_chung", ten: "Yêu cầu KIỂM CHỨNG / nêu nguồn", viDu: "'cho biết mỗi thông tin lấy từ đâu', 'đánh dấu chỗ nào chưa chắc'" }
   ],
 
   /* ============ 10.C3.2 — BÀI THỰC HÀNH ĐẶT PROMPT (chấm theo rubric, offline) ============ */
@@ -187,24 +187,24 @@ window.MX_KT = {
     {
       id: "p-01",
       ten: "Yêu cầu AI giải thích một khái niệm Tin học",
-      tinhHuong: "Em muốn nhờ trợ lý AI giải thích khái niệm 'thiên kiến dữ liệu' (data bias) để hiểu trước khi vào bài học, sao cho một bạn lớp 10 chưa biết gì về AI cũng hiểu được.",
+      tinhHuong: "Cần nhờ trợ lý AI giải thích khái niệm 'thiên kiến dữ liệu' (data bias) để hiểu trước khi vào bài học, sao cho một bạn lớp 10 chưa biết gì về AI cũng hiểu được.",
       goiY: "Hãy viết prompt có đủ việc cần làm, đối tượng đọc, độ dài, định dạng, và điều phải tránh.",
       /* tiêu chí BẮT BUỘC phải có mặt trong prompt của HS (từ khoá chấp nhận được) */
       batBuoc: ["muc_tieu", "boi_canh", "dinh_dang"],
       tuKhoa: {
         muc_tieu: ["giải thích", "nêu", "trình bày", "cho biết", "định nghĩa", "mô tả"],
-        boi_canh: ["lớp 10", "học sinh", "chưa biết", "mới học", "người mới", "bạn em", "tuổi"],
+        boi_canh: ["lớp 10", "học sinh", "chưa biết", "mới học", "người mới", "bạn cùng lớp", "tuổi"],
         dinh_dang: ["gạch đầu dòng", "bảng", "chữ", "từ", "đoạn văn", "ví dụ", "ngắn", "dòng", "mục"],
         du_lieu: ["dữ liệu", "ví dụ sau", "đoạn văn", "thông tin sau", "cho sẵn"],
         rang_buoc: ["không", "tránh", "đừng", "chỉ", "không được", "hạn chế"],
         kiem_chung: ["nguồn", "không chắc", "kiểm tra", "trích dẫn", "chắc chắn", "nếu không biết"]
       },
-      giaiThich: "Prompt tối thiểu cần: MỤC TIÊU (giải thích khái niệm gì) + BỐI CẢNH (cho ai, trình độ nào) + ĐỊNH DẠNG (dài bao nhiêu, dạng gì). Thiếu bối cảnh, AI sẽ trả lời quá hàn lâm; thiếu định dạng, em nhận về một bài dài không dùng được."
+      giaiThich: "Prompt tối thiểu cần: MỤC TIÊU (giải thích khái niệm gì) + BỐI CẢNH (cho ai, trình độ nào) + ĐỊNH DẠNG (dài bao nhiêu, dạng gì). Thiếu bối cảnh, AI sẽ trả lời quá hàn lâm; thiếu định dạng, kết quả nhận về là một bài dài không dùng được."
     },
     {
       id: "p-02",
       ten: "Yêu cầu AI xử lí dữ liệu lớp học (không bịa)",
-      tinhHuong: "Lớp em có bảng điểm 40 bạn (điểm giữa kì môn Tin). Em muốn AI gợi ý bạn nào cần được hỗ trợ thêm và lí do, nhưng KHÔNG được bịa số và không được tiết lộ thông tin cá nhân.",
+      tinhHuong: "Lớp có bảng điểm 40 bạn (điểm giữa kì môn Tin). Cần AI gợi ý bạn nào cần được hỗ trợ thêm và lí do, nhưng KHÔNG được bịa số và không được tiết lộ thông tin cá nhân.",
       goiY: "Hãy viết prompt đảm bảo có dữ liệu thật, có ràng buộc chống bịa đặt, và bảo vệ dữ liệu cá nhân.",
       batBuoc: ["muc_tieu", "du_lieu", "rang_buoc"],
       tuKhoa: {
@@ -215,13 +215,13 @@ window.MX_KT = {
         rang_buoc: ["không bịa", "không được", "không", "tránh", "ẩn danh", "mã", "không nêu tên", "chỉ dùng", "dựa trên"],
         kiem_chung: ["giải thích", "căn cứ", "dựa vào", "nguồn", "nếu không đủ"]
       },
-      giaiThich: "Đây là bài tập gắn với Luật Bảo vệ dữ liệu cá nhân (91/2025/QH15). Khi đưa dữ liệu học sinh cho một công cụ AI, em phải ẨN DANH trước (dùng mã thay vì họ tên) và phải ràng buộc để AI không suy diễn ngoài dữ liệu. Prompt tốt = prompt có ràng buộc."
+      giaiThich: "Đây là bài tập gắn với Luật Bảo vệ dữ liệu cá nhân (91/2025/QH15). Khi đưa dữ liệu học sinh cho một công cụ AI, phải ẨN DANH trước (dùng mã thay vì họ tên) và phải ràng buộc để AI không suy diễn ngoài dữ liệu. Prompt tốt = prompt có ràng buộc."
     },
     {
       id: "p-03",
       ten: "Yêu cầu AI giúp kiểm tra một thông tin đáng ngờ",
-      tinhHuong: "Em đọc được trên mạng câu này — '97,3% học sinh Việt Nam từng bị đánh cắp tài khoản trong năm 2025'. Em muốn nhờ AI giúp kiểm tra thông tin này có đáng tin không.",
-      goiY: "Hãy viết prompt khiến AI phải nêu rõ mức độ chắc chắn và cách em tự kiểm chứng, thay vì khẳng định bừa.",
+      tinhHuong: "Đọc được trên mạng câu này, '97,3% học sinh Việt Nam từng bị đánh cắp tài khoản trong năm 2025'. Cần nhờ AI kiểm tra thông tin này có đáng tin không.",
+      goiY: "Hãy viết prompt khiến AI phải nêu rõ mức độ chắc chắn và cách tự kiểm chứng, thay vì khẳng định bừa.",
       batBuoc: ["muc_tieu", "kiem_chung", "rang_buoc"],
       tuKhoa: {
         muc_tieu: ["kiểm tra", "xác minh", "đánh giá", "cho biết", "xem", "có đúng", "đáng tin"],
@@ -231,7 +231,7 @@ window.MX_KT = {
         rang_buoc: ["không", "tránh", "đừng", "nếu không biết", "không chắc", "chỉ"],
         kiem_chung: ["nguồn", "ở đâu", "tự kiểm", "kiểm chứng", "trang chính thức", "mức độ chắc chắn", "nói rõ"]
       },
-      giaiThich: "Đây chính là kĩ năng kiểm chứng thông tin mà Khung QĐ 2422 đặt làm mục tiêu ('rèn luyện tư duy phản biện, khả năng kiểm chứng thông tin'). Một prompt tốt trong trường hợp này phải ÉP AI nói rõ mức độ chắc chắn và chỉ cho em cách tự tra cứu, thay vì để AI tự khẳng định."
+      giaiThich: "Đây chính là kĩ năng kiểm chứng thông tin mà Khung QĐ 2422 đặt làm mục tiêu ('rèn luyện tư duy phản biện, khả năng kiểm chứng thông tin'). Một prompt tốt trong trường hợp này phải ÉP AI nói rõ mức độ chắc chắn và chỉ cách tự tra cứu, thay vì để AI tự khẳng định."
     }
   ],
 

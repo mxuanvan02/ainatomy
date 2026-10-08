@@ -1,4 +1,4 @@
-/* HỌC AI — MODULE KIẾN THỨC NỀN (5 YCCĐ cốt lõi lớp 10 còn thiếu)
+/* AInatomy — MODULE KIẾN THỨC NỀN (5 YCCĐ cốt lõi lớp 10 còn thiếu)
  * GHI CHÚ AN TOÀN (innerHTML): app 100% offline/tự host, nội dung lấy từ data/kienthuc.js
  * (hằng số tĩnh của chính sản phẩm). Chuỗi do HS nhập được escape bằng esc() trước khi
  * hiển thị lại, và KHÔNG bao giờ được đưa ra máy khác. Không có vectơ XSS từ mạng.
@@ -58,7 +58,7 @@
         <h3 style="margin-top:0">${esc(l.ten)} <span class="tagline">${esc(l.so)}</span></h3>
         <p class="nho chu2">${esc(l.ngay)}</p>
         <p>${esc(l.baoVe)}</p>
-        <p class="vang nho">${svgIco("lightbulb")} Liên hệ với em: ${esc(l.lienHe)}</p>
+        <p class="vang nho">${svgIco("lightbulb")} Liên hệ thực tế · ${esc(l.lienHe)}</p>
         <p class="nho chu2">Nguồn tra cứu: ${esc(l.nguon)}</p>
       </div>`).join("");
   }
@@ -70,7 +70,7 @@
         `<tr><td><b>${esc(u.nhom)}</b></td><td>${esc(u.moTa)}</td><td>${esc(u.viDu)}</td></tr>`
       ).join("") + `</table>
       <p class="nho chu2">Ghi chú: một hệ thống AI thực tế thường kết hợp nhiều nhóm.
-      Ứng dụng "HỌC AI" này dùng nhóm <b>phân loại</b> (Tầng 1) và mô phỏng đầu ra
+      Ứng dụng "AInatomy" này dùng nhóm <b>phân loại</b> (Tầng 1) và mô phỏng đầu ra
       <b>tạo sinh</b> (Tầng 2).</p>`;
   }
 
@@ -101,9 +101,9 @@
         <h3 style="margin-top:0">Bài ${idx+1}. ${esc(de.ten)}</h3>
         <p class="chu2"><b>Tình huống:</b> ${esc(de.tinhHuong)}</p>
         <p class="nho">${esc(de.goiY)}</p>
-        <label for="prompt-in-${de.id}">Prompt của em</label>
+        <label for="prompt-in-${de.id}">Prompt cần chấm</label>
         <textarea id="prompt-in-${de.id}" rows="4" placeholder="Viết prompt vào đây..."></textarea>
-        <p><button class="btn chinh" id="prompt-cham-${de.id}">Chấm prompt của em</button>
+        <p><button class="btn chinh" id="prompt-cham-${de.id}">Chấm prompt</button>
            <span class="nho chu2" id="prompt-count-${de.id}"></span></p>
         <div id="prompt-kq-${de.id}"></div>`;
       box.appendChild(c);
@@ -133,12 +133,12 @@
         kqBox.innerHTML = `
           <p><b>Kết quả:</b> đạt ${kq.datBB}/${kq.tongBB} tiêu chí bắt buộc
              ${kq.diem >= 1 ? '<span class="ok">— đạt yêu cầu</span>' : '<span class="ko">— chưa đạt</span>'}</p>
-          <table><tr><th>Tiêu chí</th><th>Trong prompt của em</th><th>Từ khoá tìm thấy</th></tr>${hang}</table>
+          <table><tr><th>Tiêu chí</th><th>Trong prompt</th><th>Từ khoá tìm thấy</th></tr>${hang}</table>
           ${kq.thieu.length ? `<p class="ko">Thiếu: ${esc(kq.thieu.join("; "))}</p>` : ""}
           <p class="nho chu2"><b>Giải thích:</b> ${esc(de.giaiThich)}</p>
-          <p class="nho chu2"><b>Cách chấm &amp; giới hạn:</b> hệ thống đếm TIÊU CHÍ có mặt trong prompt của em
+          <p class="nho chu2"><b>Cách chấm &amp; giới hạn:</b> hệ thống đếm TIÊU CHÍ có mặt trong prompt
             bằng cách tìm từ khoá đã định nghĩa trước (không đánh giá diễn đạt hay).
-            Thầy/cô sẽ nhận xét thêm về tính hợp lí của cách em diễn đạt.</p>`;
+            Giáo viên sẽ nhận xét thêm về tính hợp lí của cách diễn đạt.</p>`;
         // ghi log để vào bản đồ năng lực (dùng kênh 'lab', có mã YCCĐ)
         window.MX_ENGINE.logSuKien(maHS, {
           loai: "lab",

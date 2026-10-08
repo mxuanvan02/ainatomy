@@ -6,7 +6,7 @@ viên ghi gì vào sổ điểm và nhận xét cuối kỳ?**
 
 App sinh ra minh chứng. Minh chứng không tự thành chữ trong sổ. Tệp này là phần còn thiếu đó.
 
-Dành cho: giáo viên Tin học THPT dạy chuyên đề AI bằng HỌC AI, kể cả người chưa từng
+Dành cho: giáo viên Tin học THPT dạy chuyên đề AI bằng AInatomy, kể cả người chưa từng
 dạy nội dung này và không quen thuật ngữ đo lường.
 
 ---

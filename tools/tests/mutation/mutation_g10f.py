@@ -31,8 +31,9 @@ YCCD = os.path.join(REPO, "data", "yccd.js")
 README = os.path.join(REPO, "README.md")
 KB = os.path.join(REPO, "js", "kichban.js")
 
-TEN_CU = "Phòng thực hành Trí tuệ nhân tạo lớp 10"
-TEN_MOI = "Phòng thực hành Trí tuệ nhân tạo cấp THPT"
+TEN_CU = "Phòng thực hành Trí tuệ nhân tạo cấp THPT"   # đời 08/10 sáng — cổng G10f nay khoá cả hai đời cũ
+TEN_CU2 = "Phòng thực hành Trí tuệ nhân tạo lớp 10"     # đời 07/10
+TEN_MOI = "Phòng thực hành Trí tuệ nhân tạo"            # đời 08/10 tối (v1.2.0 AInatomy)
 
 
 def sha(p):

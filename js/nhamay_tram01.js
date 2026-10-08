@@ -1,4 +1,4 @@
-/* HỌC AI — nhamay_tram01.js : TRẠM 0 (NHẬP LIỆU) + TRẠM 1 (DÁN NHÃN) của nhà máy.
+/* AInatomy — nhamay_tram01.js : TRẠM 0 (NHẬP LIỆU) + TRẠM 1 (DÁN NHÃN) của nhà máy.
  *
  * VÌ SAO HAI TRẠM NÀY TỒN TẠI
  * Bản đầu của nhà máy để trống Trạm 0 và Trạm 1 ("đang xây dựng"), nghĩa là học sinh
@@ -56,7 +56,7 @@
         {id:"c", text:"Nó tra cứu trên Internet xem ảnh này chụp ở đâu."},
         {id:"d", text:"Nó đọc chú thích ảnh do người chụp viết."}],
       dapAn:"b",
-      giaiThich:"Đúng. Ảnh với máy chỉ là các con số. Ở trạm này em thấy tận mắt bốn đặc trưng được trích từ mỗi ảnh — tỉ lệ điểm ảnh RẤT SÁNG, tỉ lệ điểm ảnh SÁNG VỪA, độ sáng vùng đầu, và tỉ lệ điểm tối. Toàn bộ việc học diễn ra trên bốn con số đó, không có 'cái nhìn' nào cả."},
+      giaiThich:"Đúng. Ảnh với máy chỉ là các con số. Ở trạm này có thể thấy tận mắt bốn đặc trưng được trích từ mỗi ảnh — tỉ lệ điểm ảnh RẤT SÁNG, tỉ lệ điểm ảnh SÁNG VỪA, độ sáng vùng đầu, và tỉ lệ điểm tối. Toàn bộ việc học diễn ra trên bốn con số đó, không có 'cái nhìn' nào cả."},
     { id:"t0-2", mach:"C", chuDe:"C4", yccd:"10.C4.MR1",
       cau:"Ba dạng dữ liệu dưới đây, dạng nào KHÔNG dùng được để huấn luyện một mô hình nhận diện mũ bảo hiểm từ ảnh?",
       luaChon:[
@@ -83,7 +83,7 @@
         {id:"c", text:"Mô hình sẽ từ chối dự đoán với ảnh ban đêm."},
         {id:"d", text:"Mô hình chỉ học được ban đêm vì đó là phần khó."}],
       dapAn:"b",
-      giaiThich:"Đúng. Đặc trưng của ảnh ban đêm (điểm ảnh SÁNG VỪA, tín hiệu của mũ màu xám) hầu như không xuất hiện trong dữ liệu, nên trọng số tương ứng không được cập nhật. Em sẽ thấy tận mắt điều này ở Trạm 2 và Trạm 4 — đúng 100% ban ngày, 59% ban đêm."},
+      giaiThich:"Đúng. Đặc trưng của ảnh ban đêm (điểm ảnh SÁNG VỪA, tín hiệu của mũ màu xám) hầu như không xuất hiện trong dữ liệu, nên trọng số tương ứng không được cập nhật. Điều này sẽ thấy tận mắt ở Trạm 2 và Trạm 4, đúng 100% ban ngày và 59% ban đêm."},
     { id:"t0-5", mach:"D", chuDe:"D2", yccd:"10.D2.1",
       cau:"Trong sơ đồ hệ thống AI, khâu NHẬP LIỆU nằm ở đâu và vì sao nó quan trọng?",
       luaChon:[
@@ -332,28 +332,28 @@
     host.innerHTML =
       `<div class="grid g3">
          <div class="kpi"><div class="so">${r.nhanDung}/${r.soAnh}</div>
-           <div class="nhan">nhãn em dán ĐÚNG</div></div>
+           <div class="nhan">nhãn dán ĐÚNG</div></div>
          <div class="kpi"><div class="so ${r.nhanSai?'ko':''}">${r.nhanSai}</div>
-           <div class="nhan">nhãn em dán SAI</div></div>
+           <div class="nhan">nhãn dán SAI</div></div>
          <div class="kpi"><div class="so ${Math.abs(r.thietHai)>0.05?'ko':''}">${p(r.thietHai)}</div>
            <div class="nhan">độ chính xác BỊ MẤT vì nhãn sai</div></div>
        </div>
        <table>
          <tr><th>Mô hình</th><th>Học từ</th><th>Đúng trên bộ kiểm tra</th>
              <th>Ban ngày</th><th>Ban đêm</th></tr>
-         <tr><td><b>A</b></td><td>nhãn do em dán</td><td>${r.hocTrenNhanHS.dung}/${r.hocTrenNhanHS.tong} = ${p(r.hocTrenNhanHS.doChinhXac)}</td>
+         <tr><td><b>A</b></td><td>nhãn tự dán</td><td>${r.hocTrenNhanHS.dung}/${r.hocTrenNhanHS.tong} = ${p(r.hocTrenNhanHS.doChinhXac)}</td>
              <td>${p(r.hocTrenNhanHS.ngay.tiLe)}</td><td>${p(r.hocTrenNhanHS.dem.tiLe)}</td></tr>
          <tr><td><b>B</b> (đối chứng)</td><td>nhãn đúng</td><td>${r.hocTrenNhanThat.dung}/${r.hocTrenNhanThat.tong} = ${p(r.hocTrenNhanThat.doChinhXac)}</td>
              <td>${p(r.hocTrenNhanThat.ngay.tiLe)}</td><td>${p(r.hocTrenNhanThat.dem.tiLe)}</td></tr>
        </table>
        <div class="phanhoi ${r.nhanSai===0?'dung':'sai'}">
          <p><b>${r.nhanSai === 0
-            ? svgIco("check") + " Em dán nhãn đúng toàn bộ."
-            : `${svgIco("x")} Em dán sai ${r.nhanSai} nhãn (ở các ảnh số ${r.viTriSai.map(i=>i+1).join(", ")}).`}</b></p>
+            ? svgIco("check") + " Nhãn đã dán đúng toàn bộ."
+            : `${svgIco("x")} Dán sai ${r.nhanSai} nhãn (ở các ảnh số ${r.viTriSai.map(i=>i+1).join(", ")}).`}</b></p>
          <p class="chu2">${r.nhanSai === 0
             ? "Hai mô hình A và B học từ cùng một bộ nhãn nên cho kết quả như nhau. Hãy thử dán sai vài nhãn rồi chấm lại để thấy hậu quả."
-            : `Mô hình A học từ nhãn của em nên mất ${p(r.thietHai)} độ chính xác so với mô hình B học từ nhãn đúng. `
-              + `Điều đáng chú ý là lỗi này KHÔNG ngẫu nhiên: mô hình học rất chăm chỉ và học ĐÚNG những gì em dạy, kể cả khi em dạy sai.`}</p>
+            : `Mô hình A học từ nhãn tự dán nên mất ${p(r.thietHai)} độ chính xác so với mô hình B học từ nhãn đúng. `
+              + `Điều đáng chú ý là lỗi này KHÔNG ngẫu nhiên: mô hình học rất chăm chỉ và học ĐÚNG những gì được dạy, kể cả khi dạy sai.`}</p>
          <p class="nho chu2">Yêu cầu cần đạt 10.C4.1: phân tích được sự ảnh hưởng của chất lượng
             dữ liệu đến chất lượng AI. Nhãn là một phần của chất lượng dữ liệu.</p>
        </div>`;

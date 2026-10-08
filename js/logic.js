@@ -1,4 +1,4 @@
-/* HỌC AI — MODULE "LÔGIC & AI"
+/* AInatomy — MODULE "LÔGIC & AI"
  * Cầu nối trực tiếp với Bài 5 Tin học 10 "Dữ liệu lôgic" (KNTT & CTST, Chủ đề 1, 2 tiết).
  * Ý tưởng sư phạm: toàn bộ luật chơi của "Đấu trường bắt lỗi AI" VỐN LÀ một biểu thức lôgic.
  * Vì vậy dạy Bài 5 không cần ví dụ xa lạ — dùng chính kết quả của học sinh làm vật liệu.
@@ -62,18 +62,18 @@
       <div class="ai-box" style="border-left-color:var(--dung)">
         <b>Câu trả lời AI là ĐÚNG</b> ⟺ <code>c1 AND c2 AND c3</code><br>
         <span class="nho chu2">Chỉ cần MỘT câu sai → phép AND cho FALSE → cả câu trả lời là sai.
-        Đó là lí do trong Đấu trường em chỉ cần tìm đúng 1 câu có lỗi.</span>
+        Đó là lí do trong Đấu trường chỉ cần tìm đúng 1 câu có lỗi.</span>
       </div>
       <div class="ai-box" style="border-left-color:var(--sai)">
         <b>Câu trả lời AI CÓ LỖI</b> ⟺ <code>(NOT c1) OR (NOT c2) OR (NOT c3)</code><br>
         <span class="nho chu2">Phép OR: có lỗi nếu câu 1 sai HOẶC câu 2 sai HOẶC câu 3 sai.</span>
       </div>
       <div class="ai-box" style="border-left-color:var(--vang)">
-        <b>Phán quyết của em</b> là một biến lôgic: <code>P = TRUE</code> nghĩa là "Có lỗi".<br>
+        <b>Phán quyết</b> là một biến lôgic, <code>P = TRUE</code> nghĩa là "Có lỗi".<br>
         <span class="nho chu2">Đảo phán quyết bằng phép NOT: <code>NOT P</code> = "Không có lỗi".</span>
       </div>
       <table>
-        <tr><th>c1</th><th>c2</th><th>c3</th><th>c1 AND c2 AND c3</th><th>AI đúng?</th><th>Em phải phán quyết</th></tr>
+        <tr><th>c1</th><th>c2</th><th>c3</th><th>c1 AND c2 AND c3</th><th>AI đúng?</th><th>Phán quyết</th></tr>
         <tr><td>T</td><td>T</td><td>T</td><td>TRUE</td><td class="ok">Đúng</td><td>Không có lỗi</td></tr>
         <tr><td>T</td><td>T</td><td><b>F</b></td><td>FALSE</td><td class="ko">Sai</td><td>Có lỗi</td></tr>
         <tr><td>T</td><td><b>F</b></td><td>T</td><td>FALSE</td><td class="ko">Sai</td><td>Có lỗi</td></tr>
@@ -91,23 +91,23 @@
     if(!box) return;
     const bl = window.MX_ENGINE.bangNhamLan(maHS);
     if(!bl.tong){
-      box.innerHTML = `<p class="chu2">Chưa có dữ liệu. Em hãy vào <b>Đấu trường bắt lỗi AI</b>
-        làm vài câu rồi quay lại đây — bảng này sẽ hiện chính kết quả của em dưới dạng bảng chân lí.</p>`;
+      box.innerHTML = `<p class="chu2">Chưa có dữ liệu. Hãy vào <b>Đấu trường bắt lỗi AI</b>
+        làm vài câu rồi quay lại đây, bảng này sẽ hiện chính kết quả đã làm dưới dạng bảng chân lí.</p>`;
       return;
     }
     const tp = bl.TP, fp = bl.FP, fn = bl.FN, tn = bl.TN;
     box.innerHTML = `
-      <p>Đặt <code>T</code> = "thật sự CÓ lỗi", <code>P</code> = "em phán quyết CÓ lỗi".
-      Bốn ô dưới đây là <b>bảng chân lí của chính em</b> (${bl.tong} câu đã làm):</p>
+      <p>Đặt <code>T</code> = "thật sự CÓ lỗi", <code>P</code> = "phán quyết CÓ lỗi".
+      Bốn ô dưới đây là <b>bảng chân lí cá nhân</b> (${bl.tong} câu đã làm).</p>
       <table>
         <tr><th></th><th>Thật sự CÓ lỗi (T)</th><th>Thật sự ĐÚNG (NOT T)</th></tr>
         <tr>
-          <th>Em nói "Có lỗi" (P)</th>
+          <th>Phán quyết "Có lỗi" (P)</th>
           <td class="ok"><b>${tp}</b> — bắt đúng<br><span class="nho">P AND T = TRUE</span></td>
           <td class="vang"><b>${fp}</b> — bắt oan<br><span class="nho">P AND (NOT T) = TRUE</span></td>
         </tr>
         <tr>
-          <th>Em nói "Không lỗi" (NOT P)</th>
+          <th>Phán quyết "Không lỗi" (NOT P)</th>
           <td class="ko"><b>${fn}</b> — bỏ sót<br><span class="nho">(NOT P) AND T = TRUE</span></td>
           <td class="ok"><b>${tn}</b> — xác nhận đúng<br><span class="nho">(NOT P) AND (NOT T) = TRUE</span></td>
         </tr>

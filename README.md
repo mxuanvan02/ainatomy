@@ -1,10 +1,10 @@
-# HỌC AI — Hướng dẫn giáo viên cấp THPT (v1.1.0)
+# AInatomy — Hướng dẫn giáo viên (v1.2.0)
 
 Phòng thí nghiệm AI **offline, tiếng Việt, không tài khoản, không thu phí** cho học sinh phổ thông.
 Bám Khung nội dung giáo dục AI (QĐ 2422/QĐ-BGDĐT 18/8/2026) — 4 mạch × 12 khối năng lực UNESCO.
 Học sinh **bắt lỗi AI** thay vì hỏi AI; hệ thống **tự chấm** vì lỗi do chính hệ cài sẵn.
 
-**Phạm vi dữ liệu đã kiểm chứng.** Định danh là cấp trung học phổ thông vì app không khoá lớp (mã lớp nhập tự do) và Khung 2422/QĐ-BGDĐT có phụ lục yêu cầu cần đạt cho cả lớp 10, 11, 12. Nhưng bản đồ yêu cầu cần đạt đang nhúng trong app là của **lớp 10** — 22 yêu cầu, trích nguyên văn, đã kiểm chứng tự động 22/22 với văn bản Bộ bằng `tools/verify_yccd.py`. Nói rõ ranh giới này để hồ sơ không khai rộng hơn dữ liệu thật; mở rộng sang lớp 11 và 12 là việc trích thêm phụ lục, không phải việc đổi chữ.
+**Phạm vi dữ liệu đã kiểm chứng.** Phụ đề không giới hạn cấp học vì app không khoá lớp (mã lớp nhập tự do) và Khung 2422/QĐ-BGDĐT có phụ lục yêu cầu cần đạt cho cả lớp 10, 11, 12. Nhưng bản đồ yêu cầu cần đạt đang nhúng trong app là của **lớp 10** — 22 yêu cầu, trích nguyên văn, đã kiểm chứng tự động 22/22 với văn bản Bộ bằng `tools/verify_yccd.py`. Nói rõ ranh giới này để hồ sơ không khai rộng hơn dữ liệu thật; mở rộng sang lớp 11 và 12 là việc trích thêm phụ lục, không phải việc đổi chữ.
 
 **Repo:** https://github.com/mxuanvan02/soi-ai-lop10 · **Bản chạy thử:** https://mxuanvan02.github.io/soi-ai-lop10/
 
@@ -235,12 +235,13 @@ Quy tắc: đúng 1 claim chứa lỗi khi `loai="co_loi"`; cả 3 claim đúng 
 
 ## 8. Trạng thái phiên bản
 
-**Bản hiện hành là v1.1.0** (08/10/2026) — đổi tên thương hiệu thành **HỌC AI**.
+**Bản hiện hành là v1.2.0** (09/10/2026) — đổi tên thương hiệu thành **AInatomy**, viết lại toàn bộ câu chữ giao diện sang giọng trung tính không ngôi.
 
-Hai điều nói rõ để không ai hiểu nhầm mốc này:
+Bốn điều nói rõ ở mốc này:
 
-- **Phụ đề KHÔNG đổi**: vẫn là "Phòng thực hành Trí tuệ nhân tạo cấp THPT". Cổng `G10b` khoá phụ
-  đề này ở ba nơi (`index.html`, `data/meta.js`, `js/kichban.js`) — ba bản sao đó vẫn khớp nhau.
+- **Tên mới AInatomy** = AI + Anatomy (giải phẫu), đúng việc sản phẩm làm: mở nắp từng trạm của hệ AI để xem bên trong. Đổi bằng `tools/doi_ten_ainatomy.py` (54 chỗ, kiểm kê từng chỗ, không replace toàn cục).
+- **Phụ đề bỏ chữ "cấp THPT"**: nay là "Phòng thực hành Trí tuệ nhân tạo", vì sản phẩm không giới hạn cấp học. Ranh giới dữ liệu KHÔNG đổi — xem đoạn "Phạm vi dữ liệu đã kiểm chứng" ở đầu tệp. Cổng `G10b` khoá phụ đề mới ở ba nơi, cổng `G10f` nay khoá CẢ HAI đời phụ đề cũ (…lớp 10 và …cấp THPT) để không ai thêm lại vô ý.
+- **Giọng văn trung tính, không ngôi**: bỏ xưng hô "em" ở toàn bộ chữ người dùng đọc (187 chỗ trong index.html và js/, data/kienthuc.js), việc nào ghi việc đó. Bốn nhóm GIỮ có chủ đích, lý do ghi trong docstring `tools/doi_giong_js.py`: từ khoá chấm bài (đổi là hỏng máy chấm), comment kỹ thuật, lời thoại hệ AI đang xúi lộ dữ liệu (bài học về thao túng), và hai ngân hàng câu hỏi ("em" nằm trong nội dung học thuật mà `giaiThich` trích nguyên văn; 56 câu đang chờ duyệt nhãn).
 - **Đường dẫn, tên repo và URL công khai KHÔNG đổi**: vẫn là `soi-ai-lop10` và
   `https://mxuanvan02.github.io/soi-ai-lop10/`. GitHub Pages KHÔNG redirect khi đổi tên repo, và
   link cũ đã nằm trong hồ sơ nộp thi — tiền lệ đã đo: `github.io/soi-ai/` trả 404 sau lần đổi tên
@@ -275,6 +276,11 @@ Hai điều nói rõ để hồ sơ không khai quá:
 - **Các mục dưới đây là mốc CŨ, giữ nguyên làm lịch sử**: chúng ghi bản trước khi đổi tên, và
   tên "MỔ XẺ AI" trong đó đúng với thời điểm nó được viết.
 
+- **v1.2.0** (09/10/2026): đổi tên thương hiệu HỌC AI -> **AInatomy** (54 chỗ, bằng
+  `tools/doi_ten_ainatomy.py`); bỏ "cấp THPT" khỏi phụ đề; viết lại 187 chỗ xưng hô "em"
+  sang giọng trung tính không ngôi (`tools/doi_giong_index.py`, `tools/doi_giong_js.py`);
+  cổng G10f mở rộng khoá cả hai đời phụ đề cũ. Khoá localStorage, tên repo, URL,
+  từ khoá chấm bài và hai ngân hàng câu hỏi giữ nguyên.
 - **v1.1.0** (08/10/2026): đổi tên thương hiệu SOI AI -> **HỌC AI** (48 chỗ, bằng
   `tools/doi_ten_hoc_ai.py`). Phụ đề, đường dẫn, tên repo và URL công khai giữ nguyên. Khoá
   localStorage và động từ "soi" trong nội dung dạy học giữ nguyên.

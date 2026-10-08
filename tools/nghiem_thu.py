@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-r"""JUDGE ĐỘC LẬP — nghiệm thu xác định cho HỌC AI (system-one-work-loop).
+r"""JUDGE ĐỘC LẬP — nghiệm thu xác định cho AInatomy (system-one-work-loop).
 
 File này là QUAN NGHIỆM THU, không phải thợ. Nó KHÔNG build gì, chỉ đo.
 Nguyên tắc: mọi tiêu chí phải chấm được bằng yes/no từ file trên đĩa hoặc HTTP,
@@ -830,7 +830,7 @@ console.log(JSON.stringify(out));
                   not vi_pham,
                   "; ".join(vi_pham) if vi_pham else "sạch cả 6 nhóm")
 
-        TEN = "Phòng thực hành Trí tuệ nhân tạo cấp THPT"
+        TEN = "Phòng thực hành Trí tuệ nhân tạo"
         # BA NƠI, KHÔNG PHẢI HAI — sửa 07/10 khi đổi định danh "lớp 10" -> "cấp THPT".
         # Định danh này có BA bản sao: <title>/tagline/chân trang trong index.html, khoá
         # `dinhDanh` trong data/meta.js, và chuỗi logo `kb-logo-soi` ở js/kichban.js:309.
@@ -877,10 +877,19 @@ console.log(JSON.stringify(out));
         # Khi nào mở rộng thật sang lớp 11/12 (trích thêm phụ lục Khung, chạy verify_yccd.py
         # cho đủ) thì PHẢI chủ động sửa cổng này. Đó là cố ý: cổng buộc việc mở rộng phạm vi
         # thành một quyết định có ý thức, không phải một cú replace.
-        TEN_CU = "Phòng thực hành Trí tuệ nhân tạo lớp 10"
-        con_cu = {f: html_song(doc(f)).count(TEN_CU) if f.endswith(".html")
-                  else than_ma_song(doc(f)).count(TEN_CU)
-                  for f in ("index.html", "data/meta.js", "js/kichban.js")}
+        #
+        # SỬA 08/10 (v1.2.0, đổi tên AInatomy): phụ đề bỏ chữ "cấp THPT" theo yêu cầu chủ
+        # sản phẩm (sản phẩm không giới hạn cấp học). Ranh giới dữ liệu KHÔNG đổi: chiều (b)
+        # và (c) vẫn khoá yccd.js phải khai LỚP 10 và README phải còn câu khai phạm vi.
+        # Chiều (a) nay kiểm HAI định danh cũ nối tiếp nhau — "…lớp 10" (đời 07/10) và
+        # "…cấp THPT" (đời 08/10 sáng) — vì đổi tên nửa vời có thể rơi về bất kỳ đời nào,
+        # và một cổng chỉ nhớ đời gần nhất sẽ để lọt đời trước đó.
+        TEN_CU = ["Phòng thực hành Trí tuệ nhân tạo lớp 10",
+                  "Phòng thực hành Trí tuệ nhân tạo cấp THPT"]
+        con_cu = {}
+        for f in ("index.html", "data/meta.js", "js/kichban.js"):
+            src = html_song(doc(f)) if f.endswith(".html") else than_ma_song(doc(f))
+            con_cu[f] = sum(src.count(t) for t in TEN_CU)
         loai_a = [f for f, n in con_cu.items() if n]
 
         yccd = doc("data/yccd.js")
@@ -896,10 +905,11 @@ console.log(JSON.stringify(out));
         loi_f = (["định danh cũ còn sót ở " + ", ".join(f"{f}×{n}" for f, n in con_cu.items() if n)
                   + " — đổi tên nửa vời: giám khảo thấy hai định danh cho một sản phẩm"]
                  if loai_a else []) + loai_b + loai_c
-        self.them("G10f", "định danh 'cấp THPT' không khai quá phạm vi dữ liệu (YCCĐ mới có lớp 10)",
+        self.them("G10f", "định danh không khai quá phạm vi dữ liệu (YCCĐ mới có lớp 10)",
                   not loi_f,
-                  "định danh cũ đã hết ở cả 3 tệp thương hiệu, data/yccd.js vẫn khai rõ phạm vi "
-                  "LỚP 10, và README còn câu khai phạm vi dữ liệu đã kiểm chứng"
+                  "cả hai định danh cũ (…lớp 10, …cấp THPT) đã hết ở 3 tệp thương hiệu, "
+                  "data/yccd.js vẫn khai rõ phạm vi LỚP 10, và README còn câu khai phạm vi "
+                  "dữ liệu đã kiểm chứng"
                   if not loi_f else " · ".join(loi_f))
 
         # G10c: khẩu hiệu cũ — bỏ comment rồi mới đếm, vì comment ghi lại bài học là hợp lệ

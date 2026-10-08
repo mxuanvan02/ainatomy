@@ -1,5 +1,5 @@
 #!/usr/bin/env python3
-"""Gộp nhật ký CSV/JSON của HỌC AI từ nhiều máy phòng lab thành 1 báo cáo lớp.
+"""Gộp nhật ký CSV/JSON của AInatomy từ nhiều máy phòng lab thành 1 báo cáo lớp.
 
 TỆP NÀY TỪNG NẰM NGOÀI REPO (06/10 mới đưa vào): README.md §4 hướng dẫn giáo viên chạy
 `python3 tools/gop_csv.py`, nhưng tệp thật nằm ở ieeai2026/tools/ — NGOÀI repo. Nghĩa là
@@ -372,7 +372,7 @@ def ghi(rows, theo_loai, unesco, ca_nhan, phien, phien_loai, outdir):
 
 def main():
     ap = argparse.ArgumentParser(
-        description="Gộp nhật ký HỌC AI từ nhiều máy phòng lab thành một báo cáo lớp.")
+        description="Gộp nhật ký AInatomy từ nhiều máy phòng lab thành một báo cáo lớp.")
     ap.add_argument("thu_muc", help="Thư mục chứa các file CSV/JSON xuất từ các máy")
     ap.add_argument("-o", "--outdir", default=".", help="Thư mục xuất báo cáo (mặc định: hiện tại)")
     args = ap.parse_args()

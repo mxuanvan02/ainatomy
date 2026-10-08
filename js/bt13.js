@@ -1,4 +1,4 @@
-/* HỌC AI — bt13.js : BT-13 "Ứng dụng AI quanh em thuộc loại nào?" — Mức 2 và Mức 3.
+/* AInatomy — bt13.js : BT-13 "Ứng dụng AI quanh em thuộc loại nào?" — Mức 2 và Mức 3.
  *
  * VÌ SAO CÓ TỆP NÀY
  *   THIET_KE_BAI_TOAN.md mô tả BT-13 ở cả ba mức, nhưng trước 05/10 app chỉ có Mức 1:
@@ -146,7 +146,7 @@
     card.appendChild(labVao);
     const inVao = document.createElement("input");
     inVao.type = "text"; inVao.id = "bt13-vao-" + th.id;
-    inVao.placeholder = "Ví dụ: ảnh chụp bài giải viết tay của em...";
+    inVao.placeholder = "Ví dụ: ảnh chụp bài giải viết tay...";
     card.appendChild(inVao);
 
     const labRa = document.createElement("label");
@@ -173,12 +173,12 @@
       const vao = inVao.value.trim(), ra = inRa.value.trim();
       if(!chonNhom){
         fb.className = "phanhoi sai";
-        fb.textContent = "Em hãy chọn một nhóm tính năng ở trên trước đã.";
+        fb.textContent = "Cần chọn một nhóm tính năng ở trên trước.";
         return;
       }
       if(vao.length < 3 || ra.length < 3){
         fb.className = "phanhoi sai";
-        fb.textContent = "Em hãy ghi cả ĐẦU VÀO và ĐẦU RA của hệ thống (mỗi ô ít nhất 3 kí tự).";
+        fb.textContent = "Cần ghi cả ĐẦU VÀO và ĐẦU RA của hệ thống (mỗi ô ít nhất 3 kí tự).";
         return;
       }
 
@@ -215,7 +215,7 @@
 
       const p2 = document.createElement("p");
       p2.className = "chu2";
-      p2.textContent = "Em chọn: " + tenNhom(chonNhom)
+      p2.textContent = "Nhóm đã chọn: " + tenNhom(chonNhom)
         + (dungNhom ? "" : " · Nhóm đúng là: " + tenNhom(th.nhomDung)) + ".";
       fb.appendChild(p2);
 
@@ -258,15 +258,15 @@
 
       const p7 = document.createElement("p");
       p7.className = "nho chu2";
-      p7.textContent = "Cách chấm và giới hạn: hệ so nhóm em chọn với đáp án, và ĐẾM từ khoá "
-        + "đã định nghĩa trước để biết em có nói tới đầu vào, đầu ra hay không. Hệ không "
-        + "đánh giá cách em diễn đạt. Thầy/cô sẽ nhận xét thêm.";
+      p7.textContent = "Cách chấm và giới hạn: hệ so nhóm đã chọn với đáp án, và ĐẾM từ khoá "
+        + "đã định nghĩa trước để biết câu trả lời có nói tới đầu vào, đầu ra hay không. Hệ không "
+        + "đánh giá cách diễn đạt. Giáo viên sẽ nhận xét thêm.";
       fb.appendChild(p7);
 
       if(lanDau){
         const p8 = document.createElement("p");
         p8.className = "nho chu2";
-        p8.textContent = "Lần kiểm tra này đã được ghi vào nhật ký. Em thử lại được để luyện tập.";
+        p8.textContent = "Lần kiểm tra này đã được ghi vào nhật ký. Có thể thử lại để luyện tập.";
         fb.appendChild(p8);
       }
     };
@@ -287,33 +287,33 @@
 
     const h = document.createElement("p");
     /* Bỏ nhãn "Mức 3" — xem giải thích ở js/bt09.js. */
-    h.innerHTML = svgIco("lightbulb") + " <b>Ứng dụng AI trong việc học của chính em</b>";
+    h.innerHTML = svgIco("lightbulb") + " <b>Ứng dụng AI trong việc học của chính mình</b>";
     card.appendChild(h);
 
     const q = document.createElement("p");
     q.className = "de-bai";
-    q.textContent = "Tìm một ứng dụng AI em ĐANG dùng trong việc học của chính mình "
-      + "(không lấy ví dụ trong sách), xếp nó vào một nhóm tính năng, và giải thích vì sao em xếp như vậy.";
+    q.textContent = "Tìm một ứng dụng AI ĐANG dùng trong việc học của chính mình "
+      + "(không lấy ví dụ trong sách), xếp nó vào một nhóm tính năng, và giải thích vì sao xếp như vậy.";
     card.appendChild(q);
 
     const nhan = document.createElement("p");
     nhan.className = "nho chu2";
     nhan.textContent = "Bài này không có đáp án đúng duy nhất, nên hệ thống không chấm đúng/sai. "
-      + "Câu trả lời của em được ghi vào nhật ký để thầy/cô đọc và nhận xét.";
+      + "Câu trả lời được ghi vào nhật ký để giáo viên đọc và nhận xét.";
     card.appendChild(nhan);
 
     const labApp = document.createElement("label");
     labApp.setAttribute("for", "bt13-m3-app");
-    labApp.textContent = "Tên ứng dụng AI em dùng (hoặc mô tả nó làm gì)";
+    labApp.textContent = "Tên ứng dụng AI đang dùng (hoặc mô tả nó làm gì)";
     card.appendChild(labApp);
     const inApp = document.createElement("input");
     inApp.type = "text"; inApp.id = "bt13-m3-app";
-    inApp.placeholder = "Ví dụ: công cụ dịch đoạn văn tiếng Anh em dùng khi làm bài đọc...";
+    inApp.placeholder = "Ví dụ: công cụ dịch đoạn văn tiếng Anh dùng khi làm bài đọc...";
     card.appendChild(inApp);
 
     const labNhom3 = document.createElement("p");
     labNhom3.className = "de-bai";
-    labNhom3.textContent = "Em xếp nó vào nhóm tính năng nào?";
+    labNhom3.textContent = "Xếp ứng dụng đó vào nhóm tính năng nào?";
     card.appendChild(labNhom3);
     const chips3 = document.createElement("div");
     chips3.className = "chips";
@@ -334,16 +334,16 @@
 
     const labVi = document.createElement("label");
     labVi.setAttribute("for", "bt13-m3-vi");
-    labVi.textContent = "Vì sao em xếp nó vào nhóm đó?";
+    labVi.textContent = "Vì sao xếp nó vào nhóm đó?";
     card.appendChild(labVi);
     const inVi = document.createElement("textarea");
     inVi.id = "bt13-m3-vi"; inVi.rows = 3;
-    inVi.placeholder = "Hệ thống nhận cái gì vào, và đưa ra cái gì? Vì sao đó là nhóm em chọn?";
+    inVi.placeholder = "Hệ thống nhận cái gì vào, và đưa ra cái gì? Vì sao chọn nhóm đó?";
     card.appendChild(inVi);
 
     const gui = document.createElement("button");
     gui.className = "btn chinh";
-    gui.textContent = "Ghi lại câu trả lời của em";
+    gui.textContent = "Ghi lại câu trả lời";
     card.appendChild(gui);
 
     const fb3 = document.createElement("div");
@@ -353,13 +353,13 @@
       const app = inApp.value.trim(), vi = inVi.value.trim();
       if(app.length < 3 || !chon3 || vi.length < 10){
         fb3.className = "phanhoi sai";
-        fb3.textContent = "Em hãy ghi tên ứng dụng, chọn một nhóm, và giải thích ít nhất 10 kí tự.";
+        fb3.textContent = "Cần ghi tên ứng dụng, chọn một nhóm, và giải thích ít nhất 10 kí tự.";
         return;
       }
       ghiLog(maHS, { loai: "bt13", suKien: "muc3", baiToan: "BT-13",
                      nhomChon: chon3, doDaiGiaiThich: vi.length });
       fb3.className = "phanhoi dung";
-      fb3.textContent = "Đã ghi lại. Nhóm em chọn: " + tenNhom(chon3)
+      fb3.textContent = "Đã ghi lại. Nhóm đã chọn: " + tenNhom(chon3)
         + ". Thầy/cô sẽ đọc và nhận xét — bài này không chấm đúng/sai.";
     };
 
@@ -375,7 +375,7 @@
     const mo = document.createElement("p");
     mo.className = "de-bai";
     mo.textContent = "Sáu tình huống dưới đây là sáu cách AI đang được dùng trong việc học. "
-      + "Mỗi tình huống em làm ba việc: chọn đúng nhóm tính năng, nói rõ đầu vào, nói rõ đầu ra.";
+      + "Mỗi tình huống cần làm ba việc: chọn đúng nhóm tính năng, nói rõ đầu vào, nói rõ đầu ra.";
     host.appendChild(mo);
 
     thList.forEach(th => veTinhHuong(host, th, maHS));

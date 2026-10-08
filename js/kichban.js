@@ -1,4 +1,4 @@
-/* HỌC AI — kichban.js : "HÀNH TRÌNH CỦA MỘT BỨC ẢNH" — kịch bản 9 cảnh tự chạy.
+/* AInatomy — kichban.js : "HÀNH TRÌNH CỦA MỘT BỨC ẢNH" — kịch bản 9 cảnh tự chạy.
  *
  * YÊU CẦU CỦA ANH VĂN (04/10): ít chữ, có hiệu ứng dạng video về cách thức hoạt động,
  * có đầu có đuôi có kịch bản, bố cục chuẩn chỉnh. Tệp này là câu trả lời.
@@ -104,7 +104,7 @@
 
     { id:"ket", ten:"Kết", dur:9000,
       caption:"AI không tự đúng. Người làm ra nó quyết định điều đó.",
-      sub:"Bây giờ đến lượt em kiểm tra.",
+      sub:"Bây giờ đến lượt người học kiểm tra.",
       canh:"ket" }
   ];
 
@@ -304,9 +304,9 @@
       const m = document.createElement("span");
       m.appendChild(svgIcon("play"));
       logo.appendChild(m);
-      logo.appendChild(el("span", null, "HỌC AI"));
+      logo.appendChild(el("span", null, "AInatomy"));
       s.appendChild(logo);
-      s.appendChild(el("div", "kb-logo-soi", "Phòng thực hành Trí tuệ nhân tạo cấp THPT"));
+      s.appendChild(el("div", "kb-logo-soi", "Phòng thực hành Trí tuệ nhân tạo"));
     },
 
     nhaplieu(s){
@@ -463,7 +463,7 @@
     ket(s){
       s.classList.add(GIUA);
       const d = el("div", "kb-ket");
-      d.appendChild(el("div", "kb-ket-lon", "Đến lượt em kiểm tra"));
+      d.appendChild(el("div", "kb-ket-lon", "Đến lượt người học kiểm tra"));
       d.appendChild(el("div", "kb-ket-nho", "9 cảnh · 7 trạm · 22 yêu cầu cần đạt lớp 10"));
       s.appendChild(d);
     }

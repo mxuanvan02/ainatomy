@@ -1,4 +1,4 @@
-/* HỌC AI — app chính: điều hướng + 3 tầng giao diện.
+/* AInatomy — app chính: điều hướng + 3 tầng giao diện.
  * Chạy hoàn toàn offline qua file:// (mở bằng trình duyệt từ USB/máy trường).
  * GHI CHÚ AN TOÀN (innerHTML): app 100% offline, không có nội dung từ mạng.
  * Chuỗi do người dùng nhập (mã HS/lớp) luôn đi qua esc() trước khi chèn vào innerHTML;
@@ -73,9 +73,9 @@
     // ô chưa dựng, hoặc đã chốt, hoặc đã chủ động bỏ qua -> chạy ngay, không hỏi lại lần hai
     if(!host || !host.children.length || daChotRoi || daBoQuaRoi){ chay(); return; }
     const ok = confirm(
-        "Em chưa chốt dự đoán cho bài này.\n\n"
+        "Chưa chốt dự đoán cho bài này.\n\n"
       + "Dự đoán TRƯỚC khi thấy kết quả là phần quan trọng nhất của bài: kết quả thật hiện ra\n"
-      + "sẽ chỉ cho em thấy mình đã hiểu sai ở chỗ nào.\n\n"
+      + "sẽ cho thấy chỗ nào đang bị hiểu sai.\n\n"
       + "· Bấm OK = BỎ QUA dự đoán (việc này được ghi vào nhật ký lớp).\n"
       + "· Bấm Huỷ = quay lại điền dự đoán.");
     if(ok){
@@ -159,7 +159,7 @@
     if(nmItem.trongNguLieu) return null;
     return {
       dapAn: "biao",
-      giaiThich: "Đúng như dự đoán: chủ đề em hỏi KHÔNG có trong ngữ liệu, nhưng máy vẫn "
+      giaiThich: "Đúng như dự đoán, chủ đề được hỏi KHÔNG có trong ngữ liệu nhưng máy vẫn "
         + "trả lời trôi chảy. Đó là bịa — không phải lỗi kĩ thuật mà là bản chất của máy "
         + "sinh văn bản: nó luôn chọn chuỗi kí tự có vẻ hợp lí nhất, kể cả khi không có "
         + "căn cứ nào."
@@ -186,7 +186,7 @@
   function dangNhap(){
     const hs = $("in-maHS").value.trim();
     const lop = $("in-maLop").value.trim();
-    if(!hs){ alert("Em hãy nhập mã của mình (ví dụ A001)."); return; }
+    if(!hs){ alert("Cần nhập mã học sinh (ví dụ A001)."); return; }
     maHS = hs.toUpperCase(); maLop = lop.toUpperCase() || maLop;
     ENG.vaoLop(maHS, maLop);
     /* Gắn hàm ghi nhật ký lớp cho tầng Mức 3 (js/muc3.js). Làm ở đây vì chỉ app.js biết
@@ -491,7 +491,7 @@
     dt.traLoi = { verdict:null, loaiLoi:null, claimChon:-1 };
     item.claims.forEach((cl, idx)=>{
       const p = document.createElement("p");
-      p.className = "claim"; p.textContent = cl; p.title = "Bấm vào câu em nghi là SAI (nếu có)";
+      p.className = "claim"; p.textContent = cl; p.title = "Bấm vào câu nghi là SAI (nếu có)";
       p.onclick = ()=>{
         if($("dt-nop").disabled === false && $("dt-kq").style.display !== "none") return; // đã nộp
         box.querySelectorAll(".claim").forEach(e=>e.classList.remove("chon"));
@@ -544,13 +544,13 @@
     box.className = "phanhoi " + (kq.diem ? "dung" : "sai");
     let head = kq.diem ? svgIco("check") + " <b>Chính xác!</b> "
                        : svgIco("x") + " <b>Chưa đúng.</b> ";
-    if(kq.batOan) head += "Câu này ĐÚNG — em đã 'bắt oan'. ";
-    if(kq.boSot) head += "Câu này CÓ lỗi (" + META.loaiLoi[item.loaiLoi].ten + ") — em đã bỏ sót. ";
+    if(kq.batOan) head += "Câu này ĐÚNG, phán quyết vừa rồi là 'bắt oan'. ";
+    if(kq.boSot) head += "Câu này CÓ lỗi (" + META.loaiLoi[item.loaiLoi].ten + "), lỗi này đã bị bỏ sót. ";
     box.innerHTML = head + esc(item.giaiThich);
     $("dt-nop").disabled = true;
     $("dt-tiep").style.display = "";
     $("dt-tiep").innerHTML = (dt.i < dt.ds.length-1) ? "Câu tiếp theo →"
-                             : svgIco("flag") + " Xem kết quả của em";
+                             : svgIco("flag") + " Xem kết quả đã ghi";
   }
 
   function dtTiep(){
@@ -578,7 +578,7 @@
         <div class="kpi"><div class="so ko">${boSot}</div><div class="nhan">lỗi bỏ sót</div></div>
         <div class="kpi"><div class="so vang">${batOan}</div><div class="nhan">câu đúng bị 'bắt oan'</div></div>
       </div>
-      <p class="chu2 nho">Kết quả của em đã được ghi vào nhật ký lớp (chỉ lưu mã ${esc(maHS)}, không lưu tên). Thầy/cô sẽ xem báo cáo tổng hợp của cả lớp.</p>`;
+      <p class="chu2 nho">Kết quả đã được ghi vào nhật ký lớp (chỉ lưu mã ${esc(maHS)}, không lưu tên). Giáo viên sẽ xem báo cáo tổng hợp của cả lớp.</p>`;
     ["dt-chips-verdict","dt-chips-loai"].forEach(id=>$(id).innerHTML="");
     $("dt-kq").style.display="none"; $("dt-nop").style.display="none";
     $("dt-tiep").textContent = "↻ Chơi lại lượt mới";
@@ -808,7 +808,7 @@
       if($("lab3d-duDoan") && window.MX_DUDOAN){
         const tileHienTai = parseInt($("lab3d-tile").value, 10);
         ddDem = window.MX_DUDOAN.veTruot($("lab3d-duDoan"), {
-          cauHoi: "Với " + tileHienTai + "% ảnh ban ngày trong dữ liệu huấn luyện, em dự đoán sau khi học xong mô hình sẽ trả lời ĐÚNG bao nhiêu % ảnh BAN ĐÊM trên bộ ảnh mới?",
+          cauHoi: "Với " + tileHienTai + "% ảnh ban ngày trong dữ liệu huấn luyện, hãy dự đoán sau khi học xong mô hình sẽ trả lời ĐÚNG bao nhiêu % ảnh BAN ĐÊM trên bộ ảnh mới?",
           dungSai: 0.10,
           ghiChu: "Chốt dự đoán TRƯỚC khi bấm 'Đánh giá trên bộ ảnh MỚI'. Ngưỡng khớp: ±10 điểm %.",
           onChot(g){
@@ -853,7 +853,7 @@
               ddDiem = window.MX_DUDOAN.veChon(host, {
                 cauHoi: "Hệ chọn ảnh số " + (d.index + 1) + " (ảnh chụp "
                   + (d.light === "ngay" ? "BAN NGÀY" : "BAN ĐÊM") + ") trong bộ dữ liệu. "
-                  + "Theo em, MÔ HÌNH VỪA HỌC sẽ đoán ảnh này là CÓ mũ hay KHÔNG mũ?",
+                  + "Theo dự đoán, MÔ HÌNH VỪA HỌC sẽ đoán ảnh này là CÓ mũ hay KHÔNG mũ?",
                 phuongAn: [
                   { id:"co",  text:"CÓ mũ bảo hiểm" },
                   { id:"khong", text:"KHÔNG mũ bảo hiểm" }
@@ -957,7 +957,7 @@
       });
       if(!r || !r.ok){
         // không có 3D: vẫn dạy được bằng bảng chữ (MX_PIPE3D.bangTinh đã in vào fallback)
-        $("pipe3d-note").innerHTML = "Máy này không chạy 3D — em vẫn làm được bài ở bảng dưới dạng chữ.";
+        $("pipe3d-note").innerHTML = "Máy này không chạy 3D, bài vẫn làm được ở bảng dưới dạng chữ.";
       } else {
         pipe3dDaKhoiTao = true;
       }
@@ -979,7 +979,7 @@
       const hostDD = $("pipe3d-duDoan");
       if(hostDD && window.MX_DUDOAN){
         ddPipe = window.MX_DUDOAN.veChon(hostDD, {
-          cauHoi: "TRƯỚC KHI hệ làm hỏng một trạm: em dự đoán hiện tượng gì sẽ xuất hiện trên dòng hạt sáng (đầu ra của ống dẫn)?",
+          cauHoi: "TRƯỚC KHI hệ làm hỏng một trạm, hãy dự đoán hiện tượng gì sẽ xuất hiện trên dòng hạt sáng (đầu ra của ống dẫn)?",
           phuongAn: [
             { id:"ket",   text:"Hạt sáng kẹt lại ngay trước trạm hỏng và đổi màu đỏ" },
             { id:"mat",   text:"Hạt sáng biến mất hoàn toàn khỏi ống dẫn" },
@@ -1024,7 +1024,7 @@
      * (không phải dữ liệu người dùng); vẫn escape toàn bộ cho chắc. */
     hop.innerHTML = (r.dung
         ? `<p>${svgIco("check")} <b>Chính xác!</b> Trạm <b>${esc(r.dungLa.ten)}</b> đang hỏng.</p>`
-        : `<p>${svgIco("x")} <b>Chưa đúng.</b> Em đoán <b>${esc(r.doan.ten)}</b>, nhưng trạm hỏng là <b>${esc(r.dungLa.ten)}</b>.</p>`)
+        : `<p>${svgIco("x")} <b>Chưa đúng.</b> Dự đoán là <b>${esc(r.doan.ten)}</b>, nhưng trạm hỏng là <b>${esc(r.dungLa.ten)}</b>.</p>`)
       + `<p class="chu2"><b>Vì sao hỏng trạm này lại gây ra hiện tượng đó:</b> ${esc(r.dungLa.khiHong)}</p>`
       + `<p class="nho chu2"><b>Ví dụ:</b> ${esc(r.dungLa.viDu)}</p>`
       + `<p class="nho chu2">YCCĐ liên quan: ${esc(r.dungLa.yccd)} · bấm vào từng trạm trong hình để xem vai trò của nó.</p>`;
@@ -1126,7 +1126,7 @@
       moTa:"Ba dạng dữ liệu: ảnh (hệ tự vẽ), văn bản, và tín hiệu số. Mở nắp để xem máy thật sự đọc những CON SỐ nào từ mỗi dạng.",
       yccd:"10.C4.MR1 · 10.C2.1 · 10.D2.1", view:"nhamay0", trangThai:"co" },
     { id:1, so:"TRẠM 1", ten:"DÁN NHÃN", anDuy:"sơ chế",
-      moTa:"Chính em dán nhãn cho từng ảnh. Hệ huấn luyện hai mô hình — một từ nhãn của em, một từ nhãn đúng — rồi so trên cùng bộ ảnh mới. Nhãn sai thì mô hình sai có hệ thống.",
+      moTa:"Nhãn do chính người học dán. Hệ huấn luyện hai mô hình, một từ nhãn vừa dán, một từ nhãn đúng, rồi so trên cùng bộ ảnh mới. Nhãn sai thì mô hình sai có hệ thống.",
       yccd:"10.C4.1", view:"nhamay1", trangThai:"co" },
     { id:2, so:"TRẠM 2", ten:"HUẤN LUYỆN", anDuy:"dây chuyền sản xuất",
       moTa:"Mô hình so dự đoán với nhãn đúng, đo lỗi, rồi tự chỉnh trọng số. Lặp lại nhiều vòng.",
@@ -1137,8 +1137,8 @@
     { id:4, so:"TRẠM 4", ten:"KIỂM ĐỊNH", anDuy:"KCS — kiểm tra chất lượng",
       moTa:"Thử mô hình trên bộ dữ liệu MỚI mà nó chưa từng học. Tách riêng ban ngày và ban đêm để thấy thiên kiến.",
       yccd:"10.D2.2 · 10.C4.1", view:"v-lab3d", trangThai:"co" },
-    { id:5, so:"TRẠM 5", ten:"ỨNG DỤNG", anDuy:"xuất xưởng — em dùng AI thật",
-      moTa:"Em đặt câu hỏi cho một hệ AI chạy ngay trong máy này, rồi tự kiểm định xem nó nói có căn cứ hay bịa.",
+    { id:5, so:"TRẠM 5", ten:"ỨNG DỤNG", anDuy:"xuất xưởng, dùng AI thật",
+      moTa:"Đặt câu hỏi cho một hệ AI chạy ngay trong máy này, rồi tự kiểm định xem nó nói có căn cứ hay bịa.",
       yccd:"10.C2.MR2 · 10.C3.1 · 10.C3.2 · 10.B2.MR1", view:"nhamay5", trangThai:"co" },
     { id:6, so:"TRẠM 6", ten:"CON NGƯỜI KIỂM", anDuy:"KCS cuối + vòng phản hồi",
       moTa:"Con người rà soát đầu ra và chịu trách nhiệm. Dữ liệu mới từ đây quay vòng về Trạm 0.",
@@ -1264,7 +1264,7 @@
       const host = $("t1-duDoan");
       if(host && window.MX_DUDOAN){
         ddT1 = window.MX_DUDOAN.veTruot(host, {
-          cauHoi: "Mô hình A sẽ học từ NHÃN DO EM DÁN. Em dự đoán mô hình A đạt độ chính xác bao nhiêu trên bộ ảnh kiểm tra mới? (Mô hình B học từ nhãn đúng thường đạt ~100%.)",
+          cauHoi: "Mô hình A sẽ học từ NHÃN DO CHÍNH NGƯỜI HỌC DÁN. Hãy dự đoán mô hình A đạt độ chính xác bao nhiêu trên bộ ảnh kiểm tra mới? (Mô hình B học từ nhãn đúng thường đạt ~100%.)",
           dungSai: 0.10,
           ghiChu: "Chốt dự đoán TRƯỚC khi bấm 'Chấm nhãn'. Ngưỡng khớp: ±10 điểm %. Mỗi bộ ảnh chỉ dự đoán được một lần.",
           onChot(g){
@@ -1420,7 +1420,7 @@
     const r = N.danhGiaPrompt(p);
     box.innerHTML =
       `<div class="card" style="background:var(--nen2)">
-         <b>Prompt của em đạt ${r.diem}/${r.tong} tiêu chí — ${esc(r.muc)}</b><br>
+         <b>Prompt đạt ${r.diem}/${r.tong} tiêu chí, mức ${esc(r.muc)}</b><br>
          <span class="nho">Đạt: ${esc(r.dat.join(", ") || "chưa có")} ·
          Thiếu: ${esc(r.thieu.join(", ") || "không")}</span><br>
          <span class="nho chu2">Một prompt tốt nêu rõ <b>mục tiêu</b>, có <b>ngữ cảnh</b>,
@@ -1432,7 +1432,7 @@
   function nmSinh(){
     const N = window.MX_NHAMAY_TEXT;
     const p = $("nm-prompt").value.trim();
-    if(!p){ alert("Em hãy viết câu hỏi trước đã."); return; }
+    if(!p){ alert("Cần viết câu hỏi trước."); return; }
     const t0 = performance.now();
     nmItem = N.ungDung(p, { seed: (Date.now() % 99991) + 1 });
     const ms = (performance.now() - t0);
@@ -1464,7 +1464,7 @@
   }
 
   function nmPhanQuyet(coCanCu){
-    if(!nmItem){ alert("Em hãy sinh câu trả lời trước đã."); return; }
+    if(!nmItem){ alert("Cần sinh câu trả lời trước."); return; }
     const N = window.MX_NHAMAY_TEXT;
     const kq = N.chamUngDung(nmItem, { coCanCu });
     (coCanCu ? $("nm-can-cu") : $("nm-bia")).classList.add("chon");
@@ -1476,10 +1476,10 @@
     box.innerHTML = kq.dung
       ? `<p>${svgIco("check")} <b>Chính xác.</b> ${nmItem.trongNguLieu
           ? `Chủ đề <b>${esc(nmItem.chuDe)}</b> CÓ trong ngữ liệu máy đã học, nên câu trả lời có căn cứ.`
-          : `Chủ đề em hỏi <b>không có</b> trong ngữ liệu máy đã học, nên đây là lời bịa.`}</p>`
+          : `Chủ đề được hỏi <b>không có</b> trong ngữ liệu máy đã học, nên đây là lời bịa.`}</p>`
       : `<p>${svgIco("x")} <b>Chưa đúng.</b> ${nmItem.trongNguLieu
           ? `Thật ra câu này CÓ căn cứ: chủ đề <b>${esc(nmItem.chuDe)}</b> nằm trong ngữ liệu máy đã học.`
-          : `Thật ra đây là lời bịa: chủ đề em hỏi không có trong ngữ liệu, máy chỉ ghép chữ nghe cho xuôi.`}</p>`;
+          : `Thật ra đây là lời bịa, chủ đề được hỏi không có trong ngữ liệu nên máy chỉ ghép chữ nghe cho xuôi.`}</p>`;
     box.innerHTML +=
       `<p class="chu2"><b>Bài học của trạm này:</b> một hệ AI có thể trả lời rất trôi chảy về một chủ đề
        mà nó chưa từng được học. Giọng điệu tự tin không phải là bằng chứng. Cách kiểm tra là

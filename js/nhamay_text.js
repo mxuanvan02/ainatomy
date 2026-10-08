@@ -1,4 +1,4 @@
-/* HỌC AI — nhamay_text.js : MÁY SINH VĂN BẢN của TRẠM ỨNG DỤNG (nhà máy AI).
+/* AInatomy — nhamay_text.js : MÁY SINH VĂN BẢN của TRẠM ỨNG DỤNG (nhà máy AI).
  *
  * VÌ SAO FILE NÀY TỒN TẠI
  * Anh Văn yêu cầu sản phẩm phải là một "nhà máy AI" dạy được TOÀN BỘ quy trình,
@@ -375,11 +375,11 @@
     let vanBan, coSo;
     if(ma){
       vanBan = chonCau(CHU_DE[ma].cau, 2);
-      coSo = "câu trả lời lấy từ ngữ liệu của chính chủ đề em hỏi";
+      coSo = "câu trả lời lấy từ ngữ liệu của chính chủ đề được hỏi";
     } else {
       const cauChung = chuanHoa(CORPUS).split(/(?<=\.)\s+/).filter(Boolean);
       vanBan = chonCau(cauChung, 2);
-      coSo = "máy không có dữ liệu về chủ đề em hỏi nên nó nói sang chuyện khác";
+      coSo = "máy không có dữ liệu về chủ đề được hỏi nên nó nói sang chuyện khác";
     }
     vanBan = vanBan.charAt(0).toUpperCase() + vanBan.slice(1);
 

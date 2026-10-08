@@ -1,4 +1,4 @@
-/* HỌC AI — tinhhuong.js : TRẠM "TÌNH HUỐNG" — phủ 5 yêu cầu cần đạt còn trống.
+/* AInatomy — tinhhuong.js : TRẠM "TÌNH HUỐNG" — phủ 5 yêu cầu cần đạt còn trống.
  *
  * Trước khi có tệp này, độ phủ 22 YCCĐ lớp 10 (đo bằng tools/tinh_do_phu.py trên
  * bằng chứng thật trong code) là: 8 PHỦ MẠNH · 9 PHỦ · 5 CHƯA PHỦ. Năm yêu cầu trống:
@@ -71,7 +71,7 @@
       bienPhap:"Chỉ dùng mã ẩn danh thay cho dữ liệu sinh trắc học; nếu buộc phải dùng thì có văn bản đồng ý của cha mẹ, công bố thời hạn lưu và cách xoá; luôn có phương án điểm danh thủ công."},
 
     { id:"rr-03", yccd:"10.A2.MR1", chuDe:"A2", mach:"A",
-      tinhHuong:"Nhóm em được giao làm một dự án sáng tạo — ứng dụng AI gợi ý ngành học cho học sinh lớp 12 dựa trên bài trắc nghiệm sở thích.",
+      tinhHuong:"Nhóm học sinh được giao làm một dự án sáng tạo, ứng dụng AI gợi ý ngành học cho học sinh lớp 12 dựa trên bài trắc nghiệm sở thích.",
       cauHoi:"Biện pháp hạn chế rủi ro nào là QUAN TRỌNG NHẤT và phải làm ngay từ lúc thiết kế?",
       luaChon:[
         {id:"a", text:"Làm giao diện thật đẹp để học sinh tin tưởng kết quả."},
@@ -83,7 +83,7 @@
       bienPhap:"Ghi trong sản phẩm: nguồn dữ liệu, cách hệ suy ra gợi ý, phạm vi áp dụng, và nút để người dùng tự quyết định khác với gợi ý."},
 
     { id:"rr-04", yccd:"10.A2.MR1", chuDe:"A2", mach:"A",
-      tinhHuong:"Dự án của nhóm em dùng AI dự báo sâu bệnh cho ruộng lúa ở địa phương. Dữ liệu thu được chỉ từ các ruộng gần đường lớn, còn ruộng ở vùng sâu thì không có.",
+      tinhHuong:"Dự án của nhóm học sinh dùng AI dự báo sâu bệnh cho ruộng lúa ở địa phương. Dữ liệu thu được chỉ từ các ruộng gần đường lớn, còn ruộng ở vùng sâu thì không có.",
       cauHoi:"Nhóm nên làm gì để hạn chế rủi ro cho chính người cần sản phẩm nhất?",
       luaChon:[
         {id:"a", text:"Ghi chú nhỏ trong tài liệu là dữ liệu chưa đầy đủ, còn sản phẩm vẫn phát hành rộng rãi như cũ."},
@@ -142,7 +142,7 @@
         {id:"c", text:"Không có vấn đề gì vì AI viết hay hơn học sinh thì nên dùng."},
         {id:"d", text:"Chỉ vi phạm nếu giáo viên phát hiện ra."}],
       dapAn:"b",
-      giaiThich:"Vấn đề cốt lõi không nằm ở chất lượng bài văn mà ở tính trung thực của minh chứng. Đánh giá trong giáo dục dựa trên giả định rằng sản phẩm phản ánh năng lực của người nộp; khi giả định đó bị phá vỡ thì mọi kết quả đánh giá đều vô nghĩa. Đây cũng là lí do sản phẩm HỌC AI có phiếu khai báo sử dụng AI. Khai báo không phải để trừ điểm mà để minh chứng còn giá trị.",
+      giaiThich:"Vấn đề cốt lõi không nằm ở chất lượng bài văn mà ở tính trung thực của minh chứng. Đánh giá trong giáo dục dựa trên giả định rằng sản phẩm phản ánh năng lực của người nộp; khi giả định đó bị phá vỡ thì mọi kết quả đánh giá đều vô nghĩa. Đây cũng là lí do sản phẩm AInatomy có phiếu khai báo sử dụng AI. Khai báo không phải để trừ điểm mà để minh chứng còn giá trị.",
       bienPhap:""}
   ];
 
@@ -173,7 +173,7 @@
       bienPhap:""},
 
     { id:"yc-03", yccd:"10.C3.MR1", chuDe:"C3", mach:"C",
-      tinhHuong:"Trong sản phẩm HỌC AI, mô hình nhận diện mũ bảo hiểm được huấn luyện ngay trong trình duyệt, không cần máy chủ.",
+      tinhHuong:"Trong sản phẩm AInatomy, mô hình nhận diện mũ bảo hiểm được huấn luyện ngay trong trình duyệt, không cần máy chủ.",
       cauHoi:"Công nghệ nào cho phép việc đó, và cái giá phải trả là gì?",
       luaChon:[
         {id:"a", text:"Gọi API của một nhà cung cấp AI; cái giá là phải trả phí theo số lần gọi."},
@@ -181,11 +181,11 @@
         {id:"c", text:"Dùng mô hình ngôn ngữ lớn đã tải sẵn; cái giá là máy phải có card đồ họa."},
         {id:"d", text:"Không có công nghệ nào làm được việc đó."}],
       dapAn:"b",
-      giaiThich:"Trong HỌC AI, mô hình là một perceptron bốn đặc trưng — tỉ lệ điểm ảnh rất sáng, tỉ lệ điểm ảnh sáng vừa, độ sáng vùng đầu và tỉ lệ điểm tối. Bốn đặc trưng này được tính từ ảnh vẽ bằng canvas, rồi trọng số được cập nhật ngay trong trình duyệt. Đổi lại sự đơn giản đó là hai lợi ích quyết định cho trường học — không cần mạng và học sinh nhìn thấy toàn bộ trọng số — mô hình càng đơn giản thì bài học về thiên kiến càng rõ.",
+      giaiThich:"Trong AInatomy, mô hình là một perceptron bốn đặc trưng — tỉ lệ điểm ảnh rất sáng, tỉ lệ điểm ảnh sáng vừa, độ sáng vùng đầu và tỉ lệ điểm tối. Bốn đặc trưng này được tính từ ảnh vẽ bằng canvas, rồi trọng số được cập nhật ngay trong trình duyệt. Đổi lại sự đơn giản đó là hai lợi ích quyết định cho trường học — không cần mạng và học sinh nhìn thấy toàn bộ trọng số — mô hình càng đơn giản thì bài học về thiên kiến càng rõ.",
       bienPhap:""},
 
     { id:"yc-04", yccd:"10.C3.MR1", chuDe:"C3", mach:"C",
-      tinhHuong:"Trạm ỨNG DỤNG của HỌC AI sinh ra câu trả lời bằng một máy học từ ngữ liệu có sẵn trong ứng dụng, thay vì gọi một mô hình ngôn ngữ lớn trên mạng.",
+      tinhHuong:"Trạm ỨNG DỤNG của AInatomy sinh ra câu trả lời bằng một máy học từ ngữ liệu có sẵn trong ứng dụng, thay vì gọi một mô hình ngôn ngữ lớn trên mạng.",
       cauHoi:"Vì sao lựa chọn công nghệ này lại phù hợp với mục tiêu dạy học về hiện tượng bịa đặt?",
       luaChon:[
         {id:"a", text:"Vì mô hình nhỏ thì luôn chính xác hơn mô hình lớn."},

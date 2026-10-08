@@ -1,4 +1,4 @@
-/* HỌC AI — TẦNG 1: "XƯỞNG HUẤN LUYỆN AI GIẢ LẬP"
+/* AInatomy — TẦNG 1: "XƯỞNG HUẤN LUYỆN AI GIẢ LẬP"
  * Mô phỏng có kiểm soát: perceptron HỌC THẬT (trọng số cập nhật theo lỗi thật) trên
  * đặc trưng ảnh trích từ canvas. Dữ liệu + ánh sáng do hệ kiểm soát nên hệ biết
  * trước mô hình sẽ thiên kiến ở đâu → oracle tự chấm (không cần người kiểm chứng).
@@ -197,7 +197,7 @@
       {
         id: "lab-03", mach: "A", unesco: "A2",
         ten: "Sửa thiên kiến bằng cách nào?",
-        noiDung: "Sau khi phát hiện dữ liệu lệch, nhóm em cần đề xuất cách khắc phục.",
+        noiDung: "Sau khi phát hiện dữ liệu lệch, cần đề xuất cách khắc phục.",
         cauHoi: "Cách khắc phục thiên kiến này HỢP LÍ nhất là gì?",
         luaChon: [
           { id:"a", text:"Cấm dùng hệ thống này ở những nơi thiếu ánh sáng." },

@@ -6,7 +6,7 @@
 
 ---
 
-**Project:** HỌC AI
+**Project:** AInatomy
 **Generated:** 2026-10-04 13:29:12
 **Category:** AI/Chatbot Platform
 

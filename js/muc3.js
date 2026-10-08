@@ -1,4 +1,4 @@
-/* HỌC AI — muc3.js : MỨC 3 CHO BẢY BÀI CÒN LẠI (BT-01, 03, 06, 07, 08, 10, 12).
+/* AInatomy — muc3.js : MỨC 3 CHO BẢY BÀI CÒN LẠI (BT-01, 03, 06, 07, 08, 10, 12).
  *
  * VÌ SAO CÓ TỆP NÀY
  *   THIET_KE_BAI_TOAN.md PHẦN 4.4 định nghĩa ba mức, Mức 3 = "EM DỰ ĐOÁN TRƯỚC".
@@ -191,7 +191,7 @@
   function bt01(host, tl){
     const api = D().veChon(host, {
       cauHoi: "Hai bức ảnh CÙNG một đối tượng (cùng nhãn), chỉ khác nhau ở điều kiện sáng "
-        + "(một chụp ban ngày, một chụp ban đêm). Theo em, bốn con số mà máy đọc được "
+        + "(một chụp ban ngày, một chụp ban đêm). Theo dự đoán, bốn con số mà máy đọc được "
         + "từ hai ảnh đó có GIỐNG nhau không?",
       phuongAn: [
         { id: "giong", text: "Giống nhau — cùng là 'có mũ' thì máy phải đọc ra như nhau" },
@@ -212,7 +212,7 @@
   function bt03(host, tl){
     const api = D().veTruot(host, {
       cauHoi: "Sắp tới hệ huấn luyện 60 vòng trên bộ dữ liệu LỆCH. "
-        + "Theo em, độ chính xác của mô hình trên CHÍNH bộ dữ liệu nó vừa học là bao nhiêu?",
+        + "Theo dự đoán, độ chính xác của mô hình trên CHÍNH bộ dữ liệu nó vừa học là bao nhiêu?",
       dungSai: 0.10,
       ghiChu: "Đây là điểm trên dữ liệu nó vừa học — thường CAO hơn hẳn điểm trên ảnh mới. "
         + "Chốt TRƯỚC khi bấm 'Huấn luyện mô hình AI'. Ngưỡng khớp ±10 điểm %.",
@@ -227,7 +227,7 @@
   function bt06(host, tl){
     const api = D().veTruot(host, {
       cauHoi: "Sắp tới hệ huấn luyện LẠI với bộ dữ liệu ĐÃ CÂN BẰNG ngày/đêm. "
-        + "Theo em, độ chính xác trên ảnh BAN ĐÊM sẽ thành bao nhiêu?",
+        + "Theo dự đoán, độ chính xác trên ảnh BAN ĐÊM sẽ thành bao nhiêu?",
       dungSai: 0.10,
       ghiChu: "Ban đêm đang rất thấp. Câu hỏi là nó lên tới đâu sau khi bổ sung dữ liệu. "
         + "Chốt TRƯỚC khi bấm nút cân bằng. Ngưỡng khớp ±10 điểm %.",
@@ -243,8 +243,8 @@
   function bt07(host, tl){
     const api = D().veChon(host, {
       cauHoi: "Hệ này chỉ được học bốn chủ đề: nông nghiệp, y tế, giáo dục, môi trường. "
-        + "Nếu em hỏi một việc NGOÀI cả bốn chủ đề đó (ví dụ giá vàng hôm nay), "
-        + "theo em hệ sẽ làm gì?",
+        + "Nếu hỏi một việc NGOÀI cả bốn chủ đề đó (ví dụ giá vàng hôm nay), "
+        + "hệ sẽ làm gì?",
       phuongAn: [
         { id: "biao",    text: "Vẫn trả lời trôi chảy, nhưng nội dung là bịa — không có căn cứ trong dữ liệu đã học" },
         { id: "tuuchoi", text: "Từ chối thẳng: 'tôi không biết chủ đề này'" },
@@ -263,18 +263,18 @@
    * Sáu phương diện dưới đây soi ĐÚNG sáu tiêu chí mà rubric của hệ dùng. */
   function bt08(host){
     return D().veTuLuan(host, {
-      cauHoi: "Hãy viết một prompt cho một việc em CHƯA TỪNG làm, rồi TỰ CHẤM xem prompt "
-        + "của em có đủ các ý dưới đây không — trước khi bấm nút để hệ chấm.",
+      cauHoi: "Hãy viết một prompt cho một việc CHƯA TỪNG làm, rồi TỰ CHẤM xem prompt "
+        + "có đủ các ý dưới đây không, trước khi bấm nút để hệ chấm.",
       goiY: "Ví dụ: 'Hãy liệt kê 3 ứng dụng AI trong nông nghiệp ở Việt Nam, trình bày dạng bảng có 2 cột'...",
       soTuToiThieu: 12,
       tuChamNgay: true,
       phuongDien: [
-        { ma: "muc-tieu", moTa: "nói rõ em muốn gì (mục tiêu của việc)", tuKhoa: ["liệt kê", "viết", "tạo", "giải thích", "so sánh", "mô tả", "tính", "tìm", "gợi ý", "hãy"] },
+        { ma: "muc-tieu", moTa: "nói rõ việc cần làm (mục tiêu của việc)", tuKhoa: ["liệt kê", "viết", "tạo", "giải thích", "so sánh", "mô tả", "tính", "tìm", "gợi ý", "hãy"] },
         { ma: "ngu-canh", moTa: "nêu ngữ cảnh (cho ai, ở đâu, tình huống nào)", tuKhoa: ["cho học sinh", "cho lớp", "ở việt nam", "trong trường", "cho phụ huynh", "ngữ cảnh", "bối cảnh", "của em", "cho em"] },
         { ma: "dinh-dang", moTa: "yêu cầu định dạng đầu ra (bảng, danh sách, số câu)", tuKhoa: ["dạng bảng", "bảng", "danh sách", "gạch đầu dòng", "câu", "đoạn văn", "dạng cột", "dạng sơ đồ"] },
         { ma: "gioi-han", moTa: "nêu giới hạn hoặc điều KHÔNG được làm", tuKhoa: ["không được", "đừng", "chỉ dùng", "không quá", "tối đa", "giới hạn"] },
         { ma: "nguon", moTa: "nói rõ lấy thông tin từ đâu", tuKhoa: ["theo dữ liệu", "trong kho", "dựa trên", "nguồn", "trích"] },
-        { ma: "tu-danh-gia", moTa: "nói em sẽ kiểm lại kết quả thế nào", tuKhoa: ["kiểm tra", "kiểm lại", "đối chiếu", "xác minh", "tự chấm", "so lại"] }
+        { ma: "tu-danh-gia", moTa: "nói rõ cách kiểm lại kết quả", tuKhoa: ["kiểm tra", "kiểm lại", "đối chiếu", "xác minh", "tự chấm", "so lại"] }
       ],
       onChot(v){ ghi("BT-08", String(v).slice(0, 400)); }
     });
@@ -285,7 +285,7 @@
    * Mức 3 KHÔNG có đáp án duy nhất (PHẦN 4.5). Chấm bằng đếm phương diện, không bịa đáp án. */
   function bt10(host){
     return D().veTuLuan(host, {
-      cauHoi: "Nghĩ về MỘT dự án AI mà nhóm em hoặc trường em đang làm (hoặc định làm). "
+      cauHoi: "Nghĩ về MỘT dự án AI mà nhóm hoặc trường đang làm (hay đang dự định). "
         + "Hãy đề xuất biện pháp hạn chế rủi ro cho dự án đó.",
       goiY: "Ví dụ: 'Dự án điểm danh bằng nhận diện khuôn mặt...' rồi nêu biện pháp cụ thể.",
       soTuToiThieu: 30,
@@ -307,8 +307,8 @@
    * Cũng là Mức 3 không có đáp án duy nhất: nguyên tắc dùng AI của RIÊNG EM. */
   function bt12(host){
     return D().veTuLuan(host, {
-      cauHoi: "Hãy viết MỘT nguyên tắc dùng AI của riêng em — và trong nguyên tắc đó phải "
-        + "nói rõ: khi đầu ra của AI sai thì AI, em, hay thầy cô chịu trách nhiệm?",
+      cauHoi: "Hãy viết MỘT nguyên tắc dùng AI của riêng mình, và trong nguyên tắc đó phải "
+        + "nói rõ khi đầu ra của AI sai thì AI, người học hay giáo viên chịu trách nhiệm.",
       goiY: "Ví dụ: 'Em chỉ dùng AI để gợi ý, mọi kết quả phải do em kiểm lại. Nếu em nộp bài mà không kiểm thì CHÍNH EM chịu trách nhiệm...'",
       soTuToiThieu: 25,
       tuChamNgay: true,

@@ -1,4 +1,4 @@
-/* HỌC AI — duDoan.js : Ô "DỰ ĐOÁN TRƯỚC KHI CHẠY" (Mức 3 của khung ba mức).
+/* AInatomy — duDoan.js : Ô "DỰ ĐOÁN TRƯỚC KHI CHẠY" (Mức 3 của khung ba mức).
  *
  * VÌ SAO CÓ TỆP NÀY
  *   THIET_KE_BAI_TOAN.md PHẦN 4.4 định nghĩa Mức 3 = "EM DỰ ĐOÁN TRƯỚC": học sinh
@@ -80,7 +80,7 @@
     const lab = document.createElement("label");
     const idIn = "dd-truot-" + Math.random().toString(36).slice(2, 8);
     lab.setAttribute("for", idIn);
-    lab.innerHTML = 'Dự đoán của em: <b class="dd-gia-tri">50%</b>';
+    lab.innerHTML = 'Dự đoán đã chốt: <b class="dd-gia-tri">50%</b>';
     card.appendChild(lab);
 
     const inp = document.createElement("input");
@@ -138,14 +138,14 @@
         fb.appendChild(p1);
         const p2 = document.createElement("p");
         p2.className = "chu2";
-        p2.textContent = "Em dự đoán " + pct(chot) + " · kết quả thật " + pct(ketQuaThat)
+        p2.textContent = "Dự đoán " + pct(chot) + " · kết quả thật " + pct(ketQuaThat)
           + " · chênh " + Math.round(lech * 100) + " điểm % (ngưỡng khớp ±"
           + Math.round(dungSai * 100) + ").";
         fb.appendChild(p2);
         const p3 = document.createElement("p");
         p3.className = "nho chu2";
         p3.textContent = khop
-          ? "Em đã hình dung được mô hình hoạt động thế nào trước khi thấy kết quả — đó là điều Mức 3 muốn rèn."
+          ? "Mô hình đã được hình dung trước khi thấy kết quả, đó là điều Mức 3 muốn rèn."
           : "Không sao: chỗ lệch chính là chỗ đáng soi. Hãy xem bảng kết quả bên dưới và tìm vì sao con số thật lại như vậy.";
         fb.appendChild(p3);
         return { khop, duDoan: chot, ketQua: ketQuaThat, lech };
@@ -266,7 +266,7 @@
     const idTa = "dd-viet-" + Math.random().toString(36).slice(2, 8);
     const ta = document.createElement("textarea");
     ta.id = idTa; ta.rows = 5;
-    ta.placeholder = opts.goiY || "Viết câu trả lời của em...";
+    ta.placeholder = opts.goiY || "Viết câu trả lời...";
     card.appendChild(ta);
 
     const dem = document.createElement("p");
@@ -331,7 +331,7 @@
 
         const p1 = document.createElement("p");
         p1.innerHTML = (tiLe >= 0.6 ? svgIco("check") : svgIco("triangle-alert"))
-          + " <b>Bài viết của em chạm " + dat.length + "/" + cham.length
+          + " <b>Bài viết chạm " + dat.length + "/" + cham.length
           + " phương diện.</b>";
         fb.appendChild(p1);
 
@@ -347,7 +347,7 @@
         const p3 = document.createElement("p");
         p3.className = "nho chu2";
         p3.textContent = "Đây KHÔNG phải điểm số và không có đáp án đúng duy nhất — "
-          + "chỉ liệt kê em đã chạm những phương diện nào. Em tự đọc lại bài mình "
+          + "chỉ liệt kê những phương diện đã chạm. Hãy tự đọc lại bài "
           + "và bổ sung nếu thấy cần (theo phần VI Khung 2422).";
         fb.appendChild(p3);
         return { cham, dat: dat.length, tong: cham.length, tiLe };
