@@ -176,11 +176,14 @@ def main():
                 print("       | " + l.strip()[:160])
         return 1
 
+    # ket_luan giữ (tên, kết quả, là_đối_chứng_âm). Cờ thứ ba lấy từ CHÍNH tham số điều khiển
+    # vòng chạy (ky_vong_keu=False nghĩa là ca đối chứng âm) — không suy từ tên ca, vì suy từ tên
+    # là chỗ đã sinh ra dòng KẾT LUẬN khai quá ở 5 script khác trong repo này.
     ket_luan = []
     print()
     for ten in ("G18a", "G18b", "G18c"):
-        ket_luan.append(ca(ten, NOI_DUNG[ten], True))
-    ket_luan.append(ca("IM", NOI_DUNG["IM"], False))
+        ket_luan.append((ten, ca(ten, NOI_DUNG[ten], True), False))
+    ket_luan.append(("IM", ca("IM", NOI_DUNG["IM"], False), True))
 
     # Xác nhận cuối: tệp thăm dò phải không còn, và cây phải về nguyên trạng.
     con_sot = os.path.exists(DUONG_DAN_THAM_DO)
@@ -188,12 +191,20 @@ def main():
     rc2, ket2, _ = chay_cong()
     print(f"[XÁC NHẬN SAU CÙNG] rc={rc2}  {ket2}   (phải về ĐẠT: hai số bằng nhau)")
 
-    print(f"\nKẾT LUẬN: {sum(ket_luan)}/{len(ket_luan)} ca đúng như kỳ vọng"
-          f" (3 ca phá bị G18 bắt + 1 ca đối chứng âm không bị bắt oan)")
-    for ten, o in zip(("G18a", "G18b", "G18c", "đối chứng âm"), ket_luan):
-        print(f"  {ten}: {'ĐÚNG' if o else 'SAI KỲ VỌNG'}")
+    # Khuôn chung với 11 script kia, để máy đếm được. Hai số PHẢI tách: ca đối chứng âm không
+    # phải "cổng bắt được" mà là "cổng không bắt oan" — gộp lại là khai quá. Bản trước in "3 ca
+    # phá" bằng CHỮ CỨNG, nên nếu số ca đổi mà quên sửa chữ thì dòng đó nói sai ngay trong tệp.
+    so = sum(1 for _, o, _ in ket_luan if o)
+    so_pha = sum(1 for _, o, dc in ket_luan if o and not dc)
+    so_dc = sum(1 for _, o, dc in ket_luan if o and dc)
+    print(f"\nKẾT LUẬN: {so}/{len(ket_luan)} ca đúng như kỳ vọng ({so_pha} ca PHÁ bị cổng bắt"
+          f" + {so_dc} ca ĐỐI CHỨNG ÂM cổng im đúng)")
+    for ten, o, dc in ket_luan:
+        nhan = ("KHÔNG BẮT OAN (đúng)" if o else "BẮT OAN — luật miễn trừ hỏng") if dc \
+            else ("ĐÚNG" if o else "SAI KỲ VỌNG")
+        print(f"  {ten}: {nhan}")
     print("=" * 100)
-    return 0 if (all(ket_luan) and not con_sot and rc2 == 0) else 1
+    return 0 if (all(o for _, o, _ in ket_luan) and not con_sot and rc2 == 0) else 1
 
 
 if __name__ == "__main__":

@@ -66,6 +66,18 @@ GOC = {p: sha(p) for p in (IDX, YCCD, README, KB)}
 ket_luan = []
 
 
+def ghi(ten, dat, dc=False):
+    """Ghi kết quả một ca. `dc=True` = ĐỐI CHỨNG ÂM, tức kỳ vọng cổng phải IM.
+
+    Thêm 08/10 để dòng KẾT LUẬN đếm được bằng máy VÀ không khai quá. Trước đó script này chỉ in
+    `KẾT LUẬN: 4/4 ca đúng như kỳ vọng`, không nói 4 ca đó gồm loại gì — đọc vào dễ tưởng cả 4
+    đều là ca phá bị cổng bắt, trong khi ca 4 là ca ĐỐI CHỨNG ÂM (G10b phải bắt, G10f phải im).
+    Phân loại bằng DỮ LIỆU (cờ này), không bằng chữ trong tên ca.
+    """
+    ket_luan.append((ten, dat, dc))
+    return dat
+
+
 def sua(p, cu, moi, n=1):
     """Thay chuỗi; trả None nếu không tìm thấy (để ca phá không âm thầm thành không-làm-gì)."""
     s = open(p, encoding="utf-8").read()
@@ -88,14 +100,14 @@ s = sua(IDX,
         f'<div class="tagline">{TEN_CU}')
 if s is None:
     print("  !!! không tìm thấy chỗ thay")
-    ket_luan.append(("1 định danh cũ sót lại (G10f chiều a)", None))
+    ghi("1 định danh cũ sót lại (G10f chiều a)", None)
 else:
     try:
         rc, out = chay()
         gf = ket(out, "G10f")
         print(f"  rc={rc}  G10f={gf}")
         in_bang_chung(out, "G10f")
-        ket_luan.append(("1 định danh cũ sót lại (G10f chiều a)", gf == "LỖI"))
+        ghi("1 định danh cũ sót lại (G10f chiều a)", gf == "LỖI")
     finally:
         tra(IDX, s)
 
@@ -108,7 +120,7 @@ n_lan = s.count("lớp 10")
 print(f"  data/yccd.js có {n_lan} lần 'lớp 10' — thay hết thành 'cấp THPT'")
 if n_lan == 0:
     print("  !!! không có chỗ nào để thay")
-    ket_luan.append(("2 mất dấu phạm vi YCCĐ (G10f chiều b)", None))
+    ghi("2 mất dấu phạm vi YCCĐ (G10f chiều b)", None)
 else:
     open(YCCD, "w", encoding="utf-8").write(s.replace("lớp 10", "cấp THPT"))
     try:
@@ -116,7 +128,7 @@ else:
         gf = ket(out, "G10f")
         print(f"  rc={rc}  G10f={gf}")
         in_bang_chung(out, "G10f")
-        ket_luan.append(("2 mất dấu phạm vi YCCĐ (G10f chiều b)", gf == "LỖI"))
+        ghi("2 mất dấu phạm vi YCCĐ (G10f chiều b)", gf == "LỖI")
     finally:
         tra(YCCD, s)
 
@@ -127,7 +139,7 @@ s = open(README, encoding="utf-8").read()
 i = s.find("\n**Phạm vi dữ liệu đã kiểm chứng.**")
 if i < 0:
     print("  !!! không tìm thấy đoạn khai phạm vi")
-    ket_luan.append(("3 README mất câu khai phạm vi (G10f chiều c)", None))
+    ghi("3 README mất câu khai phạm vi (G10f chiều c)", None)
 else:
     j = s.find("\n\n", i + 10)
     moi = s[:i] + s[j:]
@@ -138,7 +150,7 @@ else:
         gf = ket(out, "G10f")
         print(f"  rc={rc}  G10f={gf}")
         in_bang_chung(out, "G10f")
-        ket_luan.append(("3 README mất câu khai phạm vi (G10f chiều c)", gf == "LỖI"))
+        ghi("3 README mất câu khai phạm vi (G10f chiều c)", gf == "LỖI")
     finally:
         tra(README, s)
 
@@ -149,7 +161,7 @@ print("       kỳ vọng: G10b BẮT (thiếu ở nơi thứ ba) nhưng G10f ph
 s = sua(KB, TEN_MOI, "Phòng thực hành AI")
 if s is None:
     print("  !!! không tìm thấy định danh mới trong js/kichban.js")
-    ket_luan.append(("4 G10b bắt nơi thứ ba, G10f im (negative control)", None))
+    ghi("4 G10b bắt nơi thứ ba, G10f im (negative control)", None, dc=True)
 else:
     try:
         rc, out = chay()
@@ -158,17 +170,31 @@ else:
         in_bang_chung(out, "G10b")
         dung = (gb == "LỖI" and gf == "ĐẠT")
         print(f"  ->  {'ĐÚNG: G10b bắt, G10f im (hai cổng chia việc)' if dung else 'SAI phân công'}")
-        ket_luan.append(("4 G10b bắt nơi thứ ba, G10f im (negative control)", dung))
+        ghi("4 G10b bắt nơi thứ ba, G10f im (negative control)", dung, dc=True)
     finally:
         tra(KB, s)
 
 # ============================== TỔNG KẾT ==============================
 print("=" * 92)
-so = sum(1 for _, b in ket_luan if b is True)
-tong = sum(1 for _, b in ket_luan if b is not None)
-print(f"KẾT LUẬN: {so}/{tong} ca đúng như kỳ vọng")
-for ten, b in ket_luan:
-    print(f"  {ten}: " + ("BỎ QUA" if b is None else ("ĐÚNG" if b else "SAI KỲ VỌNG")))
+def _dc(t):
+    return t[2] if len(t) > 2 else False
+
+
+so = sum(1 for t in ket_luan if t[1] is True)
+tong = sum(1 for t in ket_luan if t[1] is not None)
+so_pha = sum(1 for t in ket_luan if t[1] is True and not _dc(t))
+so_dc = sum(1 for t in ket_luan if t[1] is True and _dc(t))
+# Khuôn chung với 11 script kia, để máy đếm được: hai số PHẢI tách (xem docstring của ghi()).
+print(f"KẾT LUẬN: {so}/{tong} ca đúng như kỳ vọng ({so_pha} ca PHÁ bị cổng bắt"
+      f" + {so_dc} ca ĐỐI CHỨNG ÂM cổng im đúng)")
+for t in ket_luan:
+    ten, b = t[0], t[1]
+    if b is None:
+        print(f"  {ten}: BỎ QUA")
+    elif _dc(t):
+        print(f"  {ten}: " + ("KHÔNG BẮT OAN (đúng)" if b else "BẮT OAN — luật miễn trừ hỏng"))
+    else:
+        print(f"  {ten}: " + ("ĐÚNG" if b else "SAI KỲ VỌNG"))
 
 rc, out = chay()
 m = re.search(r"KẾT QUẢ: (\d+)/(\d+)", out)
