@@ -82,8 +82,8 @@ def main():
     TRANG = [
         ["TRẠNG THÁI CUỐI — vòng build 04/10/2026 (mọi số lấy từ file thật, không chép tay)"],
         [""],
-        ["Website", "https://mxuanvan02.github.io/soi-ai-lop10/", "HTTP 200, Pages build đúng commit"],
-        ["Repo", "https://github.com/mxuanvan02/soi-ai-lop10", "public, commit " + sha],
+        ["Website", "https://mxuanvan02.github.io/ainatomy/", "HTTP 200, Pages build đúng commit"],
+        ["Repo", "https://github.com/mxuanvan02/ainatomy", "public, commit " + sha],
         ["Tổng số dòng mã (trừ vendor)", so_dong.split()[0] + " dòng", "find + wc"],
         [""],
         ["ĐỘ PHỦ 22 YCCĐ LỚP 10 — đo bằng tools/tinh_do_phu.py (quét mã nguồn)"],

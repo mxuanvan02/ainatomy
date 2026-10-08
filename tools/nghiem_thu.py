@@ -40,7 +40,7 @@ RANH GIỚI (không được vi phạm — kháng Goodhart):
 import datetime, hashlib, json, os, re, subprocess, sys, urllib.request, urllib.parse
 
 ROOT = os.path.dirname(os.path.dirname(os.path.abspath(__file__)))
-SITE = os.environ.get("SOI_AI_SITE", "https://mxuanvan02.github.io/soi-ai-lop10")
+SITE = os.environ.get("SOI_AI_SITE", "https://mxuanvan02.github.io/ainatomy")
 NGUONG_TU_CO_NGHIA = 0.72      # G4: >=72% từ sinh ra phải có trong ngữ liệu
 NGUONG_PHAN_BO_LOI = (0.45, 0.75)   # G4: tỉ lệ "có lỗi" phải nằm trong khoảng này
 

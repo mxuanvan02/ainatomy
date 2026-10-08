@@ -6,15 +6,15 @@ Học sinh **bắt lỗi AI** thay vì hỏi AI; hệ thống **tự chấm** v�
 
 **Phạm vi dữ liệu đã kiểm chứng.** Phụ đề không giới hạn cấp học vì app không khoá lớp (mã lớp nhập tự do) và Khung 2422/QĐ-BGDĐT có phụ lục yêu cầu cần đạt cho cả lớp 10, 11, 12. Nhưng bản đồ yêu cầu cần đạt đang nhúng trong app là của **lớp 10** — 22 yêu cầu, trích nguyên văn, đã kiểm chứng tự động 22/22 với văn bản Bộ bằng `tools/verify_yccd.py`. Nói rõ ranh giới này để hồ sơ không khai rộng hơn dữ liệu thật; mở rộng sang lớp 11 và 12 là việc trích thêm phụ lục, không phải việc đổi chữ.
 
-**Repo:** https://github.com/mxuanvan02/soi-ai-lop10 · **Bản chạy thử:** https://mxuanvan02.github.io/soi-ai-lop10/
+**Repo:** https://github.com/mxuanvan02/ainatomy · **Bản chạy thử:** https://mxuanvan02.github.io/ainatomy/
 
 ## 0. Repo này tự chứa (chạy được ở máy khác)
 
 Mọi công cụ trong `tools/` tự suy gốc repo từ vị trí tệp, **không ghi cứng đường dẫn máy tác giả**:
 
 ```bash
-git clone https://github.com/mxuanvan02/soi-ai-lop10.git
-cd soi-ai-lop10
+git clone https://github.com/mxuanvan02/ainatomy.git
+cd ainatomy
 python3 tools/nghiem_thu.py          # nghiệm thu: dòng KẾT QUẢ phải là N/N (hai số bằng nhau)
 python3 tools/kiem_noi_dung.py       # nội dung: kỳ vọng 0 lỗi
 python3 tools/tinh_do_phu.py         # độ phủ YCCĐ: kỳ vọng 22/22
@@ -95,7 +95,7 @@ chính nó. Ghi rõ đường dẫn `../` ở đây để không ai đi tìm nó
 
 | Cách | Làm gì | Dùng khi |
 |---|---|---|
-| **USB** | Chép cả thư mục `soi-ai-lop10/` vào USB → mở `index.html` bằng Chrome/Edge/Firefox | Phòng máy bất kỳ |
+| **USB** | Chép cả thư mục `ainatomy/` vào USB → mở `index.html` bằng Chrome/Edge/Firefox | Phòng máy bất kỳ |
 | **Máy chủ lớp** | Đặt thư mục trên 1 máy, chia sẻ qua mạng LAN hoặc phát WiFi cục bộ | Trường có 1 máy chủ |
 | **Máy cá nhân** | Giải nén, mở `index.html` | Học ở nhà, không cần mạng |
 
@@ -242,10 +242,13 @@ Bốn điều nói rõ ở mốc này:
 - **Tên mới AInatomy** = AI + Anatomy (giải phẫu), đúng việc sản phẩm làm: mở nắp từng trạm của hệ AI để xem bên trong. Đổi bằng `tools/doi_ten_ainatomy.py` (54 chỗ, kiểm kê từng chỗ, không replace toàn cục).
 - **Phụ đề bỏ chữ "cấp THPT"**: nay là "Phòng thực hành Trí tuệ nhân tạo", vì sản phẩm không giới hạn cấp học. Ranh giới dữ liệu KHÔNG đổi — xem đoạn "Phạm vi dữ liệu đã kiểm chứng" ở đầu tệp. Cổng `G10b` khoá phụ đề mới ở ba nơi, cổng `G10f` nay khoá CẢ HAI đời phụ đề cũ (…lớp 10 và …cấp THPT) để không ai thêm lại vô ý.
 - **Giọng văn trung tính, không ngôi**: bỏ xưng hô "em" ở toàn bộ chữ người dùng đọc (187 chỗ trong index.html và js/, data/kienthuc.js), việc nào ghi việc đó. Bốn nhóm GIỮ có chủ đích, lý do ghi trong docstring `tools/doi_giong_js.py`: từ khoá chấm bài (đổi là hỏng máy chấm), comment kỹ thuật, lời thoại hệ AI đang xúi lộ dữ liệu (bài học về thao túng), và hai ngân hàng câu hỏi ("em" nằm trong nội dung học thuật mà `giaiThich` trích nguyên văn; 56 câu đang chờ duyệt nhãn).
-- **Đường dẫn, tên repo và URL công khai KHÔNG đổi**: vẫn là `soi-ai-lop10` và
-  `https://mxuanvan02.github.io/soi-ai-lop10/`. GitHub Pages KHÔNG redirect khi đổi tên repo, và
-  link cũ đã nằm trong hồ sơ nộp thi — tiền lệ đã đo: `github.io/soi-ai/` trả 404 sau lần đổi tên
-  trước. Việc đổi repo/URL dời ra sau hạn nộp 25/10.
+- **Tên repo và URL công khai ĐÃ ĐỔI** (09/10, theo quyết định của chủ sản phẩm, đảo
+  quyết định 07/10 ở `THIET_KE_GIAO_DUC.md` §2.4): `soi-ai-lop10` -> `ainatomy`, trang
+  công khai là `https://mxuanvan02.github.io/ainatomy/`. GitHub redirect địa chỉ kho (301)
+  nhưng Pages KHÔNG redirect, đo bằng curl sau khi đổi: `github.io/soi-ai-lop10/` -> 404,
+  `github.io/ainatomy/` -> 200. Mọi link trong hồ sơ đã được cập nhật và kiểm lại bằng
+  `tools/quet_so_cu.py`. Thư mục mã nguồn trong repo hồ sơ vẫn tên `soi-ai/` (đường dẫn
+  nội bộ, không phải slug công khai).
 
 **Vì sao đổi tên.** Tên "SOI AI" hẹp hơn nội dung thật của sản phẩm. "Soi" là phương pháp của MỘT
 phân hệ (Đấu trường bắt lỗi AI), trong khi hệ thống gồm năm phân hệ để HỌC VỀ AI: Xưởng huấn
