@@ -1,4 +1,4 @@
-/* SOI AI — BÀI TẬP BÀI 5 "DỮ LIỆU LÔGIC" (Tin học 10, Chủ đề 1)
+/* HỌC AI — BÀI TẬP BÀI 5 "DỮ LIỆU LÔGIC" (Tin học 10, Chủ đề 1)
  * Bám nội dung Bài 5 sách Kết nối tri thức / Chân trời sáng tạo:
  *   (1) Các giá trị chân lí và các phép toán lôgic (AND, OR, NOT)
  *   (2) Biểu diễn dữ liệu lôgic (1 bit: 1 = TRUE, 0 = FALSE)

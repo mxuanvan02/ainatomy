@@ -1,4 +1,4 @@
-/* SOI AI — nhamay_text.js : MÁY SINH VĂN BẢN của TRẠM ỨNG DỤNG (nhà máy AI).
+/* HỌC AI — nhamay_text.js : MÁY SINH VĂN BẢN của TRẠM ỨNG DỤNG (nhà máy AI).
  *
  * VÌ SAO FILE NÀY TỒN TẠI
  * Anh Văn yêu cầu sản phẩm phải là một "nhà máy AI" dạy được TOÀN BỘ quy trình,

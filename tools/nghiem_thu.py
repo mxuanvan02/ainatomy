@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-r"""JUDGE ĐỘC LẬP — nghiệm thu xác định cho SOI AI (system-one-work-loop).
+r"""JUDGE ĐỘC LẬP — nghiệm thu xác định cho HỌC AI (system-one-work-loop).
 
 File này là QUAN NGHIỆM THU, không phải thợ. Nó KHÔNG build gì, chỉ đo.
 Nguyên tắc: mọi tiêu chí phải chấm được bằng yes/no từ file trên đĩa hoặc HTTP,
@@ -1815,6 +1815,24 @@ console.log(JSON.stringify(out));
             r"^[\w.\-/]+/[\w.\-/]+$"                       # có dấu / : path/to/file.ext
             r"|^[\w\-]+\.(?:py|js|md|json|txt|html|css|csv|pdf|png|svg)$")  # hoặc tệp ở gốc
 
+        # MẢNH URL VIẾT KHÔNG CÓ SCHEME — dương tính giả thứ TƯ của cổng này, tìm thấy 08/10.
+        # README §8 ghi "tiền lệ đã đo: `github.io/soi-ai/` trả 404 sau lần đổi tên" — đó là một
+        # TÊN MIỀN, không phải đường dẫn tệp. Nhưng RE_DDP nhận nó (có dấu `/`, toàn ký tự
+        # [\w.\-/]) nên cổng đi `os.path.exists("github.io/soi-ai/")` -> False -> báo "tài liệu
+        # hứa một tệp không có". Tức cổng kết tội một câu đang kể lại một URL đã chết.
+        #
+        # Vì sao URL ĐẦY ĐỦ không bị bắt mà mảnh này lại bị: `https://mxuanvan02.github.io/...`
+        # chứa dấu `:`, không nằm trong lớp ký tự của RE_DDP, nên bị loại ngay. Khoảng mù chỉ là
+        # URL viết RÚT GỌN không có scheme — đúng dạng người ta hay gõ trong văn xuôi.
+        #
+        # ĐÃ ĐO trước khi bật phép loại trừ (bài học G17b từng có 14 dương tính giả): chạy mẫu
+        # này trên toàn bộ 106 tệp `git ls-files` -> 0 tệp thật bị khớp. Tức nó chỉ loại đúng thứ
+        # trông như tên miền. Cũng đã thêm ca ĐỐI CHỨNG ÂM 15 (mảnh URL phải được im) và ca PHÁ 16
+        # (đường dẫn tệp ma vẫn phải bị bắt) trong mutation_g17def.py: phép loại trừ mà chỉ được
+        # bật mà không có ca đối chứng thì không phân biệt được "hết bắt oan" với "cổng vừa bị làm
+        # mù hẳn" — cả hai đều cho ra màn hình xanh.
+        RE_MANH_URL = re.compile(r"(?:^|/)[\w-]+\.(?:io|com|vn|org|net|edu|gov|dev|app|info)(?:/|$)", re.I)
+
         cha = os.path.dirname(ROOT)
 
         # TÊN TỆP DO tools/gop_csv.py THẬT SỰ GHI RA — đọc từ mã, không gõ tay.
@@ -1866,6 +1884,10 @@ console.log(JSON.stringify(out));
                             or tok.startswith("(") or tok.startswith(BO_QUA)):
                         continue
                     if not RE_DDP.match(tok):
+                        continue
+                    # Mảnh URL (tên miền, không phải tệp): không thuộc thẩm quyền của cổng này.
+                    # URL công khai có cổng riêng canh bằng curl, không phải bằng os.path.exists.
+                    if RE_MANH_URL.search(tok):
                         continue
                     ten_tron = tok.rsplit("/", 1)[-1]
                     # Thu MỌI tên .csv, kể cả tên mã KHÔNG ghi. Đây chính là chỗ bản cũ làm

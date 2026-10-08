@@ -6,7 +6,7 @@
 
 ---
 
-**Project:** SOI AI
+**Project:** HỌC AI
 **Generated:** 2026-10-04 13:29:12
 **Category:** AI/Chatbot Platform
 

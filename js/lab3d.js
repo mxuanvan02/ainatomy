@@ -1,4 +1,4 @@
-/* SOI AI — lab3d.js : CẢNH ② "XƯỞNG SOI MÔ HÌNH" (3D).
+/* HỌC AI — lab3d.js : CẢNH ② "XƯỞNG SOI MÔ HÌNH" (3D).
  *
  * YCCĐ phủ (nguyên văn Khung 2422/QĐ-BGDĐT, lớp 10 — đã verify 22/22):
  *   10.C4.1  Phân tích được sự ảnh hưởng của chất lượng dữ liệu đến chất lượng AI.

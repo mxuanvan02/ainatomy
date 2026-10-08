@@ -1,4 +1,4 @@
-/* SOI AI — app chính: điều hướng + 3 tầng giao diện.
+/* HỌC AI — app chính: điều hướng + 3 tầng giao diện.
  * Chạy hoàn toàn offline qua file:// (mở bằng trình duyệt từ USB/máy trường).
  * GHI CHÚ AN TOÀN (innerHTML): app 100% offline, không có nội dung từ mạng.
  * Chuỗi do người dùng nhập (mã HS/lớp) luôn đi qua esc() trước khi chèn vào innerHTML;

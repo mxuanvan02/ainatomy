@@ -1,4 +1,4 @@
-/* SOI AI — pipeline3d.js : CẢNH ③ "ỐNG DẪN SOI LUỒNG AI" (3D).
+/* HỌC AI — pipeline3d.js : CẢNH ③ "ỐNG DẪN SOI LUỒNG AI" (3D).
  *
  * YCCĐ phủ (nguyên văn Khung 2422/QĐ-BGDĐT, lớp 10 — đã verify 22/22):
  *   10.D1.1  Nêu được ví dụ cụ thể, xác định nhiệm vụ hoặc mục tiêu cụ thể mà một hệ

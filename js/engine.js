@@ -1,4 +1,4 @@
-/* SOI AI — TẦNG 2: ENGINE CHẤM TỰ ĐỘNG (oracle) + TẦNG 3: LOG & BẢN ĐỒ NĂNG LỰC
+/* HỌC AI — TẦNG 2: ENGINE CHẤM TỰ ĐỘNG (oracle) + TẦNG 3: LOG & BẢN ĐỒ NĂNG LỰC
  * Nguyên tắc: đáp án đúng đã biết TRƯỚC từ lúc thiết kế (lỗi do hệ cài sẵn),
  * nên việc chấm là phép so sánh tất định — không cần giáo viên, không cần LLM khi chạy.
  * Toàn bộ dữ liệu lưu trong trình duyệt (localStorage), ẩn danh theo MÃ HỌC SINH,

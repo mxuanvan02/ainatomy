@@ -2,8 +2,13 @@
 # -*- coding: utf-8 -*-
 r"""MUTATION TEST cho G17d / G17e / G17f — ba tiêu chí mới thêm 07/10.
 
-MƯỜI CA, gồm BỐN negative control (Luật C trong skill agentic-efficiency-loop: thiếu ca "đầu vào
+MƯỜI HAI CA, gồm BỐN negative control (Luật C trong skill agentic-efficiency-loop: thiếu ca "đầu vào
 hợp lệ trông giống lỗi thì cổng phải IM" thì không phân biệt được cổng có răng với cổng bắt oan).
+
+SỐ CA TRONG DOCSTRING NÀY ĐÃ SAI MỘT LẦN và đáng ghi lại: bản trước khai "MƯỜI CA, gồm BỐN
+negative control" trong khi thật chỉ có BA (ca 6, 12, 14) — tức tài liệu mô tả chính tệp này
+cũng khai quá, đúng lớp lỗi mà bộ mutation test sinh ra để săn. Đếm bằng `grep -c "dc=True"` rồi
+đọc từng dòng mới ra số đúng. Nay thêm ca 15 (đối chứng âm) nên BỐN là đúng, và tổng là MƯỜI HAI.
 
   ca 5  — tài liệu hứa cờ `--xlsx` mà gop_csv.py không có      -> G17d PHẢI BẮT
   ca 6  — tài liệu thêm lệnh NGOÀI (`tar -xzvf`, `sha256sum -c`) -> G17d PHẢI IM (negative control)
@@ -323,6 +328,56 @@ else:
             if "G17d" in ln and "[LỖI]" in ln:
                 print("   TỐ OAN:", ln.strip()[-160:])
         bao_cao("14 đối chứng âm: cờ `--ghi` CÓ thật (G17d phải im)", gd == "ĐẠT", dc=True)
+    finally:
+        khoi_phuc(DOC, s)
+        print("  khôi phục:", "hash KHỚP gốc" if sha(DOC) == GOC[DOC] else "!!! LỆCH")
+
+# ============================== CA 15 + CA 16 ==============================
+# Cặp ca cho phép loại trừ MẢNH URL vừa thêm vào G17b (08/10).
+# Ca 15 là chính ca đã bị bắt oan: README §8 kể lại "github.io/soi-ai/ trả 404" — một tên miền
+# trong văn xuôi, không phải đường dẫn tệp, nhưng RE_DDP nhận nó rồi os.path.exists trả False.
+# Ca 16 chứng minh phép loại trừ KHÔNG làm cổng mù: đường dẫn tệp thật sự không tồn tại vẫn phải
+# bị bắt. Thiếu ca 16 thì "hết bắt oan" và "cổng mù hẳn" trông giống hệt nhau — cả hai đều xanh.
+print("=" * 88)
+print("CA 15 — NEGATIVE CONTROL: tài liệu nhắc MẢNH URL không có scheme (`github.io/soi-ai/`)")
+print("        kỳ vọng: G17b IM  (đây là chính ca bị bản cũ tố oan — nó là tên miền, không phải tệp)")
+cu = "  nói rõ điều đó."
+moi = ("  nói rõ điều đó.\n\n  Tiền lệ đã đo: `github.io/soi-ai/` trả 404 sau lần đổi tên repo.")
+s = thay(DOC, cu, moi)
+if s is None:
+    print("  !!! không tìm thấy chỗ thay; bỏ qua")
+    ket_luan.append(("15 đối chứng âm: mảnh URL trong văn xuôi", None))
+else:
+    try:
+        rc, out = chay_cong()
+        gb = ket(out, "G17b")
+        print(f"  rc={rc}  G17b={gb}")
+        for ln in out.splitlines():
+            if "G17b" in ln and "[LỖI]" in ln:
+                print("   TỐ OAN:", ln.strip()[-160:])
+        bao_cao("15 đối chứng âm: mảnh URL `github.io/soi-ai/` (G17b phải im)", gb == "ĐẠT", dc=True)
+    finally:
+        khoi_phuc(DOC, s)
+        print("  khôi phục:", "hash KHỚP gốc" if sha(DOC) == GOC[DOC] else "!!! LỆCH")
+
+print("=" * 88)
+print("CA 16 — tài liệu hứa đường dẫn TỆP không tồn tại (`tools/khong-co-tap-tin-nay.py`)")
+print("        kỳ vọng: G17b LỖI  (chứng minh phép loại trừ URL KHÔNG làm cổng mù)")
+cu = "  nói rõ điều đó."
+moi = ("  nói rõ điều đó.\n\n  Chạy thêm `tools/khong-co-tap-tin-nay.py` để đối chiếu.")
+s = thay(DOC, cu, moi)
+if s is None:
+    print("  !!! không tìm thấy chỗ thay; bỏ qua")
+    ket_luan.append(("16 đường dẫn tệp ma sau khi thêm phép loại trừ URL", None))
+else:
+    try:
+        rc, out = chay_cong()
+        gb = ket(out, "G17b")
+        print(f"  rc={rc}  G17b={gb}")
+        for ln in out.splitlines():
+            if "G17b" in ln and "[LỖI]" in ln:
+                print("   bằng chứng:", ln.strip()[-160:])
+        bao_cao("16 đường dẫn tệp ma vẫn bị bắt (phép loại trừ URL không làm mù cổng)", gb == "LỖI")
     finally:
         khoi_phuc(DOC, s)
         print("  khôi phục:", "hash KHỚP gốc" if sha(DOC) == GOC[DOC] else "!!! LỆCH")

@@ -1,4 +1,4 @@
-/* SOI AI — duDoan.js : Ô "DỰ ĐOÁN TRƯỚC KHI CHẠY" (Mức 3 của khung ba mức).
+/* HỌC AI — duDoan.js : Ô "DỰ ĐOÁN TRƯỚC KHI CHẠY" (Mức 3 của khung ba mức).
  *
  * VÌ SAO CÓ TỆP NÀY
  *   THIET_KE_BAI_TOAN.md PHẦN 4.4 định nghĩa Mức 3 = "EM DỰ ĐOÁN TRƯỚC": học sinh

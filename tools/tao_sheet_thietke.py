@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Tạo Google Sheet quản lý dự án SOI AI — bản thiết kế v2 (chi tiết).
+"""Tạo Google Sheet quản lý dự án HỌC AI — bản thiết kế v2 (chi tiết).
 
 Sheet cũ (1MxGyHgOD0AK_TZ8chm_XzDl7rINCxVyx9tjpSVEecU0) chứa YCCĐ bản v1 BỊ LỘN CỘT
 ("vai trò của con động của con hệ thống AI người") -> bỏ, không dùng.
@@ -55,7 +55,7 @@ MAU = [
 def build():
     # ================= TAB 1: Tổng quan =================
     tong = [
-        ["SOI AI — THIẾT KẾ TỔNG QUAN & QUẢN LÝ DỰ ÁN (v2)"],
+        ["HỌC AI — THIẾT KẾ TỔNG QUAN & QUẢN LÝ DỰ ÁN (v2)"],
         ["Lập", "04/10/2026", "Thay thế sheet cũ (bản YCCĐ v1 bị lộn cột)"],
         ["Khẩu hiệu", "Soi AI để hiểu AI", "Học sinh không hỏi AI — học sinh bắt lỗi AI"],
         ["Repo", "github.com/mxuanvan02/soi-ai-lop10", "public"],
@@ -398,7 +398,7 @@ def main():
             print("  đã tạo thêm tab:", thieu)
     else:
         sp = api("POST", "https://sheets.googleapis.com/v4/spreadsheets", tok, {
-            "properties": {"title": "SOI AI — Thiết kế tổng quan & Quản lý dự án v2",
+            "properties": {"title": "HỌC AI — Thiết kế tổng quan & Quản lý dự án v2",
                            "locale": "vi_VN", "timeZone": "Asia/Ho_Chi_Minh"},
             "sheets": [{"properties": {"title": t}} for t in tabs],
         })

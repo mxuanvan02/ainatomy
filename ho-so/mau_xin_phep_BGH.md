@@ -33,7 +33,7 @@ Kính gửi: Ban Giám hiệu trường [TÊN TRƯỜNG]
 
 2. Nội dung xin ý kiến
    Tôi dự kiến triển khai chuyên đề giáo dục AI "[TÊN CHUYÊN ĐỀ]" cho học sinh lớp [..]
-   trong [SỐ] tiết, sử dụng công cụ học tập "SOI AI" chạy hoàn toàn offline trên trình
+   trong [SỐ] tiết, sử dụng công cụ học tập "HỌC AI" chạy hoàn toàn offline trên trình
    duyệt. Để đánh giá kết quả học tập, tôi xin phép được thu thập dữ liệu học tập với
    các nội dung sau:
 

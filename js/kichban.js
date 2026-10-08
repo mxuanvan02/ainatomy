@@ -1,4 +1,4 @@
-/* SOI AI — kichban.js : "HÀNH TRÌNH CỦA MỘT BỨC ẢNH" — kịch bản 9 cảnh tự chạy.
+/* HỌC AI — kichban.js : "HÀNH TRÌNH CỦA MỘT BỨC ẢNH" — kịch bản 9 cảnh tự chạy.
  *
  * YÊU CẦU CỦA ANH VĂN (04/10): ít chữ, có hiệu ứng dạng video về cách thức hoạt động,
  * có đầu có đuôi có kịch bản, bố cục chuẩn chỉnh. Tệp này là câu trả lời.
@@ -304,7 +304,7 @@
       const m = document.createElement("span");
       m.appendChild(svgIcon("play"));
       logo.appendChild(m);
-      logo.appendChild(el("span", null, "SOI AI"));
+      logo.appendChild(el("span", null, "HỌC AI"));
       s.appendChild(logo);
       s.appendChild(el("div", "kb-logo-soi", "Phòng thực hành Trí tuệ nhân tạo cấp THPT"));
     },

@@ -1,4 +1,4 @@
-/* SOI AI — tinhhuong.js : TRẠM "TÌNH HUỐNG" — phủ 5 yêu cầu cần đạt còn trống.
+/* HỌC AI — tinhhuong.js : TRẠM "TÌNH HUỐNG" — phủ 5 yêu cầu cần đạt còn trống.
  *
  * Trước khi có tệp này, độ phủ 22 YCCĐ lớp 10 (đo bằng tools/tinh_do_phu.py trên
  * bằng chứng thật trong code) là: 8 PHỦ MẠNH · 9 PHỦ · 5 CHƯA PHỦ. Năm yêu cầu trống:
@@ -142,7 +142,7 @@
         {id:"c", text:"Không có vấn đề gì vì AI viết hay hơn học sinh thì nên dùng."},
         {id:"d", text:"Chỉ vi phạm nếu giáo viên phát hiện ra."}],
       dapAn:"b",
-      giaiThich:"Vấn đề cốt lõi không nằm ở chất lượng bài văn mà ở tính trung thực của minh chứng. Đánh giá trong giáo dục dựa trên giả định rằng sản phẩm phản ánh năng lực của người nộp; khi giả định đó bị phá vỡ thì mọi kết quả đánh giá đều vô nghĩa. Đây cũng là lí do sản phẩm SOI AI có phiếu khai báo sử dụng AI. Khai báo không phải để trừ điểm mà để minh chứng còn giá trị.",
+      giaiThich:"Vấn đề cốt lõi không nằm ở chất lượng bài văn mà ở tính trung thực của minh chứng. Đánh giá trong giáo dục dựa trên giả định rằng sản phẩm phản ánh năng lực của người nộp; khi giả định đó bị phá vỡ thì mọi kết quả đánh giá đều vô nghĩa. Đây cũng là lí do sản phẩm HỌC AI có phiếu khai báo sử dụng AI. Khai báo không phải để trừ điểm mà để minh chứng còn giá trị.",
       bienPhap:""}
   ];
 
@@ -173,7 +173,7 @@
       bienPhap:""},
 
     { id:"yc-03", yccd:"10.C3.MR1", chuDe:"C3", mach:"C",
-      tinhHuong:"Trong sản phẩm SOI AI, mô hình nhận diện mũ bảo hiểm được huấn luyện ngay trong trình duyệt, không cần máy chủ.",
+      tinhHuong:"Trong sản phẩm HỌC AI, mô hình nhận diện mũ bảo hiểm được huấn luyện ngay trong trình duyệt, không cần máy chủ.",
       cauHoi:"Công nghệ nào cho phép việc đó, và cái giá phải trả là gì?",
       luaChon:[
         {id:"a", text:"Gọi API của một nhà cung cấp AI; cái giá là phải trả phí theo số lần gọi."},
@@ -181,11 +181,11 @@
         {id:"c", text:"Dùng mô hình ngôn ngữ lớn đã tải sẵn; cái giá là máy phải có card đồ họa."},
         {id:"d", text:"Không có công nghệ nào làm được việc đó."}],
       dapAn:"b",
-      giaiThich:"Trong SOI AI, mô hình là một perceptron bốn đặc trưng — tỉ lệ điểm ảnh rất sáng, tỉ lệ điểm ảnh sáng vừa, độ sáng vùng đầu và tỉ lệ điểm tối. Bốn đặc trưng này được tính từ ảnh vẽ bằng canvas, rồi trọng số được cập nhật ngay trong trình duyệt. Đổi lại sự đơn giản đó là hai lợi ích quyết định cho trường học — không cần mạng và học sinh nhìn thấy toàn bộ trọng số — mô hình càng đơn giản thì bài học về thiên kiến càng rõ.",
+      giaiThich:"Trong HỌC AI, mô hình là một perceptron bốn đặc trưng — tỉ lệ điểm ảnh rất sáng, tỉ lệ điểm ảnh sáng vừa, độ sáng vùng đầu và tỉ lệ điểm tối. Bốn đặc trưng này được tính từ ảnh vẽ bằng canvas, rồi trọng số được cập nhật ngay trong trình duyệt. Đổi lại sự đơn giản đó là hai lợi ích quyết định cho trường học — không cần mạng và học sinh nhìn thấy toàn bộ trọng số — mô hình càng đơn giản thì bài học về thiên kiến càng rõ.",
       bienPhap:""},
 
     { id:"yc-04", yccd:"10.C3.MR1", chuDe:"C3", mach:"C",
-      tinhHuong:"Trạm ỨNG DỤNG của SOI AI sinh ra câu trả lời bằng một máy học từ ngữ liệu có sẵn trong ứng dụng, thay vì gọi một mô hình ngôn ngữ lớn trên mạng.",
+      tinhHuong:"Trạm ỨNG DỤNG của HỌC AI sinh ra câu trả lời bằng một máy học từ ngữ liệu có sẵn trong ứng dụng, thay vì gọi một mô hình ngôn ngữ lớn trên mạng.",
       cauHoi:"Vì sao lựa chọn công nghệ này lại phù hợp với mục tiêu dạy học về hiện tượng bịa đặt?",
       luaChon:[
         {id:"a", text:"Vì mô hình nhỏ thì luôn chính xác hơn mô hình lớn."},

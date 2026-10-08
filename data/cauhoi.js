@@ -1,4 +1,4 @@
-/* SOI AI — NGÂN HÀNG "ĐẤU TRƯỜNG BẮT LỖI AI" (Tầng 2)
+/* HỌC AI — NGÂN HÀNG "ĐẤU TRƯỜNG BẮT LỖI AI" (Tầng 2)
  * Mỗi item có NHÃN ĐÚNG CỨNG (oracle) vì lỗi do chính hệ cài sẵn:
  *   - loai: "co_loi" | "dung"  (đáp án đúng)
  *   - loaiLoi: khóa trong MX_META.loaiLoi (chỉ khi loai="co_loi")

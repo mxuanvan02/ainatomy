@@ -1,4 +1,4 @@
-/* SOI AI — bt09.js : BT-09 Mức 3 "Tự soạn một câu trả lời AI có cài đúng MỘT lỗi".
+/* HỌC AI — bt09.js : BT-09 Mức 3 "Tự soạn một câu trả lời AI có cài đúng MỘT lỗi".
  *
  * VÌ SAO CÓ TỆP NÀY
  *   THIET_KE_BAI_TOAN.md PHẦN 4.4 ghi Mức 3 của BT-09 là: "Tự soạn một câu trả lời AI có

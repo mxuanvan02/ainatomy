@@ -1,4 +1,4 @@
-/* SOI AI — scene3d.js : wrapper three.js dùng chung cho mọi cảnh 3D.
+/* HỌC AI — scene3d.js : wrapper three.js dùng chung cho mọi cảnh 3D.
  *
  * RÀNG BUỘC THIẾT KẾ (đã verify, không phải phỏng đoán):
  *  1. three.js r137.5 bản UMD được vendor trong repo (vendor/three/). KHÔNG dùng CDN

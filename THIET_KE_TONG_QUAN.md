@@ -1,4 +1,4 @@
-# THIẾT KẾ TỔNG QUAN HỆ THỐNG "SOI AI"
+# THIẾT KẾ TỔNG QUAN HỆ THỐNG "HỌC AI"
 
 **Phiên bản thiết kế:** 2.0 (thay thế định hướng giao diện tối của v1.x)
 **Ngày lập:** 04/10/2026

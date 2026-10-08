@@ -1,6 +1,6 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Sinh data/yccd.js cho app SOI AI từ nguồn ĐÃ VERIFY.
+"""Sinh data/yccd.js cho app HỌC AI từ nguồn ĐÃ VERIFY.
 
 Nguồn vào:
   * ~/ieeai2026/yccd_lop10_sach.json  — 22 YCCĐ lớp 10, đã verify 22/22 bằng
@@ -61,7 +61,7 @@ def main():
         theo_cd.setdefault(r["chuDe"], []).append(r)
 
     lines = [
-        "/* SOI AI — dữ liệu 13 chủ đề + 22 yêu cầu cần đạt (YCCĐ) của LỚP 10.",
+        "/* HỌC AI — dữ liệu 13 chủ đề + 22 yêu cầu cần đạt (YCCĐ) của LỚP 10.",
         " * NGUỒN: Khung nội dung giáo dục Trí tuệ nhân tạo cho học sinh phổ thông,",
         " *        ban hành kèm QĐ 2422/QĐ-BGDĐT ngày 18/8/2026 (phụ lục, lớp 10).",
         " * Nội dung YCCĐ là NGUYÊN VĂN, đã verify tự động bằng tools/verify_yccd.py",

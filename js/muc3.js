@@ -1,4 +1,4 @@
-/* SOI AI — muc3.js : MỨC 3 CHO BẢY BÀI CÒN LẠI (BT-01, 03, 06, 07, 08, 10, 12).
+/* HỌC AI — muc3.js : MỨC 3 CHO BẢY BÀI CÒN LẠI (BT-01, 03, 06, 07, 08, 10, 12).
  *
  * VÌ SAO CÓ TỆP NÀY
  *   THIET_KE_BAI_TOAN.md PHẦN 4.4 định nghĩa ba mức, Mức 3 = "EM DỰ ĐOÁN TRƯỚC".

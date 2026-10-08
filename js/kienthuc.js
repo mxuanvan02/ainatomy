@@ -1,4 +1,4 @@
-/* SOI AI — MODULE KIẾN THỨC NỀN (5 YCCĐ cốt lõi lớp 10 còn thiếu)
+/* HỌC AI — MODULE KIẾN THỨC NỀN (5 YCCĐ cốt lõi lớp 10 còn thiếu)
  * GHI CHÚ AN TOÀN (innerHTML): app 100% offline/tự host, nội dung lấy từ data/kienthuc.js
  * (hằng số tĩnh của chính sản phẩm). Chuỗi do HS nhập được escape bằng esc() trước khi
  * hiển thị lại, và KHÔNG bao giờ được đưa ra máy khác. Không có vectơ XSS từ mạng.
@@ -70,7 +70,7 @@
         `<tr><td><b>${esc(u.nhom)}</b></td><td>${esc(u.moTa)}</td><td>${esc(u.viDu)}</td></tr>`
       ).join("") + `</table>
       <p class="nho chu2">Ghi chú: một hệ thống AI thực tế thường kết hợp nhiều nhóm.
-      Ứng dụng "SOI AI" này dùng nhóm <b>phân loại</b> (Tầng 1) và mô phỏng đầu ra
+      Ứng dụng "HỌC AI" này dùng nhóm <b>phân loại</b> (Tầng 1) và mô phỏng đầu ra
       <b>tạo sinh</b> (Tầng 2).</p>`;
   }
 

@@ -1,4 +1,4 @@
-/* SOI AI — nhamay_tram01.js : TRẠM 0 (NHẬP LIỆU) + TRẠM 1 (DÁN NHÃN) của nhà máy.
+/* HỌC AI — nhamay_tram01.js : TRẠM 0 (NHẬP LIỆU) + TRẠM 1 (DÁN NHÃN) của nhà máy.
  *
  * VÌ SAO HAI TRẠM NÀY TỒN TẠI
  * Bản đầu của nhà máy để trống Trạm 0 và Trạm 1 ("đang xây dựng"), nghĩa là học sinh

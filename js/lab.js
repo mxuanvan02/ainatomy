@@ -1,4 +1,4 @@
-/* SOI AI — TẦNG 1: "XƯỞNG HUẤN LUYỆN AI GIẢ LẬP"
+/* HỌC AI — TẦNG 1: "XƯỞNG HUẤN LUYỆN AI GIẢ LẬP"
  * Mô phỏng có kiểm soát: perceptron HỌC THẬT (trọng số cập nhật theo lỗi thật) trên
  * đặc trưng ảnh trích từ canvas. Dữ liệu + ánh sáng do hệ kiểm soát nên hệ biết
  * trước mô hình sẽ thiên kiến ở đâu → oracle tự chấm (không cần người kiểm chứng).

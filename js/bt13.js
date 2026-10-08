@@ -1,4 +1,4 @@
-/* SOI AI — bt13.js : BT-13 "Ứng dụng AI quanh em thuộc loại nào?" — Mức 2 và Mức 3.
+/* HỌC AI — bt13.js : BT-13 "Ứng dụng AI quanh em thuộc loại nào?" — Mức 2 và Mức 3.
  *
  * VÌ SAO CÓ TỆP NÀY
  *   THIET_KE_BAI_TOAN.md mô tả BT-13 ở cả ba mức, nhưng trước 05/10 app chỉ có Mức 1:

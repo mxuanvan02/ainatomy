@@ -1,11 +1,11 @@
-/* SOI AI — siêu dữ liệu: 4 mạch + 13 chủ đề QĐ 2422/QĐ-BGDĐT, 5 loại lỗi.
+/* HỌC AI — siêu dữ liệu: 4 mạch + 13 chủ đề QĐ 2422/QĐ-BGDĐT, 5 loại lỗi.
    UNESCO AI CFS 2024 (12 khối) chỉ dùng làm cột ĐỐI CHIẾU PHỤ — trục báo cáo chính
    là 13 chủ đề của Bộ, xem data/yccd.js (đã verify 22/22 bằng tools/verify_yccd.py).
    Chạy offline, không cần máy chủ. Dữ liệu nhúng dạng JS để mở trực tiếp bằng file:// (USB). */
 window.MX_META = {
-  ten: "SOI AI",
+  ten: "HỌC AI",
   dinhDanh: "Phòng thực hành Trí tuệ nhân tạo cấp THPT",
-  phienBan: "1.0.0",
+  phienBan: "1.1.0",
   ngayDongGoi: "2026-10-04",
   canCu: "QĐ 2422/QĐ-BGDĐT (18/8/2026) · CV 5588/BGDĐT-GDPT (19/8/2026)",
 

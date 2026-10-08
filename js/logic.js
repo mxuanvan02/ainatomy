@@ -1,4 +1,4 @@
-/* SOI AI — MODULE "LÔGIC & AI"
+/* HỌC AI — MODULE "LÔGIC & AI"
  * Cầu nối trực tiếp với Bài 5 Tin học 10 "Dữ liệu lôgic" (KNTT & CTST, Chủ đề 1, 2 tiết).
  * Ý tưởng sư phạm: toàn bộ luật chơi của "Đấu trường bắt lỗi AI" VỐN LÀ một biểu thức lôgic.
  * Vì vậy dạy Bài 5 không cần ví dụ xa lạ — dùng chính kết quả của học sinh làm vật liệu.

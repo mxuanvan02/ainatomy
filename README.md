@@ -1,4 +1,4 @@
-# SOI AI — Hướng dẫn giáo viên cấp THPT (v1.0.0)
+# HỌC AI — Hướng dẫn giáo viên cấp THPT (v1.1.0)
 
 Phòng thí nghiệm AI **offline, tiếng Việt, không tài khoản, không thu phí** cho học sinh phổ thông.
 Bám Khung nội dung giáo dục AI (QĐ 2422/QĐ-BGDĐT 18/8/2026) — 4 mạch × 12 khối năng lực UNESCO.
@@ -235,9 +235,37 @@ Quy tắc: đúng 1 claim chứa lỗi khi `loai="co_loi"`; cả 3 claim đúng 
 
 ## 8. Trạng thái phiên bản
 
-**Bản hiện hành là v1.0.0**, và nó có mốc trong git: commit `5c46f41` (04/10/2026) — đổi tên từ
-"MỔ XẺ AI" thành "SOI AI", trục báo cáo = 13 chủ đề QĐ 2422, bỏ ngôn ngữ điểm số. Sau mốc đó là
-38 commit sửa lỗi và thêm cổng (đọc `git log --oneline` để có danh sách thật).
+**Bản hiện hành là v1.1.0** (08/10/2026) — đổi tên thương hiệu thành **HỌC AI**.
+
+Hai điều nói rõ để không ai hiểu nhầm mốc này:
+
+- **Phụ đề KHÔNG đổi**: vẫn là "Phòng thực hành Trí tuệ nhân tạo cấp THPT". Cổng `G10b` khoá phụ
+  đề này ở ba nơi (`index.html`, `data/meta.js`, `js/kichban.js`) — ba bản sao đó vẫn khớp nhau.
+- **Đường dẫn, tên repo và URL công khai KHÔNG đổi**: vẫn là `soi-ai-lop10` và
+  `https://mxuanvan02.github.io/soi-ai-lop10/`. GitHub Pages KHÔNG redirect khi đổi tên repo, và
+  link cũ đã nằm trong hồ sơ nộp thi — tiền lệ đã đo: `github.io/soi-ai/` trả 404 sau lần đổi tên
+  trước. Việc đổi repo/URL dời ra sau hạn nộp 25/10.
+
+**Vì sao đổi tên.** Tên "SOI AI" hẹp hơn nội dung thật của sản phẩm. "Soi" là phương pháp của MỘT
+phân hệ (Đấu trường bắt lỗi AI), trong khi hệ thống gồm năm phân hệ để HỌC VỀ AI: Xưởng huấn
+luyện, Đấu trường bắt lỗi, Nhà máy AI 7 trạm, Lôgic & AI, và Bản đồ năng lực. Chủ sản phẩm
+(giáo viên Tin học THPT) quyết định đổi ngày 08/10 — đảo ngược quyết định "giữ SOI AI" đã ghi
+trong sheet quản lý dự án. Bản ghi quyết định cũ được GIỮ NGUYÊN trong
+`tools/tao_sheet_thietke.py` và `tools/capnhat_sheet_cuoi.py` (viết đè nó sẽ làm bản ghi nói dối
+về một câu hỏi đã được đặt ra), còn quyết định mới ghi ở đây và trong commit.
+
+48 chỗ đã đổi bằng `tools/doi_ten_hoc_ai.py` — script có chế độ chỉ-kiểm, chốt chặn số chỗ, và
+verify bốn chiều. Ba nhóm BẮT BUỘC giữ nguyên, và giữ là có lý do chứ không phải sót:
+
+- `soiai_dulieu_v1` (khoá localStorage) và `soiai_nhatky_*.csv` — đổi khoá là XOÁ SẠCH dữ liệu học
+  sinh đang lưu trong trình duyệt, không đảo ngược được.
+- động từ "soi" trong nội dung dạy học ("soi mô hình", "soi ra chỗ hỏng", 25 lần) — đó là văn
+  xuôi mô tả cơ chế, không phải tên.
+- chuỗi `"Soi AI để hiểu AI"` trong DANH SÁCH TỪ CẤM của cổng `G10c` — đây là khẩu hiệu tiếp thị
+  đã bị loại. Nếu thay thô thì chuỗi cấm biến thành "Học AI để hiểu AI" và cổng THÔI CẤM khẩu
+  hiệu cũ mà vẫn in ĐẠT, tức vô hiệu hoá một tiêu chí trong im lặng.
+
+Mốc trước đó:
 
 Hai điều nói rõ để hồ sơ không khai quá:
 
@@ -247,6 +275,9 @@ Hai điều nói rõ để hồ sơ không khai quá:
 - **Các mục dưới đây là mốc CŨ, giữ nguyên làm lịch sử**: chúng ghi bản trước khi đổi tên, và
   tên "MỔ XẺ AI" trong đó đúng với thời điểm nó được viết.
 
+- **v1.1.0** (08/10/2026): đổi tên thương hiệu SOI AI -> **HỌC AI** (48 chỗ, bằng
+  `tools/doi_ten_hoc_ai.py`). Phụ đề, đường dẫn, tên repo và URL công khai giữ nguyên. Khoá
+  localStorage và động từ "soi" trong nội dung dạy học giữ nguyên.
 - **v1.0.0** (04/10/2026): đổi tên thành SOI AI, trục báo cáo theo 13 chủ đề QĐ 2422, bỏ ngôn
   ngữ điểm số. Mốc: commit `5c46f41` (không có tag).
 - **v0.2.0** (04/10/2026): 78 item (22 gốc + 56 LLM có QC), phiên phân tầng 12 câu,

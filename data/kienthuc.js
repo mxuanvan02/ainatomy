@@ -1,4 +1,4 @@
-/* SOI AI — MODULE KIẾN THỨC NỀN (phủ 6 YCCĐ cốt lõi lớp 10)
+/* HỌC AI — MODULE KIẾN THỨC NỀN (phủ 6 YCCĐ cốt lõi lớp 10)
  * Nguồn: Khung nội dung giáo dục AI cho HS phổ thông, ban hành kèm QĐ 2422/QĐ-BGDĐT (18/8/2026).
  * Mã YCCĐ theo quy ước của Khung: [Lớp].[Mã chủ đề].[Số thứ tự]; tiền tố MR = nội dung mở rộng.
  *

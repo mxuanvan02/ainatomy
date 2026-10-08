@@ -1,4 +1,4 @@
-/* SOI AI — ngân hàng câu hỏi MỞ RỘNG (sinh bằng LLM pipeline + QC schema tự động,
+/* HỌC AI — ngân hàng câu hỏi MỞ RỘNG (sinh bằng LLM pipeline + QC schema tự động,
  * 4 batch × 2 model; ĐÃ soát mẫu; chờ tác giả duyệt nhãn 100% trước khi dạy thật — xem proposal §2.7#3).
  * QC: schema 12 luật + quét số hiệu văn bản thật (cấm trùng văn bản có thật làm nguồn bịa).
  * Phân bố: {"tong": 56, "loai": {"co_loi": 39, "dung": 17}, "loaiLoi": {"so_lieu_bia": 8, "nguon_khong_ton_tai": 8, "thien_kien": 8, "suy_luan_sai": 8, "lo_du_lieu_ca_nhan": 7}, "mach": {"C": 15, "D": 11, "B": 16, "A": 14}} */
