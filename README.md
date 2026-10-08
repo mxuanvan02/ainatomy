@@ -55,15 +55,31 @@ Mỗi script phá đúng thứ cổng khai là đang canh, rồi **tự khôi ph
 Điều kiện đạt, không phải con số: mọi script in `rc=0`, dòng `KẾT LUẬN` khớp số ca, và **cây
 sạch sau khi chạy xong** (`git status --short` rỗng).
 
+Đếm ca bằng `tools/tests/mutation/dem_ca.py`, **đừng đếm tay**:
+
+```bash
+cd soi-ai
+mkdir -p /tmp/mut
+for b in tools/tests/mutation/mutation_*.py tools/tests/mutation/mut_g12c.py; do
+  python3 "$b" > "/tmp/mut/$(basename "$b" .py).log" 2>&1
+done
+python3 tools/tests/mutation/dem_ca.py /tmp/mut
+```
+
+Vì sao phải có công cụ đếm: trong một phiên, phép đếm tay ra **ba con số khác nhau** trên cùng
+một bộ log (29 rồi 40 rồi 42, trong khi số đúng là 48) — lần nào cũng in ra trông hợp lệ. Và
+`tools/tests/mutation/dem_ca.py` cũng tự kêu khi không đếm được: thư mục rỗng thì báo "CHƯA CHẠY"
+(không in `0 ca`), log không khớp khuôn thì liệt kê tên và **không cộng** số của chúng vào tổng.
+
 Hai điều bắt buộc khi đọc kết quả, vì cả hai đã gây kết luận sai:
 
 - **Phân biệt ca PHÁ với ca ĐỐI CHỨNG ÂM.** Ca phá là ca **cổng phải kêu** (script in
   `BẮT ĐƯỢC`, `rc=1`). Ca đối chứng âm là ca **cổng phải IM** vì đầu vào hợp lệ — ví dụ
   `G18` phải bỏ qua đường dẫn cũ khi nó nằm trong docstring, hay `G10f` phải im ở chỗ `G10b`
-  đã bắt. Đếm gộp hai loại thành "N/N ca phá bị bắt" là **khai quá**; chính một dòng `KẾT LUẬN`
-  trong repo từng gộp như vậy.
-- **Đếm theo CẤP CA, không đếm dòng chứa từ khoá.** Đếm theo dòng cho ra ba con số khác nhau
-  trên cùng một bộ log (29 rồi 40 rồi sai phân loại), vì một ca được mô tả trên nhiều dòng.
+  đã bắt. Đếm gộp hai loại thành "N/N ca phá bị bắt" là **khai quá**; chính dòng `KẾT LUẬN`
+  của 5 script trong repo từng gộp như vậy, và đã sửa.
+- **Đếm theo CẤP CA, không đếm dòng chứa từ khoá.** Một ca được mô tả trên nhiều dòng, nên đếm
+  dòng cho ra số lớn hơn số ca thật.
 - **Nếu vừa sửa `tools/`: chạy `python3 tools/sinh_manifest.py --ghi` TRƯỚC.** Cổng có phép
   kiểm toàn vẹn tệp, nên manifest cũ làm CA 0 đỏ vì lý do không phải lỗi sản phẩm — và đọc
   nhầm CA 0 đỏ thành "cổng hỏng" đã tốn hai lần chạy.
