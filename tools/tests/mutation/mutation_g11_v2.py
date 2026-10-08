@@ -149,6 +149,13 @@ def main():
         print(f"  {'ĐẠT' if ok else 'HỎNG'}  {ten}")
     tong = sum(1 for _, ok in ket[1:] if ok)
     print(f"\n  CỔNG CÓ RĂNG: bắt {tong}/5 ca phá · nguyên trạng ĐẠT: {ket[0][1]}")
+    # Tự khai cùng khuôn với 10 script kia, để con số ĐẾM ĐƯỢC BẰNG MÁY. Trước 08/10 script này
+    # chỉ in dòng "CỔNG CÓ RĂNG: bắt 5/5 ca phá" nên bộ đếm tự động tính nó thành 0 ca, và tôi
+    # đọc ra tổng 42 trong khi số đúng là 48.
+    # KHÔNG có đối chứng âm ở đây: cả 5 ca đều là ca phá, cộng 1 dòng kiểm nguyên trạng (ket[0])
+    # không phải ca nên không đếm.
+    print(f"KẾT LUẬN: {tong}/5 ca đúng như kỳ vọng ({tong} ca PHÁ bị cổng bắt"
+          f" + 0 ca ĐỐI CHỨNG ÂM cổng im đúng)")
     print("=" * 90)
     shutil.rmtree(bak, ignore_errors=True)
     return 0 if (tong == 5 and ok0 and sach) else 1

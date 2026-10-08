@@ -157,6 +157,24 @@ def main():
         return 9
     rc2, ket2, _ = chay_cong()
     print(f"[XÁC NHẬN CUỐI] rc={rc2} · {ket2}   (phải về ĐẠT: hai số bằng nhau)")
+    # Tự khai cùng khuôn với 10 script kia, để con số ĐẾM ĐƯỢC BẰNG MÁY. Trước 08/10 script
+    # này chỉ in "-> BẮT ĐƯỢC" nên bộ đếm tự động tính nó thành 0 ca.
+    #
+    # KHAI THEO ĐÚNG BA ĐIỀU KIỆN của mã thoát, không chỉ điều kiện đầu. Bản vá đầu tiên của
+    # dòng này chỉ tính `bat`, nên nó in "1/1 ca đúng như kỳ vọng" trong khi script trả rc=1 —
+    # tự khai ngược với chính mã thoát của nó. Lỗi đó lộ ra chỉ vì tôi đọc cả log thay vì tin
+    # dòng tóm tắt. Nay `dat` = đúng cả ba: bắt được · khôi phục khớp hash · cổng về ĐẠT.
+    dat = bat and khop and rc2 == 0
+    ly_do = []
+    if not bat:
+        ly_do.append("cổng KHÔNG bắt")
+    if not khop:
+        ly_do.append("khôi phục LỆCH hash")
+    if rc2 != 0:
+        ly_do.append(f"cổng KHÔNG về ĐẠT (rc={rc2}, {ket2})")
+    print(f"KẾT LUẬN: {1 if dat else 0}/1 ca đúng như kỳ vọng (1 ca PHÁ bị cổng bắt"
+          f" + 0 ca ĐỐI CHỨNG ÂM cổng im đúng)"
+          + ("" if dat else " — KHÔNG ĐẠT vì: " + "; ".join(ly_do)))
     shutil.rmtree(tmp)
     return 0 if (bat and khop and rc2 == 0) else 1
 
