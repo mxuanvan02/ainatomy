@@ -2306,12 +2306,116 @@ console.log(JSON.stringify(out));
                   ("; ".join(v_import + loi) if (v_import or loi) else
                    f"{n} tệp parse được, không thiếu import"))
 
+    # ============ G19 OFFLINE Ở TẦNG MÃ (thêm 09/10) ============
+    def g19(self):
+        """G19 — LỜI KHAI "0 LƯỢT GỌI MẠNG KHI CHẠY" PHẢI ĐƯỢC CANH BẰNG CỔNG.
+
+        VÌ SAO CÓ NHÓM NÀY, và vì sao G6 chưa đủ. Hồ sơ nộp giám khảo khai ở
+        ho-so/video_brief.md dòng 90: "0 lượt gọi mạng khi chạy (app offline hoàn
+        toàn)" — câu đó nằm trong kịch bản video, tức sẽ được ĐỌC THÀNH LỜI trước
+        giám khảo. Nhưng trước ngày 09/10 KHÔNG có tiêu chí nào trong bộ 80 canh nó:
+        G6a/G6b chỉ soi thẻ nạp tài nguyên (src/href) trong index.html và @import
+        trong css, nên một lệnh `fetch()` nằm trong js/ là NGOÀI TẦM NHÌN của G6.
+        Đó đúng là lớp lỗi mà repo này đã trả giá nhiều lần: một lời khai trong hồ
+        sơ không có cổng nào canh thì sẽ lệch âm thầm, và bộ cổng vẫn in ĐẠT.
+
+        LỖI THẬT ĐÃ XẢY RA, tìm được nhờ reviewer độc lập. js/nhamay_text.js từng có
+        hàm doKhaNang() chứa `fetch("https://huggingface.co", HEAD)` để dò mạng. Hàm
+        đó CHẾT — grep toàn repo ra đúng 2 lần cho tên hàm (định nghĩa + tên trong
+        danh sách export), 0 lời gọi — nên lời khai "0 lượt gọi mạng" vẫn đúng, nhưng
+        đúng NHỜ MAY: hàm đã nằm sẵn trong export, ai nối nó vào UI (việc rất tự
+        nhiên vì nó trông như một API công khai) là lời khai thành sai mà 80/80 vẫn
+        ĐẠT. Hàm đã bị xoá cùng ngày; nhóm cổng này để việc đó không lặp lại âm thầm.
+
+        BA TIÊU CHÍ, KHÔNG TRÙNG G6:
+          G19a — 0 API mạng trong MÃ SỐNG của mọi tệp js/ và index.html.
+          G19b — mọi src/href trong index.html là đường dẫn LOCAL và tệp có thật trên
+                 đĩa (asset thiếu thì app mở ra trắng, tức "offline" thành "không chạy").
+          G19c — không tệp .html NÀO trong repo nạp tài nguyên từ mạng. Đây là mở rộng
+                 G6a từ một tệp ra mọi tệp (repo có nhiều hơn index.html).
+
+        HAI BẪY ĐO LƯỜNG, cả hai đã gặp thật trong lúc viết nhóm này:
+        · PHẢI đo trên than_ma_song()/html_song(), không grep thô. Khi xoá doKhaNang(),
+          chính em viết một comment giải thích có chứa chữ `fetch("https://huggingface.co"...)`;
+          grep thô lập tức báo 1 lệnh gọi mạng ở đúng dòng comment đó. Đây là bản sao
+          của lỗi G8d từng báo oan (chữ trong chú thích HTML bị đếm như thẻ thật).
+        · KHÔNG tìm chuỗi `https?://` trong js sau khi đã lột comment bằng luật `//`:
+          luật đó ăn từ dấu `//` tới hết dòng, nên mọi URL trong chuỗi JS đều bị cắt
+          (đúng chỗ `xmlns="http://www.w3.org/2000/svg"` trong js/kichban.js — một
+          namespace URI không bao giờ được fetch). G19a vì thế chỉ tìm TÊN API
+          (`fetch(`, `XMLHttpRequest`…), là những token không chứa `//`, nên an toàn.
+        """
+        print("\n=== G19 OFFLINE Ở TẦNG MÃ (lời khai '0 lượt gọi mạng') ===")
+
+        # Danh sách tệp js MÃ SỐNG: mọi .js trong js/ + index.html. KHÔNG quét vendor/
+        # vì ba lý do: (1) vendor là thư viện bên thứ ba, sửa nó là mất khả năng cập
+        # nhật và chính nó có thể gọi mạng một cách hợp lệ; (2) lời khai của hồ sơ là
+        # về APP, không phải về three.js; (3) quét vendor sẽ báo oan vĩnh viễn và biến
+        # cổng thành con dấu rỗng (đúng cách một cổng chết: luôn đỏ nên không ai đọc).
+        js_dir = os.path.join(ROOT, "js")
+        tep_js = [os.path.join("js", f) for f in sorted(os.listdir(js_dir))] if \
+            os.path.isdir(js_dir) else []
+        tep_js = [f for f in tep_js if f.endswith(".js")]
+        nguon_a = [(f, than_ma_song(doc(f))) for f in tep_js]
+        nguon_a.append(("index.html", html_song(doc("index.html"))))
+
+        # G19a — tên API mạng. `fetch\s*\(` để bắt cả `fetch (`. navigator.gpu là lệnh
+        # dò WebGPU (không gọi mạng nhưng nằm trong cùng hàm chết đã xoá, và một phép
+        # dò phần cứng không phục vụ tính năng nào cũng là code chết cần bị thấy).
+        RE_API_MANG = re.compile(
+            r"fetch\s*\(|XMLHttpRequest|new\s+WebSocket|EventSource"
+            r"|sendBeacon|importScripts|navigator\.gpu")
+        v_mang = []
+        for f, live in nguon_a:
+            for m in RE_API_MANG.finditer(live):
+                dong = live[:m.start()].count("\n") + 1
+                v_mang.append(f"{f}:{dong} `{m.group(0).strip()}`")
+        self.them("G19a", f"0 lệnh gọi mạng trong mã sống ({len(nguon_a)} tệp js+html)",
+                  not v_mang,
+                  ("MẠNG BỊ GỌI: " + "; ".join(v_mang[:6])
+                   + " — lời khai '0 lượt gọi mạng khi chạy' trong video_brief.md sẽ SAI. "
+                     "Xoá lệnh gọi, hoặc sửa lời khai; KHÔNG được để cả hai lệch nhau.")
+                  if v_mang else
+                  f"{len(nguon_a)} tệp sạch (đo trên mã sống, đã lột comment — một comment "
+                  f"có chữ `fetch(` không bị tính)")
+
+        # G19b — asset local phải tồn tại. Đọc index.html NGUYÊN VĂN (không lột comment)
+        # rồi tự loại chú thích bằng html_song: cùng một bẫy như G8d.
+        idx_live = html_song(doc("index.html"))
+        refs = re.findall(r'(?:src|href)="([^"]+\.(?:js|css))"', idx_live)
+        thieu = [r for r in refs if not os.path.exists(os.path.join(ROOT, r))]
+        self.them("G19b", f"mọi asset local trong index.html có thật trên đĩa ({len(refs)} tệp)",
+                  refs and not thieu,
+                  (f"THIẾU {len(thieu)}/{len(refs)}: {thieu[:4]} — app mở ra sẽ trắng một phần, "
+                   f"tức 'offline' thành 'không chạy'")
+                  if thieu else (f"{len(refs)}/{len(refs)} tệp có thật" if refs
+                                 else "KHÔNG trích được src/href nào — regex hỏng, cổng mù"))
+
+        # G19c — mọi tệp .html trong repo, không chỉ index.html.
+        tep_html = []
+        for r, dirs, fs in os.walk(ROOT):
+            dirs[:] = [d for d in dirs if d not in ("vendor", ".git", "out", "__pycache__",
+                                                    "node_modules", "_backups")]
+            for f in fs:
+                if f.endswith(".html"):
+                    tep_html.append(os.path.relpath(os.path.join(r, f), ROOT))
+        v_cdn = []
+        for f in sorted(tep_html):
+            live = html_song(doc(f))
+            for m in re.finditer(r'(?:src|href)="(https?:)?//[^"]*"', live):
+                dong = live[:m.start()].count("\n") + 1
+                v_cdn.append(f"{f}:{dong} {m.group(0)[:60]}")
+        self.them("G19c", f"không tệp .html nào nạp tài nguyên từ mạng ({len(tep_html)} tệp)",
+                  tep_html and not v_cdn,
+                  ("NẠP TỪ MẠNG: " + "; ".join(v_cdn[:5])) if v_cdn
+                  else f"{len(tep_html)} tệp .html đều local (mở rộng G6a ra toàn repo)")
+
 
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
     NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13",
-            "G14", "G15", "G16", "G17", "G18"]
+            "G14", "G15", "G16", "G17", "G18", "G19"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.

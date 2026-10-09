@@ -246,18 +246,38 @@
     };
   }
 
-  /* ================= DÒ NĂNG LỰC MÁY để chọn tầng ================= */
-  async function doKhaNang(){
-    const kq = { webgpu:false, mang:false, tangKhuyenNghi:1 };
-    try{ kq.webgpu = !!(navigator.gpu && await navigator.gpu.requestAdapter()); }catch(e){ kq.webgpu = false; }
-    try{
-      const c = new AbortController(); const t = setTimeout(()=>c.abort(), 2500);
-      const r = await fetch("https://huggingface.co", { method:"HEAD", mode:"no-cors", signal:c.signal });
-      clearTimeout(t); kq.mang = true;
-    }catch(e){ kq.mang = false; }
-    kq.tangKhuyenNghi = kq.webgpu ? 3 : (kq.mang ? 2 : 1);
-    return kq;
-  }
+  /* ================= ĐÃ XOÁ: hàm doKhaNang() dò WebGPU/mạng (09/10/2026) =========
+   * HÀM NÀY CHẾT VÀ NÓ MANG THEO MỘT LỆNH GỌI MẠNG — xoá vì cả hai lý do.
+   *
+   * (1) CHẾT. grep toàn repo ngày 09/10 ra đúng 2 lần cho tên hàm: định nghĩa ở đây và
+   *     tên nó trong danh sách export cuối tệp. 0 lời gọi. Biến đầu ra `tangKhuyenNghi`
+   *     cũng chỉ tồn tại trong thân hàm, không nơi nào đọc. Nó được viết ra cho một cơ
+   *     chế "chọn tầng trải nghiệm theo cấu hình máy" chưa từng được nối vào UI — và cơ
+   *     chế fallback thật cho máy yếu nằm ở chỗ khác, đang chạy thật:
+   *       · js/app.js — khi máy không chạy được 3D thì báo "bài vẫn làm được ở bảng
+   *         dưới dạng chữ" (đường chữ thay cho canvas);
+   *       · ke-hoach-12-tiet.md — ba cấp phương án triển khai: phòng máy / 1 máy + máy
+   *         chiếu / phiếu in (0 máy).
+   *     Một reviewer độc lập đã đọc ĐỊNH NGHĨA hàm này rồi báo cáo rằng app "tự dò
+   *     WebGPU/mạng để hạ tầng trải nghiệm cho máy yếu", gắn nhãn [đo lại]. Đó là dương
+   *     tính giả nguy hiểm hơn cả lỗi thật: nó sẽ được chép vào hồ sơ làm điểm cộng cho
+   *     một năng lực không tồn tại. Giữ code chết là giữ mồi cho kết luận sai — đúng lý
+   *     do phần tử chết #btn-dangnhap từng bị xoá khỏi index.html.
+   *
+   * (2) NÓ GỌI MẠNG. `fetch("https://huggingface.co", HEAD)` chỉ để DÒ có mạng hay không,
+   *     nhưng hồ sơ khai với giám khảo (ho-so/video_brief.md, sẽ được ĐỌC THÀNH LỜI trong
+   *     video nộp): "0 lượt gọi mạng khi chạy (app offline hoàn toàn)". Vì hàm không bao
+   *     giờ chạy nên lời khai đó vẫn ĐÚNG — nhưng đúng nhờ may: hàm đã nằm sẵn trong
+   *     export, ai nối nó vào UI (việc rất tự nhiên) là lời khai thành sai mà bộ 80 tiêu
+   *     chí vẫn in ĐẠT, vì khi đó KHÔNG có tiêu chí nào canh lệnh gọi mạng. Xoá hàm để
+   *     lời khai đúng BY CONSTRUCTION, và cổng G19a/b/c trong tools/nghiem_thu.py nay
+   *     canh nó — kèm mutation test tools/tests/mutation/mutation_g19.py chứng minh cổng
+   *     kêu được.
+   *     Trách nhiệm đi kèm: huggingface.co là bên thứ ba không liên quan gì tới bài học.
+   *     Nếu lệnh đó từng chạy, mỗi máy trong phòng lab 40 học sinh sẽ lộ IP của trường
+   *     cho một máy chủ ngoài — trong khi chính app này có một trạm dạy về "xúi lộ dữ
+   *     liệu cá nhân". Giữ một lệnh gọi mạng vô dụng ở đó là tự mâu thuẫn với bài dạy.
+   */
 
   /* ================= NGỮ LIỆU THEO CHỦ ĐỀ — TRẠM ỨNG DỤNG =================
    * Cơ chế sư phạm then chốt (và là lí do trạm này giữ được nguyên tắc oracle):
@@ -444,7 +464,7 @@
 
   window.MX_NHAMAY_TEXT = {
     CORPUS, NHOM_LOI, CHU_DE, RUBRIC_PROMPT,
-    huanLuyen, sinh, taoCauTraLoi, cham, doKhaNang,
+    huanLuyen, sinh, taoCauTraLoi, cham,
     nguLieuTheoChuDe, nhanDienChuDe, ungDung, chamUngDung, danhGiaPrompt,
     tenChuDe, thongTin
   };
