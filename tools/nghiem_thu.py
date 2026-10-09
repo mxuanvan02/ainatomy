@@ -898,9 +898,32 @@ console.log(JSON.stringify(out));
         loai_b = [] if ("lớp 10" in yccd and re.search(r'nguon\s*:.*lớp 10', yccd, re.S)) \
             else ["data/yccd.js không còn khai rõ phạm vi LỚP 10"]
 
+        # Chiều (c) — ĐÃ BỊ LÀM RỖNG BỞI CHÍNH MỘT CÂU THAM CHIẾU, và mutation_g10f CA3
+        # bắt được. Bản cũ chỉ kiểm `"Phạm vi dữ liệu đã kiểm chứng" in readme`. Ngày
+        # 09/10 khi viết mục v1.2.0 vào README, tôi thêm câu "...xem đoạn 'Phạm vi dữ
+        # liệu đã kiểm chứng' ở đầu tệp" — một THAM CHIẾU chứa đúng chuỗi đó. Từ lúc ấy
+        # cổng ĐẠT ngay cả khi đoạn khai phạm vi thật bị xoá, vì câu tham chiếu vẫn còn
+        # (đo bằng CA3: xoá 495 ký tự đoạn khai -> G10f vẫn ĐẠT). Đây là cổng thành con
+        # dấu rỗng theo đúng cách repo này từng trả giá ở G14c (một chiều là code chết).
+        #
+        # SỬA: định vị ĐOẠN VĂN bắt đầu bằng nhãn in đậm đó, rồi đòi đoạn văn phải chứa
+        # hai chi tiết chỉ có trong lời khai thật — phạm vi "lớp 10" và tên công cụ kiểm
+        # chứng `verify_yccd.py`. Câu tham chiếu không mở đầu đoạn văn bằng nhãn in đậm
+        # nên không thể đóng giả; và nếu ai xoá đoạn khai thì regex không tìm thấy gì.
         readme = doc("README.md") if os.path.isfile(os.path.join(ROOT, "README.md")) else ""
-        loai_c = [] if "Phạm vi dữ liệu đã kiểm chứng" in readme \
-            else ["README.md thiếu đoạn khai 'Phạm vi dữ liệu đã kiểm chứng'"]
+        m_pv = re.search(r"^\*\*Phạm vi dữ liệu đã kiểm chứng\.\*\*(?P<body>[^\n]*)",
+                         readme, re.M)
+        if not m_pv:
+            loai_c = ["README.md thiếu ĐOẠN KHAI 'Phạm vi dữ liệu đã kiểm chứng' (một câu "
+                      "tham chiếu tới đoạn đó KHÔNG được tính — nó không khai gì cả)"]
+        else:
+            body = m_pv.group("body")
+            thieu = [t for t, ok in (("phạm vi LỚP 10", "lớp 10" in body),
+                                     ("tên công cụ kiểm chứng verify_yccd.py",
+                                      "verify_yccd.py" in body)) if not ok]
+            loai_c = ([f"đoạn khai phạm vi trong README.md có nhãn nhưng thiếu nội dung: "
+                       f"{', '.join(thieu)} — nhãn còn mà lời khai đã bị rút ruột"]
+                      if thieu else [])
 
         loi_f = (["định danh cũ còn sót ở " + ", ".join(f"{f}×{n}" for f, n in con_cu.items() if n)
                   + " — đổi tên nửa vời: giám khảo thấy hai định danh cho một sản phẩm"]
