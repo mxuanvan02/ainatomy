@@ -225,6 +225,12 @@
       <b>Một số câu có lỗi được cố tình cài sẵn</b>, một số câu hoàn toàn đúng.
       Đọc kĩ, bấm vào câu nghi là sai, rồi phán quyết.</p>
       <p><span id="dt-tien-do" class="tagline"></span> · <span id="dt-boicanh" class="nho chu2"></span></p>
+      <!-- NHÃN "CHỜ DUYỆT" cho câu sinh bằng LLM chưa được tác giả xác nhận nhãn.
+           Phần tử này là thứ làm cho lời khai trong hồ sơ thành SỰ THẬT — xem chú thích
+           ở js/app.js chỗ gán nội dung cho nó. Class `vang` dùng lại màu ĐÃ ĐO tương phản
+           4.34:1 trên nền phụ (css/style.css dòng 40), không thêm màu mới chưa đo, và
+           không dùng emoji làm icon theo chuẩn repo. -->
+      <p id="dt-choDuyet" class="nho vang" style="display:none"></p>
 
       <div class="ai-box">
         <div class="nho chu2" style="margin-bottom:8px"><svg class="ic" aria-hidden="true"><use href="#i-bot"/></svg> Trợ lý AI trả lời:</div>

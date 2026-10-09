@@ -2433,12 +2433,70 @@ console.log(JSON.stringify(out));
                   ("NẠP TỪ MẠNG: " + "; ".join(v_cdn[:5])) if v_cdn
                   else f"{len(tep_html)} tệp .html đều local (mở rộng G6a ra toàn repo)")
 
+    # ============ G20 NHÃN "CHỜ DUYỆT" CHO CÂU SINH BẰNG LLM (thêm 09/10) ============
+    def g20(self):
+        """G20 — LỜI KHAI "merge ở chế độ ghi rõ 'chờ duyệt'" PHẢI CÓ THẬT TRONG MÃ.
+
+        LỖI THẬT, REVIEWER ĐỘC LẬP BẮT ĐƯỢC NGÀY 09/10. Hồ sơ nộp giám khảo khai ở
+        proposal_v6_MoXeAI.md: "56 câu sinh LLM… Đã merge vào app (v0.2.0) ở chế độ ghi
+        rõ 'chờ duyệt'". Đo lại bằng lệnh thì lời khai đó SAI: app.js nối thẳng
+        MX_BANK_MORE vào MX_BANK không kèm dấu nào, và grep toàn bộ js/ + index.html
+        cho "chờ duyệt|choDuyet|pending" ra đúng 0 kết quả. Đây là biến thể nặng nhất
+        của lớp lỗi mà cả bộ cổng này sinh ra để chặn — "khai có mà mã không làm" —
+        vì nó nằm trong tài liệu nộp cho giám khảo, và giám khảo vòng chung kết đọc mã
+        được (repo công khai).
+
+        CÁCH SỬA ĐÃ CHỌN: làm cho MÃ đúng với lời khai (thêm nhãn thật), KHÔNG hạ lời
+        khai xuống cho khớp mã. Nhãn đó nên có thật về mặt sư phạm: giáo viên cần biết
+        câu nào đã được tác giả xác nhận để không dùng câu chưa duyệt làm căn cứ nhận
+        xét học sinh (huong-dan-danh-gia.md đã dặn điều đó).
+
+        BA CHIỀU, vì thiếu một chiều là nhãn chết mà trông vẫn có:
+          G20a — phần tử `dt-choDuyet` có thật trong MÃ SỐNG của index.html.
+          G20b — app.js có gán NỘI DUNG cho phần tử đó (chuỗi cảnh báo phải xuất hiện
+                 trong mã sống). Một phần tử rỗng không ai điền chữ thì học sinh không
+                 thấy gì, tức lời khai vẫn sai.
+          G20c — cờ `choDuyet` được GẮN LÚC MERGE (nếu không gắn thì điều kiện ở G20b
+                 không bao giờ đúng → nhãn không bao giờ hiện, kể cả khi mã có sẵn).
+        Ba chiều này là ba cách khác nhau để nhãn chết; một cổng chỉ kiểm "có chữ
+        choDuyet trong repo" sẽ ĐẠT ở cả ba trường hợp đó.
+        """
+        print("\n=== G20 NHÃN 'CHỜ DUYỆT' cho 56 câu sinh bằng LLM ===")
+        idx_live = html_song(doc("index.html"))
+        app_live = than_ma_song(doc("js/app.js"))
+
+        # G20a — phần tử có thật, và phải là phần tử HIỂN THỊ được (không phải input ẩn).
+        a_ok = 'id="dt-choDuyet"' in idx_live
+        self.them("G20a", "phần tử nhãn 'chờ duyệt' có thật trong mã sống index.html", a_ok,
+                  "có `id=\"dt-choDuyet\"` trong index.html (đã lột chú thích)" if a_ok
+                  else "THIẾU phần tử id=\"dt-choDuyet\" trong mã sống — hồ sơ khai "
+                       "'merge ở chế độ ghi rõ chờ duyệt' sẽ SAI")
+
+        # G20b — app.js phải tra phần tử đó VÀ gán nội dung cảnh báo.
+        b_tra = '"dt-choDuyet"' in app_live or "'dt-choDuyet'" in app_live
+        b_noidung = "CHƯA được tác giả xác nhận nhãn" in app_live
+        self.them("G20b", "app.js gán NỘI DUNG cho nhãn chờ duyệt (không phải phần tử rỗng)",
+                  b_tra and b_noidung,
+                  f"tra phần tử={b_tra} · có chuỗi cảnh báo={b_noidung}" if (b_tra and b_noidung)
+                  else f"tra phần tử={b_tra} · có chuỗi cảnh báo={b_noidung} — thiếu một trong "
+                       f"hai thì nhãn hiện ra RỖNG: học sinh không thấy gì mà cổng vẫn ĐẠT")
+
+        # G20c — cờ phải được gắn lúc merge ngân hàng mở rộng.
+        c_ok = bool(re.search(r"choDuyet\s*:\s*1", app_live)) and \
+            "MX_BANK_MORE" in app_live
+        self.them("G20c", "cờ choDuyet được GẮN lúc merge MX_BANK_MORE vào ngân hàng chính",
+                  c_ok,
+                  "app.js gắn `choDuyet: 1` cho từng item của MX_BANK_MORE khi concat"
+                  if c_ok else
+                  "KHÔNG gắn cờ choDuyet lúc merge — nhãn ở G20b sẽ không bao giờ hiện, "
+                  "tức 56 câu chưa duyệt trông y hệt câu đã duyệt")
+
 
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
     NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13",
-            "G14", "G15", "G16", "G17", "G18", "G19"]
+            "G14", "G15", "G16", "G17", "G18", "G19", "G20"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.

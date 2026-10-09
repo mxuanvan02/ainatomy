@@ -487,6 +487,50 @@
     const item = dt.ds[dt.i];
     $("dt-tien-do").textContent = `Câu ${dt.i+1} / ${dt.ds.length}`;
     $("dt-boicanh").textContent = item.boiCanh;
+    /* NHÃN "CHỜ DUYỆT" — VÀ VÌ SAO NÓ KHÔNG ĐƯỢC PHÉP THIẾU.
+     *
+     * 56 trong 86 câu của ngân hàng này do LLM sinh (4 batch × 2 model), đã qua QC
+     * schema 12 luật TỰ ĐỘNG. QC đó kiểm HÌNH THỨC (đủ trường, đủ số claim, nhãn nằm
+     * trong tập 5 loại, số hiệu văn bản có thật…) — nó KHÔNG kiểm được tính đúng về
+     * mặt sư phạm của nhãn, tức "câu này thật sự có lỗi loại đó không". Việc xác nhận
+     * đó phải do tác giả làm, qua trang duyet_nhan.html, và CHƯA XONG.
+     *
+     * Hồ sơ dự thi khai (proposal_v6_MoXeAI.md): "Đã merge vào app ở chế độ ghi rõ
+     * 'chờ duyệt'". Một reviewer độc lập đã kiểm mã và thấy lời khai đó SAI: bản merge
+     * cũ nối thẳng MX_BANK_MORE vào MX_BANK không kèm bất kỳ dấu nào, và grep toàn bộ
+     * js/ + index.html cho "chờ duyệt|choDuyet|pending" ra đúng 0 kết quả. Tức hồ sơ
+     * hứa một chế độ mà sản phẩm không có — đúng lớp lỗi nặng nhất mà bộ cổng của
+     * repo này sinh ra để chặn ("khai có mà mã không làm"), chỉ khác là lần này nó nằm
+     * ở lời khai nộp cho giám khảo chứ không nằm trong tài liệu nội bộ.
+     *
+     * CÁCH SỬA ĐƯỢC CHỌN: làm cho MÃ đúng với lời khai, không hạ lời khai xuống cho
+     * khớp mã. Lý do: nhãn "chờ duyệt" là thứ NÊN có thật về mặt sư phạm, không phải
+     * thứ viết ra để đẹp hồ sơ. Giáo viên đứng lớp cần biết câu nào đã được tác giả
+     * xác nhận và câu nào chưa, để không dùng câu chưa duyệt làm căn cứ nhận xét học
+     * sinh (huong-dan-danh-gia.md cũng đã dặn "đừng dùng 56 câu đó làm bằng chứng").
+     *
+     * Học sinh VẪN LÀM ĐƯỢC câu chờ duyệt, và kết quả vẫn được ghi vào nhật ký lớp.
+     * Đây là cố ý, không phải bỏ sót: nếu ẩn hẳn 56 câu thì ngân hàng chỉ còn 30 câu
+     * (22 gốc + 8 Bài 5), không đủ cho một phiên đấu trường, và app thành thứ không dạy
+     * được — tệ hơn là dạy kèm một dòng cảnh báo trung thực. Ranh giới đúng là: dùng
+     * được, nhưng không được lấy làm BẰNG CHỨNG đánh giá trước khi tác giả duyệt.
+     *
+     * CÁCH NÓ ĐƯỢC CANH: cổng G20 trong tools/nghiem_thu.py kiểm ba chiều (phần tử có
+     * thật trong index.html · mã gán nội dung cho nó · cờ choDuyet được gắn lúc merge),
+     * và tools/tests/mutation/mutation_g20.py chứng minh cổng kêu được khi bỏ từng
+     * chiều. Không có cổng thì nhãn này sẽ bị ai đó "dọn dẹp" như một dòng thừa, và
+     * lời khai trong hồ sơ lại thành sai trong im lặng. */
+    const cd = $("dt-choDuyet");
+    if(cd){
+      if(item.choDuyet){
+        cd.style.display = "";
+        cd.textContent = "Câu này do máy sinh và CHƯA được tác giả xác nhận nhãn — dùng để "
+          + "luyện tập, không dùng làm căn cứ nhận xét năng lực.";
+      }else{
+        cd.style.display = "none";
+        cd.textContent = "";
+      }
+    }
     const box = $("dt-claims"); box.innerHTML = "";
     dt.traLoi = { verdict:null, loaiLoi:null, claimChon:-1 };
     item.claims.forEach((cl, idx)=>{
@@ -1501,9 +1545,13 @@
 
   /* ================= KHỞI ĐỘNG ================= */
   window.addEventListener("DOMContentLoaded", ()=>{
-    // Gộp ngân hàng mở rộng (nếu có) vào ngân hàng chính — 1 lần duy nhất
+    // Gộp ngân hàng mở rộng (nếu có) vào ngân hàng chính — 1 lần duy nhất.
+    // `choDuyet:1` đánh dấu 56 câu SINH BẰNG LLM chưa được tác giả xác nhận nhãn; xem
+    // chú thích ở dtHienCau() vì sao dấu này phải tồn tại (lời khai trong hồ sơ từng
+    // mâu thuẫn với mã, và reviewer độc lập bắt được).
     if(window.MX_BANK_MORE && window.MX_BANK_MORE.length && !window.MX_BANK._merged){
-      window.MX_BANK = window.MX_BANK.concat(window.MX_BANK_MORE);
+      window.MX_BANK = window.MX_BANK.concat(
+        window.MX_BANK_MORE.map(it => Object.assign({}, it, { choDuyet: 1 })));
       Object.defineProperty(window.MX_BANK, "_merged", {value:true});
     }
     $("btn-vao").onclick = dangNhap;
