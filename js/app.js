@@ -595,6 +595,11 @@
     $("dt-tiep").style.display = "";
     $("dt-tiep").innerHTML = (dt.i < dt.ds.length-1) ? "Câu tiếp theo →"
                              : svgIco("flag") + " Xem kết quả đã ghi";
+    /* Bỏ aria-label tĩnh ngay khi nút có chữ thật. Để lại thì tên dành cho screen reader
+     * sẽ ĐÈ nhãn nhìn thấy và hai cái lệch nhau — vi phạm WCAG (accessible name phải khớp
+     * nhãn hiển thị). aria-label tĩnh ở index.html chỉ để cứu trường hợp JS lỗi: khi đó
+     * nút rỗng không tên, screen reader đọc thành "nút" — reviewer độc lập bắt được 09/10. */
+    try{ $("dt-tiep").removeAttribute("aria-label"); }catch(e){}
   }
 
   function dtTiep(){
