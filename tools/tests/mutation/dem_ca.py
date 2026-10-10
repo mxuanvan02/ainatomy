@@ -1,6 +1,12 @@
 #!/usr/bin/env python3
 # -*- coding: utf-8 -*-
-"""Đếm ca kiểm thử từ log của 12 script mutation — con số trong hồ sơ phải tái lập được.
+"""Đếm ca kiểm thử từ log của các script mutation — con số trong hồ sơ phải tái lập được.
+
+TỆP NÀY CỐ Ý KHÔNG KHAI SỐ SCRIPT. Bản cũ viết "log của 12 script mutation" và con số đó
+đã sai ngay trong repo (thực tế 14 trước khi thêm mutation_g21.py): mỗi lần thêm một cổng
+mới là docstring lại thành một lời khai cứng lỗi thời — đúng loại "lời hứa gãy" mà cổng
+G17 sinh ra để chặn. Số script là thứ tệp này TỰ ĐẾM được từ thư mục log, nên không lý do
+gì khai cứng nó ở đây.
 
 VÌ SAO CÓ TỆP NÀY. Trong một phiên, tôi đếm tay số ca và ra BA con số khác nhau trên cùng một bộ
 log: 29 (regex bỏ sót dòng thụt lề), 40 (bỏ sót 5 ca ở 5 script), rồi 42 (hai script không in

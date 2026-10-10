@@ -2434,6 +2434,178 @@ console.log(JSON.stringify(out));
                   else f"{len(tep_html)} tệp .html đều local (mở rộng G6a ra toàn repo)")
 
     # ============ G20 NHÃN "CHỜ DUYỆT" CHO CÂU SINH BẰNG LLM (thêm 09/10) ============
+    # ============ G21 ĐẤU TRƯỜNG: THAO TÁC CHỈ CHỖ SAI + NỢ VỊ TRÍ/CUE ============
+    def g21(self, node="/usr/bin/node"):
+        """G21 — BA KHOẢN NỢ CỦA TRẠM ĐẤU TRƯỜNG, PHÁT HIỆN 09/10 (thêm 09/10).
+
+        LƯỢT RÀ SOÁT KHOA HỌC 09/10 đo trên 78 câu và tìm ra ba vấn đề cùng một gốc:
+        con số trạm đấu trường sinh ra CHƯA đo đúng thứ nó tuyên bố đo. Giống G12, cổng
+        này tách phần chữa được bằng mã (đã chữa, kiểm hồi quy ở đây) khỏi phần là NỢ NỘI
+        DUNG (chỉ đo, in ra, FAIL khi phình — không đặt ngưỡng tuyệt đối vì đặt ngưỡng thì
+        người ta sẽ sửa số đo cho qua, đúng lý do G12c ghi).
+
+        FINDING 1 (ĐÃ CHỮA, G21a chặn hồi quy): thao tác "bấm vào câu nghi là SAI" chết.
+        app.js gán dt.traLoi.claimChon khi học sinh bấm, tô sáng lên, nhưng engine.js
+        KHÔNG đọc claimChon (0 lần xuất hiện) và claimLoi xuất hiện 0 lần trong cả app.js
+        lẫn engine.js — thao tác không được chấm, không vào CSV. Nay chamDauTruong tính
+        claimDung và xuatCSV có cột claim_dung. G21a kiểm BẰNG HÀNH VI (gọi hàm thật với
+        câu trả lời biết trước), không bằng grep: grep "claimChon" sẽ ĐẠT ngay cả khi biến
+        được đọc rồi vứt đi — đúng loại cổng mù mà bộ mutation test sinh ra để diệt.
+
+        FINDING 2 (NỢ, G21b đo): vị trí claim có lỗi lệch — 49,1% toàn ngân hàng và 51,3%
+        trong 56 câu LLM nằm ở index 1 (đều phải là 33,3%). Mẹo "nghi câu ở giữa" bắt
+        trúng gần nửa số câu lỗi không cần đọc. KHÔNG xáo được ngay vì 14/78 giaiThich
+        tham chiếu vị trí ("Câu 3 đưa số liệu…") và khớp 100% với claimLoi+1 — xáo claims
+        thì lời giải trỏ sai câu, dạy sai còn tệ hơn mẹo vị trí. Thứ tự làm đúng đã ghi
+        trong engine.js: duyệt nhãn -> viết lại 14 lời giải không phụ thuộc vị trí -> xáo.
+        G21b đo cả hai đại lượng (độ lệch vị trí + số lời giải khoá vị trí) và FAIL khi
+        MỘT TRONG HAI phình lên — tức ai đó thêm câu LLM mới mà vẫn đặt lỗi giữa, hoặc
+        viết thêm lời giải kiểu "Câu N".
+
+        FINDING 3 (NỢ, G21c đo): cue từ vựng "câu có chữ số" dự đoán nhãn gần trọn —
+        P(có lỗi | có chữ số) = 96,2% so với P(có lỗi | không chữ số) = 53,8%, Fisher
+        exact p ~ 1e-4. Học sinh không cần hiểu AI, chỉ cần thấy số là nghi. Đây là nợ
+        nội dung của NGÂN HÀNG CÂU (các câu "đúng" phần lớn không có số liệu vì viết số
+        đúng khó hơn viết số bịa), không chữa được bằng mã. FAIL khi khoảng cách hai xác
+        suất phình thêm quá dung sai.
+
+        CẢ BA CHIỀU đều chạy qua probe node nạp data/*.js + js/engine.js THẬT (khuôn của
+        G4): tự regex-parse object literal JS là nguồn lỗi âm thầm — chính cổng này trong
+        bản nháp đầu tiên đã đếm sai 2 lần vì comment nằm xen giữa các trường.
+        """
+        print("\n=== G21 ĐẤU TRƯỜNG: CHỈ CHỖ SAI + NỢ VỊ TRÍ/CUE ===")
+        probe = os.path.join("/tmp", "judge_g21.js")
+        with open(probe, "w", encoding="utf-8") as f:
+            f.write(r"""
+const fs = require("fs"), vm = require("vm");
+const ROOT = process.argv[2];
+const store = {};
+const ctx = { window: {}, console: { log() {} },
+  localStorage: { getItem: k => k in store ? store[k] : null,
+                  setItem: (k, v) => { store[k] = String(v) },
+                  removeItem: k => { delete store[k] } },
+  navigator: {}, Date };
+vm.createContext(ctx);
+for (const f of ["data/meta.js", "data/cauhoi.js", "data/cauhoi_moRong.js", "js/engine.js"])
+  vm.runInContext(fs.readFileSync(ROOT + "/" + f, "utf8"), ctx, { filename: f });
+const E = ctx.window.MX_ENGINE;
+const BANK = ctx.window.MX_BANK.slice().concat(
+  (ctx.window.MX_BANK_MORE || []).map(o => Object.assign({}, o, { choDuyet: 1 })));
+const out = { n: BANK.length };
+
+/* --- G21a: hành vi thật của claimDung, gọi chamDauTruong với đầu vào biết trước --- */
+const loi = BANK.find(it => it.loai === "co_loi");
+const dung = BANK.find(it => it.loai === "dung");
+const a = {};
+if (loi && loi.claims.length >= 2) {
+  const saiIdx = (loi.claimLoi + 1) % loi.claims.length;
+  a.chiDung = E.chamDauTruong(loi, { verdict: "co_loi", loaiLoi: loi.loaiLoi,
+                                     claimChon: loi.claimLoi }).claimDung;
+  a.chiSai  = E.chamDauTruong(loi, { verdict: "co_loi", loaiLoi: loi.loaiLoi,
+                                     claimChon: saiIdx }).claimDung;
+  a.khongBam = E.chamDauTruong(loi, { verdict: "co_loi", loaiLoi: loi.loaiLoi,
+                                      claimChon: -1 }).claimDung;
+  // câu không lỗi: phải null (không áp dụng), không phải 0
+  a.cauDungLaNull = E.chamDauTruong(dung, { verdict: "dung", claimChon: 0 }).claimDung === null;
+  // gọi kiểu cũ (không truyền claimChon) phải không nổ
+  a.khongNoKhiThieu = (() => { try {
+      E.chamDauTruong(loi, { verdict: "co_loi", loaiLoi: loi.loaiLoi }); return true;
+    } catch (e) { return false; } })();
+}
+a.hangSoCoTrongCsv = (() => {
+  // cột claim_dung phải có trong header của xuatCSV — đọc từ mã nguồn (chuỗi header là
+  // mảng字 duy nhất trong file, không phải logic)
+  const eng = fs.readFileSync(ROOT + "/js/engine.js", "utf8");
+  return /"claim_dung"/.test(eng);
+})();
+out.G21a = a;
+
+/* --- G21b: phân bố vị trí claimLoi + số lời giải khoá vị trí --- */
+const vt = { 0: 0, 1: 0, 2: 0 };
+const vtLLM = { 0: 0, 1: 0, 2: 0 };
+let nLoi = 0, nLoiLLM = 0, loiGiaiKhoaViTri = 0;
+for (const it of BANK) {
+  const gt = String(it.giaiThich || "");
+  if (/[Cc]â[u y]\s*(?:thứ\s*)?\d/.test(gt)) loiGiaiKhoaViTri++;
+  if (it.loai !== "co_loi") continue;
+  nLoi++;
+  if (vt[it.claimLoi] !== undefined) vt[it.claimLoi]++;
+  if (it.choDuyet) { nLoiLLM++; if (vtLLM[it.claimLoi] !== undefined) vtLLM[it.claimLoi]++; }
+}
+out.G21b = { nLoi, viTri: vt, nLoiLLM, viTriLLM: vtLLM, loiGiaiKhoaViTri };
+
+/* --- G21c: cue "có chữ số" dự đoán nhãn --- */
+let a2 = 0, b2 = 0, c2 = 0, d2 = 0;
+for (const it of BANK) {
+  const coSo = /[0-9]/.test(it.claims.join(" "));
+  const loi2 = it.loai === "co_loi";
+  if (loi2 && coSo) a2++; else if (loi2 && !coSo) b2++;
+  else if (!loi2 && coSo) c2++; else d2++;
+}
+out.G21c = { loiCoSo: a2, loiKhongSo: b2, dungCoSo: c2, dungKhongSo: d2 };
+
+console.log(JSON.stringify(out));
+""".replace("mảng字", "mảng chữ"))
+        try:
+            r = subprocess.run([node, probe, ROOT], capture_output=True, text=True, timeout=120)
+        except (OSError, subprocess.SubprocessError) as e:
+            self.them("G21", "chạy probe g21", False, f"không chạy được node: {e}")
+            return
+        if r.returncode != 0:
+            self.them("G21", "chạy probe g21", False, (r.stderr or r.stdout)[-400:])
+            return
+        d = json.loads(r.stdout.strip())
+        if d.get("n", 0) < 60:
+            self.them("G21", "probe nạp được ngân hàng", False,
+                      f"chỉ nạp {d.get('n')} câu (<60) — phép đo HỎNG, đừng tin các dòng dưới")
+            return
+
+        # ---- G21a: claimDung sống, kiểm BẰNG HÀNH VI ----
+        a = d["G21a"]
+        a_ok = (a.get("chiDung") == 1 and a.get("chiSai") == 0 and a.get("khongBam") == 0
+                and a.get("cauDungLaNull") and a.get("khongNoKhiThieu")
+                and a.get("hangSoCoTrongCsv"))
+        self.them("G21a", "thao tác chỉ-đúng-chỗ-sai được chấm thật (claimDung) và ra CSV",
+                  a_ok,
+                  f"chỉ đúng=1 ✓ · chỉ sai=0 ✓ · không bấm=0 ✓ · câu không lỗi=null ✓ · "
+                  f"gọi kiểu cũ không nổ ✓ · cột claim_dung trong header ✓" if a_ok
+                  else f"MỘT CHIỀU CHẾT: {a} — thao tác bấm claim lại thành trang trí "
+                       f"(Finding 1 tái diễn) hoặc cột CSV mất")
+
+        # ---- G21b: nợ vị trí + lời giải khoá vị trí, FAIL khi PHÌNH ----
+        b = d["G21b"]
+        MOC_VI_TRI_GIUA = 51.3   # % claim lỗi ở index 1 trong 56 câu LLM, đo 09/10
+        MOC_LOI_GIAI_KHOA = 14   # số giaiThich tham chiếu "Câu N", đo 09/10
+        DUNG_SAI = 2.0           # điểm % — dưới mức này coi như nhiễu đo
+        n_llm = b["nLoiLLM"] or 1
+        ti_le_giua_llm = 100.0 * b["viTriLLM"].get("1", 0) / n_llm
+        n_loi = b["nLoi"] or 1
+        ti_le_giua_all = 100.0 * b["viTri"].get("1", 0) / n_loi
+        b_ok = (ti_le_giua_llm <= MOC_VI_TRI_GIUA + DUNG_SAI
+                and b["loiGiaiKhoaViTri"] <= MOC_LOI_GIAI_KHOA)
+        self.them("G21b", f"nợ vị trí claim không phình (mốc {MOC_VI_TRI_GIUA}% giữa-LLM, "
+                          f"{MOC_LOI_GIAI_KHOA} lời giải khoá vị trí)",
+                  b_ok,
+                  f"claim lỗi ở vị trí giữa: toàn bộ {ti_le_giua_all:.1f}% ({b['nLoi']} câu) · "
+                  f"LLM {ti_le_giua_llm:.1f}% ({b['nLoiLLM']} câu; đều = 33,3%) · "
+                  f"{b['loiGiaiKhoaViTri']} lời giải nói 'Câu N'. "
+                  f"ĐÂY LÀ NỢ NỘI DUNG: muốn xáo vị trí claims phải viết lại số lời giải đó "
+                  f"trước (thứ tự ghi trong engine.js), không được xáo trước")
+
+        # ---- G21c: nợ cue chữ-số, FAIL khi khoảng cách PHÌNH ----
+        c = d["G21c"]
+        MOC_CUE = 42.4   # điểm %: 96,2% - 53,8%, đo 09/10
+        p_co_so = 100.0 * c["loiCoSo"] / max(1, c["loiCoSo"] + c["dungCoSo"])
+        p_khong = 100.0 * c["loiKhongSo"] / max(1, c["loiKhongSo"] + c["dungKhongSo"])
+        khoang = p_co_so - p_khong
+        c_ok = khoang <= MOC_CUE + DUNG_SAI
+        self.them("G21c", f"cue 'có chữ số' không mạnh thêm (mốc chênh {MOC_CUE} điểm %)",
+                  c_ok,
+                  f"P(có lỗi | có chữ số) = {p_co_so:.1f}% vs P(có lỗi | không chữ số) = "
+                  f"{p_khong:.1f}% — chênh {khoang:.1f} điểm %. NỢ NỘI DUNG của ngân hàng "
+                  f"câu: các câu 'không lỗi' phần lớn thiếu số liệu, học sinh thấy số là "
+                  f"nghi. Chữa bằng cách viết thêm câu ĐÚNG có số liệu thật, không bằng mã")
+
     def g20(self):
         """G20 — LỜI KHAI "merge ở chế độ ghi rõ 'chờ duyệt'" PHẢI CÓ THẬT TRONG MÃ.
 
@@ -2496,7 +2668,7 @@ def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
     NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13",
-            "G14", "G15", "G16", "G17", "G18", "G19", "G20"]
+            "G14", "G15", "G16", "G17", "G18", "G19", "G20", "G21"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.

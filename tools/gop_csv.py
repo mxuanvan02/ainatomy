@@ -57,7 +57,15 @@ HDR = ["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco",
        # tiến trình pre/post trong bao_cao() — một phiên lặp câu không còn là phép đo sạch.
        # App đã ghi cờ này từ commit trước nhưng CSV không có cột nào mang nó, nên lời hứa
        # "gop_csv.py lọc được" chưa thành sự thật cho tới khi cột này tồn tại.
-       "phai_lap"]
+       "phai_lap",
+       # Cột `claim_dung` (09/10): 1 = học sinh chỉ ĐÚNG claim có lỗi, 0 = chỉ sai, rỗng =
+       # câu không có lỗi nên không áp dụng. Trước đây thao tác "bấm vào câu nghi sai" tồn
+       # tại trên giao diện nhưng không có đường nào ra tới giáo viên (engine không đọc
+       # claimChon, CSV không có cột). Đây là chiều đo RIÊNG, không cộng vào `diem` — xem
+       # lý do ở comment trong chamDauTruong(). gop_csv.py lọc theo tên nên tệp CSV cũ thiếu
+       # cột này vẫn đọc được (giá trị rỗng). Ba nơi cùng phải có khi thêm cột: HDR này,
+       # xuatCSV trong engine.js, và doc_json bên dưới.
+       "claim_dung"]
 
 def doc_csv(path):
     with open(path, encoding="utf-8-sig", newline="") as f:
@@ -185,6 +193,11 @@ def doc_json(path):
                 # doc_json liệt kê trường bằng tay thay vì suy ra từ HDR; mỗi lần thêm cột phải
                 # nhớ sửa cả ba nơi: HDR, xuatCSV (engine.js), doc_json.
                 "phai_lap": "" if sk.get("phaiLap") is None else sk.get("phaiLap"),
+                # Cột claim_dung: kq (kết quả chấm của engine) mang claimDung; None -> ô rỗng.
+                # Lấy từ phần tử kết quả `kq` chứ không từ `sk` (sự kiện), khớp với chỗ
+                # xuatCSV trong engine.js đọc kq.claimDung. Nếu thiếu thì tệp CSV xuất ra sẽ
+                # luôn trống cột này dù engine đã tính — đúng cái lỗi phai_lap từng mắc.
+                "claim_dung": "" if kq.get("claimDung") is None else kq.get("claimDung"),
             })
     return out
 

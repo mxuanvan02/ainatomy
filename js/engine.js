@@ -55,6 +55,30 @@
 
     const diem = dungVerdict && (item.loai === "dung" || dungLoai === true) ? 1 : 0;
 
+    /* CHỈ SỐ "CHỈ ĐÚNG CHỖ SAI" — thêm 09/10 sau khi một lượt rà soát khoa học đo được
+     * rằng thao tác này ĐANG CHẾT. Bằng chứng đo lúc đó: app.js gán `dt.traLoi.claimChon`
+     * khi học sinh bấm vào câu nghi sai, nhưng `claimChon` xuất hiện 0 lần trong engine.js
+     * và `claimLoi` xuất hiện 0 lần trong CẢ app.js lẫn engine.js — tức giao diện yêu cầu
+     * một thao tác, tô sáng nó, rồi không chấm và không ghi nhật ký. Cùng lớp lỗi với
+     * trường `phaiLap` từng được ghi mà không có cột CSV nào mang nó.
+     *
+     * VÌ SAO CHỈ ĐO, KHÔNG TÍNH VÀO `diem`. Đổi công thức điểm sẽ làm MẤT ý của cột cũ và
+     * làm gãy khả năng so pre/post với mọi dữ liệu đã thu (nguyên tắc repo đã ghi ở cột
+     * `su_kien`: "thêm cột thay vì nhét vào cột sẵn có"). Nên `diem` giữ nguyên, và
+     * `claimDung` đi ra như một CHIỀU ĐO RIÊNG: giáo viên thấy được học sinh có thật sự
+     * chỉ đúng chỗ sai hay chỉ đoán đúng loại. Việc có đưa nó vào điểm hay không là quyết
+     * định sư phạm của tác giả, phải làm có ý thức, không phải tác dụng phụ của một bản vá.
+     *
+     * `claimChon` là chỉ số 0-based của claim học sinh bấm chọn (app.js đã gán sẵn vào
+     * dt.traLoi.claimChon từ trước, nhưng engine KHÔNG đọc — đó chính là Finding 1).
+     * Với câu KHÔNG có lỗi thì không có chỗ sai để chỉ, nên `claimDung = null` (không phải
+     * 0 — null nghĩa là "không áp dụng", gộp thành 0 sẽ làm tỉ lệ chỉ-đúng-chỗ sai thấp giả). */
+    const cc = traLoi.claimChon;
+    const claimChon = (cc !== undefined && cc !== null && cc !== -1) ? cc : null;
+    const claimDung = item.loai === "co_loi"
+      ? (claimChon !== null && claimChon === item.claimLoi ? 1 : 0)
+      : null;
+
     return {
       itemId: item.id,
       mach: item.mach,
@@ -65,6 +89,7 @@
       traLoiLoai: traLoi.loaiLoi || null,
       dungVerdict, dungLoai, diem,
       batOan, boSot,
+      claimChon, claimDung,
       giaiThich: item.giaiThich
     };
   }
@@ -279,7 +304,14 @@
      * tức THEO TÊN CỘT nên chèn đâu cũng được, nhưng tệp CSV mà GV đã tải về trước đây có
      * header 19 cột; đặt cột mới ở cuối thì tệp cũ và tệp mới cùng được đọc đúng theo tên,
      * không phải lo thứ tự. */
-    const rows = [["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco","dap_an_dung","loai_loi_that","tra_loi","tra_loi_loai","diem","bat_oan","bo_sot","che_do","phien_tong","phien_dung","phien_bat_oan","phien_bo_sot","thoi_gian_ISO","su_kien","phai_lap"]];
+    /* CỘT `claim_dung` — thêm 09/10. Học sinh đã luôn phải bấm vào câu nghi là sai, nhưng
+     * trước cột này không tồn tại nên thao tác đó không tới được tay giáo viên: engine.js
+     * không đọc claimChon, và CSV không có cột nào mang nó. Nay chamDauTruong() tính
+     * `claimDung` (1 = chỉ đúng claim có lỗi, 0 = chỉ sai, "" = câu không có lỗi nên không
+     * áp dụng) và nó đi ra thành cột riêng. Đặt CUỐI bảng để tệp CSV cũ (19, 20 rồi 21 cột)
+     * vẫn đọc đúng theo tên. Ba nơi phải cùng sửa khi thêm cột: HDR của tools/gop_csv.py,
+     * hàm này, và doc_json() trong cùng tệp đó. */
+    const rows = [["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco","dap_an_dung","loai_loi_that","tra_loi","tra_loi_loai","diem","bat_oan","bo_sot","che_do","phien_tong","phien_dung","phien_bat_oan","phien_bo_sot","thoi_gian_ISO","su_kien","phai_lap","claim_dung"]];
     for(const k in d){
       if(maLop && d[k].maLop && d[k].maLop !== maLop) continue;
       for(const sk of d[k].suKien){
@@ -313,7 +345,11 @@
            * không tồn tại với người dùng cuối — cùng lớp lỗi với việc engine.js từng không đọc
            * sự kiện duDoan, và cùng lớp với G14c từng có một chiều là code chết.
            * Đặt CUỐI bảng để tệp CSV cũ (19 và 20 cột) vẫn đọc đúng theo tên. */
-          sk.phaiLap !== undefined ? sk.phaiLap : ""
+          sk.phaiLap !== undefined ? sk.phaiLap : "",
+          /* claimDung là null với câu KHÔNG có lỗi (không có chỗ sai để chỉ). null phải ra
+           * Ô RỖNG chứ không ra chữ "null" hay số 0: ra 0 thì tỉ lệ chỉ-đúng-chỗ-sai bị kéo
+           * thấp giả, và giáo viên đọc CSV sẽ tưởng học sinh chỉ sai ở cả những câu đúng. */
+          (kq.claimDung === null || kq.claimDung === undefined) ? "" : kq.claimDung
         ]);
       }
     }
@@ -400,6 +436,29 @@
    * lấy `l.id`: id là nhãn cố định trong dữ liệu, nếu in nó ra thì đáp án vẫn luôn hiện
    * là chữ B dù các phương án đã đổi chỗ — xáo trộn thành vô nghĩa. */
   function chuCai(i){ return String.fromCharCode(65 + i); }
+
+  /* ============ VÌ SAO KHÔNG XÁO THỨ TỰ CÁC CLAIM (quyết định 09/10, có đo) =========
+   * Lượt rà soát khoa học 09/10 đo được một khoản nợ THẬT: claim có lỗi nằm ở vị trí GIỮA
+   * (index 1) tới 26/53 = 49,1% số câu có lỗi, và riêng trong 56 câu sinh bằng LLM là
+   * 20/39 = 51,3% — phân bố đều phải là 33,3%. App vẽ claims thẳng theo thứ tự trong dữ
+   * liệu, nên mẹo "nghi câu ở giữa" bắt trúng gần nửa số câu lỗi mà không cần đọc. Đây đúng
+   * là LỚP 1 của cổng G12 ("vị trí cố định").
+   *
+   * NHƯNG XÁO Ở ĐÂY SẼ PHÁ NỘI DUNG, và đó là lý do bản vá đầu tiên đã bị rút lại. Đo thật:
+   * 14/78 câu có `giaiThich` tham chiếu VỊ TRÍ của claim ("Câu 3 đưa số liệu '73,6%'…",
+   * "Câu 2 viện một 'Công ước quốc tế'…"), và đối chiếu thì 14/14 khớp đúng `claimLoi + 1`
+   * (0 câu lệch). Tức LỜI GIẢI đang khoá cứng vào thứ tự gốc. Xáo claims mà không viết lại
+   * lời giải thì học sinh đọc "Câu 3" trong khi câu bị tô đỏ nằm ở dòng 1 — tệ hơn cả mẹo vị
+   * trí, vì nó dạy sai. Viết lại 14 lời giải thì đụng vào data/cauhoi_moRong.js, đúng tệp
+   * đang chờ tác giả duyệt nhãn 56 câu; sửa văn bản giữa lúc duyệt làm kết quả duyệt trỏ vào
+   * câu chữ không còn tồn tại.
+   *
+   * Nên xếp khoản này vào LỚP 2 của G12 — nợ NỘI DUNG, không chữa được bằng mã. Cổng G21
+   * trong tools/nghiem_thu.py ĐO nó, in ra tỉ lệ thật và liệt kê từng câu mắc nợ, để nó
+   * thành danh sách việc làm có tên thay vì bị quên. Thứ tự làm đúng: (1) tác giả duyệt xong
+   * 56 nhãn, (2) viết lại 14 lời giải theo cách không phụ thuộc vị trí ("câu nêu số liệu
+   * 73,6%…" thay vì "Câu 3…"), (3) KHI ĐÓ mới xáo claims bằng xaoLuaChon sẵn có.
+   * Bước (3) chỉ an toàn sau bước (2). */
 
   window.MX_ENGINE = {
     doc, ghi, vaoLop, logSuKien,
