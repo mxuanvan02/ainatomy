@@ -39,15 +39,38 @@ os.makedirs(os.path.dirname(OUT), exist_ok=True)
 # BẰNG CHỨNG: mã YCCĐ -> [(tệp, mô tả, tên hàm/hằng phải có thật trong tệp)]
 # Phần tử thứ ba để trống ("") nghĩa là chỉ cần MÃ YCCĐ xuất hiện trong tệp.
 BC = {
- "10.A1.1": [("js/pipeline3d.js", "Trạm CON NGƯỜI KIỂM: vai trò + hậu quả khi hỏng", "TRAM"),
-             ("js/nhamay_tram01.js", "Câu hỏi t0-5: khâu nhập liệu là việc của con người", "CAU_HOI_T0")],
+ # 10.A1.1 "Thực hành xác định được vai trò của con người trong sử dụng, vận hành, tùy chỉnh
+ # một hệ thống AI cụ thể" — XOÁ HAI BẰNG CHỨNG CŨ ngày 11/10, và đây là mã duy nhất rơi về
+ # CHƯA PHỦ. Lý do (reviewer A và reviewer D độc lập cùng kết luận, em verify lại bằng lệnh):
+ #   · chuỗi "10.A1.1" KHÔNG xuất hiện trong bất kỳ tệp js/ hay data/ nào ngoại trừ
+ #     data/yccd.js:48 — mà đó là BẢNG TRA nguyên văn 22 mã, dùng nó làm bằng chứng thì mã nào
+ #     cũng thành PHỦ (tautology).
+ #   · hai tệp cũ viện dẫn đều TỰ KHAI MÃ KHÁC: trạm `connguoi` trong pipeline3d.js:60 khai
+ #     yccd:"10.A1.2", và câu t0-5 trong nhamay_tram01.js:87 khai 10.D2.1. Tức bằng chứng đang
+ #     chứng minh hai yêu cầu khác, không phải 10.A1.1.
+ #   · hai "hàm" viện dẫn là tên chung, không đặc trưng: TRAM xuất hiện 13 lần trong
+ #     pipeline3d.js, CAU_HOI_T0 4 lần trong nhamay_tram01.js.
+ # Nội dung dạy về vai trò con người THÌ CÓ (trạm CON NGƯỜI KIỂM thật sự dạy việc đó), nhưng
+ # nó được khai cho 10.A1.2. Muốn phủ 10.A1.1 thì phải THÊM hoạt động cho học sinh THỰC HÀNH
+ # xác định vai trò con người (động từ là "Thực hành xác định được", không phải "kể được") —
+ # việc đó là nội dung mới, không phải sửa khai báo. tools/tao_sheet_thietke.py:159 đã tự khai
+ # mã này "CHƯA PHỦ" từ trước; nay hai bảng mới khớp nhau.
+ "10.A1.1": [],
  "10.A1.2": [("js/pipeline3d.js", "Trạm CON NGƯỜI KIỂM, đoán trạm hỏng", "TRAM")],
  "10.A2.1": [("js/tinhhuong.js", "4 tình huống rủi ro: X-quang khoa nhi, camera khuôn mặt", "NHOM_RUI_RO")],
  "10.A2.MR1": [("js/tinhhuong.js", "Tình huống dự án sáng tạo + biện pháp hạn chế rủi ro", "NHOM_RUI_RO")],
  "10.A3.1": [("data/kienthuc.js", "4 luật VN đã kiểm chứng số hiệu", "kt-01")],
  "10.B2.1": [("js/tinhhuong.js", "4 tình huống vi phạm nội quy/pháp luật", "NHOM_VI_PHAM"),
              ("js/bt09.js", "BT-09 Mức 3: học sinh tự cài một lỗi cho bạn bắt", "kiemCau")],
- "10.B2.MR1": [("data/cauhoi.js", "Ngân hàng đấu trường, 5 nhóm lỗi cài sẵn", "MX_BANK"),
+ # 10.B2.MR1 — TRỎ LẠI ĐÚNG TỆP ngày 11/10. Hai ô cũ (data/cauhoi.js, js/nhamay_text.js) mô tả
+ # đúng hoạt động nhưng cả hai KHÔNG chứa chuỗi mã, nên chỉ là bằng chứng yếu. Nay thêm hai tệp
+ # THẬT SỰ khai mã: trạm `daura` (pipeline3d.js:55, yccd:"10.B2.MR1") và NM_TRAM[5]
+ # (app.js:1202) — giao diện còn in mã ra cho học sinh xem ở app.js:1561. Hai ô yếu cũ vẫn giữ
+ # vì chúng là bằng chứng HÀNH VI (đấu trường soi lỗi, trạm 5 phán quyết căn cứ/bịa); cột
+ # LOẠI BC trong bảng in sẽ cho thấy ô nào mạnh ô nào yếu.
+ "10.B2.MR1": [("js/pipeline3d.js", "Trạm ĐẦU RA: dấu hiệu nội dung AI tạo sinh, bịa số liệu/nguồn", "daura"),
+               ("js/app.js", "NM_TRAM[5] ỨNG DỤNG khai 10.B2.MR1, giao diện in mã cho HS xem", "NM_TRAM"),
+               ("data/cauhoi.js", "Ngân hàng đấu trường, 5 nhóm lỗi cài sẵn", "MX_BANK"),
                ("js/nhamay_text.js", "Trạm 5: phán đoán câu trả lời có căn cứ hay bịa", "chamUngDung")],
  "10.B3.1": [("js/lab.js", "Thiên kiến ngày/đêm từ dữ liệu lệch 92%", "taoDuLieu"),
              ("js/lab3d.js", "Phòng 3D: mặt phẳng quyết định và cụm ngày/đêm", "matPhangTuTrongSo")],
@@ -75,7 +98,13 @@ BC = {
  "10.D1.1": [("js/pipeline3d.js", "5 trạm và mối liên hệ mục tiêu - thành phần", "TRAM")],
  "10.D2.1": [("js/pipeline3d.js", "5 thành phần: dữ liệu, mô hình, thuật toán, đầu ra, phản hồi", "TRAM"),
              ("js/nhamay_tram01.js", "Câu hỏi t0-5 về vị trí khâu nhập liệu trong hệ thống", "CAU_HOI_T0")],
- "10.D2.2": [("js/lab.js", "Đánh giá trên bộ mới: 100% ban ngày so với 59% ban đêm", "kiemTra"),
+ # 10.D2.2 — TRỎ LẠI ĐÚNG TỆP ngày 11/10, cùng lý do với 10.B2.MR1. Chuỗi mã thật nằm ở
+ # js/app.js:960 (câu GIẢI THÍCH in cho học sinh: "Đây chính là ý nghĩa của việc khắc phục
+ # (YCCĐ 10.D2.2). Sửa ở gốc là sửa dữ liệu"), js/app.js:1199 (NM_TRAM[4] KIỂM ĐỊNH) và
+ # js/lab3d.js:5 (header khai YCCĐ phủ). Ba ô cũ giữ lại làm bằng chứng hành vi.
+ "10.D2.2": [("js/app.js", "NM_TRAM[4] KIỂM ĐỊNH + câu giải thích in cho HS về ý nghĩa khắc phục", "NM_TRAM"),
+             ("js/lab3d.js", "header khai YCCĐ phủ + cảnh đánh giá trên bộ dữ liệu mới", "danhGia"),
+             ("js/lab.js", "Đánh giá trên bộ mới: 100% ban ngày so với 59% ban đêm", "kiemTra"),
              ("js/logic.js", "Bảng nhầm lẫn: bỏ sót và bắt oan", "bangNhamLan"),
              ("js/pipeline3d.js", "Hậu quả khi từng trạm hỏng", "TRAM")],
 }
@@ -148,7 +177,20 @@ def main():
                              "maYCCDTrongTep": co_ma,
                              "hamCoThat": (co_ham if co_ham is not None else "không kiểm")})
         so_tep = len({x["tep"] for x in xac_nhan})
-        muc = "CHƯA PHỦ" if so_tep == 0 else ("PHỦ MẠNH" if so_tep >= 2 else "PHỦ")
+        # MỨC PHỦ chỉ tính BẰNG CHỨNG MẠNH (tệp CÓ chứa chuỗi mã YCCĐ). Đây là khuyến nghị gốc
+        # của reviewer D (review13/reviewer_D_machCD_phu.md): "sửa dòng 143 thành bắt buộc co_ma".
+        # Trước đây một mã chỉ cần khớp TÊN HÀM ở ≥2 tệp là được in "PHỦ MẠNH" dù chuỗi mã không
+        # nằm trong tệp nào — đúng trường hợp 10.A1.1, 10.B2.MR1, 10.D2.2 mà cả reviewer A và D
+        # độc lập phát hiện. Nay PHỦ đòi ≥1 tệp chứa chuỗi mã, PHỦ MẠNH đòi ≥2.
+        #
+        # KHÔNG dùng guard "tệp chứa mã khác = trỏ nhầm chỗ": guard đó (đã thử và đã bỏ) báo oan
+        # cho bằng chứng HÀNH VI hợp lệ — ví dụ js/nhamay_text.js dạy đúng nội dung 10.B2.MR1 và
+        # 10.C2.1 nhưng chỉ chứa chuỗi 10.C2.MR2/10.C3.1 trong comment, nên guard kết luận nhầm là
+        # trỏ sai. Một cổng kêu oan đều đặn sẽ bị người đọc bỏ qua luôn cả phần đúng của nó.
+        # Bằng chứng yếu (chỉ khớp tên hàm) vẫn được GHI LẠI trong `bangChung` và đếm ở
+        # `soTepBangChung` để minh bạch, nhưng KHÔNG nâng mức phủ.
+        so_tep_manh = len({x["tep"] for x in xac_nhan if x["maYCCDTrongTep"] is True})
+        muc = "CHƯA PHỦ" if so_tep_manh == 0 else ("PHỦ MẠNH" if so_tep_manh >= 2 else "PHỦ")
 
         # TÁCH HAI LOẠI BẰNG CHỨNG — thêm 11/10. ĐÂY LÀ CHỖ CON SỐ "22/22" BỊ HIỂU SAI.
         #
@@ -173,7 +215,6 @@ def main():
         # JSON cũng thấy ngay bằng chứng của mã này thuộc loại nào:
         #   soTepBangChungManh — chỉ đếm tệp CÓ chứa chuỗi mã YCCĐ
         #   bangChungManh      — True/False, tiện lọc
-        so_tep_manh = len({x["tep"] for x in xac_nhan if x["maYCCDTrongTep"] is True})
         ket.append({"ma": ma, "chuDe": ma_nguon[ma].get("chuDe", ma.split('.')[1]),
                     "mach": ma[3], "loai": ma_nguon[ma].get("loai", ""),
                     "muc": muc, "soTepBangChung": so_tep,
@@ -196,8 +237,20 @@ def main():
     from collections import Counter
     c = Counter(k["muc"] for k in ket)
     print("-" * 108)
+    # Dòng này từng in "TỔNG: 22/22" bằng sum(c.values())/len(ma_nguon) — tức "tổng số mã đã
+    # xét", nhưng đọc lên y hệt "22/22 đã phủ". Khi 10.A1.1 rơi về CHƯA PHỦ (11/10, sau phản
+    # biện của reviewer A và D) thì dòng đó vẫn in 22/22 trong khi thực chất là 21/22: một con
+    # số tự mâu thuẫn với ngay dòng bên dưới nó ("chưa phủ: ['10.A1.1']"). Đây chính là loại số
+    # chảy vào hồ sơ nộp, nên phải in ra thứ KHÔNG THỂ đọc nhầm: tách số CÓ bằng chứng khỏi
+    # tổng số mã, và in kèm danh sách mã chưa phủ ngay trên cùng một dòng.
+    n_phu = c.get("PHỦ MẠNH", 0) + c.get("PHỦ", 0)
+    n_chua = c.get("CHƯA PHỦ", 0)
+    chua = [k["ma"] for k in ket if k["muc"] == "CHƯA PHỦ"]
     print(f"PHỦ MẠNH: {c.get('PHỦ MẠNH',0)}  ·  PHỦ: {c.get('PHỦ',0)}  ·  "
-          f"CHƯA PHỦ: {c.get('CHƯA PHỦ',0)}  ·  TỔNG: {sum(c.values())}/{len(ma_nguon)}")
+          f"CHƯA PHỦ: {n_chua}" + (f" ({', '.join(chua)})" if chua else "")
+          + f"\nCÓ BẰNG CHỨNG TRONG MÃ: {n_phu}/{len(ma_nguon)}"
+          + (f" — KHÔNG PHẢI {len(ma_nguon)}/{len(ma_nguon)}" if n_chua else "")
+          + "  (đọc là 'có vết trong mã nguồn', không phải 'học sinh đã đạt')")
     manh = [k["ma"] for k in ket if k["bangChungManh"]]
     yeu = [k["ma"] for k in ket if not k["bangChungManh"] and k["soTepBangChung"]]
     print(f"\ntrong đó: {len(manh)}/22 mã có bằng chứng LOẠI MẠNH (chuỗi mã YCCĐ xuất hiện trong tệp), "
