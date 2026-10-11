@@ -19,3 +19,14 @@ out/
 .DS_Store
 Thumbs.db
 *.swp
+
+# BẢN SAO LƯU TRƯỚC KHI SỬA — TUYỆT ĐỐI KHÔNG COMMIT.
+# VÌ SAO (lỗi thật ngày 12/10): em tạo _backups/a11/ NGAY TRONG repo sản phẩm rồi `git add -A`,
+# nên bốn bản sao (app.js 1.683 dòng, index.html 752 dòng, …) vào luôn commit 442ab18. Hệ quả đo
+# được bằng lệnh: tools/thu_thap_so_lieu.py đếm "git ls-files" rồi cộng số dòng .js/.html/.css,
+# nên soDongCode nhảy từ 10.825 lên 13.260 — tức con số in trong slide nộp PHỒNG thêm 2.435 dòng
+# của chính bản sao. Một bản sao nằm trong repo không chỉ làm bẩn lịch sử mà còn ĐỔI SỐ ĐO.
+# Quy tắc của dự án: file tạm và bản lưu phải nằm NGOÀI repo (xem memory: "file tạm NGOÀI repo").
+# Nơi lưu đúng: ~/ieeai2026_backups/<ten>-<timestamp>/
+_backups/
+*.bak
