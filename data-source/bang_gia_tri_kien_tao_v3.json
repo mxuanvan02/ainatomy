@@ -1,0 +1,463 @@
+{
+  "ngay": "2026-10-11",
+  "cong_cu": "tools/tests/bang_gia_tri_kien_tao_v3.py",
+  "vi_sao_co_ban_nay": "v1/v2 quét regex literal nên bỏ sót `yccd: q.yccd` (dạng biến) và gán loại thao tác theo TRẠM thay vì theo log site. Ba reviewer độc lập bắt được cả hai lỗi. Bản này lấy LOG CALL SITE làm đơn vị bằng chứng và truy ngược biến qua sổ window.MX_*.",
+  "hai_truc": "A = loại thao tác (tự xuất / nhận diện / chỉ đọc). B = mã có đi theo bản ghi được chấm tới CSV của giáo viên không. Hai trục độc lập; sản phẩm này đang ngược chiều: thao tác mạnh nhất đều được chấm nhưng KHÔNG mang mã, thao tác trắc nghiệm lại mang mã.",
+  "gia_dinh": "site log dùng biến q.yccd thì mọi mã khai trong tệp dữ liệu của mô-đun đó được coi là đi qua site ấy. Đúng với 3 mô-đun đã kiểm bằng mắt (tinhhuong.js, nhamay_tram01.js, data/kienthuc.js) vì chúng render cả danh sách qua một callback duy nhất.",
+  "thao_tac_manh_khong_mang_ma": [
+    [
+      "js/app.js:911",
+      "duDoan",
+      "chot",
+      "chốt dự đoán (chưa đối chiếu)"
+    ],
+    [
+      "js/app.js:922",
+      "duDoan",
+      "doiChieu",
+      "DỰ ĐOÁN kết quả TRƯỚC khi chạy rồi ĐỐI CHIẾU với kết quả thật"
+    ],
+    [
+      "js/app.js:941",
+      "duDoan",
+      "doiChieu",
+      "DỰ ĐOÁN kết quả TRƯỚC khi chạy rồi ĐỐI CHIẾU với kết quả thật"
+    ],
+    [
+      "js/app.js:964",
+      "lab3d",
+      "danhGia",
+      "đánh giá mô hình trên bộ dữ liệu vừa chỉnh"
+    ],
+    [
+      "js/app.js:1058",
+      "duDoan",
+      "doiChieu",
+      "DỰ ĐOÁN kết quả TRƯỚC khi chạy rồi ĐỐI CHIẾU với kết quả thật"
+    ],
+    [
+      "js/app.js:1339",
+      "duDoan",
+      "doiChieu",
+      "DỰ ĐOÁN kết quả TRƯỚC khi chạy rồi ĐỐI CHIẾU với kết quả thật"
+    ]
+  ],
+  "tong_hop": {
+    "E:ĐỨT CHUỖI": 6,
+    "B:PHỦ MỘT PHẦN": 15,
+    "A:PHỦ THẬT": 1
+  },
+  "bang": [
+    {
+      "ma": "10.A1.1",
+      "loai": "cốt lõi",
+      "dongtu": "Thực hành xác định được",
+      "text": "Thực hành xác định được vai trò của con người trong sử dụng, vận hành, tùy chỉnh một hệ thống AI cụ thể.",
+      "phan_quyet": "E:ĐỨT CHUỖI",
+      "ly_do": "KHÔNG có log call site nào mang mã này tới CSV. Mã chỉ xuất hiện trong dữ liệu/khai báo tĩnh/comment, trong khi các thao tác mạnh của trạm tương ứng (xem mục 5) lại được chấm mà không mang mã",
+      "so_site": 0,
+      "so_site_co_diem": 0,
+      "chuoi": []
+    },
+    {
+      "ma": "10.A1.2",
+      "loai": "cốt lõi",
+      "dongtu": "Giải thích được",
+      "text": "Giải thích được tại sao việc con người kiểm soát AI là quan trọng, thông qua việc liên hệ đến các giá trị như an toàn, công bằng và quyền lợi con người.",
+      "phan_quyet": "E:ĐỨT CHUỖI",
+      "ly_do": "KHÔNG có log call site nào mang mã này tới CSV. Mã chỉ xuất hiện trong dữ liệu/khai báo tĩnh/comment, trong khi các thao tác mạnh của trạm tương ứng (xem mục 5) lại được chấm mà không mang mã",
+      "so_site": 0,
+      "so_site_co_diem": 0,
+      "chuoi": []
+    },
+    {
+      "ma": "10.A2.1",
+      "loai": "cốt lõi",
+      "dongtu": "Nêu được",
+      "text": "Nêu được một số rủi ro đối với con người, xã hội mà một sản phẩm AI có thể đem lại.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/app.js:1145 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1145",
+          "loai_su_kien": "tinhHuong",
+          "su_kien": "traLoi",
+          "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/tinhhuong.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.A2.MR1",
+      "loai": "mở rộng",
+      "dongtu": "Nêu được",
+      "text": "Nêu được một số biện pháp hạn chế các rủi ro đối với con người, xã hội mà một sản phẩm AI có thể đem lại thông qua một dự án sáng tạo AI.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/app.js:1145 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1145",
+          "loai_su_kien": "tinhHuong",
+          "su_kien": "traLoi",
+          "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/tinhhuong.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.A3.1",
+      "loai": "cốt lõi",
+      "dongtu": "Kể tên được",
+      "text": "Kể tên được một vài quy định hoặc luật lệ (ở mức độ khái niệm, ví dụ: Luật An ninh mạng, Luật Dữ liệu, Luật Bảo vệ dữ liệu cá nhân) có chức năng bảo vệ người dùng trong không gian số.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/kienthuc.js:188 (chọn 1 trong 4 phương án quiz (đã ) | động từ 'Kể tên được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/kienthuc.js:188",
+          "loai_su_kien": "lab",
+          "su_kien": "veQuiz",
+          "thao_tac": "chọn 1 trong 4 phương án quiz (đã xáo vị trí)",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> data/kienthuc.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.B2.1",
+      "loai": "cốt lõi",
+      "dongtu": "Nêu được",
+      "text": "Nêu được ví dụ về hành vi sử dụng AI hoặc sự cố liên quan đến AI vi phạm quy định của nhà trường hoặc các văn bản pháp luật liên quan đến sử dụng công nghệ thông tin.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/app.js:1145 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1145",
+          "loai_su_kien": "tinhHuong",
+          "su_kien": "traLoi",
+          "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/tinhhuong.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.B2.MR1",
+      "loai": "mở rộng",
+      "dongtu": "Nhận biết được",
+      "text": "Nhận biết được một số dấu hiệu của nội dung do AI tạo sinh tạo ra; kiểm tra và nhận xét được mức độ minh bạch của việc khai báo sử dụng AI trong một sản phẩm.",
+      "phan_quyet": "E:ĐỨT CHUỖI",
+      "ly_do": "KHÔNG có log call site nào mang mã này tới CSV. Mã chỉ xuất hiện trong dữ liệu/khai báo tĩnh/comment, trong khi các thao tác mạnh của trạm tương ứng (xem mục 5) lại được chấm mà không mang mã",
+      "so_site": 0,
+      "so_site_co_diem": 0,
+      "chuoi": []
+    },
+    {
+      "ma": "10.B3.1",
+      "loai": "cốt lõi",
+      "dongtu": "Trình bày được",
+      "text": "Trình bày được ví dụ minh họa một số vấn đề đạo đức có thể phát sinh trong quá trình thiết kế và vận hành AI (như thiên vị dữ liệu, vi phạm quyền riêng tư hoặc thiếu minh bạch).",
+      "phan_quyet": "E:ĐỨT CHUỖI",
+      "ly_do": "KHÔNG có log call site nào mang mã này tới CSV. Mã chỉ xuất hiện trong dữ liệu/khai báo tĩnh/comment, trong khi các thao tác mạnh của trạm tương ứng (xem mục 5) lại được chấm mà không mang mã",
+      "so_site": 0,
+      "so_site_co_diem": 0,
+      "chuoi": []
+    },
+    {
+      "ma": "10.C2.1",
+      "loai": "cốt lõi",
+      "dongtu": "Xác định được",
+      "text": "Xác định được các vấn đề thực tế có thể ứng dụng AI để thực hiện. Ưu tiên các vấn đề gần gũi, cần thiết trong bối cảnh Việt Nam, chẳng hạn: sản xuất nông nghiệp, các vấn đề liên quan đến các cộng đồng thiểu số, …",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/app.js:1274 (chọn đáp án trắc nghiệm về vị trí )",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1274",
+          "loai_su_kien": "nhamay",
+          "su_kien": "tram0",
+          "thao_tac": "chọn đáp án trắc nghiệm về vị trí khâu trong hệ thống",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/nhamay_tram01.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.C2.2",
+      "loai": "cốt lõi",
+      "dongtu": "Liệt kê được",
+      "text": "Liệt kê được tên các ứng dụng AI theo các tính năng của hệ thống.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/kienthuc.js:188 (chọn 1 trong 4 phương án quiz (đã ) | động từ 'Liệt kê được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/kienthuc.js:188",
+          "loai_su_kien": "lab",
+          "su_kien": "veQuiz",
+          "thao_tac": "chọn 1 trong 4 phương án quiz (đã xáo vị trí)",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> data/kienthuc.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.C2.3",
+      "loai": "cốt lõi",
+      "dongtu": "Nêu được",
+      "text": "Nêu được ví dụ một số trường hợp sử dụng AI hỗ trợ quá trình học tập.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/kienthuc.js:188 (chọn 1 trong 4 phương án quiz (đã ) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/kienthuc.js:188",
+          "loai_su_kien": "lab",
+          "su_kien": "veQuiz",
+          "thao_tac": "chọn 1 trong 4 phương án quiz (đã xáo vị trí)",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> data/kienthuc.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.C2.MR1",
+      "loai": "mở rộng",
+      "dongtu": "Xác định được",
+      "text": "Xác định được các yêu cầu cần có đối với việc ứng dụng AI thực hiện nhiệm vụ cụ thể.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/app.js:1145 (chọn nhóm tính năng / vi phạm / yê)",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1145",
+          "loai_su_kien": "tinhHuong",
+          "su_kien": "traLoi",
+          "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/tinhhuong.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.C2.MR2",
+      "loai": "mở rộng",
+      "dongtu": "Sử dụng được",
+      "text": "Sử dụng được một số ứng dụng AI trong học tập.",
+      "phan_quyet": "E:ĐỨT CHUỖI",
+      "ly_do": "KHÔNG có log call site nào mang mã này tới CSV. Mã chỉ xuất hiện trong dữ liệu/khai báo tĩnh/comment, trong khi các thao tác mạnh của trạm tương ứng (xem mục 5) lại được chấm mà không mang mã",
+      "so_site": 0,
+      "so_site_co_diem": 0,
+      "chuoi": []
+    },
+    {
+      "ma": "10.C3.1",
+      "loai": "cốt lõi",
+      "dongtu": "Mô tả được",
+      "text": "Mô tả được các yêu cầu để đưa ra prompt phù hợp với mục tiêu cụ thể.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/kienthuc.js:188 (chọn 1 trong 4 phương án quiz (đã ) | động từ 'Mô tả được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/kienthuc.js:188",
+          "loai_su_kien": "lab",
+          "su_kien": "veQuiz",
+          "thao_tac": "chọn 1 trong 4 phương án quiz (đã xáo vị trí)",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> data/kienthuc.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.C3.2",
+      "loai": "cốt lõi",
+      "dongtu": "Thực hành đặt prompt giải quyế",
+      "text": "Thực hành đặt prompt giải quyết một số vấn đề gần gũi trong cuộc sống, học tập một cách hiệu quả.",
+      "phan_quyet": "A:PHỦ THẬT",
+      "ly_do": "thao tác TỰ XUẤT RA được chấm và bản ghi CÓ mang mã: js/kienthuc.js:143 (GÕ prompt tự do vào ô nhập, chấm b)",
+      "so_site": 2,
+      "so_site_co_diem": 2,
+      "chuoi": [
+        {
+          "site": "js/kienthuc.js:143",
+          "loai_su_kien": "lab",
+          "su_kien": "veBaiTapPrompt",
+          "thao_tac": "GÕ prompt tự do vào ô nhập, chấm bằng rubric từ khoá",
+          "muc_thao_tac": "tu_xuat",
+          "co_diem": true,
+          "nguon_ma": "literal trong payload"
+        },
+        {
+          "site": "js/kienthuc.js:188",
+          "loai_su_kien": "lab",
+          "su_kien": "veQuiz",
+          "thao_tac": "chọn 1 trong 4 phương án quiz (đã xáo vị trí)",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> data/kienthuc.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.C3.3",
+      "loai": "cốt lõi",
+      "dongtu": "Phân biệt được",
+      "text": "Phân biệt được AI tạo sinh với các hệ thống AI phân loại, dự đoán qua ví dụ cụ thể.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/kienthuc.js:188 (chọn 1 trong 4 phương án quiz (đã ) | động từ 'Phân biệt được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/kienthuc.js:188",
+          "loai_su_kien": "lab",
+          "su_kien": "veQuiz",
+          "thao_tac": "chọn 1 trong 4 phương án quiz (đã xáo vị trí)",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> data/kienthuc.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.C3.MR1",
+      "loai": "mở rộng",
+      "dongtu": "Trình bày được",
+      "text": "Trình bày được ví dụ mô tả một số công nghệ để thiết kế và tạo AI.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/app.js:1145 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Trình bày được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1145",
+          "loai_su_kien": "tinhHuong",
+          "su_kien": "traLoi",
+          "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/tinhhuong.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.C4.1",
+      "loai": "cốt lõi",
+      "dongtu": "Phân tích được",
+      "text": "Phân tích được sự ảnh hưởng của chất lượng dữ liệu đến chất lượng AI.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/app.js:1274 (chọn đáp án trắc nghiệm về vị trí )",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1274",
+          "loai_su_kien": "nhamay",
+          "su_kien": "tram0",
+          "thao_tac": "chọn đáp án trắc nghiệm về vị trí khâu trong hệ thống",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/nhamay_tram01.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.C4.MR1",
+      "loai": "mở rộng",
+      "dongtu": "Phân tích được",
+      "text": "Phân tích được các dạng dữ liệu (hình ảnh, âm thanh, từ ngữ, …) được sử dụng để huấn luyện AI.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/app.js:1274 (chọn đáp án trắc nghiệm về vị trí )",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1274",
+          "loai_su_kien": "nhamay",
+          "su_kien": "tram0",
+          "thao_tac": "chọn đáp án trắc nghiệm về vị trí khâu trong hệ thống",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/nhamay_tram01.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.D1.1",
+      "loai": "cốt lõi",
+      "dongtu": "Nêu được",
+      "text": "Nêu được ví dụ cụ thể, xác định nhiệm vụ hoặc mục tiêu cụ thể mà một hệ thống AI cần thực hiện, nêu được mối liên hệ giữa mục tiêu đó với các thành phần chính của hệ thống.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/app.js:1145 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1145",
+          "loai_su_kien": "tinhHuong",
+          "su_kien": "traLoi",
+          "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/tinhhuong.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.D2.1",
+      "loai": "cốt lõi",
+      "dongtu": "Mô tả được",
+      "text": "Mô tả được các thành phần cơ bản của hệ thống AI (dữ liệu, mô hình, thuật toán, đầu ra, phản hồi) phù hợp với nhiệm vụ cụ thể.",
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "chỉ đo ở mức NHẬN DIỆN (chọn 1 trong N) dù có chấm + mang mã: js/app.js:1274 (chọn đáp án trắc nghiệm về vị trí ) | động từ 'Mô tả được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1274",
+          "loai_su_kien": "nhamay",
+          "su_kien": "tram0",
+          "thao_tac": "chọn đáp án trắc nghiệm về vị trí khâu trong hệ thống",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/nhamay_tram01.js"
+        }
+      ]
+    },
+    {
+      "ma": "10.D2.2",
+      "loai": "cốt lõi",
+      "dongtu": "Nêu được",
+      "text": "Nêu được ví dụ về một số vấn đề phát sinh trong quá trình vận hành hoặc tối ưu hoá AI và trình bày được ý nghĩa của việc khắc phục các vấn đề đó.",
+      "phan_quyet": "E:ĐỨT CHUỖI",
+      "ly_do": "KHÔNG có log call site nào mang mã này tới CSV. Mã chỉ xuất hiện trong dữ liệu/khai báo tĩnh/comment, trong khi các thao tác mạnh của trạm tương ứng (xem mục 5) lại được chấm mà không mang mã",
+      "so_site": 0,
+      "so_site_co_diem": 0,
+      "chuoi": []
+    }
+  ]
+}
