@@ -142,7 +142,7 @@ def build():
         [11, "Học tủ: tách dữ liệu huấn luyện/kiểm tra", "CHƯA LÀM", "10.C4.1", "hai bộ khác seed, so độ chính xác", "P3-CAO"],
         [12, "Quá khớp và dưới khớp", "CHƯA LÀM", "10.D2.2", "đường cong lỗi theo số vòng", "P3-CAO"],
         [13, "Dạng dữ liệu: ảnh, âm thanh, văn bản", "CHƯA LÀM", "10.C4.MR1", "phân loại mẫu có nhãn", "P3"],
-        [14, "Vai trò con người trong vận hành hệ AI", "CHƯA LÀM", "10.A1.1, 10.A1.2", "tình huống quyết định có nhãn", "P3-CAO"],
+        [14, "Vai trò con người trong vận hành hệ AI", "ĐÃ LÀM", "10.A1.1, 10.A1.2", "3 câu xác định vai trò con người ở trạm ống dẫn (js/vaitro_connguoi.js) + tình huống quyết định có nhãn", "P3-CAO"],
         [15, "Rủi ro của sản phẩm AI với người và xã hội", "CHƯA LÀM", "10.A2.1, 10.A2.MR1", "tình huống có nhãn", "P3-CAO"],
         [16, "Hành vi dùng AI vi phạm quy định nhà trường", "CHƯA LÀM", "10.B2.1", "tình huống có nhãn", "P3-CAO"],
         [17, "Chọn vấn đề Việt Nam để ứng dụng AI", "CHƯA LÀM", "10.C2.1", "rubric tiêu chí, tất định", "P3"],
@@ -158,7 +158,11 @@ def build():
     yccd = [["Mã", "Chủ đề", "Mạch", "Loại", "Nguyên văn (đã verify)", "subseq", "từ khoá", "Sản phẩm phủ ở đâu", "Mức phủ"]]
     # ánh xạ mức phủ theo thiết kế v2
     PHU = {
-        "10.A1.1": ("Mô phỏng #14 (chưa làm)", "CHƯA PHỦ"),
+        # 10.A1.1 — sửa 11/10: đã có hoạt động riêng (js/vaitro_connguoi.js, ba câu theo ba vế của
+        # động từ: SỬ DỤNG / VẬN HÀNH / TÙY CHỈNH). Mức là MỘT PHẦN chứ không phải PHỦ THẬT vì
+        # học sinh chọn 1 trong 4 = NHẬN DIỆN; muốn lên PHỦ THẬT cần thao tác con người can thiệp
+        # thật (bác một đầu ra của AI và ghi lý do). Không nâng nhãn để lấy thành tích.
+        "10.A1.1": ("3 câu xác định vai trò con người ở trạm ống dẫn (js/vaitro_connguoi.js)", "MỘT PHẦN"),
         "10.A1.2": ("Ống dẫn 3D + Mô phỏng #14", "MỘT PHẦN"),
         "10.A2.1": ("Mô phỏng #15 (chưa làm)", "CHƯA PHỦ"),
         "10.A2.MR1": ("Mô phỏng #15 (chưa làm)", "CHƯA PHỦ"),

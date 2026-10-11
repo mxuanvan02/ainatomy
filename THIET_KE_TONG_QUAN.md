@@ -142,7 +142,7 @@ Yêu cầu đặt ra là bài học có thể mô phỏng được mọi nội d
 | 11 | Học tủ: tách dữ liệu huấn luyện và kiểm tra | **chưa làm** | 10.C4.1 | hai bộ khác seed, so độ chính xác |
 | 12 | Quá khớp và dưới khớp | **chưa làm** | 10.D2.2 | đường cong lỗi theo số vòng |
 | 13 | Dạng dữ liệu huấn luyện: ảnh, âm thanh, văn bản | **chưa làm** | 10.C4.MR1 | phân loại mẫu, có nhãn |
-| 14 | Vai trò con người trong vận hành hệ AI | **chưa làm** | 10.A1.1, 10.A1.2 | tình huống quyết định có nhãn |
+| 14 | Vai trò con người trong vận hành hệ AI | **đã làm** (3 câu ở trạm ống dẫn) | 10.A1.1, 10.A1.2 | tình huống quyết định có nhãn |
 | 15 | Rủi ro của một sản phẩm AI với người và xã hội | **chưa làm** | 10.A2.1, 10.A2.MR1 | tình huống có nhãn |
 | 16 | Hành vi dùng AI vi phạm quy định nhà trường | **chưa làm** | 10.B2.1 | tình huống có nhãn |
 | 17 | Chọn vấn đề Việt Nam để ứng dụng AI | **chưa làm** | 10.C2.1 | rubric tiêu chí, tất định |

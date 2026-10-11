@@ -461,7 +461,8 @@
       <h2><svg class="ic to" aria-hidden="true"><use href="#i-git-branch"/></svg> Ống dẫn AI — Soi luồng hoạt động</h2>
       <p class="tagline">YCCĐ lớp 10: <b>10.D1.1</b> mối liên hệ giữa mục tiêu và các thành phần
         chính của hệ thống · <b>10.D2.1</b> các thành phần cơ bản (dữ liệu, mô hình, thuật toán,
-        đầu ra, phản hồi) · <b>10.A1.2</b> vì sao con người cần kiểm soát AI</p>
+        đầu ra, phản hồi) · <b>10.A1.2</b> vì sao con người cần kiểm soát AI ·
+        <b>10.A1.1</b> vai trò con người trong sử dụng, vận hành, tùy chỉnh</p>
       <p class="chu2">Các hạt sáng là <b>dòng dữ liệu</b> chảy qua 5 trạm của một hệ thống AI.
         Bấm <b>Làm hỏng một trạm</b> — hệ thống sẽ chọn NGẪU NHIÊN một trạm để hỏng.
         Quan sát hiện tượng rồi đoán xem trạm nào đang hỏng. Hệ thống biết trước đáp án
@@ -487,6 +488,15 @@
       </div>
 
       <div id="pipe3d-chitiet"></div>
+
+      <!-- 10.A1.1 "Thực hành xác định được vai trò của con người trong sử dụng, vận hành,
+           tùy chỉnh một hệ thống AI cụ thể". Đặt Ở ĐÂY chứ không phải ở trạm Kiến thức nền,
+           vì động từ đòi "một hệ thống AI CỤ THỂ" và hệ thống cụ thể mà học sinh vừa tự vận
+           hành chính là ống dẫn 5 trạm ở trên: các em đã làm hỏng trạm CON NGƯỜI KIỂM và thấy
+           lỗi đi thẳng tới người dùng, đã cân bằng dữ liệu 92% ảnh ban ngày và đo lại. Ba câu
+           hỏi chốt lại việc XÁC ĐỊNH vai trò con người trên chính hệ thống đó.
+           Dữ liệu ở js/vaitro_connguoi.js; hàm dựng ở js/app.js (pipe3dVaiTro). -->
+      <div id="pipe3d-vaitro"></div>
     </div>
   </section>
 
@@ -746,6 +756,10 @@
 <!-- Mức 3 cho 7 bài còn lại (BT-01/03/06/07/08/10/12). Nạp SAU duDoan.js vì mọi ô ở
      đây đều dựng qua window.MX_DUDOAN, và TRƯỚC app.js vì app.js gọi window.MX_MUC3.mo(). -->
 <script src="js/muc3.js"></script>
+<!-- Ba câu hỏi cho 10.A1.1 (vai trò con người khi SỬ DỤNG / VẬN HÀNH / TÙY CHỈNH). Nạp TRƯỚC
+     app.js vì app.js gọi window.MX_VAI_TRO trong pipe3dVaiTro(). Tệp này chỉ chứa dữ liệu và
+     oracle chấm tất định — không tự render, nên không cần $ / esc / maHS. -->
+<script src="js/vaitro_connguoi.js"></script>
 <script src="js/app.js"></script>
 </body>
 </html>

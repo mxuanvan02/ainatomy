@@ -997,6 +997,10 @@
   let pipe3dDaKhoiTao = false;
   /* BT-11 Mức 3: ô dự đoán hiện tượng đầu ra (js/duDoan.js) */
   let ddPipe = null;
+  /* Gate cho ba câu hỏi 10.A1.1 (js/vaitro_connguoi.js). Cùng khuôn với thDaNap/kbDaNap:
+   * dựng MỘT lần, vì dựng lại mỗi lần vào trạm sẽ xoá trạng thái đã trả lời và học sinh có
+   * thể bấm lại vô hạn để dò đáp án — đúng lý do đã ghi ở nmKhoiDongTram0(). */
+  let vtDaNap = false;
   function pipe3dMo(){
     hien("v-pipe3d");
     if(!pipe3dDaKhoiTao){
@@ -1042,8 +1046,130 @@
         });
       }
     }
+    /* Ba câu 10.A1.1 dựng NGOÀI cổng pipe3dDaKhoiTao: máy không chạy được 3D thì bài đoán
+     * trạm vẫn làm được ở bảng chữ (MX_PIPE3D.bangTinh đã in vào fallback), và ba câu này
+     * không phụ thuộc canvas nên càng phải hiện. Đặt trong cổng thì máy yếu mất luôn phần
+     * duy nhất phủ 10.A1.1. */
+    pipe3dVaiTro();
     pipe3dHud();
   }
+  /* ============ 10.A1.1 — VAI TRÒ CON NGƯỜI TRONG HỆ THỐNG AI CỤ THỂ ============
+   * YCCĐ nguyên văn (Khung 2422, đã verify 22/22): "Thực hành xác định được vai trò của con
+   * người trong sử dụng, vận hành, tùy chỉnh một hệ thống AI cụ thể."
+   *
+   * VÌ SAO HOẠT ĐỘNG NÀY NẰM Ở TRẠM ỐNG DẪN. Động từ đòi "một hệ thống AI CỤ THỂ", nên chỗ
+   * đúng là nơi học sinh VỪA TỰ VẬN HÀNH một hệ thống: các em đã bấm làm hỏng trạm CON NGƯỜI
+   * KIỂM và thấy lỗi đi thẳng tới người dùng, đã cân bằng bộ dữ liệu 92% ảnh ban ngày rồi đo
+   * lại. Ba câu hỏi chốt việc XÁC ĐỊNH vai trò con người trên chính hệ thống đó, mỗi câu một
+   * vế của động từ: SỬ DỤNG, VẬN HÀNH, TÙY CHỈNH.
+   *
+   * VÌ SAO LÀ TRẮC NGHIỆM CHỨ KHÔNG PHẢI TỰ LUẬN. "Xác định được" là động từ CÓ đáp án đúng,
+   * nên oracle tất định là đúng phương pháp. Dự án này đã ĐO sai số của loại chấm dò-từ-khoá
+   * (data-source/do_gia_tri_kien_tao.json): âm tính giả 3/4. Thêm một dụng cụ yếu vào hồ sơ là
+   * thổi phồng chứ không phải tăng hàm lượng khoa học.
+   *
+   * GIỚI HẠN PHẢI NÓI THẲNG: ba câu này ở mức NHẬN DIỆN (chọn 1 trong 4), nên trục THAO TÁC xếp
+   * 10.A1.1 là PHỦ MỘT PHẦN chứ không phải PHỦ THẬT. Vế "thực hành" được thoả bởi việc học sinh
+   * vừa vận hành hệ thống thật ở phía trên cùng màn hình, KHÔNG phải bởi ba câu hỏi này. Muốn
+   * lên PHỦ THẬT thì cần một thao tác con người can thiệp thật (ví dụ cho học sinh BÁC một đầu
+   * ra của AI và ghi lý do, rồi hệ chấm lý do đó) — không phải thêm câu trắc nghiệm.
+   */
+  function pipe3dVaiTro(){
+    const M = window.MX_VAI_TRO;
+    const host = $("pipe3d-vaitro");
+    if(!M || !host || vtDaNap) return;
+    host.innerHTML = "";
+
+    /* GHI CHÚ AN TOÀN innerHTML (theo quy ước đã khai ở đầu app.js dòng 3-5).
+     * Hàm này có 4 chỗ gán innerHTML. MỌI chuỗi lấy từ DỮ LIỆU đều đi qua esc():
+     *   p.innerHTML  -> esc(c.vai), esc(c.yccd), esc(c.cauHoi)
+     *   b.innerHTML  -> esc(l.text)
+     *   fb.innerHTML -> esc(c.giaiThich)
+     * Phần còn lại là CHUỖI TĨNH do chính mã nguồn chỉ định: svgIco() trả về thẻ <svg> chứa
+     * tên symbol cố định (không ghép dữ liệu người dùng); số thứ tự câu là (ci + 1) — số nguyên
+     * từ forEach, không phải chuỗi nhập vào.
+     * Dữ liệu câu hỏi là hằng số trong js/vaitro_connguoi.js (tác giả viết, không phải input
+     * người dùng) nhưng vẫn esc(), vì người sửa sau sẽ chép khuôn này sang nơi có dữ liệu động
+     * — một tệp dữ liệu mới không được phép là ngoại lệ. */
+    const h = document.createElement("h3");
+    h.innerHTML = svgIco("shield-check") + " Con người đứng ở đâu trong hệ thống em vừa vận hành?";
+    host.appendChild(h);
+
+    const dan = document.createElement("p");
+    dan.className = "chu2";
+    dan.textContent = "Yêu cầu cần đạt 10.A1.1: thực hành xác định vai trò của con người trong "
+      + "SỬ DỤNG, VẬN HÀNH và TÙY CHỈNH một hệ thống AI cụ thể. Hệ thống cụ thể ở đây là chính "
+      + "ống dẫn năm trạm em vừa làm hỏng và đo lại — mỗi câu hỏi dưới đây soi một vế.";
+    host.appendChild(dan);
+
+    M.CAU.forEach((c, ci) => {
+      const card = document.createElement("div");
+      card.className = "card";
+      card.style.background = "var(--nen2)";
+
+      const p = document.createElement("p");
+      /* Class .de-bai chứ không phải .chu2: .chu2 BỊ ẨN ở chế độ ít chữ, mà đây là ĐỀ BÀI —
+       * ẩn đi là mất việc để làm (bài học đã ghi trong js/bt13.js). */
+      p.innerHTML = "<b>Câu " + (ci + 1) + ".</b> "
+        + '<span class="tagline">' + esc(c.vai) + " · " + esc(c.yccd) + "</span><br>"
+        + '<span class="de-bai">' + esc(c.cauHoi) + "</span>";
+      card.appendChild(p);
+
+      const chips = document.createElement("div");
+      chips.className = "chips";
+      card.appendChild(chips);
+      const fbHost = document.createElement("div");
+      card.appendChild(fbHost);
+      host.appendChild(card);
+
+      /* XÁO VỊ TRÍ và lấy chữ cái THEO VỊ TRÍ — cùng khuôn với veQuiz() trong js/kienthuc.js.
+       * Không được in l.id.toUpperCase() và tô màu theo c.luaChon[i] (thứ tự GỐC): làm vậy thì
+       * chữ cái dính chặt với dữ liệu và viền đúng/sai hiện sai ô sau khi xáo. */
+      const ds = window.MX_ENGINE.xaoLuaChon(c.luaChon, c.id);
+      ds.forEach((l, i) => {
+        const b = document.createElement("button");
+        b.className = "chip";
+        b.style.textAlign = "left";
+        b.innerHTML = "<b>" + window.MX_ENGINE.chuCai(i) + ".</b> " + esc(l.text);
+        b.onclick = () => {
+          if(card.dataset.daTraLoi) return;
+          const r = M.cham(c.id, l.id);
+          /* cham() trả null khi id hoặc phương án không hợp lệ. KHÔNG được coi null là "sai":
+           * im lặng ghi điểm 0 sẽ đổ lỗi cho học sinh vì lỗi của mã. */
+          if(!r) return;
+          card.dataset.daTraLoi = "1";
+          [...chips.children].forEach((ch, j) => {
+            ch.style.cursor = "default";
+            if(ds[j].id === c.dapAn) ch.style.borderColor = "var(--dung)";
+            if(ds[j].id === l.id && !r.dung) ch.style.borderColor = "var(--sai)";
+          });
+          const fb = document.createElement("div");
+          fb.className = "phanhoi " + (r.dung ? "dung" : "sai");
+          fb.innerHTML = (r.dung ? svgIco("check") + " <b>Chính xác!</b> "
+                                 : svgIco("x") + " <b>Chưa đúng.</b> ") + esc(c.giaiThich);
+          fbHost.appendChild(fb);
+
+          /* yccd ở CẤP SỰ KIỆN (sk.yccd) — cấp mà engine.js:379 và gop_csv.py:214 đọc TRƯỚC.
+           * Vẫn giữ một bản lồng trong nhiemVu cho nhất quán với khuôn veQuiz() và để đường
+           * fallback nhiemVu.yccd có dữ liệu. Đây chính là lỗi đã khiến 6 mã của trạm Kiến thức
+           * nền vô hình trong báo cáo trước ngày 11/10: kienthuc.js chỉ ghi cấp lồng. */
+          /* `diem: r.diem` chứ không tự tính từ r.dung — oracle là nguồn duy nhất của điểm số
+           * (xem ghi chú ở js/vaitro_connguoi.js). Tự tính lại ở đây thì khi đổi thang chấm sẽ
+           * có một chỗ bị bỏ sót, và CSV ghi điểm khác với điều học sinh vừa thấy trên màn hình. */
+          if(ENG) ENG.logSuKien(maHS, {
+            loai: "lab", suKien: "vaiTro",
+            nhiemVu: { id: c.id, mach: c.mach, unesco: c.unesco, yccd: c.yccd },
+            kq: { diem: r.diem, dung: r.dung, mach: c.mach, unesco: c.unesco,
+                  dapAn: c.dapAn, chon: l.id },
+            yccd: c.yccd
+          });
+        };
+        chips.appendChild(b);
+      });
+    });
+    vtDaNap = true;
+  }
+
   function pipe3dHong(){
     const r = window.MX_PIPE3D.batDauLuot();
     $("pipe3d-doan").style.display = "";
@@ -1202,7 +1328,7 @@
       yccd:"10.C2.MR2 · 10.C3.1 · 10.C3.2 · 10.B2.MR1", view:"nhamay5", trangThai:"co" },
     { id:6, so:"TRẠM 6", ten:"CON NGƯỜI KIỂM", anDuy:"KCS cuối + vòng phản hồi",
       moTa:"Con người rà soát đầu ra và chịu trách nhiệm. Dữ liệu mới từ đây quay vòng về Trạm 0.",
-      yccd:"10.A1.2 · 10.D1.1 · 10.D2.1", view:"v-pipe3d", trangThai:"co" }
+      yccd:"10.A1.1 · 10.A1.2 · 10.D1.1 · 10.D2.1", view:"v-pipe3d", trangThai:"co" }
   ];
   let nmTramDaMo = null;
 

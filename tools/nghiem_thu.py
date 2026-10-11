@@ -1275,10 +1275,49 @@ console.log(JSON.stringify(out));
         # ---- G12c: đo khoản nợ nội dung, so với mốc đã ghi ----
         MOC_NO = 82.9          # % đo được ngày 06/10, trước khi viết lại phương án nhiễu
         DUNGSAI = 1.0          # điểm phần trăm: lệch dưới mức này coi như nhiễu đo
+        # `import ast as _ast` là LOCAL IMPORT, cố ý. Tệp này đã có `import ast as _ast` ở dòng
+        # 2248 nhưng nó nằm TRONG hàm g18, nên gọi _ast từ g12 sẽ nổ NameError. Không thêm vào
+        # dòng import module-level ở đầu tệp vì đó là dòng chung của cả bộ cổng; local import giữ
+        # thay đổi nằm gọn trong nhóm này. (G22 vừa dính đúng lớp lỗi này với io.open().)
+        import ast as _ast
         re_block = re.compile(r"luaChon\s*:\s*\[(.*?)\]", re.S)
-        re_item = re.compile(r'\{\s*id\s*:\s*"([a-e])"\s*,\s*text\s*:\s*"((?:[^"\\]|\\.)*)"')
+        # re_item bắt CHUỖI NỐI chứ không chỉ chuỗi nguyên khối — sửa 12/10 sau khi cổng này báo
+        # mù: ba phương án nhiễu của js/vaitro_connguoi.js viết kiểu "đoạn 1 " + "đoạn 2" cho dễ
+        # đọc, bản regex cũ dừng ở dấu nháy đầu tiên nên chỉ đo đoạn đầu và vẫn phán đáp án là
+        # phương án dài nhất. Nhóm 2 nay nuốt cả dãy  "..." ( + "..." )*  rồi được gộp ở dưới.
+        re_item = re.compile(
+            r'\{\s*id\s*:\s*"([a-e])"\s*,\s*text\s*:\s*'
+            r'("(?:[^"\\]|\\.)*"(?:\s*\+\s*"(?:[^"\\]|\\.)*")*)')
+
+        re_doan = re.compile(r'"((?:[^"\\]|\\.)*)"')
+
+        def do_dai_text(bieu_thuc):
+            """Tra ve do dai ky tu THAT cua mot phuong an, ke ca khi text viet bang chuoi NOI.
+
+            TACH THEO BIEN DAU NHAY roi literal_eval TUNG DOAN, khong xoa dau cong bang regex.
+            Xoa moi dau cong nghe don gian hon nhung se xoa nham dau cong nam TRONG noi dung
+            chuoi: mot phuong an viet "5 cong 3 tram" se bi do thanh "5  3 tram" - sai do dai,
+            tuc tao ra mot phep do mu moi va lan nay no im lang.
+
+            literal_eval de go escape dung nhu JS se thay khi chay, thay vi dem tho so ky tu
+            trong ma nguon. Tra None khi khong do duoc - nguoi goi PHAI coi None la "do mu" chu
+            khong phai "dai 0", va G12c bao LOI thay vi in ti le tu mot phep do thieu.
+            """
+            if not bieu_thuc or not bieu_thuc.strip():
+                return None
+            doan = re_doan.findall(bieu_thuc)
+            if not doan:
+                return None
+            try:
+                return sum(len(_ast.literal_eval('"' + d + '"')) for d in doan)
+            except (ValueError, SyntaxError):
+                return None
         re_dap = re.compile(r'dapAn\s*:\s*"([a-e])"')
         tong, no, muc = 0, 0, {}
+        # `mu` khai MỘT LẦN ở đây, NGOÀI cả hai vòng lặp. Lượt vá trước khai nó trong vòng lặp
+        # theo tệp nên mỗi tệp ghi đè danh sách của tệp trước: phép phát hiện đo-mù chỉ nhìn thấy
+        # tệp cuối cùng và im lặng bỏ qua mọi tệp trước đó.
+        mu = []
         nguon = ("js", "data")
         for thu_muc in nguon:
             for f in sorted(os.listdir(os.path.join(ROOT, thu_muc))):
@@ -1290,7 +1329,19 @@ console.log(JSON.stringify(out));
                     continue
                 n = d = 0
                 for m in re_block.finditer(s):
-                    items = re_item.findall(m.group(1))
+                    # ĐẾM THÔ số phương án trong khối: mọi `{ id: "<chữ>"` bất kể text viết kiểu
+                    # gì. So với số parse được để biết regex có bỏ sót phương án nào không — nếu
+                    # không so thì một cách viết mới sẽ làm cổng đo thiếu mà vẫn in số trông
+                    # hợp lệ, không ai nghi ngờ.
+                    tho = re.findall(r'\{\s*id\s*:\s*"[a-e]"', m.group(1))
+                    items_raw = re_item.findall(m.group(1))
+                    if len(tho) != len(items_raw):
+                        mu.append(rel + ": " + str(len(tho) - len(items_raw))
+                                  + " phương án không parse được")
+                    items = [(k, do_dai_text(t)) for k, t in items_raw]
+                    if any(dai is None for _, dai in items):
+                        mu.append(rel + ": không đo được độ dài text")
+                        continue
                     if len(items) < 2:
                         continue
                     dm = re_dap.search(s[m.end():m.end() + 900])
@@ -1303,7 +1354,8 @@ console.log(JSON.stringify(out));
                     dap = dm.group(1)
                     if dap not in [k for k, _ in items]:
                         continue
-                    dai = max(items, key=lambda x: len(x[1]))[0]
+                    # x[1] nay là SỐ ký tự thật (do_dai_text trả về), không phải chuỗi mã nguồn
+                    dai = max(items, key=lambda x: x[1])[0]
                     n += 1
                     if dai == dap:
                         d += 1
@@ -1312,6 +1364,19 @@ console.log(JSON.stringify(out));
                     tong += n
                     no += d
         ti_le = (100.0 * no / tong) if tong else None
+        # CHẶN KHI PHÉP ĐO MÙ — bài học từ tools/tests/bang_gia_tri_kien_tao_v3.py: một bộ lọc
+        # hỏng đã loại sạch 100% log site rồi vẫn ghi JSON, và hồ sơ in "22/22 ĐỨT CHUỖI" từ số
+        # rác đó. Ở đây nếu regex bỏ sót phương án thì con số in ra là ĐO THIẾU, trông vẫn hợp lệ
+        # nên không ai nghi ngờ. Thà đỏ và nói rõ vì sao, còn hơn xanh trên một phép đo sai.
+        if mu:
+            self.them("G12c", "phép đo cue 'đáp án dài nhất' đọc được MỌI phương án",
+                      False,
+                      "PHÉP ĐO MÙ ở " + str(len(set(mu))) + " chỗ: "
+                      + "; ".join(sorted(set(mu))[:5])
+                      + " — regex re_item không hiểu cách viết phương án đó, nên con số "
+                      + (f"{ti_le:.1f}%" if ti_le is not None else "n/a")
+                      + " là ĐO THIẾU, đừng tin dòng này")
+            return
         self.them("G12c", f"khoản nợ nội dung không phình (mốc {MOC_NO}%, đo {ti_le:.1f}%)"
                   if ti_le is not None else "khoản nợ nội dung (không đo được)",
                   ti_le is not None and ti_le <= MOC_NO + DUNGSAI,
@@ -2605,6 +2670,176 @@ console.log(JSON.stringify(out));
                   f"{p_khong:.1f}% — chênh {khoang:.1f} điểm %. NỢ NỘI DUNG của ngân hàng "
                   f"câu: các câu 'không lỗi' phần lớn thiếu số liệu, học sinh thấy số là "
                   f"nghi. Chữa bằng cách viết thêm câu ĐÚNG có số liệu thật, không bằng mã")
+    def g22(self, node="/usr/bin/node"):
+        """G22 — ORACLE của js/vaitro_connguoi.js phải chấm đúng, kiểm BẰNG HÀNH VI.
+
+        Ba câu hỏi 10.A1.1 (SỬ DỤNG / VẬN HÀNH / TÙY CHỈNH vai trò con người) là bằng chứng
+        cho một yêu cầu cần đạt trong hồ sơ nộp, nên oracle của nó mà sai thì giáo viên sẽ ghi
+        điểm sai cho học sinh thật. Tệp tools/tests/test_vaitro_connguoi.js có 34 ca, nhưng
+        nghiem_thu.py không có runner nào cho test .js: không cổng nào chạy nó thì test sẽ mục
+        dần mà bộ cổng vẫn báo xanh. Nhóm này chạy test đó bằng node thật.
+
+        KIỂM BẰNG HÀNH VI, không phải đọc chữ trong tệp — cùng khuôn G21a: nạp dữ liệu thật
+        rồi gọi hàm thật với đầu vào biết trước. Đọc chữ chỉ chứng minh "có code", không chứng
+        minh "code đúng".
+        """
+        print("\n=== G22 ORACLE 10.A1.1: BA VẾ VAI TRÒ CON NGƯỜI ===")
+        test = os.path.join(ROOT, "tools/tests/test_vaitro_connguoi.js")
+        du_lieu = os.path.join(ROOT, "js/vaitro_connguoi.js")
+
+        # ---- G22a: tệp test và tệp dữ liệu phải tồn tại, và tệp dữ liệu phải được nạp ----
+        co_test = os.path.exists(test)
+        co_dl = os.path.exists(du_lieu)
+        nap = False
+        if co_dl:
+            idx = doc("index.html")
+            # lột chú thích trước khi tìm: một dòng chú thích viết src="js/vaitro_connguoi.js"
+            # không có nghĩa là tệp thật sự được nạp (bài học đã ghi ở cổng G3d).
+            song = re.sub(r"<!--.*?-->", "", idx, flags=re.S)
+            nap = 'src="js/vaitro_connguoi.js"' in song
+        self.them("G22a", "có tệp dữ liệu + test oracle, và index.html THẬT SỰ nạp tệp dữ liệu",
+                  co_dl and co_test and nap,
+                  "js/vaitro_connguoi.js=" + ("có" if co_dl else "THIẾU")
+                  + " · tools/tests/test_vaitro_connguoi.js=" + ("có" if co_test else "THIẾU")
+                  + " · nạp trong index.html (đã lột chú thích)=" + ("có" if nap else "KHÔNG"))
+
+        if not (co_dl and co_test):
+            self.them("G22b", "oracle chấm đúng 3 vế", False, "thiếu tệp nên không chạy được")
+            self.them("G22c", "đáp án khai nằm trong danh sách phương án", False, "thiếu tệp")
+            return
+
+        # ---- probe node: nạp tệp dữ liệu trong ngữ cảnh có window, gọi oracle thật ----
+        probe = os.path.join(ROOT, "tools/tests/_probe_g22.js")
+        PROBE = """/* Probe của cổng G22 — sinh tự động bởi tools/nghiem_thu.py, KHÔNG sửa tay.
+ * Nạp js/vaitro_connguoi.js trong ngữ cảnh giả lập có window (tệp đó chỉ cần window, không cần
+ * DOM), rồi gọi cham() với đầu vào biết trước và in JSON để Python đối chiếu. */
+const fs = require("fs");
+const vm = require("vm");
+const sandbox = { window: {} };
+vm.createContext(sandbox);
+vm.runInContext(fs.readFileSync(process.argv[2], "utf8"), sandbox, { filename: "vaitro_connguoi.js" });
+const M = sandbox.window.MX_VAI_TRO;
+const out = { ok: !!(M && M.CAU && M.CAU.length), soCau: M ? M.CAU.length : 0, cau: [] };
+if (out.ok) {
+  for (const c of M.CAU) {
+    const ids = c.luaChon.map(l => l.id);
+    const sai = ids.filter(x => x !== c.dapAn)[0];
+    out.cau.push({
+      id: c.id, vai: c.vai, yccd: c.yccd,
+      dapAnTrongDanhSach: ids.includes(c.dapAn),
+      soPhuongAn: ids.length,
+      chonDung: M.cham(c.id, c.dapAn),
+      chonSai: M.cham(c.id, sai),
+      idLa: M.cham("khong-ton-tai", "a"),
+      phuongAnLa: M.cham(c.id, "zzz"),
+      // payload tiêm HTML phải bị coi là KHÔNG hợp lệ, không được lọt vào log
+      payloadTiem: M.cham(c.id, '<img src=x onerror=alert(1)>')
+    });
+  }
+}
+console.log(JSON.stringify(out));
+"""
+        # `open()` chứ không phải `io.open()`: tệp này KHÔNG import io (xem dòng import đầu tệp),
+        # và lỗi NameError đó từng bị khối except bên dưới nuốt rồi báo thành "không chạy được
+        # node" — tức báo SAI nguyên nhân, khiến người sửa đi tìm node thay vì tìm import thiếu.
+        # subprocess đã được import ở đầu tệp nên không cần import lại trong hàm.
+        try:
+            with open(probe, "w", encoding="utf-8") as f:
+                f.write(PROBE)
+        except OSError as e:
+            self.them("G22b", "chạy probe oracle", False, "không ghi được tệp probe: " + str(e)[:140])
+            self.them("G22c", "đáp án khai nằm trong danh sách phương án", False, "không ghi được probe")
+            return
+        try:
+            r = subprocess.run([node, probe, du_lieu], capture_output=True, text=True, timeout=120)
+        except (OSError, subprocess.SubprocessError) as e:
+            # CHỈ bắt lỗi khi chạy node. Không dùng `except Exception`: nó nuốt cả NameError/
+            # TypeError của chính mã cổng này rồi đổ cho node, làm sai hướng sửa.
+            self.them("G22b", "chạy probe oracle", False, "không chạy được node: " + str(e)[:140])
+            self.them("G22c", "đáp án khai nằm trong danh sách phương án", False, "probe không chạy được")
+            return
+        finally:
+            try:
+                os.remove(probe)
+            except OSError:
+                pass
+
+        if r.returncode != 0:
+            self.them("G22b", "chạy probe oracle", False,
+                      "node thoát mã " + str(r.returncode) + ": " + (r.stderr or r.stdout)[:200])
+            self.them("G22c", "đáp án khai nằm trong danh sách phương án", False, "probe lỗi")
+            return
+        try:
+            d = json.loads(r.stdout.strip().split("\n")[-1])
+        except (ValueError, IndexError) as e:
+            self.them("G22b", "đọc JSON từ probe", False, str(e)[:140] + " · stdout=" + r.stdout[:160])
+            self.them("G22c", "đáp án khai nằm trong danh sách phương án", False, "không đọc được JSON")
+            return
+
+        # ---- G22b: oracle phải đúng trên CẢ BA vế và ở các ca biên ----
+        loi = []
+        if not d.get("ok"):
+            loi.append("MX_VAI_TRO không export được")
+        elif d.get("soCau") != 3:
+            loi.append("số câu = " + str(d.get("soCau")) + ", kỳ vọng 3")
+        for c in d.get("cau", []):
+            ten = c["id"] + " (" + str(c["vai"]) + ")"
+            if c["yccd"] != "10.A1.1":
+                loi.append(ten + ": khai mã " + str(c["yccd"]) + ", kỳ vọng 10.A1.1")
+            cd = c["chonDung"]
+            if not cd or cd.get("dung") is not True or cd.get("diem") != 1:
+                loi.append(ten + ": chọn ĐÚNG mà không ra dung=true/diem=1 -> " + str(cd)[:80])
+            elif cd.get("yccd") != "10.A1.1":
+                loi.append(ten + ": kết quả chấm không kèm mã YCCĐ -> không tới được CSV theo mã")
+            cs = c["chonSai"]
+            if not cs or cs.get("dung") is not False or cs.get("diem") != 0:
+                loi.append(ten + ": chọn SAI mà không ra dung=false/diem=0 -> " + str(cs)[:80])
+            elif not cs.get("dapAn"):
+                loi.append(ten + ": chọn sai mà không trả dapAn -> giáo viên không chấm lại được")
+            # ca biên: PHẢI null. Trả false ở đây là đổ lỗi học sinh vì lỗi của mã.
+            for truong, gia in (("idLa", c["idLa"]), ("phuongAnLa", c["phuongAnLa"]),
+                                ("payloadTiem", c["payloadTiem"])):
+                if gia is not None:
+                    loi.append(ten + ": " + truong + " phải trả null (không được coi là 'sai'), "
+                               "thực tế " + str(gia)[:60])
+        self.them("G22b", "oracle chấm đúng cả 3 vế (SỬ DỤNG/VẬN HÀNH/TÙY CHỈNH) và trả null ở ca biên",
+                  not loi,
+                  " · ".join(loi[:6]) if loi else
+                  "3/3 vế đúng: chọn đúng -> diem 1 kèm mã 10.A1.1 · chọn sai -> diem 0 kèm dapAn · "
+                  "id lạ / phương án lạ / payload tiêm HTML đều trả null (không bị ghi thành điểm 0)")
+
+        # ---- G22c: tính toàn vẹn dữ liệu ----
+        loi2 = []
+        for c in d.get("cau", []):
+            if not c["dapAnTrongDanhSach"]:
+                loi2.append(c["id"] + ": đáp án khai không có trong danh sách phương án "
+                            "(học sinh chọn đúng vẫn thấy mình sai)")
+            if c["soPhuongAn"] != 4:
+                loi2.append(c["id"] + ": có " + str(c["soPhuongAn"]) + " phương án, kỳ vọng 4")
+        self.them("G22c", "mỗi câu đúng 4 phương án và đáp án khai nằm TRONG danh sách đó",
+                  not loi2, " · ".join(loi2[:5]) if loi2 else "3/3 câu toàn vẹn dữ liệu")
+
+        # ---- chạy luôn bộ test oracle, để test đó không bao giờ mục ----
+        import subprocess as _sp
+        try:
+            rt = _sp.run([node, test], capture_output=True, text=True, timeout=180, cwd=ROOT)
+            m = re.search(r"KẾT QUẢ:\s*(\d+)\s*đạt\s*·\s*(\d+)\s*lỗi", rt.stdout)
+            if m:
+                dat, loi_n = int(m.group(1)), int(m.group(2))
+                # Số ca đọc từ output của test, KHÔNG hardcode. Nhãn hardcode là một lời khai sẽ
+                # stale ngay lần thêm ca kế tiếp — cùng lớp lỗi với ô bảng "124 / 123" trong phụ
+                # lục đã phải tự tìm bằng tay ba lần vì cổng không bắt được.
+                self.them("G22d", f"bộ test {dat + loi_n} ca của oracle chạy sạch (test không được "
+                                  f"cổng nào chạy thì chỉ là tài liệu)",
+                          loi_n == 0 and rt.returncode == 0,
+                          str(dat) + " đạt · " + str(loi_n) + " lỗi · node thoát mã "
+                          + str(rt.returncode))
+            else:
+                self.them("G22d", "bộ test oracle chạy sạch", False,
+                          "không đọc được dòng KẾT QUẢ · thoát mã " + str(rt.returncode)
+                          + " · " + (rt.stderr or rt.stdout)[:180])
+        except Exception as e:
+            self.them("G22d", "bộ test oracle chạy sạch", False, "không chạy được: " + str(e)[:140])
 
     def g20(self):
         """G20 — LỜI KHAI "merge ở chế độ ghi rõ 'chờ duyệt'" PHẢI CÓ THẬT TRONG MÃ.
@@ -2668,7 +2903,7 @@ def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
     NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13",
-            "G14", "G15", "G16", "G17", "G18", "G19", "G20", "G21"]
+            "G14", "G15", "G16", "G17", "G18", "G19", "G20", "G21", "G22"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.

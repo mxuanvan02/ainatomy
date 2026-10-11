@@ -10,14 +10,13 @@
     "soi-ai/data-source/bang_gia_tri_kien_tao_v3.json"
   ],
   "tong_hop_truc1": {
-    "CHƯA PHỦ": 1,
-    "PHỦ": 15,
-    "PHỦ MẠNH": 6
+    "PHỦ MẠNH": 7,
+    "PHỦ": 15
   },
   "tong_hop_truc2": {
-    "E:ĐỨT CHUỖI": 3,
-    "B:PHỦ MỘT PHẦN": 17,
-    "A:PHỦ THẬT": 2
+    "B:PHỦ MỘT PHẦN": 18,
+    "A:PHỦ THẬT": 2,
+    "E:ĐỨT CHUỖI": 2
   },
   "ma_chi_co_bang_chung_yeu": [],
   "o_bang_chung_tep_khong_chua_ma": [
@@ -81,17 +80,18 @@
       "nghia": "có vết trong mã nguồn nhưng mã không đi theo bản ghi nào tới CSV của giáo viên"
     }
   ],
-  "ma_chua_phu_truc1": [
-    "10.A1.1"
-  ],
+  "ma_chua_phu_truc1": [],
   "bang_doi_chieu": [
     {
       "ma": "10.A1.1",
-      "truc1_muc": "CHƯA PHỦ",
-      "truc1_so_o": 0,
-      "truc1_manh": 0,
-      "truc2": "E:ĐỨT CHUỖI",
-      "kiem_doc_lap": []
+      "truc1_muc": "PHỦ MẠNH",
+      "truc1_so_o": 2,
+      "truc1_manh": 2,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/vaitro_connguoi.js",
+        "js/app.js"
+      ]
     },
     {
       "ma": "10.A1.2",

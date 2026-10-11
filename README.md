@@ -17,7 +17,7 @@ git clone https://github.com/mxuanvan02/ainatomy.git
 cd ainatomy
 python3 tools/nghiem_thu.py          # nghiệm thu: dòng KẾT QUẢ phải là N/N (hai số bằng nhau)
 python3 tools/kiem_noi_dung.py       # nội dung: kỳ vọng 0 lỗi
-python3 tools/tinh_do_phu.py         # độ phủ YCCĐ: kỳ vọng 21/22 (10.A1.1 chưa phủ)
+python3 tools/tinh_do_phu.py         # độ phủ YCCĐ: kỳ vọng 22/22 (8 PHỦ MẠNH · 14 PHỦ · chưa phủ 0)
 python3 tools/sinh_manifest.py       # chỉ-kiểm hash; thêm --ghi để sinh lại
 sha256sum -c SHA256SUMS.txt          # kỳ vọng 0 dòng FAILED (mã thoát 0)
 ```

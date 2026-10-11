@@ -36,13 +36,13 @@
       "đánh giá mô hình trên bộ dữ liệu vừa chỉnh"
     ],
     [
-      "js/app.js:1058",
+      "js/app.js:1184",
       "duDoan",
       "doiChieu",
       "DỰ ĐOÁN kết quả TRƯỚC khi chạy rồi ĐỐI CHIẾU với kết quả thật"
     ],
     [
-      "js/app.js:1350",
+      "js/app.js:1476",
       "duDoan",
       "doiChieu",
       "DỰ ĐOÁN kết quả TRƯỚC khi chạy rồi ĐỐI CHIẾU với kết quả thật"
@@ -55,9 +55,9 @@
     ]
   ],
   "tong_hop": {
-    "E:ĐỨT CHUỖI": 3,
-    "B:PHỦ MỘT PHẦN": 17,
-    "A:PHỦ THẬT": 2
+    "B:PHỦ MỘT PHẦN": 18,
+    "A:PHỦ THẬT": 2,
+    "E:ĐỨT CHUỖI": 2
   },
   "bang": [
     {
@@ -65,11 +65,21 @@
       "loai": "cốt lõi",
       "dongtu": "Thực hành xác định được",
       "text": "Thực hành xác định được vai trò của con người trong sử dụng, vận hành, tùy chỉnh một hệ thống AI cụ thể.",
-      "phan_quyet": "E:ĐỨT CHUỖI",
-      "ly_do": "KHÔNG có log call site nào mang mã này tới CSV. Mã chỉ xuất hiện trong dữ liệu/khai báo tĩnh/comment, trong khi các thao tác mạnh của trạm tương ứng (xem mục 5) lại được chấm mà không mang mã",
-      "so_site": 0,
-      "so_site_co_diem": 0,
-      "chuoi": []
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1159 (chọn vai trò đúng của con người ch)",
+      "so_site": 1,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1159",
+          "loai_su_kien": "lab",
+          "su_kien": "vaiTro",
+          "thao_tac": "chọn vai trò đúng của con người cho HỆ THỐNG vừa tự vận hành (3 vế: sử dụng / vận hành / tùy chỉnh)",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/vaitro_connguoi.js"
+        }
+      ]
     },
     {
       "ma": "10.A1.2",
@@ -77,12 +87,21 @@
       "dongtu": "Giải thích được",
       "text": "Giải thích được tại sao việc con người kiểm soát AI là quan trọng, thông qua việc liên hệ đến các giá trị như an toàn, công bằng và quyền lợi con người.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1080 (đoán trạm nào hỏng trong ống dẫn A) | động từ 'Giải thích được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
-      "so_site": 1,
-      "so_site_co_diem": 1,
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1159 (chọn vai trò đúng của con người ch), js/app.js:1206 (đoán trạm nào hỏng trong ống dẫn A) | động từ 'Giải thích được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "so_site": 2,
+      "so_site_co_diem": 2,
       "chuoi": [
         {
-          "site": "js/app.js:1080",
+          "site": "js/app.js:1159",
+          "loai_su_kien": "lab",
+          "su_kien": "vaiTro",
+          "thao_tac": "chọn vai trò đúng của con người cho HỆ THỐNG vừa tự vận hành (3 vế: sử dụng / vận hành / tùy chỉnh)",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "biến -> js/vaitro_connguoi.js"
+        },
+        {
+          "site": "js/app.js:1206",
           "loai_su_kien": "pipe3d",
           "su_kien": "doan",
           "thao_tac": "đoán trạm nào hỏng trong ống dẫn AI",
@@ -98,12 +117,12 @@
       "dongtu": "Nêu được",
       "text": "Nêu được một số rủi ro đối với con người, xã hội mà một sản phẩm AI có thể đem lại.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1156 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1282 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
       "so_site": 1,
       "so_site_co_diem": 1,
       "chuoi": [
         {
-          "site": "js/app.js:1156",
+          "site": "js/app.js:1282",
           "loai_su_kien": "tinhHuong",
           "su_kien": "traLoi",
           "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
@@ -119,12 +138,12 @@
       "dongtu": "Nêu được",
       "text": "Nêu được một số biện pháp hạn chế các rủi ro đối với con người, xã hội mà một sản phẩm AI có thể đem lại thông qua một dự án sáng tạo AI.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1156 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1282 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
       "so_site": 1,
       "so_site_co_diem": 1,
       "chuoi": [
         {
-          "site": "js/app.js:1156",
+          "site": "js/app.js:1282",
           "loai_su_kien": "tinhHuong",
           "su_kien": "traLoi",
           "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
@@ -166,7 +185,7 @@
       "so_site_co_diem": 2,
       "chuoi": [
         {
-          "site": "js/app.js:1156",
+          "site": "js/app.js:1282",
           "loai_su_kien": "tinhHuong",
           "su_kien": "traLoi",
           "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
@@ -191,12 +210,12 @@
       "dongtu": "Nhận biết được",
       "text": "Nhận biết được một số dấu hiệu của nội dung do AI tạo sinh tạo ra; kiểm tra và nhận xét được mức độ minh bạch của việc khai báo sử dụng AI trong một sản phẩm.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1080 (đoán trạm nào hỏng trong ống dẫn A)",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1206 (đoán trạm nào hỏng trong ống dẫn A)",
       "so_site": 1,
       "so_site_co_diem": 1,
       "chuoi": [
         {
-          "site": "js/app.js:1080",
+          "site": "js/app.js:1206",
           "loai_su_kien": "pipe3d",
           "su_kien": "doan",
           "thao_tac": "đoán trạm nào hỏng trong ống dẫn AI",
@@ -223,12 +242,12 @@
       "dongtu": "Xác định được",
       "text": "Xác định được các vấn đề thực tế có thể ứng dụng AI để thực hiện. Ưu tiên các vấn đề gần gũi, cần thiết trong bối cảnh Việt Nam, chẳng hạn: sản xuất nông nghiệp, các vấn đề liên quan đến các cộng đồng thiểu số, …",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1285 (chọn đáp án trắc nghiệm về vị trí )",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1411 (chọn đáp án trắc nghiệm về vị trí )",
       "so_site": 1,
       "so_site_co_diem": 1,
       "chuoi": [
         {
-          "site": "js/app.js:1285",
+          "site": "js/app.js:1411",
           "loai_su_kien": "nhamay",
           "su_kien": "tram0",
           "thao_tac": "chọn đáp án trắc nghiệm về vị trí khâu trong hệ thống",
@@ -295,12 +314,12 @@
       "dongtu": "Xác định được",
       "text": "Xác định được các yêu cầu cần có đối với việc ứng dụng AI thực hiện nhiệm vụ cụ thể.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1156 (chọn nhóm tính năng / vi phạm / yê)",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1282 (chọn nhóm tính năng / vi phạm / yê)",
       "so_site": 1,
       "so_site_co_diem": 1,
       "chuoi": [
         {
-          "site": "js/app.js:1156",
+          "site": "js/app.js:1282",
           "loai_su_kien": "tinhHuong",
           "su_kien": "traLoi",
           "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
@@ -316,12 +335,12 @@
       "dongtu": "Sử dụng được",
       "text": "Sử dụng được một số ứng dụng AI trong học tập.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1571 (phán quyết câu trả lời là có căn c)",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1697 (phán quyết câu trả lời là có căn c)",
       "so_site": 2,
       "so_site_co_diem": 1,
       "chuoi": [
         {
-          "site": "js/app.js:1535",
+          "site": "js/app.js:1661",
           "loai_su_kien": "nhamay",
           "su_kien": "ungDung",
           "thao_tac": "gõ prompt cho máy n-gram rồi phán quyết 'có căn cứ' / 'bịa'",
@@ -330,7 +349,7 @@
           "nguon_ma": "literal trong payload"
         },
         {
-          "site": "js/app.js:1571",
+          "site": "js/app.js:1697",
           "loai_su_kien": "nhamay",
           "su_kien": "phanQuyet",
           "thao_tac": "phán quyết câu trả lời là có căn cứ hay bịa đặt",
@@ -418,12 +437,12 @@
       "dongtu": "Trình bày được",
       "text": "Trình bày được ví dụ mô tả một số công nghệ để thiết kế và tạo AI.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1156 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Trình bày được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1282 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Trình bày được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
       "so_site": 1,
       "so_site_co_diem": 1,
       "chuoi": [
         {
-          "site": "js/app.js:1156",
+          "site": "js/app.js:1282",
           "loai_su_kien": "tinhHuong",
           "su_kien": "traLoi",
           "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
@@ -439,12 +458,12 @@
       "dongtu": "Phân tích được",
       "text": "Phân tích được sự ảnh hưởng của chất lượng dữ liệu đến chất lượng AI.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1080 (đoán trạm nào hỏng trong ống dẫn A), js/app.js:1285 (chọn đáp án trắc nghiệm về vị trí )",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1206 (đoán trạm nào hỏng trong ống dẫn A), js/app.js:1411 (chọn đáp án trắc nghiệm về vị trí )",
       "so_site": 2,
       "so_site_co_diem": 2,
       "chuoi": [
         {
-          "site": "js/app.js:1080",
+          "site": "js/app.js:1206",
           "loai_su_kien": "pipe3d",
           "su_kien": "doan",
           "thao_tac": "đoán trạm nào hỏng trong ống dẫn AI",
@@ -453,7 +472,7 @@
           "nguon_ma": "biến -> js/pipeline3d.js"
         },
         {
-          "site": "js/app.js:1285",
+          "site": "js/app.js:1411",
           "loai_su_kien": "nhamay",
           "su_kien": "tram0",
           "thao_tac": "chọn đáp án trắc nghiệm về vị trí khâu trong hệ thống",
@@ -469,12 +488,12 @@
       "dongtu": "Phân tích được",
       "text": "Phân tích được các dạng dữ liệu (hình ảnh, âm thanh, từ ngữ, …) được sử dụng để huấn luyện AI.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1285 (chọn đáp án trắc nghiệm về vị trí )",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1411 (chọn đáp án trắc nghiệm về vị trí )",
       "so_site": 1,
       "so_site_co_diem": 1,
       "chuoi": [
         {
-          "site": "js/app.js:1285",
+          "site": "js/app.js:1411",
           "loai_su_kien": "nhamay",
           "su_kien": "tram0",
           "thao_tac": "chọn đáp án trắc nghiệm về vị trí khâu trong hệ thống",
@@ -490,12 +509,12 @@
       "dongtu": "Nêu được",
       "text": "Nêu được ví dụ cụ thể, xác định nhiệm vụ hoặc mục tiêu cụ thể mà một hệ thống AI cần thực hiện, nêu được mối liên hệ giữa mục tiêu đó với các thành phần chính của hệ thống.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1080 (đoán trạm nào hỏng trong ống dẫn A), js/app.js:1156 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1206 (đoán trạm nào hỏng trong ống dẫn A), js/app.js:1282 (chọn nhóm tính năng / vi phạm / yê) | động từ 'Nêu được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
       "so_site": 2,
       "so_site_co_diem": 2,
       "chuoi": [
         {
-          "site": "js/app.js:1080",
+          "site": "js/app.js:1206",
           "loai_su_kien": "pipe3d",
           "su_kien": "doan",
           "thao_tac": "đoán trạm nào hỏng trong ống dẫn AI",
@@ -504,7 +523,7 @@
           "nguon_ma": "biến -> js/pipeline3d.js"
         },
         {
-          "site": "js/app.js:1156",
+          "site": "js/app.js:1282",
           "loai_su_kien": "tinhHuong",
           "su_kien": "traLoi",
           "thao_tac": "chọn nhóm tính năng / vi phạm / yêu cầu cho tình huống",
@@ -520,12 +539,12 @@
       "dongtu": "Mô tả được",
       "text": "Mô tả được các thành phần cơ bản của hệ thống AI (dữ liệu, mô hình, thuật toán, đầu ra, phản hồi) phù hợp với nhiệm vụ cụ thể.",
       "phan_quyet": "B:PHỦ MỘT PHẦN",
-      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1080 (đoán trạm nào hỏng trong ống dẫn A), js/app.js:1285 (chọn đáp án trắc nghiệm về vị trí ) | động từ 'Mô tả được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1206 (đoán trạm nào hỏng trong ống dẫn A), js/app.js:1411 (chọn đáp án trắc nghiệm về vị trí ) | động từ 'Mô tả được' đòi TỰ NÊU nên đây là đo yếu hơn một bậc",
       "so_site": 2,
       "so_site_co_diem": 2,
       "chuoi": [
         {
-          "site": "js/app.js:1080",
+          "site": "js/app.js:1206",
           "loai_su_kien": "pipe3d",
           "su_kien": "doan",
           "thao_tac": "đoán trạm nào hỏng trong ống dẫn AI",
@@ -534,7 +553,7 @@
           "nguon_ma": "biến -> js/pipeline3d.js"
         },
         {
-          "site": "js/app.js:1285",
+          "site": "js/app.js:1411",
           "loai_su_kien": "nhamay",
           "su_kien": "tram0",
           "thao_tac": "chọn đáp án trắc nghiệm về vị trí khâu trong hệ thống",

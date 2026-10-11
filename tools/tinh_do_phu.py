@@ -55,7 +55,18 @@ BC = {
  # xác định vai trò con người (động từ là "Thực hành xác định được", không phải "kể được") —
  # việc đó là nội dung mới, không phải sửa khai báo. tools/tao_sheet_thietke.py:159 đã tự khai
  # mã này "CHƯA PHỦ" từ trước; nay hai bảng mới khớp nhau.
- "10.A1.1": [],
+ # 10.A1.1 — ĐÃ CÓ HOẠT ĐỘNG RIÊNG ngày 11/10, sau khi bốn giám khảo độc lập xác nhận mã này
+ # là mã duy nhất rơi về CHƯA PHỦ. Hai ô bằng chứng cũ (pipeline3d.js với token TRAM, và
+ # nhamay_tram01.js với CAU_HOI_T0) đã bị XOÁ vì chuỗi "10.A1.1" không tồn tại trong hai tệp
+ # đó — chúng tự khai mã khác (trạm connguoi khai 10.A1.2, câu t0-5 khai 10.D2.1).
+ # Nay trỏ vào tệp THẬT SỰ chứa mã và chứa hoạt động: js/vaitro_connguoi.js (ba câu hỏi, mỗi
+ # câu một vế của động từ: SỬ DỤNG / VẬN HÀNH / TÙY CHỈNH, oracle tất định) và js/app.js
+ # (hàm pipe3dVaiTro() dựng ba câu ở trạm ống dẫn, chấm rồi log kèm mã ở cấp sự kiện).
+ # Cả hai tệp đều chứa chuỗi "10.A1.1" nên đây là bằng chứng LOẠI MẠNH, không phải chỉ khớp tên
+ # hàm. LƯU Ý khi đọc mức phủ: hoạt động này ở mức NHẬN DIỆN, nên trục THAO TÁC
+ # (tools/tests/bang_gia_tri_kien_tao_v3.py) xếp 10.A1.1 là PHỦ MỘT PHẦN, không phải PHỦ THẬT.
+ "10.A1.1": [("js/vaitro_connguoi.js", "3 câu xác định vai trò con người: sử dụng, vận hành, tùy chỉnh", "MX_VAI_TRO"),
+             ("js/app.js", "pipe3dVaiTro() dựng 3 câu ở trạm ống dẫn, chấm tất định, log kèm mã", "pipe3dVaiTro")],
  "10.A1.2": [("js/pipeline3d.js", "Trạm CON NGƯỜI KIỂM, đoán trạm hỏng", "TRAM")],
  "10.A2.1": [("js/tinhhuong.js", "4 tình huống rủi ro: X-quang khoa nhi, camera khuôn mặt", "NHOM_RUI_RO")],
  "10.A2.MR1": [("js/tinhhuong.js", "Tình huống dự án sáng tạo + biện pháp hạn chế rủi ro", "NHOM_RUI_RO")],
@@ -86,7 +97,18 @@ BC = {
              ("js/bt13.js", "BT-13: xếp nhóm tính năng + nêu rõ đầu vào/đầu ra", "veTinhHuong")],
  "10.C2.MR1": [("js/tinhhuong.js", "2 tình huống xác định yêu cầu khi ứng dụng AI", "NHOM_YEU_CAU")],
  "10.C2.MR2": [("js/nhamay_text.js", "Học sinh DÙNG hệ AI thật trong trình duyệt, 0 MB, offline", "ungDung")],
- "10.C3.1": [("js/nhamay_text.js", "Rubric 3 tiêu chí chấm prompt", "RUBRIC_PROMPT")],
+ # 10.C3.1 — THÊM ô thứ hai ngày 11/10 (trước đó bảng chỉ khai một ô, tức khai THẤP hơn sự thật).
+ # data/kienthuc.js chứa chuỗi "10.C3.1" ba lần, trong đó quiz kt-05 hỏi đúng động từ của YCCĐ:
+ # nguyên văn YCCĐ là "Mô tả được các yêu cầu để đưa ra prompt phù hợp với mục tiêu cụ thể",
+ # còn kt-05 hỏi "Prompt nào dưới đây đáp ứng ĐẦY ĐỦ nhất các yêu cầu về mục tiêu, bối cảnh,
+ # định dạng và ràng buộc?" — đúng bốn loại yêu cầu đó, có oracle tất định (đáp án c).
+ # js/nhamay_text.js:432 cũng chứa chuỗi mã trong tiêu đề khối chấm rubric prompt.
+ # Cả hai tệp đều chứa chuỗi "10.C3.1" nên mã này là bằng chứng LOẠI MẠNH.
+ # LƯU Ý mức thao tác: kt-05 là trắc nghiệm chọn 1 trong 4 = NHẬN DIỆN, nên trục THAO TÁC xếp
+ # 10.C3.1 là PHỦ MỘT PHẦN, không phải PHỦ THẬT. Thao tác tự xuất thật cho mã này là học sinh
+ # TỰ GÕ prompt ở trạm Nhà máy chữ (js/nhamay_text.js), được chấm bằng rubric 3 tiêu chí.
+ "10.C3.1": [("js/nhamay_text.js", "Rubric 3 tiêu chí chấm prompt", "RUBRIC_PROMPT"),
+             ("data/kienthuc.js", "quiz kt-05: chọn prompt đủ 4 yêu cầu, oracle tất định", "kt-05")],
  "10.C3.2": [("js/nhamay_text.js", "Thực hành đặt prompt + máy sinh trả lời", "ungDung"),
              ("data/kienthuc.js", "3 bài thực hành prompt tự chấm theo rubric", "p-02")],
  "10.C3.3": [("data/kienthuc.js", "Bảng so sánh AI tạo sinh với phân loại/dự đoán", "kt-04")],

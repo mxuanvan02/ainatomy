@@ -53,6 +53,14 @@ THAO_TAC = {
     ("nhamay", "tram0"): ("chọn đáp án trắc nghiệm về vị trí khâu trong hệ thống", "nhan_dien"),
     ("lab", "veQuiz"): ("chọn 1 trong 4 phương án quiz (đã xáo vị trí)", "nhan_dien"),
     ("lab", "veBaiTapPrompt"): ("GÕ prompt tự do vào ô nhập, chấm bằng rubric từ khoá", "tu_xuat"),
+    # Ba câu 10.A1.1 ở trạm ống dẫn (js/app.js pipe3dVaiTro, dữ liệu js/vaitro_connguoi.js).
+    # Mức nhan_dien chứ KHÔNG phải tu_xuat, dù YCCĐ mở đầu bằng "Thực hành": học sinh chọn 1
+    # trong 4 phương án. Vế "thực hành" được thoả bởi việc các em vừa tự vận hành hệ thống đó
+    # (làm hỏng trạm, quan sát, cân bằng dữ liệu, đo lại) ngay phía trên cùng màn hình — không
+    # phải bởi ba câu hỏi. Nâng nhãn lên tu_xuat ở đây sẽ là thổi phồng đúng kiểu mà bốn giám
+    # khảo độc lập vừa bắt được ở ba mã khác.
+    ("lab", "vaiTro"): ("chọn vai trò đúng của con người cho HỆ THỐNG vừa tự vận hành "
+                        "(3 vế: sử dụng / vận hành / tùy chỉnh)", "nhan_dien"),
     ("dauTruong", "nop"): ("CHỈ ĐÚNG CHỖ SAI trong văn bản + đoán loại lỗi", "tu_xuat"),
     ("duDoan", "doiChieu"): ("DỰ ĐOÁN kết quả TRƯỚC khi chạy rồi ĐỐI CHIẾU với kết quả thật", "tu_xuat"),
     ("duDoan", "chot"): ("chốt dự đoán (chưa đối chiếu)", "tu_xuat"),
