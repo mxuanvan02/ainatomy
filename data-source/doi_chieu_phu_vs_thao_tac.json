@@ -1,78 +1,322 @@
 {
-  "mo_ta": "Đối chiếu độ phủ repo tự khai (tinh_do_phu.py) với độ phủ đo từ thao tác học sinh",
-  "co_ma_that": {},
-  "ma_bang_chung_yeu": [
+  "mo_ta": "Đối chiếu HAI TRỤC đo độ phủ YCCĐ lớp 10, kèm phép kiểm độc lập lại từng ô bằng chứng mà tools/tinh_do_phu.py viện dẫn",
+  "cong_cu": "tools/tests/doi_chieu_phu_vs_thao_tac.py (chạy lại được, không gõ tay)",
+  "hai_truc": {
+    "truc1_trong_ma": "tools/tinh_do_phu.py — mã có vết trong mã nguồn không; mức PHỦ chỉ tính bằng chứng MẠNH (tệp chứa chuỗi mã) từ 11/10",
+    "truc2_thao_tac": "tools/tests/bang_gia_tri_kien_tao_v3.py — thao tác học sinh có chứng minh được mã đó không, đơn vị là log call site"
+  },
+  "nguon_doc": [
+    "soi-ai/out/yccd_coverage_v2.json",
+    "soi-ai/data-source/bang_gia_tri_kien_tao_v3.json"
+  ],
+  "tong_hop_truc1": {
+    "CHƯA PHỦ": 1,
+    "PHỦ": 15,
+    "PHỦ MẠNH": 6
+  },
+  "tong_hop_truc2": {
+    "E:ĐỨT CHUỖI": 3,
+    "B:PHỦ MỘT PHẦN": 17,
+    "A:PHỦ THẬT": 2
+  },
+  "ma_chi_co_bang_chung_yeu": [],
+  "o_bang_chung_tep_khong_chua_ma": [
     {
-      "ma": "10.A1.1",
-      "vien_dan": [
-        "js/pipeline3d.js(TRAM)",
-        "js/nhamay_tram01.js(CAU_HOI_T0)"
-      ],
-      "do_tu_thao_tac": "CHƯA PHỦ"
+      "ma": "10.B2.MR1",
+      "tep": "data/cauhoi.js",
+      "ham": true
     },
     {
       "ma": "10.B2.MR1",
-      "vien_dan": [
-        "data/cauhoi.js(MX_BANK)",
-        "js/nhamay_text.js(chamUngDung)"
-      ],
-      "do_tu_thao_tac": "PHỦ MỘT PHẦN"
+      "tep": "js/nhamay_text.js",
+      "ham": true
     },
     {
-      "ma": "10.D2.2",
-      "vien_dan": [
-        "js/lab.js(kiemTra)",
-        "js/logic.js(bangNhamLan)",
-        "js/pipeline3d.js(TRAM)"
-      ],
-      "do_tu_thao_tac": "PHỦ THẬT"
-    }
-  ],
-  "mau_thuan_noi_bo": [
-    {
-      "ma": "10.A1.1",
-      "tinh_do_phu": "PHỦ (chỉ do tên hàm)",
-      "tao_sheet": "CHƯA PHỦ"
-    },
-    {
-      "ma": "10.A2.1",
-      "tinh_do_phu": "PHỦ",
-      "tao_sheet": "CHƯA PHỦ"
-    },
-    {
-      "ma": "10.A2.MR1",
-      "tinh_do_phu": "PHỦ",
-      "tao_sheet": "CHƯA PHỦ"
-    },
-    {
-      "ma": "10.B2.1",
-      "tinh_do_phu": "PHỦ MẠNH",
-      "tao_sheet": "CHƯA PHỦ"
+      "ma": "10.B3.1",
+      "tep": "js/lab.js",
+      "ham": true
     },
     {
       "ma": "10.C2.1",
-      "tinh_do_phu": "PHỦ",
-      "tao_sheet": "CHƯA PHỦ"
+      "tep": "js/nhamay_text.js",
+      "ham": true
+    },
+    {
+      "ma": "10.C3.2",
+      "tep": "js/nhamay_text.js",
+      "ham": true
+    },
+    {
+      "ma": "10.C4.1",
+      "tep": "js/lab.js",
+      "ham": true
+    },
+    {
+      "ma": "10.D2.2",
+      "tep": "js/lab.js",
+      "ham": true
+    },
+    {
+      "ma": "10.D2.2",
+      "tep": "js/logic.js",
+      "ham": true
+    },
+    {
+      "ma": "10.D2.2",
+      "tep": "js/pipeline3d.js",
+      "ham": true
+    }
+  ],
+  "mau_thuan_hai_truc": [
+    {
+      "ma": "10.B3.1",
+      "truc1": "PHỦ",
+      "truc2": "E:ĐỨT CHUỖI",
+      "nghia": "có vết trong mã nguồn nhưng mã không đi theo bản ghi nào tới CSV của giáo viên"
+    },
+    {
+      "ma": "10.D2.2",
+      "truc1": "PHỦ MẠNH",
+      "truc2": "E:ĐỨT CHUỖI",
+      "nghia": "có vết trong mã nguồn nhưng mã không đi theo bản ghi nào tới CSV của giáo viên"
+    }
+  ],
+  "ma_chua_phu_truc1": [
+    "10.A1.1"
+  ],
+  "bang_doi_chieu": [
+    {
+      "ma": "10.A1.1",
+      "truc1_muc": "CHƯA PHỦ",
+      "truc1_so_o": 0,
+      "truc1_manh": 0,
+      "truc2": "E:ĐỨT CHUỖI",
+      "kiem_doc_lap": []
+    },
+    {
+      "ma": "10.A1.2",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/pipeline3d.js"
+      ]
+    },
+    {
+      "ma": "10.A2.1",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/tinhhuong.js"
+      ]
+    },
+    {
+      "ma": "10.A2.MR1",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/tinhhuong.js"
+      ]
+    },
+    {
+      "ma": "10.A3.1",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "data/kienthuc.js"
+      ]
+    },
+    {
+      "ma": "10.B2.1",
+      "truc1_muc": "PHỦ MẠNH",
+      "truc1_so_o": 2,
+      "truc1_manh": 2,
+      "truc2": "A:PHỦ THẬT",
+      "kiem_doc_lap": [
+        "js/tinhhuong.js",
+        "js/bt09.js"
+      ]
+    },
+    {
+      "ma": "10.B2.MR1",
+      "truc1_muc": "PHỦ MẠNH",
+      "truc1_so_o": 4,
+      "truc1_manh": 2,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/pipeline3d.js",
+        "js/app.js",
+        "data/cauhoi.js",
+        "js/nhamay_text.js"
+      ]
+    },
+    {
+      "ma": "10.B3.1",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 2,
+      "truc1_manh": 1,
+      "truc2": "E:ĐỨT CHUỖI",
+      "kiem_doc_lap": [
+        "js/lab.js",
+        "js/lab3d.js"
+      ]
+    },
+    {
+      "ma": "10.C2.1",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 2,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/nhamay_tram01.js",
+        "js/nhamay_text.js"
+      ]
     },
     {
       "ma": "10.C2.MR1",
-      "tinh_do_phu": "PHỦ",
-      "tao_sheet": "CHƯA PHỦ"
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/tinhhuong.js"
+      ]
+    },
+    {
+      "ma": "10.C2.2",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "data/kienthuc.js"
+      ]
+    },
+    {
+      "ma": "10.C2.MR2",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/nhamay_text.js"
+      ]
+    },
+    {
+      "ma": "10.C2.3",
+      "truc1_muc": "PHỦ MẠNH",
+      "truc1_so_o": 2,
+      "truc1_manh": 2,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "data/kienthuc.js",
+        "js/bt13.js"
+      ]
+    },
+    {
+      "ma": "10.C3.1",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/nhamay_text.js"
+      ]
     },
     {
       "ma": "10.C3.MR1",
-      "tinh_do_phu": "PHỦ",
-      "tao_sheet": "CHƯA PHỦ"
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/tinhhuong.js"
+      ]
+    },
+    {
+      "ma": "10.C3.2",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 2,
+      "truc1_manh": 1,
+      "truc2": "A:PHỦ THẬT",
+      "kiem_doc_lap": [
+        "js/nhamay_text.js",
+        "data/kienthuc.js"
+      ]
+    },
+    {
+      "ma": "10.C3.3",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "data/kienthuc.js"
+      ]
+    },
+    {
+      "ma": "10.C4.1",
+      "truc1_muc": "PHỦ MẠNH",
+      "truc1_so_o": 3,
+      "truc1_manh": 2,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/lab.js",
+        "js/lab3d.js",
+        "js/nhamay_tram01.js"
+      ]
     },
     {
       "ma": "10.C4.MR1",
-      "tinh_do_phu": "PHỦ",
-      "tao_sheet": "CHƯA PHỦ"
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/nhamay_tram01.js"
+      ]
+    },
+    {
+      "ma": "10.D1.1",
+      "truc1_muc": "PHỦ",
+      "truc1_so_o": 1,
+      "truc1_manh": 1,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/pipeline3d.js"
+      ]
+    },
+    {
+      "ma": "10.D2.1",
+      "truc1_muc": "PHỦ MẠNH",
+      "truc1_so_o": 2,
+      "truc1_manh": 2,
+      "truc2": "B:PHỦ MỘT PHẦN",
+      "kiem_doc_lap": [
+        "js/pipeline3d.js",
+        "js/nhamay_tram01.js"
+      ]
+    },
+    {
+      "ma": "10.D2.2",
+      "truc1_muc": "PHỦ MẠNH",
+      "truc1_so_o": 5,
+      "truc1_manh": 2,
+      "truc2": "E:ĐỨT CHUỖI",
+      "kiem_doc_lap": [
+        "js/app.js",
+        "js/lab3d.js",
+        "js/lab.js",
+        "js/logic.js",
+        "js/pipeline3d.js"
+      ]
     }
-  ],
-  "do_tu_thao_tac": {
-    "CHƯA PHỦ": 2,
-    "PHỦ MỘT PHẦN": 12,
-    "PHỦ THẬT": 8
-  }
+  ]
 }
