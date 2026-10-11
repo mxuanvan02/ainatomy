@@ -55,8 +55,8 @@
     ]
   ],
   "tong_hop": {
-    "E:ĐỨT CHUỖI": 4,
-    "B:PHỦ MỘT PHẦN": 16,
+    "E:ĐỨT CHUỖI": 3,
+    "B:PHỦ MỘT PHẦN": 17,
     "A:PHỦ THẬT": 2
   },
   "bang": [
@@ -315,11 +315,30 @@
       "loai": "mở rộng",
       "dongtu": "Sử dụng được",
       "text": "Sử dụng được một số ứng dụng AI trong học tập.",
-      "phan_quyet": "E:ĐỨT CHUỖI",
-      "ly_do": "KHÔNG có log call site nào mang mã này tới CSV. Mã chỉ xuất hiện trong dữ liệu/khai báo tĩnh/comment, trong khi các thao tác mạnh của trạm tương ứng (xem mục 5) lại được chấm mà không mang mã",
-      "so_site": 0,
-      "so_site_co_diem": 0,
-      "chuoi": []
+      "phan_quyet": "B:PHỦ MỘT PHẦN",
+      "ly_do": "có chấm + mang mã nhưng thao tác chỉ ở mức NHẬN DIỆN/VẬN HÀNH, không phải tự xuất ra: js/app.js:1571 (phán quyết câu trả lời là có căn c)",
+      "so_site": 2,
+      "so_site_co_diem": 1,
+      "chuoi": [
+        {
+          "site": "js/app.js:1535",
+          "loai_su_kien": "nhamay",
+          "su_kien": "ungDung",
+          "thao_tac": "gõ prompt cho máy n-gram rồi phán quyết 'có căn cứ' / 'bịa'",
+          "muc_thao_tac": "tu_xuat",
+          "co_diem": false,
+          "nguon_ma": "literal trong payload"
+        },
+        {
+          "site": "js/app.js:1571",
+          "loai_su_kien": "nhamay",
+          "su_kien": "phanQuyet",
+          "thao_tac": "phán quyết câu trả lời là có căn cứ hay bịa đặt",
+          "muc_thao_tac": "nhan_dien",
+          "co_diem": true,
+          "nguon_ma": "literal trong payload"
+        }
+      ]
     },
     {
       "ma": "10.C3.1",

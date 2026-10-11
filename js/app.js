@@ -1518,9 +1518,23 @@
      * ngữ liệu — khi đó không chấm, vì tiền đề của câu hỏi chưa được kiểm). */
     if(m3.bt07 && M3()) M3().cham(m3.bt07);
     /* seed được ghi VÀO LOG thay vì in ra màn hình học sinh — xem chú thích ở nm-chan-doan. */
+    /* yccd:"10.C2.MR2" — nối 11/10 theo phản biện của reviewer độc lập (review13/
+     * reviewer_C_machC3.md, khuyến nghị cuối báo cáo). Mã này CÓ SẴN trong khai báo
+     * NM_TRAM[5] ở dòng ~1191: yccd:"10.C2.MR2 · 10.C3.1 · 10.C3.2 · 10.B2.MR1", và giao
+     * diện còn in nó ra cho học sinh xem. Nhưng cả hai bản ghi của trạm ỨNG DỤNG đều không
+     * mang nó, nên "Sử dụng được một số ứng dụng AI trong học tập" — đúng cái trạm này dạy —
+     * không bao giờ tới được tệp CSV của giáo viên. Đây là NỐI DÂY, không đặt ánh xạ mới.
+     *
+     * CHỈ GẮN 10.C2.MR2, KHÔNG GẮN THÊM 10.C3.3 như reviewer đề xuất: reviewer lập luận rằng
+     * thao tác phán quyết "có căn cứ / bịa" chính là "phân biệt AI tạo sinh với AI phân loại
+     * qua ví dụ cụ thể" dưới dạng hành vi. Lập luận đó có lý về mặt sư phạm, nhưng 10.C3.3
+     * KHÔNG nằm trong khai báo NM_TRAM[5] (đã grep: False), nên gắn vào là TỰ ĐẶT ánh xạ
+     * chương trình mà không có nguồn nào trong repo khai — cùng loại việc em đã từ chối làm
+     * với các ô Mức 3 (BT-02/04/05). Nếu tác giả thấy lập luận của reviewer đúng thì việc
+     * đúng thứ tự là: sửa khai báo NM_TRAM[5] trước (để ánh xạ có nguồn), rồi mới nối dây. */
     if(ENG) ENG.logSuKien(maHS, { loai:"nhamay", suKien:"ungDung", prompt:p,
       chuDe: nmItem.maChuDe, trongNguLieu: nmItem.trongNguLieu, ms: +ms.toFixed(2),
-      seed: nmItem.seed });
+      seed: nmItem.seed, yccd:"10.C2.MR2" });
   }
 
   function nmPhanQuyet(coCanCu){
@@ -1547,10 +1561,17 @@
       + `<p class="nho chu2">Yêu cầu cần đạt 10.B2.MR1: nhận biết dấu hiệu của nội dung do AI tạo sinh
          và nhận xét mức độ minh bạch. · 10.C2.MR2: sử dụng được một số ứng dụng AI trong học tập.</p>`;
 
+    /* yccd:"10.C2.MR2" — nối cùng đợt với site `ungDung` ở trên, cùng lý do và cùng nguồn
+     * (khai báo NM_TRAM[5]). Site này QUAN TRỌNG HƠN site kia: nó là site có ĐIỂM
+     * (kq.diem, boSot, baoDong do chamUngDung() chấm tất định theo oracle `trongNguLieu`),
+     * nên đây chính là chỗ mà "học sinh dùng AI rồi tự kiểm chứng đầu ra" trở thành một con
+     * số quy về mã 10.C2.MR2 trong báo cáo lớp. Thiếu nó thì mã chỉ có mặt ở bản ghi
+     * không-điểm (ungDung) và khối ĐỘ PHỦ THEO YCCĐ của gop_csv.py — vốn chỉ đếm sự kiện
+     * có điểm — vẫn không thấy gì. */
     if(ENG) ENG.logSuKien(maHS, { loai:"nhamay", suKien:"phanQuyet",
       kq:{ diem: kq.dung ? 1 : 0, dung: kq.dung, mach:"C", unesco:"C2",
            dapAn: nmItem.trongNguLieu ? "coCanCu" : "bia", chon: coCanCu ? "coCanCu" : "bia" },
-      boSot: !!kq.boSot, baoDong: !!kq.baoDong });
+      boSot: !!kq.boSot, baoDong: !!kq.baoDong, yccd:"10.C2.MR2" });
     nmTramXong(5);
   }
 
