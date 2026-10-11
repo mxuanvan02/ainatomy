@@ -322,6 +322,30 @@ def bao_cao(rows):
     # dòng này. Một phiên lặp câu mà vẫn được tính vào "tiến trình pre/post" thì con số tiến
     # bộ trong hồ sơ là con số sai — và sai theo hướng CÓ LỢI, nên sẽ không ai nghi ngờ.
     # Đếm riêng số phiên bị loại để in ra, không âm thầm vứt dữ liệu.
+    # ĐỘ PHỦ THEO 22 YCCĐ — thêm 11/10, mắt xích cuối của chuỗi 'thao tác -> nhật ký -> báo cáo'.
+    #
+    # VÌ SAO: cột yccd vừa được nối vào nhatky_gop.csv (trước đó nó chết ở cả hai nút ra báo cáo),
+    # nhưng giáo viên nhận tệp 23 cột x N trăm dòng thì vẫn phải tự pivot mới trả lời được
+    # 'lớp tôi đạt yêu cầu cần đạt nào'. Khối này in thẳng câu trả lời ra baocao_lop.csv.
+    #
+    # CHỈ ĐẾM SỰ KIỆN CÓ ĐIỂM. Hai loại sự kiện app gắn yccd là tinhHuong (mỗi lần chọn đáp án)
+    # và nhamay tram0. Sự kiện không có trường diem (ví dụ xemCanh) thì không được đếm — đếm cả
+    # những lần chỉ-xem sẽ phồng mẫu số và biến 'đạt 40%' thành 'đạt 15%' dù học sinh không sai gì.
+    # MẪU SỐ NHỎ PHẢI HIỆN RA: cột `so_su_kien` để giáo viên thấy mã nào mới có 2-3 dữ liệu —
+    # một mã 100% trên 2 sự kiện không phải bằng chứng đạt, và in tỉ lệ mà giấu mẫu số là
+    # đúng loại lỗi mà chính repo này đã ghi ở khối pre/post bên dưới.
+    theo_yccd = {}
+    for r in rows:
+        ma = str(r.get("yccd", "") or "").strip()
+        if not ma or r.get("diem", "") == "":
+            continue
+        d = theo_yccd.setdefault(ma, {"dung": 0, "tong": 0, "hs": set()})
+        d["tong"] += 1
+        if str(r.get("diem")) == "1":
+            d["dung"] += 1
+        hs = r.get("ma_hs", "")
+        if hs:
+            d["hs"].add(hs)
     phien = {"pre": [], "post": []}
     phien_loai = {"pre": 0, "post": 0}
     for r in rows:
@@ -334,9 +358,12 @@ def bao_cao(rows):
                 if t: phien[r["che_do"]].append(dg / t)
             except ValueError:
                 pass
-    return theo_loai, unesco, ca_nhan, phien, phien_loai
+    # `bao_cao()` nay trả 6 giá trị (thêm theo_yccd) — sửa 11/10, đúng quy tắc cũ của tệp này:
+    # đổi số giá trị trả về thì PHẢI sửa mọi caller (ở đây chỉ main()) và mọi chữ hứa trong
+    # tài liệu (huong-dan-danh-gia.md, README.md) — cổng G17c/G17e canh hai chiều.
+    return theo_loai, unesco, ca_nhan, phien, phien_loai, theo_yccd
 
-def ghi(rows, theo_loai, unesco, ca_nhan, phien, phien_loai, outdir):
+def ghi(rows, theo_loai, unesco, ca_nhan, phien, phien_loai, theo_yccd, outdir):
     p1 = os.path.join(outdir, "nhatky_gop.csv")
     with open(p1, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.DictWriter(f, fieldnames=HDR, extrasaction="ignore"); w.writeheader()
@@ -369,6 +396,24 @@ def ghi(rows, theo_loai, unesco, ca_nhan, phien, phien_loai, outdir):
         for k, v in unesco.items():
             t = (v["dung"]/v["tong"]) if v["tong"] else ""
             w.writerow([k, UNESCO[k], v["dung"], v["tong"], f"{t:.3f}" if t != "" else ""])
+        # == KHỐI ĐỘ PHỦ THEO 22 YCCĐ == — thêm 11/10, mắt xích cuối của chuỗi đo lường.
+        # Trước đây giáo viên muốn biết 'lớp đạt yêu cầu cần đạt nào' thì phải tự mở nhatky_gop.csv
+        # (23 cột x hàng trăm dòng) rồi pivot tay theo cột yccd — việc mà một giáo viên Tin học
+        # làm được nhưng không phải ai cũng làm, và làm sai thì ra con số sai. In thẳng ra đây.
+        #
+        # CỐT LÕI CỦA KHỐI NÀY LÀ CỘT `so_su_kien`, KHÔNG phải cột `ti_le_dung`. Một mã 100%
+        # trên 2 sự kiện KHÔNG phải bằng chứng đạt yêu cầu — nó là 2 lần bấm đúng. Nên khối này
+        # sắp theo số sự kiện GIẢM DẦN và in cả mẫu số, để mã nào mới có 2-3 dữ liệu tự lộ ra là
+        # mỏng. Đây cũng là lý do KHÔNG in một dòng 'đã đạt X/22 YCCĐ': cộng gộp các mã có mẫu số
+        # chênh nhau thành một con số duy nhất là cách nhanh nhất để một lớp 3 học sinh trông như
+        # một lớp đã hoàn thành chương trình. Ai muốn con số tổng phải tự cân nhắc mẫu số.
+        w.writerow([])
+        w.writerow(["== ĐỘ PHỦ THEO YÊU CẦU CẦN ĐẠT (chỉ tính sự kiện CÓ điểm) =="])
+        w.writerow(["yccd","so_su_kien","so_hoc_sinh","dung","tong","ti_le_dung"])
+        for ma, v in sorted(theo_yccd.items(), key=lambda kv: (-kv[1]["tong"], kv[0])):
+            t = (v["dung"]/v["tong"]) if v["tong"] else ""
+            w.writerow([ma, v["tong"], len(v["hs"]), v["dung"], v["tong"],
+                        f"{t:.3f}" if t != "" else ""])
     p3 = os.path.join(outdir, "baocao_ca_nhan.csv")
     with open(p3, "w", encoding="utf-8-sig", newline="") as f:
         w = csv.writer(f)
@@ -411,13 +456,15 @@ def main():
     if not rows:
         print("KHÔNG có dữ liệu nào. Kiểm tra thư mục có file CSV/JSON xuất từ app không.", file=sys.stderr)
         sys.exit(1)
-    # `bao_cao()` nay trả 5 giá trị (thêm phien_loai) và `ghi()` nhận 7 tham số — sửa 07/10.
-    # Kiểu trả về của một hàm đổi thì MỌI chỗ gọi phải đổi theo; nếu quên thì script chết ngay
-    # khi chạy thật (ValueError: too many values to unpack), và đây là công cụ giáo viên dùng
-    # sau tiết học — hỏng lúc đó thì không còn thời gian để sửa.
-    theo_loai, unesco, ca_nhan, phien, phien_loai = bao_cao(rows)
+    # `bao_cao()` nay trả 6 giá trị (thêm theo_yccd) và `ghi()` nhận 8 tham số — sửa 11/10.
+    # Lịch sử dòng này: 07/10 đổi từ 4 lên 5 giá trị, 11/10 đổi lên 6. Kiểu trả về của một hàm
+    # đổi thì MỌI chỗ gọi phải đổi theo; nếu quên thì script chết ngay khi chạy thật
+    # (ValueError: too many values to unpack), và đây là công cụ giáo viên dùng SAU tiết học —
+    # hỏng lúc đó thì không còn thời gian để sửa. Pyright bắt được lỗi này lúc biên tập, đó là
+    # lý do giữ chẩn đoán LSP bật khi vá hàm có nhiều caller.
+    theo_loai, unesco, ca_nhan, phien, phien_loai, theo_yccd = bao_cao(rows)
     os.makedirs(args.outdir, exist_ok=True)
-    p1, p2, p3 = ghi(rows, theo_loai, unesco, ca_nhan, phien, phien_loai, args.outdir)
+    p1, p2, p3 = ghi(rows, theo_loai, unesco, ca_nhan, phien, phien_loai, theo_yccd, args.outdir)
     print(f"\n✅ {len(rows)} sự kiện từ {len(nguon)} máy, {len(ca_nhan)} mã HS.")
     print(f"   {p1}\n   {p2}\n   {p3}")
     # Nói ra nếu có phiên bị loại khỏi tiến trình pre/post. Không in thì giáo viên chỉ thấy

@@ -18,7 +18,7 @@ Sau khi gộp (`python3 tools/gop_csv.py <thư_mục> -o <báo_cáo>` — xem RE
 | Tệp | Nội dung | Dùng khi nào |
 |---|---|---|
 | `nhatky_gop.csv` | Mọi sự kiện của mọi học sinh, có mốc thời gian | **Lưu làm minh chứng gốc.** Không dùng để đọc trực tiếp — vài trăm dòng |
-| `baocao_lop.csv` | Recall theo 5 loại lỗi · tiến trình pre/post · bản đồ 12 khối UNESCO | Chiếu cuối tiết, và viết nhận xét **cả lớp** |
+| `baocao_lop.csv` | Recall theo 5 loại lỗi · tiến trình pre/post · bản đồ 12 khối UNESCO · độ phủ theo yêu cầu cần đạt | Chiếu cuối tiết, và viết nhận xét **cả lớp** |
 | `baocao_ca_nhan.csv` | Mỗi học sinh một dòng, 10 cột | Viết nhận xét **từng em** |
 
 Mười cột của `baocao_ca_nhan.csv`:

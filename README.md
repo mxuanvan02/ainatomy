@@ -178,7 +178,7 @@ post-test đo tiến bộ chứ không đo trí nhớ. Số liệu chi tiết v�
 python3 tools/gop_csv.py <thư_mục_chứa_các_file_CSV> -o <thư_mục_báo_cáo>
 ```
 
-Xuất 3 file: `nhatky_gop.csv` (toàn bộ sự kiện), `baocao_lop.csv` (recall 5 loại lỗi + tiến trình pre/post + bản đồ 12 khối), `baocao_ca_nhan.csv` (từng mã HS).
+Xuất 3 file: `nhatky_gop.csv` (toàn bộ sự kiện, 23 cột), `baocao_lop.csv` (recall 5 loại lỗi + tiến trình pre/post + bản đồ 12 khối + độ phủ theo yêu cầu cần đạt), `baocao_ca_nhan.csv` (từng mã HS).
 Chạy được trên Python 3.8+, không cần thư viện ngoài.
 
 ## 5. Quyền riêng tư & đạo đức (nói với phụ huynh/BGH khi được hỏi)

@@ -149,26 +149,71 @@ def main():
                              "hamCoThat": (co_ham if co_ham is not None else "không kiểm")})
         so_tep = len({x["tep"] for x in xac_nhan})
         muc = "CHƯA PHỦ" if so_tep == 0 else ("PHỦ MẠNH" if so_tep >= 2 else "PHỦ")
+
+        # TÁCH HAI LOẠI BẰNG CHỨNG — thêm 11/10. ĐÂY LÀ CHỖ CON SỐ "22/22" BỊ HIỂU SAI.
+        #
+        # `muc` ở trên KHÔNG đổi: docstring của tệp này đã khai từ trước rằng bằng chứng yếu
+        # (chỉ khớp tên hàm) vẫn được tính, và nhãn của nó là "có bằng chứng TRONG MÃ" — đúng
+        # như nó đo. Lỗi thật nằm ở chỗ khác: hồ sơ và slide in chữ "22/22 yêu cầu cần đạt có
+        # bằng chứng", và người đọc (giám khảo, giáo viên) hiểu thành "22/22 yêu cầu ĐÃ ĐẠT".
+        # Hai câu đó khác nhau một trời một vực.
+        #
+        # Đo được ngày 11/10: 3 mã được tính là phủ mà chuỗi mã YCCĐ KHÔNG xuất hiện trong tệp
+        # được viện dẫn — chỉ khớp tên hàm/hằng:
+        #   10.A1.1    -> js/pipeline3d.js (token "TRAM"), js/nhamay_tram01.js ("CAU_HOI_T0")
+        #   10.B2.MR1  -> data/cauhoi.js ("MX_BANK"), js/nhamay_text.js ("chamUngDung")
+        #   10.D2.2    -> js/lab.js ("kiemTra"), js/logic.js ("bangNhamLan"), js/pipeline3d.js
+        # Với 10.A1.1 thì nội dung trạm "connguoi" trong pipeline3d.js ĐÚNG là có dạy vai trò
+        # con người, nhưng tệp đó không hề chứa chuỗi "10.A1.1" — nên ánh xạ là suy diễn của
+        # người viết BC, không phải thứ kiểm chứng được bằng máy. Vẫn có giá trị, nhưng là
+        # bằng chứng YẾU và phải được in ra là yếu, không được cộng ngang với bằng chứng mạnh.
+        #
+        # Cách xử lý: KHÔNG hạ `muc` (làm vậy sẽ phá check_sheet_drift.py:104 và
+        # sinh_noi_dung_ho_so.py:102 đang đọc đúng nhãn cũ), mà THÊM hai trường mới để ai đọc
+        # JSON cũng thấy ngay bằng chứng của mã này thuộc loại nào:
+        #   soTepBangChungManh — chỉ đếm tệp CÓ chứa chuỗi mã YCCĐ
+        #   bangChungManh      — True/False, tiện lọc
+        so_tep_manh = len({x["tep"] for x in xac_nhan if x["maYCCDTrongTep"] is True})
         ket.append({"ma": ma, "chuDe": ma_nguon[ma].get("chuDe", ma.split('.')[1]),
                     "mach": ma[3], "loai": ma_nguon[ma].get("loai", ""),
                     "muc": muc, "soTepBangChung": so_tep,
+                    "soTepBangChungManh": so_tep_manh,
+                    "bangChungManh": so_tep_manh > 0,
                     "bangChung": xac_nhan,
                     "text": ma_nguon[ma]["text"]})
 
     # ---------- in bảng ----------
-    print(f"{'MÃ YCCĐ':13s}{'MỨC':11s}{'BẰNG CHỨNG TRONG MÃ'}")
-    print("-" * 100)
+    # Cột LOẠI BẰNG CHỨNG — thêm 11/10. 'MÃ' = chuỗi mã YCCĐ có thật trong tệp (kiểm bằng máy
+    # được). 'HÀM' = chỉ khớp tên hàm/hằng, tức ánh xạ là suy diễn của người viết bảng BC.
+    # Không có cột này thì người đọc chỉ thấy chữ 'PHỦ MẠNH' và hiểu là yêu cầu đã đạt.
+    print(f"{'MÃ YCCĐ':13s}{'MỨC':11s}{'LOẠI BC':9s}{'BẰNG CHỨNG TRONG MÃ'}")
+    print("-" * 108)
     for k in ket:
         tep = ", ".join(x["tep"] for x in k["bangChung"]) or "—"
-        print(f"{k['ma']:13s}{k['muc']:11s}{tep}")
+        loai = "MÃ" if k["bangChungManh"] else ("HÀM" if k["soTepBangChung"] else "—")
+        print(f"{k['ma']:13s}{k['muc']:11s}{loai:9s}{tep}")
 
     from collections import Counter
     c = Counter(k["muc"] for k in ket)
-    print("-" * 100)
+    print("-" * 108)
     print(f"PHỦ MẠNH: {c.get('PHỦ MẠNH',0)}  ·  PHỦ: {c.get('PHỦ',0)}  ·  "
           f"CHƯA PHỦ: {c.get('CHƯA PHỦ',0)}  ·  TỔNG: {sum(c.values())}/{len(ma_nguon)}")
+    manh = [k["ma"] for k in ket if k["bangChungManh"]]
+    yeu = [k["ma"] for k in ket if not k["bangChungManh"] and k["soTepBangChung"]]
+    print(f"\ntrong đó: {len(manh)}/22 mã có bằng chứng LOẠI MẠNH (chuỗi mã YCCĐ xuất hiện trong tệp), "
+          f"{len(yeu)}/22 chỉ có bằng chứng LOẠI YẾU (khớp tên hàm/hằng).")
+    if yeu:
+        print("  mã chỉ có bằng chứng yếu: " + ", ".join(yeu))
+    # Câu này là lý do tồn tại của cả khối: chữ 'PHỦ' ở đây nghĩa là 'có vết trong mã nguồn',
+    # KHÔNG nghĩa là 'học sinh đã đạt yêu cầu'. Ai chép con số 22/22 vào hồ sơ mà không kèm
+    # câu này thì đang để người đọc hiểu sai. Chiều đo thật về thao tác học sinh nằm ở
+    # tools/tests/bang_gia_tri_kien_tao.py (PHỦ THẬT / PHỦ MỘT PHẦN / CHƯA PHỦ).
+    print("\nLƯU Ý CÁCH ĐỌC: 'PHỦ' ở đây = CÓ BẰNG CHỨNG TRONG MÃ NGUỒN, không phải "
+          "'học sinh đã đạt yêu cầu'.")
+    print("  Độ phủ đo từ THAO TÁC học sinh (có chấm + ghi nhật ký) nằm ở tệp khác:")
+    print("  python3 tools/tests/bang_gia_tri_kien_tao.py")
     con = [k["ma"] for k in ket if k["muc"] == "CHƯA PHỦ"]
-    print("chưa phủ:", con or "KHÔNG CÒN")
+    print("\nchưa phủ:", con or "KHÔNG CÒN")
 
     # cốt lõi và mở rộng
     loi_core = [k["ma"] for k in ket if k["loai"] != "mở rộng" and k["muc"] == "CHƯA PHỦ"]
