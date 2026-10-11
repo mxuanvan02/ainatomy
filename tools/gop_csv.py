@@ -65,7 +65,15 @@ HDR = ["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco",
        # lý do ở comment trong chamDauTruong(). gop_csv.py lọc theo tên nên tệp CSV cũ thiếu
        # cột này vẫn đọc được (giá trị rỗng). Ba nơi cùng phải có khi thêm cột: HDR này,
        # xuatCSV trong engine.js, và doc_json bên dưới.
-       "claim_dung"]
+       "claim_dung",
+       # Cột `yccd` (11/10): mã yêu cầu cần đạt mà sự kiện đó được ánh xạ tới, do app.js tự
+       # gắn lúc log (chỉ 2 loại sự kiện có: tinhHuong và nhamay-tram0). THÍ NGHIỆM END-TO-END
+       # ngày 11/10 chứng minh trường này từng BỊ MẤT: nạp JSON có 3 sự kiện mang yccd vào
+       # gop_csv.py thì chuỗi mã YCCĐ xuất hiện 0 lần trong cả 3 tệp báo cáo đầu ra, vì CSV
+       # không có cột và doc_json không có khoá (DictWriter extrasaction="ignore" nuốt im lặng).
+       # Giá trị có thể là một mã ("10.C4.1") hoặc nhiều mã ngăn bằng " · " — giữ nguyên chuỗi,
+       # việc tách để pivot thuộc về báo cáo.
+       "yccd"]
 
 def doc_csv(path):
     with open(path, encoding="utf-8-sig", newline="") as f:
@@ -198,6 +206,12 @@ def doc_json(path):
                 # xuatCSV trong engine.js đọc kq.claimDung. Nếu thiếu thì tệp CSV xuất ra sẽ
                 # luôn trống cột này dù engine đã tính — đúng cái lỗi phai_lap từng mắc.
                 "claim_dung": "" if kq.get("claimDung") is None else kq.get("claimDung"),
+                # Cột yccd: đọc từ `sk` (cấp sự kiện), KHÔNG từ `kq` — khớp với xuatCSV trong
+                # engine.js. app.js ghi yccd cùng cấp với kq nên sk.get("yccd") mới đúng chỗ.
+                # Đây là nơi THỨ TƯ phải sửa khi thêm cột (HDR, xuatCSV header, xuatCSV row,
+                # doc_json) — thiếu nó thì đường JSON mất cột còn đường CSV thì không, tức hai
+                # nút của giáo viên cho hai kết quả khác nhau (đúng lỗi phai_lap từng mắc).
+                "yccd": "" if sk.get("yccd") is None else sk.get("yccd"),
             })
     return out
 

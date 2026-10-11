@@ -1,0 +1,78 @@
+{
+  "mo_ta": "Đối chiếu độ phủ repo tự khai (tinh_do_phu.py) với độ phủ đo từ thao tác học sinh",
+  "co_ma_that": {},
+  "ma_bang_chung_yeu": [
+    {
+      "ma": "10.A1.1",
+      "vien_dan": [
+        "js/pipeline3d.js(TRAM)",
+        "js/nhamay_tram01.js(CAU_HOI_T0)"
+      ],
+      "do_tu_thao_tac": "CHƯA PHỦ"
+    },
+    {
+      "ma": "10.B2.MR1",
+      "vien_dan": [
+        "data/cauhoi.js(MX_BANK)",
+        "js/nhamay_text.js(chamUngDung)"
+      ],
+      "do_tu_thao_tac": "PHỦ MỘT PHẦN"
+    },
+    {
+      "ma": "10.D2.2",
+      "vien_dan": [
+        "js/lab.js(kiemTra)",
+        "js/logic.js(bangNhamLan)",
+        "js/pipeline3d.js(TRAM)"
+      ],
+      "do_tu_thao_tac": "PHỦ THẬT"
+    }
+  ],
+  "mau_thuan_noi_bo": [
+    {
+      "ma": "10.A1.1",
+      "tinh_do_phu": "PHỦ (chỉ do tên hàm)",
+      "tao_sheet": "CHƯA PHỦ"
+    },
+    {
+      "ma": "10.A2.1",
+      "tinh_do_phu": "PHỦ",
+      "tao_sheet": "CHƯA PHỦ"
+    },
+    {
+      "ma": "10.A2.MR1",
+      "tinh_do_phu": "PHỦ",
+      "tao_sheet": "CHƯA PHỦ"
+    },
+    {
+      "ma": "10.B2.1",
+      "tinh_do_phu": "PHỦ MẠNH",
+      "tao_sheet": "CHƯA PHỦ"
+    },
+    {
+      "ma": "10.C2.1",
+      "tinh_do_phu": "PHỦ",
+      "tao_sheet": "CHƯA PHỦ"
+    },
+    {
+      "ma": "10.C2.MR1",
+      "tinh_do_phu": "PHỦ",
+      "tao_sheet": "CHƯA PHỦ"
+    },
+    {
+      "ma": "10.C3.MR1",
+      "tinh_do_phu": "PHỦ",
+      "tao_sheet": "CHƯA PHỦ"
+    },
+    {
+      "ma": "10.C4.MR1",
+      "tinh_do_phu": "PHỦ",
+      "tao_sheet": "CHƯA PHỦ"
+    }
+  ],
+  "do_tu_thao_tac": {
+    "CHƯA PHỦ": 2,
+    "PHỦ MỘT PHẦN": 12,
+    "PHỦ THẬT": 8
+  }
+}

@@ -311,7 +311,28 @@
      * áp dụng) và nó đi ra thành cột riêng. Đặt CUỐI bảng để tệp CSV cũ (19, 20 rồi 21 cột)
      * vẫn đọc đúng theo tên. Ba nơi phải cùng sửa khi thêm cột: HDR của tools/gop_csv.py,
      * hàm này, và doc_json() trong cùng tệp đó. */
-    const rows = [["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco","dap_an_dung","loai_loi_that","tra_loi","tra_loi_loai","diem","bat_oan","bo_sot","che_do","phien_tong","phien_dung","phien_bat_oan","phien_bo_sot","thoi_gian_ISO","su_kien","phai_lap","claim_dung"]];
+    /* CỘT `yccd` — thêm 11/10 sau khi một thí nghiệm end-to-end chứng minh nó BỊ MẤT.
+     *
+     * LỖI THẬT, và nó nặng hơn các lỗi mất cột trước vì nó chạm đúng lời hứa của hồ sơ.
+     * app.js GHI `yccd: q.yccd` cho hai loại sự kiện (tinhHuong dòng 1149, nhamay-tram0 dòng
+     * 1278), logSuKien push nguyên object nên nó CÓ trong localStorage và CÓ trong tệp JSON
+     * thô. Nhưng xuatCSV trải phẳng theo 22 cột cố định không có cột nào mang nó, và
+     * doc_json() của tools/gop_csv.py cũng không có khoá `yccd` (kèm DictWriter
+     * extrasaction="ignore" nên rơi IM LẶNG). Thí nghiệm: nạp JSON có 3 sự kiện mang yccd
+     * vào gop_csv.py -> chuỗi mã YCCĐ xuất hiện 0 lần trong cả 3 tệp báo cáo đầu ra.
+     *
+     * HỆ QUẢ TRÊN HỒ SƠ: hồ sơ khai "22/22 yêu cầu cần đạt có bằng chứng trong mã nguồn",
+     * và cổng G16 vẫn ĐẠT 4/4 vì G16 chỉ kiểm BA BẢN KHAI CỘT có khớp nhau không — nó không
+     * hề so với danh sách 22 YCCĐ. Nghĩa là một cổng xanh trong khi giáo viên không thể từ
+     * nhật ký nói được câu nào về từng yêu cầu cần đạt.
+     *
+     * `sk.yccd` chứ không phải `kq.yccd`: trường này nằm CÙNG CẤP với kq trong object sự kiện
+     * (xem app.js 1145-1150), khác với phai_lap cũng ở cấp sk và claim_dung ở cấp kq. Nhầm
+     * cấp thì cột ra rỗng mà không có dấu hiệu.
+     * Giá trị có thể là MỘT mã ("10.C4.1") hoặc chuỗi NHIỀU mã ngăn bằng " · " (bảng ánh xạ
+     * view ở app.js 1176-1194) — giữ nguyên chuỗi, việc tách để pivot là của báo cáo, không
+     * tự tách ở đây vì sẽ phá mô hình một dòng = một sự kiện. */
+    const rows = [["ma_hs","ma_lop","loai_su_kien","item_id","mach","unesco","dap_an_dung","loai_loi_that","tra_loi","tra_loi_loai","diem","bat_oan","bo_sot","che_do","phien_tong","phien_dung","phien_bat_oan","phien_bo_sot","thoi_gian_ISO","su_kien","phai_lap","claim_dung","yccd"]];
     for(const k in d){
       if(maLop && d[k].maLop && d[k].maLop !== maLop) continue;
       for(const sk of d[k].suKien){
@@ -349,7 +370,13 @@
           /* claimDung là null với câu KHÔNG có lỗi (không có chỗ sai để chỉ). null phải ra
            * Ô RỖNG chứ không ra chữ "null" hay số 0: ra 0 thì tỉ lệ chỉ-đúng-chỗ-sai bị kéo
            * thấp giả, và giáo viên đọc CSV sẽ tưởng học sinh chỉ sai ở cả những câu đúng. */
-          (kq.claimDung === null || kq.claimDung === undefined) ? "" : kq.claimDung
+          (kq.claimDung === null || kq.claimDung === undefined) ? "" : kq.claimDung,
+          /* Cột yccd — đọc từ `sk` (cấp sự kiện), KHÔNG từ `kq`. app.js ghi nó cùng cấp với
+           * kq: { loai:"tinhHuong", ..., kq:{...}, yccd: q.yccd } (dòng 1145-1150) và
+           * { loai:"nhamay", ..., kq:{...}, yccd:q.yccd } (dòng 1274-1279). Đọc nhầm cấp thì
+           * cột luôn rỗng mà không có dấu hiệu nào báo — đúng loại lỗi âm thầm mà tệp này
+           * đã mắc ba lần (phai_lap, claim_dung, và nay là yccd). */
+          sk.yccd !== undefined && sk.yccd !== null ? sk.yccd : ""
         ]);
       }
     }

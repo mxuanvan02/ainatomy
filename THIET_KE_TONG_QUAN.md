@@ -129,9 +129,9 @@ Yêu cầu đặt ra là bài học có thể mô phỏng được mọi nội d
 
 | # | Mô phỏng | Trạng thái | YCCĐ phủ | Cơ chế tự chấm |
 |---|---|---|---|---|
-| 1 | Perceptron học thật, trọng số đổi theo lỗi | đã có | 10.C4.1, 10.C5 | nhãn ảnh có sẵn, đối chiếu dự đoán |
+| 1 | Perceptron học thật, trọng số đổi theo lỗi | đã có | 10.C4.1 | nhãn ảnh có sẵn, đối chiếu dự đoán |
 | 2 | Thiên kiến dữ liệu ngày và đêm | đã có | 10.C4.1, 10.D2.2, 10.B3.1 | bộ kiểm tra tách nhóm, khác seed |
-| 3 | Mặt phẳng quyết định trong không gian 3D | đang dựng | 10.C4.1, 10.C5 | suy từ trọng số thật, kiểm bằng số |
+| 3 | Mặt phẳng quyết định trong không gian 3D | đang dựng | 10.C4.1 | suy từ trọng số thật, kiểm bằng số |
 | 4 | Ống dẫn năm trạm, đoán trạm hỏng | đang dựng | 10.D1.1, 10.D2.1, 10.A1.2 | hệ chọn ngẫu nhiên, đáp án biết trước |
 | 5 | Bắt lỗi nội dung AI tạo sinh, năm nhóm lỗi | đã có | 10.B2.MR1 | lỗi cài sẵn, nhãn cứng |
 | 6 | Thực hành viết prompt theo rubric | đã có | 10.C3.1, 10.C3.2 | rubric từ khoá, tất định |
@@ -139,8 +139,8 @@ Yêu cầu đặt ra là bài học có thể mô phỏng được mọi nội d
 | 8 | Quy định pháp luật bảo vệ người dùng | đã có | 10.A3.1 | câu hỏi có nhãn, số hiệu luật đã kiểm chứng |
 | 9 | Bảng nhầm lẫn và các chỉ số đánh giá | đã có | 10.D2.2 | tính từ phán quyết của học sinh |
 | 10 | Dữ liệu lôgic, phép AND OR NOT | đã có | nối Bài 5 Tin học 10 | bảng chân lí có nhãn |
-| 11 | Học tủ: tách dữ liệu huấn luyện và kiểm tra | **chưa làm** | 10.C4.1, 10.C5 | hai bộ khác seed, so độ chính xác |
-| 12 | Quá khớp và dưới khớp | **chưa làm** | 10.C5, 10.D2.2 | đường cong lỗi theo số vòng |
+| 11 | Học tủ: tách dữ liệu huấn luyện và kiểm tra | **chưa làm** | 10.C4.1 | hai bộ khác seed, so độ chính xác |
+| 12 | Quá khớp và dưới khớp | **chưa làm** | 10.D2.2 | đường cong lỗi theo số vòng |
 | 13 | Dạng dữ liệu huấn luyện: ảnh, âm thanh, văn bản | **chưa làm** | 10.C4.MR1 | phân loại mẫu, có nhãn |
 | 14 | Vai trò con người trong vận hành hệ AI | **chưa làm** | 10.A1.1, 10.A1.2 | tình huống quyết định có nhãn |
 | 15 | Rủi ro của một sản phẩm AI với người và xã hội | **chưa làm** | 10.A2.1, 10.A2.MR1 | tình huống có nhãn |

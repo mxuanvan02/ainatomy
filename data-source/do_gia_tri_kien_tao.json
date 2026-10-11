@@ -1,0 +1,295 @@
+{
+  "mo_ta": "Đo sai số của hai hàm chấm prompt bằng dò từ khoá, chạy trên MÃ THẬT trong node",
+  "ca_duong": [
+    "D1_nongNghiep",
+    "D2_hocTap",
+    "D3_ngan_ma_du",
+    "D4_cau_hoi_hieu"
+  ],
+  "ca_am": [
+    "A1_nhoi_tu_toi_thieu",
+    "A2_nhoi_tu_dai",
+    "A3_tu_khoa_lien_tiep",
+    "A4_khong_phai_prompt"
+  ],
+  "ket_qua": [
+    {
+      "ham": "chamPrompt",
+      "nhom": "duong",
+      "id": "D1_nongNghiep",
+      "diem": 0.6666666666666666,
+      "datBB": 2,
+      "tongBB": 3,
+      "datDuoc": [
+        "Nêu rõ MỤC TIÊU / việc cần làm",
+        "Chỉ rõ ĐỊNH DẠNG đầu ra",
+        "Nêu RÀNG BUỘC và điều phải tránh"
+      ],
+      "thieu": [
+        "Cho BỐI CẢNH và đối tượng",
+        "Cung cấp DỮ LIỆU / tư liệu cần dùng",
+        "Yêu cầu KIỂM CHỨNG / nêu nguồn"
+      ],
+      "doDai": 231
+    },
+    {
+      "ham": "danhGiaPrompt",
+      "nhom": "duong",
+      "id": "D1_nongNghiep",
+      "diem": 3,
+      "tong": 3,
+      "muc": "đạt yêu cầu",
+      "dat": [
+        "Nêu rõ mục tiêu",
+        "Có ngữ cảnh hoặc ràng buộc",
+        "Nêu định dạng đầu ra"
+      ]
+    },
+    {
+      "ham": "chamPrompt",
+      "nhom": "duong",
+      "id": "D2_hocTap",
+      "diem": 0.6666666666666666,
+      "datBB": 2,
+      "tongBB": 3,
+      "datDuoc": [
+        "Cho BỐI CẢNH và đối tượng",
+        "Chỉ rõ ĐỊNH DẠNG đầu ra",
+        "Cung cấp DỮ LIỆU / tư liệu cần dùng",
+        "Nêu RÀNG BUỘC và điều phải tránh"
+      ],
+      "thieu": [
+        "Nêu rõ MỤC TIÊU / việc cần làm",
+        "Yêu cầu KIỂM CHỨNG / nêu nguồn"
+      ],
+      "doDai": 184
+    },
+    {
+      "ham": "danhGiaPrompt",
+      "nhom": "duong",
+      "id": "D2_hocTap",
+      "diem": 3,
+      "tong": 3,
+      "muc": "đạt yêu cầu",
+      "dat": [
+        "Nêu rõ mục tiêu",
+        "Có ngữ cảnh hoặc ràng buộc",
+        "Nêu định dạng đầu ra"
+      ]
+    },
+    {
+      "ham": "chamPrompt",
+      "nhom": "duong",
+      "id": "D3_ngan_ma_du",
+      "diem": 1,
+      "datBB": 3,
+      "tongBB": 3,
+      "datDuoc": [
+        "Nêu rõ MỤC TIÊU / việc cần làm",
+        "Cho BỐI CẢNH và đối tượng",
+        "Chỉ rõ ĐỊNH DẠNG đầu ra",
+        "Cung cấp DỮ LIỆU / tư liệu cần dùng",
+        "Nêu RÀNG BUỘC và điều phải tránh"
+      ],
+      "thieu": [
+        "Yêu cầu KIỂM CHỨNG / nêu nguồn"
+      ],
+      "doDai": 113
+    },
+    {
+      "ham": "danhGiaPrompt",
+      "nhom": "duong",
+      "id": "D3_ngan_ma_du",
+      "diem": 3,
+      "tong": 3,
+      "muc": "đạt yêu cầu",
+      "dat": [
+        "Nêu rõ mục tiêu",
+        "Có ngữ cảnh hoặc ràng buộc",
+        "Nêu định dạng đầu ra"
+      ]
+    },
+    {
+      "ham": "chamPrompt",
+      "nhom": "duong",
+      "id": "D4_cau_hoi_hieu",
+      "diem": 0.6666666666666666,
+      "datBB": 2,
+      "tongBB": 3,
+      "datDuoc": [
+        "Nêu rõ MỤC TIÊU / việc cần làm",
+        "Chỉ rõ ĐỊNH DẠNG đầu ra",
+        "Cung cấp DỮ LIỆU / tư liệu cần dùng"
+      ],
+      "thieu": [
+        "Cho BỐI CẢNH và đối tượng",
+        "Nêu RÀNG BUỘC và điều phải tránh",
+        "Yêu cầu KIỂM CHỨNG / nêu nguồn"
+      ],
+      "doDai": 139
+    },
+    {
+      "ham": "danhGiaPrompt",
+      "nhom": "duong",
+      "id": "D4_cau_hoi_hieu",
+      "diem": 1,
+      "tong": 3,
+      "muc": "chưa đầy đủ",
+      "dat": [
+        "Nêu định dạng đầu ra"
+      ]
+    },
+    {
+      "ham": "chamPrompt",
+      "nhom": "am",
+      "id": "A1_nhoi_tu_toi_thieu",
+      "diem": 0.3333333333333333,
+      "datBB": 1,
+      "tongBB": 3,
+      "datDuoc": [
+        "Chỉ rõ ĐỊNH DẠNG đầu ra"
+      ],
+      "thieu": [
+        "Nêu rõ MỤC TIÊU / việc cần làm",
+        "Cho BỐI CẢNH và đối tượng",
+        "Cung cấp DỮ LIỆU / tư liệu cần dùng",
+        "Nêu RÀNG BUỘC và điều phải tránh",
+        "Yêu cầu KIỂM CHỨNG / nêu nguồn"
+      ],
+      "doDai": 22
+    },
+    {
+      "ham": "danhGiaPrompt",
+      "nhom": "am",
+      "id": "A1_nhoi_tu_toi_thieu",
+      "diem": 3,
+      "tong": 3,
+      "muc": "đạt yêu cầu",
+      "dat": [
+        "Nêu rõ mục tiêu",
+        "Có ngữ cảnh hoặc ràng buộc",
+        "Nêu định dạng đầu ra"
+      ]
+    },
+    {
+      "ham": "chamPrompt",
+      "nhom": "am",
+      "id": "A2_nhoi_tu_dai",
+      "diem": 0.6666666666666666,
+      "datBB": 2,
+      "tongBB": 3,
+      "datDuoc": [
+        "Cho BỐI CẢNH và đối tượng",
+        "Chỉ rõ ĐỊNH DẠNG đầu ra"
+      ],
+      "thieu": [
+        "Nêu rõ MỤC TIÊU / việc cần làm",
+        "Cung cấp DỮ LIỆU / tư liệu cần dùng",
+        "Nêu RÀNG BUỘC và điều phải tránh",
+        "Yêu cầu KIỂM CHỨNG / nêu nguồn"
+      ],
+      "doDai": 77
+    },
+    {
+      "ham": "danhGiaPrompt",
+      "nhom": "am",
+      "id": "A2_nhoi_tu_dai",
+      "diem": 3,
+      "tong": 3,
+      "muc": "đạt yêu cầu",
+      "dat": [
+        "Nêu rõ mục tiêu",
+        "Có ngữ cảnh hoặc ràng buộc",
+        "Nêu định dạng đầu ra"
+      ]
+    },
+    {
+      "ham": "chamPrompt",
+      "nhom": "am",
+      "id": "A3_tu_khoa_lien_tiep",
+      "diem": 1,
+      "datBB": 3,
+      "tongBB": 3,
+      "datDuoc": [
+        "Nêu rõ MỤC TIÊU / việc cần làm",
+        "Cho BỐI CẢNH và đối tượng",
+        "Chỉ rõ ĐỊNH DẠNG đầu ra",
+        "Cung cấp DỮ LIỆU / tư liệu cần dùng",
+        "Nêu RÀNG BUỘC và điều phải tránh"
+      ],
+      "thieu": [
+        "Yêu cầu KIỂM CHỨNG / nêu nguồn"
+      ],
+      "doDai": 208
+    },
+    {
+      "ham": "danhGiaPrompt",
+      "nhom": "am",
+      "id": "A3_tu_khoa_lien_tiep",
+      "diem": 3,
+      "tong": 3,
+      "muc": "đạt yêu cầu",
+      "dat": [
+        "Nêu rõ mục tiêu",
+        "Có ngữ cảnh hoặc ràng buộc",
+        "Nêu định dạng đầu ra"
+      ]
+    },
+    {
+      "ham": "chamPrompt",
+      "nhom": "am",
+      "id": "A4_khong_phai_prompt",
+      "diem": 0.3333333333333333,
+      "datBB": 1,
+      "tongBB": 3,
+      "datDuoc": [
+        "Chỉ rõ ĐỊNH DẠNG đầu ra"
+      ],
+      "thieu": [
+        "Nêu rõ MỤC TIÊU / việc cần làm",
+        "Cho BỐI CẢNH và đối tượng",
+        "Cung cấp DỮ LIỆU / tư liệu cần dùng",
+        "Nêu RÀNG BUỘC và điều phải tránh",
+        "Yêu cầu KIỂM CHỨNG / nêu nguồn"
+      ],
+      "doDai": 32
+    },
+    {
+      "ham": "danhGiaPrompt",
+      "nhom": "am",
+      "id": "A4_khong_phai_prompt",
+      "diem": 3,
+      "tong": 3,
+      "muc": "đạt yêu cầu",
+      "dat": [
+        "Nêu rõ mục tiêu",
+        "Có ngữ cảnh hoặc ràng buộc",
+        "Nêu định dạng đầu ra"
+      ]
+    }
+  ],
+  "thong_tin_nap": [
+    {
+      "nap": {
+        "data": true,
+        "kienthuc": true,
+        "nhamay": true
+      },
+      "co": {
+        "chamPrompt": true,
+        "danhGiaPrompt": true,
+        "duLieuBai": false
+      }
+    },
+    {
+      "de_tim_thay": "promptDe",
+      "de_id": "p-01",
+      "batBuoc": [
+        "muc_tieu",
+        "boi_canh",
+        "dinh_dang"
+      ],
+      "soTieuChi": 6
+    }
+  ]
+}
