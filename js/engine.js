@@ -375,8 +375,25 @@
            * kq: { loai:"tinhHuong", ..., kq:{...}, yccd: q.yccd } (dòng 1145-1150) và
            * { loai:"nhamay", ..., kq:{...}, yccd:q.yccd } (dòng 1274-1279). Đọc nhầm cấp thì
            * cột luôn rỗng mà không có dấu hiệu nào báo — đúng loại lỗi âm thầm mà tệp này
-           * đã mắc ba lần (phai_lap, claim_dung, và nay là yccd). */
-          sk.yccd !== undefined && sk.yccd !== null ? sk.yccd : ""
+           * đã mắc ba lần (phai_lap, claim_dung, và nay là yccd).
+           *
+           * FALLBACK `sk.nhiemVu.yccd` — thêm 11/10, LẦN THỨ TƯ của cùng lớp lỗi này, và
+           * lần này do MỘT REVIEWER ĐỘC LẬP bắt chứ không phải em tự bắt.
+           * js/kienthuc.js ghi yccd LỒNG TRONG `nhiemVu` ở cả hai log site của nó:
+           *   dòng 143: nhiemVu:{ id:de.id, mach:"C", unesco:"C2", yccd:"10.C3.2" }
+           *   dòng 188: nhiemVu:{ id:q.id, mach:q.mach, unesco:q.unesco, yccd:q.yccd }
+           * nên bản chỉ đọc `sk.yccd` bỏ rơi toàn bộ mã của quiz và bài tập prompt — 6 mã
+           * (10.A3.1, 10.C2.2, 10.C2.3, 10.C3.1, 10.C3.2, 10.C3.3) không tới được CSV, trong
+           * đó có 10.C3.2 là mã DUY NHẤT có thao tác học sinh tự gõ prompt.
+           *
+           * Vì sao sửa ở ĐÂY thay vì đổi js/kienthuc.js ghi ra cấp ngoài: hai cách đều được,
+           * nhưng fallback ở nút đọc thì CHE được cả những trạm sẽ viết sau này theo kiểu lồng,
+           * còn đổi chỗ ghi thì mỗi trạm mới lại phải nhớ quy ước. Thứ tự ưu tiên giữ
+           * `sk.yccd` trước: nếu một site ghi cả hai cấp thì cấp sự kiện thắng, vì đó là cấp
+           * mà tài liệu cột này khai báo. */
+          (sk.yccd !== undefined && sk.yccd !== null) ? sk.yccd
+            : ((sk.nhiemVu && sk.nhiemVu.yccd !== undefined && sk.nhiemVu.yccd !== null)
+               ? sk.nhiemVu.yccd : "")
         ]);
       }
     }

@@ -211,7 +211,15 @@ def doc_json(path):
                 # Đây là nơi THỨ TƯ phải sửa khi thêm cột (HDR, xuatCSV header, xuatCSV row,
                 # doc_json) — thiếu nó thì đường JSON mất cột còn đường CSV thì không, tức hai
                 # nút của giáo viên cho hai kết quả khác nhau (đúng lỗi phai_lap từng mắc).
-                "yccd": "" if sk.get("yccd") is None else sk.get("yccd"),
+                #
+                # FALLBACK `nhiemVu.yccd` — thêm 11/10, cùng lý do và cùng ngày với fallback
+                # trong xuatCSV của engine.js. js/kienthuc.js lồng yccd trong `nhiemVu` ở cả
+                # hai log site (dòng 143 và 188) nên bản chỉ đọc sk.get("yccd") bỏ rơi 6 mã
+                # của quiz + bài tập prompt. PHẢI sửa ở CẢ HAI NÚT: chỉ sửa engine.js thì GV
+                # xuất CSV thấy mã còn GV xuất JSON thì không — đúng cái lỗi phai_lap mà
+                # comment ngay phía trên đã ghi.
+                "yccd": (sk.get("yccd") if sk.get("yccd") is not None
+                         else (sk.get("nhiemVu") or {}).get("yccd") or ""),
             })
     return out
 

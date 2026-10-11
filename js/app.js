@@ -1081,7 +1081,18 @@
       loai:"pipe3d", suKien:"doan",
       kq:{ diem: r.dung?1:0, dung: r.dung, mach:"D", unesco:"D1",
            dapAn: r.dungLa.id, chon: tramId },
-      tramHong: r.dungLa.id, doan: tramId
+      tramHong: r.dungLa.id, doan: tramId,
+      /* CỘT yccd — nối 11/10 theo phản biện của reviewer độc lập (review13/).
+       * r.dungLa.yccd ĐÃ CÓ SẴN trong dữ liệu: pipeline3d.js khai yccd cho cả 5 trạm
+       * (dulieu 10.C4.1 · huanluyen 10.D2.1 · mohinh 10.D2.1 · daura 10.B2.MR1 ·
+       * connguoi 10.A1.2), và giao diện CÒN IN NÓ RA cho học sinh xem ở dòng kế trên
+       * ('YCCĐ liên quan: ...'). Nhưng bản ghi thì không mang nó, nên 4 mã đó không bao
+       * giờ tới được tệp CSV của giáo viên — học sinh nhìn thấy mã, báo cáo thì không.
+       * Đây là NỐI DÂY, không phải đặt ánh xạ mới: không một mã nào được suy diễn thêm.
+       * KHÔNG làm việc tương tự cho các ô Mức 3 (BT-02/04/05): bảng baiToan -> yccd
+       * KHÔNG tồn tại ở bất kỳ đâu trong data/ hay js/ (đã grep), nên nối vào đó là
+       * BỊA ánh xạ chương trình — việc đó thuộc quyết định nội dung của tác giả. */
+      yccd: r.dungLa.yccd
     });
     pipe3dHud();
   }
