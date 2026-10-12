@@ -470,7 +470,20 @@ body.it-chu .vang.nho:not(.phanhoi .vang.nho){display:none !important}
 body.it-chu button,body.it-chu .btn,body.it-chu .chip,body.it-chu .legend,
 body.it-chu .phanhoi,body.it-chu #lbl-user,body.it-chu #dt-mode,
 body.it-chu #dt-tien-do,body.it-chu #nm-yccd,body.it-chu #nm-ten-tram,
-body.it-chu .de-bai,body.it-chu .kb-dieu-khien,body.it-chu .kb-dieu-khien *{display:revert !important}
+body.it-chu .de-bai,body.it-chu .kb-dieu-khien,body.it-chu .kb-dieu-khien *,
+body.it-chu #t0-chu-thich-anh,body.it-chu #t1-chu-thich-anh{display:revert !important}
+
+/* CHÚ THÍCH "HÌNH MÔ PHỎNG" KHÔNG PHẢI PHỤ CHÚ — thêm 12/10.
+   Bộ dữ liệu của app là hình do js/lab.js veXeMay() VẼ BẰNG CANVAS (6 khối hình học, 160x120px),
+   và bản đầu app dán nhãn nó là "ảnh chụp ban ngày". Anh Văn xem bản nháp video và hỏi "cái ảnh
+   chụp ban ngày đó là ảnh gì vậy?" — tức người xem không giải mã được hình trên màn hình. Đã sửa
+   lời khai thành "hình mô phỏng" và thêm chú thích; nhưng chú thích mang class .nho nên bị luật
+   ít chữ ở trên ẩn mất, mà video PHẦN 1 quay Ở CHẾ ĐỘ ÍT CHỮ -> sửa chữ mà người xem vẫn không thấy.
+   LẬP LUẬN MIỄN ẨN giống hệt .legend ở khối trên ("ẩn đi thì biểu đồ còn đó nhưng không đọc
+   được"): ẩn chú thích thì hình còn đó nhưng không giải mã được. Và giống .de-bai đã miễn ngày
+   05/10 ("bật ít chữ là MẤT ĐỀ BÀI"). Không phải ngoại lệ mới chế ra.
+   CHỈ miễn dòng NGẮN (hai id trên). Phần giải thích dài vẫn mang .chu2 nên vẫn bị ẩn — chế độ ít
+   chữ phải tiếp tục giảm được chữ (đo bằng innerText, brief khai 28,2%/33,3%/28,4%). */
 
 /* ĐỀ BÀI KHÔNG PHẢI PHỤ CHÚ (thêm 05/10 cùng lúc với js/bt13.js).
    BT-13 dựng phần tình huống và câu hỏi bằng JS. Bản đầu em gán cho chúng class .chu2

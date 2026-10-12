@@ -40,7 +40,12 @@
     return n;
   }
 
-  /* HÌNH CHIẾC XE MÁY cho ô "ảnh chụp".
+  /* HÌNH CHIẾC XE MÁY cho ô dữ liệu đầu vào.
+   * CHỮ DƯỚI HÌNH PHẢI NÓI ĐÚNG NÓ LÀ GÌ — sửa 12/10. Bản đầu ghi "ảnh chụp ban ngày", nhưng đây
+   * là ICON SVG (Lucide `bike`) chứ không phải ảnh chụp; bộ dữ liệu của app là TỔNG HỢP, do
+   * js/lab.js veXeMay() vẽ bằng canvas. Gọi một hình do máy vẽ là "ảnh chụp" là một lời khai sai
+   * nằm ngay trong sản phẩm nộp — đúng lớp lỗi mà bộ cổng này sinh ra để chặn. Nay ghi "hình mô
+   * phỏng", và nói rõ nguồn gốc tổng hợp ở chú thích Trạm 0/Trạm 1 trong index.html.
    * Nguồn: vendor/lucide/bike.svg (Lucide, giấy phép ISC) — toạ độ dưới đây CHÉP ĐÚNG
    * từ tệp đó, không tự vẽ. Lý do nhúng sẵn thay vì fetch lúc chạy: mở index.html bằng
    * file:// thì fetch tệp SVG bị chặn CORS, kịch bản sẽ vỡ đúng trên máy trường không
@@ -315,7 +320,7 @@
       /* KHÔNG dùng emoji làm biểu tượng (MASTER.md cấm). Icon vẽ bằng SVG nội tuyến
        * dựng với createElementNS, không innerHTML — giống hàm svgIcon() bên trên. */
       anh.appendChild(svgAnh("kb-mu"));
-      anh.appendChild(el("div", "kb-anh-nhan", "ảnh chụp ban ngày"));
+      anh.appendChild(el("div", "kb-anh-nhan", "hình mô phỏng · ban ngày"));
       day.appendChild(anh);
 
       const mui = el("div", "kb-muiten");

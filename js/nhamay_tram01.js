@@ -76,7 +76,7 @@
       dapAn:"b",
       giaiThich:"Đúng, đây là nguyên văn của Khung — ưu tiên các vấn đề gần gũi, cần thiết trong bối cảnh Việt Nam, chẳng hạn sản xuất nông nghiệp, các vấn đề liên quan đến các cộng đồng thiểu số. Nhà máy này chọn bài toán mũ bảo hiểm xe máy vì đó là vấn đề thật của giao thông Việt Nam."},
     { id:"t0-4", mach:"C", chuDe:"C4", yccd:"10.C4.1",
-      cau:"Bộ dữ liệu có 92% ảnh chụp ban ngày và 8% ảnh ban đêm. Điều gì sẽ xảy ra với mô hình?",
+      cau:"Bộ dữ liệu có 92% hình mô phỏng ban ngày và 8% hình ban đêm. Điều gì sẽ xảy ra với mô hình?",
       luaChon:[
         {id:"a", text:"Không ảnh hưởng gì, vì mô hình học từ toàn bộ dữ liệu."},
         {id:"b", text:"Mô hình học rất tốt đặc điểm ban ngày nhưng gần như không học được đặc điểm ban đêm, vì ban đêm chỉ chiếm 8% số mẫu."},

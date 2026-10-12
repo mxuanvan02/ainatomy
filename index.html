@@ -549,6 +549,16 @@
       <h3>① Dạng ẢNH — và bốn con số máy thật sự đọc</h3>
       <!-- BT-01 Mức 3: dự đoán trước khi thấy ảnh ở mức chi tiết khác nhau (js/muc3.js) -->
       <div id="t0-muc3"></div>
+      <!-- DÒNG NGẮN luôn hiện (kể cả chế độ ít chữ, nhờ lưới an toàn trong css/style.css):
+           thiếu nó thì người xem không giải mã được các khối hình. Phần giải thích dài mang class
+           .chu2 nên vẫn bị ẩn ở chế độ ít chữ, đúng mục đích giảm chữ của chế độ đó. -->
+      <p class="nho" id="t0-chu-thich-anh" style="margin:8px 0 4px">
+        <b>Hình mô phỏng do máy vẽ</b>, không phải ảnh chụp. Mũ bảo hiểm là nửa vòng tròn trắng
+        trên đầu người lái.</p>
+      <p class="nho chu2" style="margin:0 0 4px">Người đi xe máy được vẽ nhìn ngang, đơn giản hoá còn
+        vài khối hình, vì máy chỉ cần đọc <b>bốn con số</b> từ vùng đầu người lái chứ không "nhìn"
+        hình như người nhìn. Nhãn của mỗi hình do hệ tự sinh (có vẽ mũ hay không) nên hệ
+        <b>biết trước đáp án</b> và tự chấm được.</p>
       <div id="t0-anh"></div>
 
       <h3>② Dạng VĂN BẢN</h3>
@@ -570,6 +580,18 @@
 
       <p><button class="btn chinh" id="t1-tao">Tạo bộ ảnh cần dán nhãn</button>
          <span class="nho chu2" id="t1-tiendo" style="margin-left:10px"></span></p>
+      <!-- CHÚ THÍCH BỘ DỮ LIỆU — thêm 12/10 sau phản hồi của anh Văn ("cái ảnh chụp ban ngày đó
+           là ảnh gì vậy? phải cụ thể vào"). Người xem bản nháp video không giải mã được các khối
+           hình trên màn hình, và app thì gọi chúng là "ảnh chụp" trong khi chúng do máy vẽ.
+           Nói rõ ba điều: hình gì, do đâu mà có, và VÌ SAO điều đó là điểm mạnh (nhãn biết trước
+           nên hệ tự chấm được). Không nói thì người xem tưởng đây là ảnh thật bị làm mờ. -->
+      <p class="nho" id="t1-chu-thich-anh" style="margin:8px 0 4px">
+        Mỗi "ảnh" là <b>hình mô phỏng do máy vẽ</b>, không phải ảnh chụp: khung 160×120 điểm ảnh,
+        <b>mũ bảo hiểm là nửa vòng tròn trắng</b> trên đầu người lái.</p>
+      <p class="nho chu2" style="margin:0 0 4px">Người đi xe máy vẽ nhìn ngang, đơn giản hoá còn vài
+        khối hình (nền trời, mặt đường, hai bánh, thân xe, người lái) — vì máy chỉ cần đọc
+        <b>bốn con số</b> từ vùng đầu người lái, không cần ảnh đẹp. Nhãn của mỗi hình do hệ tự sinh
+        (có vẽ mũ hay không), nên hệ <b>biết trước đáp án</b> và chấm được mà không cần ai chấm hộ.</p>
       <div id="t1-anh"></div>
       <!-- BT-02 Mức 3: dự đoán độ chính xác mô hình A TRƯỚC khi chấm (js/duDoan.js) -->
       <div id="t1-duDoan"></div>

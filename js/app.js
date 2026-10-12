@@ -900,7 +900,7 @@
             const d = window.MX_LAB3D.chonDiemNgauNhien();
             if(d){
               ddDiem = window.MX_DUDOAN.veChon(host, {
-                cauHoi: "Hệ chọn ảnh số " + (d.index + 1) + " (ảnh chụp "
+                cauHoi: "Hệ chọn ảnh số " + (d.index + 1) + " (hình mô phỏng "
                   + (d.light === "ngay" ? "BAN NGÀY" : "BAN ĐÊM") + ") trong bộ dữ liệu. "
                   + "Theo dự đoán, MÔ HÌNH VỪA HỌC sẽ đoán ảnh này là CÓ mũ hay KHÔNG mũ?",
                 phuongAn: [
