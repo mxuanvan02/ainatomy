@@ -1273,7 +1273,23 @@ console.log(JSON.stringify(out));
                   if not in_nhan_co_dinh else "vẫn in nhãn cố định: " + ", ".join(in_nhan_co_dinh))
 
         # ---- G12c: đo khoản nợ nội dung, so với mốc đã ghi ----
-        MOC_NO = 82.9          # % đo được ngày 06/10, trước khi viết lại phương án nhiễu
+        # MỐC PHẢI LÀ SỐ ĐO TRÊN ĐÚNG PHẠM VI HIỆN TẠI, KHÔNG PHẢI SỐ CỦA MỘT LẦN ĐO CŨ.
+        # CỔNG MÙ THẬT ĐÃ TỒN TẠI 12 NGÀY VÀ CHỈ MUTATION TEST MỚI LỘ RA (18/10):
+        # MOC_NO từng là 82.9 = % đo ngày 06/10 trên 35 câu. Sau đó nội dung thành 38 câu và đo
+        # thật chỉ còn 76.3%, nhưng mốc vẫn 82.9 -> VÙNG MÙ 6,6 điểm phần trăm: nội dung có thể
+        # nợ thêm tới 6,6 điểm mà cổng vẫn ĐẠT. Ca phá của mut_g12c.py đẩy 29/38 -> 30/38 = 78.9%
+        # vẫn dưới ngưỡng 83.9% nên cổng IM, và ca phá báo "IM (KHÔNG RĂNG)". KHÔNG phải ca phá
+        # yếu: ca phá đúng, cổng mù.
+        # Vì sao đọc mã không thấy: 82.9 là một con số hợp lệ, không có dấu hiệu nào cho biết nó
+        # thuộc một phạm vi 35 câu đã không còn tồn tại. Chỉ khi có một phép PHÁ thật thì vùng mù
+        # mới lộ. Đây là bằng chứng mạnh nhất cho giá trị của mutation test trong repo này.
+        # Sửa theo hướng SIẾT, không nới: mốc = số đo thật hiện tại (cổng thành chốt chặn không cho
+        # nợ phình thêm), và CHỐT CẢ SỐ CÂU. Số câu lệch nghĩa là phạm vi quét đã đổi (thêm/bớt
+        # tệp dữ liệu) -> khi đó mọi mốc phần trăm cũ đều vô nghĩa, cổng phải KÊU để người sửa tự
+        # đo lại mốc, thay vì im lặng so một mốc của phạm vi khác.
+        # Đổi MOC_NO/MOC_SO_CAU BẮT BUỘC kèm lệnh đo lại: python3 tools/nghiem_thu.py G12
+        MOC_NO = 76.3          # % đo 18/10 = 29/38 câu; mốc cũ 82.9 đo 06/10 trên 35 câu (sai phạm vi)
+        MOC_SO_CAU = 38        # số câu trong phạm vi đo 18/10; lệch số này = phạm vi đã đổi
         DUNGSAI = 1.0          # điểm phần trăm: lệch dưới mức này coi như nhiễu đo
         # `import ast as _ast` là LOCAL IMPORT, cố ý. Tệp này đã có `import ast as _ast` ở dòng
         # 2248 nhưng nó nằm TRONG hàm g18, nên gọi _ast từ g12 sẽ nổ NameError. Không thêm vào
@@ -1377,13 +1393,23 @@ console.log(JSON.stringify(out));
                       + (f"{ti_le:.1f}%" if ti_le is not None else "n/a")
                       + " là ĐO THIẾU, đừng tin dòng này")
             return
+        # CHỐT PHẠM VI: mốc phần trăm chỉ có nghĩa trên đúng tập câu đã đo ra nó. Tập câu đổi mà
+        # vẫn so với mốc cũ là so sánh hai thứ khác nhau — và đó chính xác là cách vùng mù 6,6 điểm
+        # ở trên sinh ra (mốc của 35 câu đem so với phép đo 38 câu). Nên phạm vi lệch là FAIL,
+        # không phải cảnh báo: người sửa phải đo lại rồi cập nhật MOC_NO/MOC_SO_CAU có chủ đích.
+        pham_vi_dung = (tong == MOC_SO_CAU)
         self.them("G12c", f"khoản nợ nội dung không phình (mốc {MOC_NO}%, đo {ti_le:.1f}%)"
                   if ti_le is not None else "khoản nợ nội dung (không đo được)",
-                  ti_le is not None and ti_le <= MOC_NO + DUNGSAI,
+                  ti_le is not None and pham_vi_dung and ti_le <= MOC_NO + DUNGSAI,
                   (f"{no}/{tong} câu có đáp án LÀ phương án dài nhất = {ti_le:.1f}% "
                    f"(mẹo 'chọn câu dài nhất' đạt từng ấy; ngẫu nhiên ~25%). "
                    f"Chi tiết: " + ", ".join(f"{k} {v[0]}/{v[1]}" for k, v in sorted(muc.items()))
-                   + " — ĐÂY LÀ NỢ NỘI DUNG, xáo vị trí không sửa được, phải viết lại phương án nhiễu")
+                   + " — ĐÂY LÀ NỢ NỘI DUNG, xáo vị trí không sửa được, phải viết lại phương án nhiễu"
+                   + ("" if pham_vi_dung else
+                      f" — PHẠM VI ĐÃ ĐỔI: đo {tong} câu trong khi mốc {MOC_NO}% ghi cho "
+                      f"{MOC_SO_CAU} câu, nên hai số không so sánh được. Chạy "
+                      f"`python3 tools/nghiem_thu.py G12` để lấy tỉ lệ thật rồi cập nhật "
+                      f"MOC_NO/MOC_SO_CAU — đừng nới DUNGSAI cho qua"))
                   if ti_le is not None else
                   "không tìm thấy câu hỏi nào có luaChon+dapAn — phép đo HỎNG, đừng tin dòng này")
 
