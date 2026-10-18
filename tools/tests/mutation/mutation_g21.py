@@ -50,8 +50,18 @@ MORONG = os.path.join(REPO, "data", "cauhoi_moRong.js")
 # là ca phá thành không-làm-gì rồi báo "cổng im đúng", tức tự chứng minh điều ngược lại.
 CA1_CU = "const cc = traLoi.claimChon;"
 CA1_MOI = "const cc = -1;"
-CA2_CU = '"phai_lap","claim_dung"]];'
-CA2_MOI = '"phai_lap"]];'
+# ANCHOR PHẢI CHÉP TỪ MÃ THẬT, VÀ MỖI LẦN HEADER ĐỔI THÌ PHẢI CẬP NHẬT LẠI.
+# LỖI THẬT ĐÃ MẮC: CA2_CU từng là '"phai_lap","claim_dung"]];' — đúng với header CSV ngày
+# 09/10, nhưng sau đó engine.js:335 thêm cột "yccd" vào CUỐI nên header kết thúc bằng
+# '"claim_dung","yccd"]];'. Chuỗi cũ khớp 0 lần, sua_toan_tep trả None, ca 2 thành
+# "không phá được" và cả script rc=2 không in dòng KẾT LUẬN — nên dem_ca.py đánh dấu
+# "KHÔNG KHỚP KHUÔN" và loại nó khỏi tổng. Điểm tốt là script TỰ ABORT thay vì phá bừa
+# (đúng như nó tự dặn ở dòng 49-50: sai một ký tự là ca phá thành không-làm-gì rồi báo
+# "cổng im đúng", tức tự chứng minh điều ngược lại).
+# Nay chép nguyên văn từ engine.js:335 (đọc bằng read_file, không gõ từ trí nhớ): vẫn phá
+# đúng ý ca là LÀM MẤT CỘT claim_dung, chỉ khác là anchor có thêm cột yccd đứng sau nó.
+CA2_CU = '"phai_lap","claim_dung","yccd"]];'
+CA2_MOI = '"phai_lap","yccd"]];'
 CA3_IDS = ("g1-01", "g1-03")          # 2 câu LLM đang có claimLoi = 2
 CA3_CU, CA3_MOI = '"claimLoi": 2', '"claimLoi": 1'
 CA4_CU = "đúng tinh thần Khung 2422."  # trong giaiThich của slb-03 (câu KHÔNG tham chiếu vị trí)
