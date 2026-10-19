@@ -583,7 +583,7 @@
     const item = dt.ds[dt.i];
     const kq = ENG.chamDauTruong(item, dt.traLoi);
     dt.ketQua.push(kq);
-    ENG.logSuKien(maHS, { loai:"dauTruong", kq });
+    ENG.logSuKien(maHS, { loai:"dauTruong", suKien:"phanQuyet", cheDo: dt.mode, kq }); // ĐÍNH CHÍNH 19/10 (review14/): thêm suKien+cheDo vì cột CSV su_kien/che_do RỖNG 12/12 ở sự kiện đấu trường; suKien:"phanQuyet" dùng từ vựng có sẵn (như loai:"nhamay" dòng 1697), cheDo=dt.mode để tách luyen/pre/post. KHÔNG thêm yccd: bank không có field đó và suy từ unesco là SAI (MX_YCCD.chuDe thiếu D3 -> rơi 4 item; unescoDoiChieu nhiều-chủ-đề-cùng-trỏ-một-unesco nên map ngược mơ hồ) — muốn có yccd phải thêm field vào 78 item = việc nội dung. Comment giữ 1 DÒNG để soDongCode không đổi (số này in trong 2 PDF nộp + đọc ở video SHOT_09); chi tiết ở review14/.
     const box = $("dt-kq"); box.style.display="";
     box.className = "phanhoi " + (kq.diem ? "dung" : "sai");
     let head = kq.diem ? svgIco("check") + " <b>Chính xác!</b> "
