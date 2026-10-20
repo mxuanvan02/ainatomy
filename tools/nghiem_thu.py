@@ -2635,6 +2635,33 @@ for (const it of BANK) {
 }
 out.G21c = { loiCoSo: a2, loiKhongSo: b2, dungCoSo: c2, dungKhongSo: d2 };
 
+/* --- G21d (thêm 19/10, đóng Finding F1 của review14/): mẹo "chọn claim DÀI NHẤT"
+   trùng claim có lỗi ở bao nhiêu câu. Đây là khoản nợ của CỘT PHỤ claim_dung, KHÔNG ăn
+   điểm (diem không đọc claimDung) — nhưng giáo viên đọc cột ấy sẽ tưởng học sinh "chỉ
+   đúng chỗ sai" trong khi một phần lớn là chọn theo độ dài.
+   Đo trên ĐÚNG tập mà review14/do/tran_meo_dung_cong_thuc.py đã đo (mọi item co_loi),
+   và GHI LẠI item không đo được thay vì bỏ qua âm thầm: bỏ qua là cách G12c mù 12 ngày.
+   Hoà độ dài (hai claim dài bằng nhau) -> lấy index NHỎ HƠN, xác định và tái lập được. */
+let nLoiD = 0, daiTrung = 0;
+const viPhamD = [], muD = [];
+for (const it of BANK) {
+  if (it.loai !== "co_loi") continue;
+  nLoiD++;
+  /* `id` chứ không phải `mach`: mach chỉ là mã chủ đề A-D nên 53 câu chỉ có 4 giá trị,
+     in ra danh sách "C,D,B,C..." không truy được câu nào. id duy nhất 78/78. */
+  const ten = String(it.id || it.mach || "?");
+  if (!Array.isArray(it.claims) || it.claims.length < 2) { muD.push(ten + ": claims <2"); continue; }
+  if (typeof it.claimLoi !== "number" || it.claimLoi < 0 || it.claimLoi >= it.claims.length) {
+    muD.push(ten + ": claimLoi ngoài phạm vi"); continue;
+  }
+  let dai = 0;
+  for (let i = 1; i < it.claims.length; i++)
+    if (String(it.claims[i]).length > String(it.claims[dai]).length) dai = i;   // > : hoà thì giữ index nhỏ
+  if (dai === it.claimLoi) daiTrung++; else viPhamD.push(ten);
+}
+out.G21d = { nLoi: nLoiD, daiTrung, nViPham: viPhamD.length,
+             viPham: viPhamD.slice(0, 10), mu: muD.slice(0, 6), nMu: muD.length };
+
 console.log(JSON.stringify(out));
 """.replace("mảng字", "mảng chữ"))
         try:
@@ -2696,6 +2723,60 @@ console.log(JSON.stringify(out));
                   f"{p_khong:.1f}% — chênh {khoang:.1f} điểm %. NỢ NỘI DUNG của ngân hàng "
                   f"câu: các câu 'không lỗi' phần lớn thiếu số liệu, học sinh thấy số là "
                   f"nghi. Chữa bằng cách viết thêm câu ĐÚNG có số liệu thật, không bằng mã")
+
+        # ---- G21d (thêm 19/10): nợ cue ĐỘ DÀI claim ở đấu trường, đóng Finding F1 ----
+        # VÌ SAO CÓ CỔNG NÀY. Phản biện bằng thao tác thật 19/10 (review14/, Finding F1) đo ra:
+        # trong 53 câu có lỗi, claim DÀI NHẤT trùng claim có lỗi ở 42 câu = 79,2%. Cột phụ
+        # claim_dung sinh ra ngày 09/10 để phân biệt "chỉ đúng chỗ sai" với "đoán đúng loại",
+        # nhưng ở 79,2% nó KHÔNG phân biệt được hai thứ đó — giáo viên đọc cột ấy sẽ tưởng học
+        # sinh chỉ đúng chỗ sai trong khi phần lớn là chọn theo độ dài. Trước hôm nay khoản nợ
+        # này có cổng ở view tình huống (G12c đo cue dài-nhất trên js/tinhhuong.js) nhưng KHÔNG
+        # có ở đấu trường: G12c quét theo TỆP nên ngân hàng đấu trường nằm ngoài phạm vi. Cùng
+        # một cơ chế đó đã làm G12c mù 12 ngày (mốc 82,9% của 35 câu đem so phép đo 38 câu).
+        # KHÔNG sửa công thức `diem`: diem không đọc claimDung nên điểm thật đã chống mẹo tốt
+        # (mẹo mạnh nhất không đọc chữ chỉ đạt 44,9%, headroom 55,1 điểm) — sửa công thức sẽ mất
+        # khả năng so pre/post, nguyên tắc repo đã ghi và đã tuân thủ.
+        # Biến `d` đã là json của probe (dòng trên), nên dùng `gd`. KHÔNG dùng return sớm:
+        # G21d là phép kiểm cuối của nhóm này hôm nay, nhưng return sẽ âm thầm cắt mất mọi
+        # phép kiểm thêm sau đó — đúng loại lỗi im lặng mà bộ cổng này sinh ra để diệt.
+        gd = d["G21d"]
+        MOC_DAI_NHAT = 79.2    # % đo 19/10 = 42/53 câu có lỗi. HAI CHUẨN ĐỘC LẬP khớp nhau:
+                               # probe node của cổng này và review14/do/tran_meo_dung_cong_thuc.py
+        MOC_SO_CAU_LOI = 53    # phạm vi đo 19/10. Lệch số này = bank đã đổi, mốc % thành vô nghĩa
+        DUNG_SAI_D = 1.0       # điểm % — dưới mức này coi như nhiễu đo
+        if gd["nMu"]:
+            # FAIL-CLOSED khi phép đo mù. Câu không đo được (claims <2, claimLoi ngoài phạm vi)
+            # mà bị bỏ qua thì tỉ lệ in ra là ĐO THIẾU nhưng trông vẫn hợp lệ — G12c đã mù 12
+            # ngày vì đúng cơ chế đó (mốc 82,9% của 35 câu đem so phép đo 38 câu).
+            self.them("G21d", "phép đo cue 'claim dài nhất' đọc được MỌI câu có lỗi", False,
+                      "PHÉP ĐO MÙ ở %d câu: %s — con số %s là ĐO THIẾU, đừng tin dòng này"
+                      % (gd["nMu"], "; ".join(gd["mu"][:5]),
+                         ("%.1f%%" % (100.0 * gd["daiTrung"] / gd["nLoi"])) if gd["nLoi"] else "n/a"))
+        elif not gd["nLoi"]:
+            self.them("G21d", "nợ cue 'claim dài nhất' ở đấu trường", False,
+                      "không có câu co_loi nào trong bank — phép đo HỎNG, đừng tin dòng này")
+        else:
+            n_loi_d = gd["nLoi"]
+            ti_le_d = 100.0 * gd["daiTrung"] / n_loi_d
+            pham_vi_d = (n_loi_d == MOC_SO_CAU_LOI)
+            self.them("G21d",
+                      f"nợ cue 'claim dài nhất' không phình (mốc {MOC_DAI_NHAT}%, đo {ti_le_d:.1f}%)",
+                      pham_vi_d and ti_le_d <= MOC_DAI_NHAT + DUNG_SAI_D,
+                      f"claim DÀI NHẤT trùng claim có lỗi ở {gd['daiTrung']}/{n_loi_d} câu = "
+                      f"{ti_le_d:.1f}%. Mẹo này KHÔNG ăn điểm — `diem` không đọc claimDung, và "
+                      f"mẹo mạnh nhất không đọc chữ nào chỉ đạt 44,9% điểm (headroom 55,1 điểm) "
+                      f"— nhưng nó làm bẩn CỘT PHỤ claim_dung, cột sinh ra ngày 09/10 để phân "
+                      f"biệt 'chỉ đúng chỗ sai' với 'đoán đúng loại'. Ở mức này giáo viên đọc cột "
+                      f"ấy sẽ tưởng học sinh chỉ đúng chỗ sai. NỢ NỘI DUNG: chữa bằng cách viết "
+                      f"lại claim nhiễu cho ngắn hơn claim lỗi, KHÔNG bằng cách sửa công thức "
+                      f"`diem` (sửa là mất khả năng so pre/post). "
+                      f"{gd['nViPham']} câu mẹo KHÔNG trúng: {','.join(gd['viPham'][:10])}"
+                      + ("" if pham_vi_d else
+                         f" — PHẠM VI ĐÃ ĐỔI: đo {n_loi_d} câu có lỗi trong khi mốc "
+                         f"{MOC_DAI_NHAT}% ghi cho {MOC_SO_CAU_LOI} câu, hai số không so sánh "
+                         f"được. Chạy `python3 tools/nghiem_thu.py G21` lấy tỉ lệ thật rồi cập "
+                         f"nhật MOC_DAI_NHAT/MOC_SO_CAU_LOI — đừng nới DUNG_SAI_D cho qua"))
+
     def g22(self, node="/usr/bin/node"):
         """G22 — ORACLE của js/vaitro_connguoi.js phải chấm đúng, kiểm BẰNG HÀNH VI.
 
@@ -2925,11 +3006,159 @@ console.log(JSON.stringify(out));
                   "tức 56 câu chưa duyệt trông y hệt câu đã duyệt")
 
 
+    # ======== G23 CHỮ HỌC SINH ĐỌC PHẢI KHỚP THUẬT TOÁN THẬT (thêm 19/10) ========
+    def g23(self, node="/usr/bin/node"):
+        """G23 — DÒNG CHỮ TRÊN MÀN HÌNH HỌC SINH PHẢI KHỚP THUẬT TOÁN CHỌN CÂU.
+
+        VÌ SAO CÓ CỔNG NÀY. Phản biện bằng thao tác thật 19/10 (review14/, Finding F3) tìm ra
+        trên màn hình chính của sản phẩm câu: "Mỗi phiên 12 câu — 2 câu cho mỗi loại lỗi + 4 câu
+        đúng (mồi nhử)". META.loaiLoi có 5 loại nên 5 x 2 + 4 = 14 != 12; và phiên chạy thật có
+        loại chỉ ra 1 câu, tức lời hứa "2 câu cho mỗi loại" bị chính thuật toán bác. Chữ đã sửa
+        thành "8 câu có lỗi (mỗi loại ít nhất 1 câu) + 4 câu đúng". KHÔNG cổng nào canh dòng chữ
+        đó (grep "Mỗi phiên" tools/nghiem_thu.py = 0), nên lỗi sống sót tới khi có người mở app.
+
+        CÁCH CHẶN: đọc SỐ TỪ MÃ SỐNG, không hardcode. Ba hằng số của thuật toán chọn câu được
+        trích bằng regex từ js/app.js (8 = while pick.length < 8; 4 = shuffle(dung).slice(0,4);
+        12 = shuffle(pick).slice(0,12)), bốn số trong câu chữ được trích từ index.html, và số loại
+        lỗi đọc qua runtime node từ data/meta.js. Vậy khi ai đó thêm loại lỗi thứ 6, hoặc đổi số
+        câu mỗi phiên, mà quên sửa chữ thì cổng KÊU — đúng yêu cầu "kèm cổng" của review14/ Phần 4.
+
+        FAIL-CLOSED: không parse được câu chữ hoặc không trích được hằng số thì báo HỎNG chứ
+        không bỏ qua. Bỏ qua là cách cổng mù: ai viết lại câu đó theo kiểu khác sẽ làm regex trật,
+        và một cổng trật mà im lặng thì tệ hơn không có cổng.
+        """
+        print("\n=== G23 CHỮ HỌC SINH ĐỌC ↔ THUẬT TOÁN CHỌN CÂU ===")
+        # html_song() nhận NỘI DUNG HTML, không nhận đường dẫn — mọi call site khác trong tệp
+        # này đều viết html_song(doc("index.html")). Bản đầu của cổng này truyền thẳng
+        # "index.html" nên re.sub chạy trên chuỗi 10 ký tự, trả về 10 ký tự và G23a báo "phép đo
+        # mù" — tức cổng fail-closed bắt đúng lỗi của chính người viết cổng.
+        src = doc("js/app.js")
+        idx = html_song(doc("index.html"))   # bản đã lột chú thích: chữ học sinh THẬT SỰ thấy
+        re_loi = re.compile(r"while\s*\(\s*pick\.length\s*<\s*(\d+)\s*\)")
+        re_dung = re.compile(r"shuffle\s*\(\s*dung\s*\)\s*\.slice\s*\(\s*0\s*,\s*(\d+)\s*\)")
+        re_tong = re.compile(r"shuffle\s*\(\s*pick\s*\)\s*\.slice\s*\(\s*0\s*,\s*(\d+)\s*\)")
+        mu = []
+        m_loi, m_dung, m_tong = re_loi.search(src), re_dung.search(src), re_tong.search(src)
+        if not m_loi:
+            mu.append("không trích được số câu LỖI từ js/app.js (while pick.length < N)")
+        if not m_dung:
+            mu.append("không trích được số câu ĐÚNG từ js/app.js (shuffle(dung).slice(0,N))")
+        if not m_tong:
+            mu.append("không trích được TỔNG số câu từ js/app.js (shuffle(pick).slice(0,N))")
+        # câu chữ: "Mỗi phiên N câu — M câu có lỗi (mỗi loại ít nhất K câu) + J câu đúng"
+        re_chu = re.compile(
+            r"Mỗi phiên\s*(\d+)\s*câu\s*—\s*(\d+)\s*câu có lỗi\s*"
+            r"\(mỗi loại ít nhất\s*(\d+)\s*câu\)\s*\+\s*(\d+)\s*câu đúng")
+        m_chu = re_chu.search(idx)
+        if not m_chu:
+            mu.append("không parse được câu 'Mỗi phiên N câu — M câu có lỗi (...)' trong index.html")
+
+        # số loại lỗi + số câu mỗi loại trong bank ĐÃ DUYỆT, đọc qua runtime (không regex-parse)
+        probe = os.path.join("/tmp", "judge_g23.js")
+        n_loai, theo_loai = None, {}
+        if os.path.exists(os.path.join(ROOT, "data", "meta.js")):
+            try:
+                with open(probe, "w", encoding="utf-8") as f:
+                    f.write(r"""
+const fs = require("fs"), vm = require("vm");
+const ROOT = process.argv[2];
+const store = {};
+const ctx = { window: {}, console: { log() {} },
+  localStorage: { getItem: k => k in store ? store[k] : null,
+                  setItem: (k, v) => { store[k] = String(v) },
+                  removeItem: k => { delete store[k] } },
+  navigator: {}, Date, Math, JSON };
+vm.createContext(ctx);
+for (const f of ["data/meta.js", "data/cauhoi.js", "data/cauhoi_moRong.js"])
+  vm.runInContext(fs.readFileSync(ROOT + "/" + f, "utf8"), ctx, { filename: f });
+const M = ctx.window.MX_META || {};
+const loai = Object.keys(M.loaiLoi || {});
+const BANK = (ctx.window.MX_BANK || []).slice().concat(
+  (ctx.window.MX_BANK_MORE || []).map(o => Object.assign({}, o, { choDuyet: 1 })));
+const daDuyet = {};
+for (const k of loai) daDuyet[k] = 0;
+for (const it of BANK)
+  if (it.loai === "co_loi" && it.choDuyet && it.loaiLoi && daDuyet[it.loaiLoi] !== undefined)
+    daDuyet[it.loaiLoi]++;
+console.log(JSON.stringify({ nLoai: loai.length, loai, daDuyet }));
+""")
+                r = subprocess.run([node, probe, ROOT], capture_output=True, text=True, timeout=60)
+                if r.returncode == 0 and r.stdout.strip():
+                    pj = json.loads(r.stdout.strip())
+                    n_loai = pj.get("nLoai")
+                    theo_loai = pj.get("daDuyet") or {}
+                else:
+                    mu.append("probe g23 không chạy được: " + (r.stderr or r.stdout)[-160:])
+            except (OSError, subprocess.SubprocessError, ValueError) as e:
+                mu.append("probe g23 lỗi: " + str(e)[:140])
+        else:
+            mu.append("thiếu data/meta.js nên không đọc được META.loaiLoi")
+
+        # ---- G23a: phép đo phải SÁNG trước đã (fail-closed khi mù) ----
+        self.them("G23a", "đọc được cả thuật toán lẫn câu chữ (phép đo không mù)",
+                  not mu,
+                  ("OK: trích được 3 hằng số trong js/app.js + câu chữ trong index.html + "
+                   "META.loaiLoi qua runtime") if not mu
+                  else "PHÉP ĐO MÙ: " + "; ".join(mu[:4])
+                       + " — ai đó đã viết lại câu/hằng số theo kiểu khác, regex trật. "
+                         "Sửa regex hoặc sửa câu chữ, đừng bỏ cổng này")
+        if mu:
+            return
+
+        s_loi_ma = int(m_loi.group(1))       # 8  — số câu có lỗi thuật toán bốc
+        s_dung_ma = int(m_dung.group(1))     # 4  — số câu đúng (mồi nhử)
+        s_tong_ma = int(m_tong.group(1))     # 12 — tổng sau khi cắt
+        c_tong, c_loi, c_moi_loai, c_dung = (int(x) for x in m_chu.groups())
+
+        # ---- G23b: số học trong câu chữ phải khớp thuật toán ----
+        loi_so_hoc = []
+        if c_loi != s_loi_ma:
+            loi_so_hoc.append(f"chữ khai {c_loi} câu có lỗi, mã bốc {s_loi_ma}")
+        if c_dung != s_dung_ma:
+            loi_so_hoc.append(f"chữ khai {c_dung} câu đúng, mã bốc {s_dung_ma}")
+        if c_tong != s_tong_ma:
+            loi_so_hoc.append(f"chữ khai tổng {c_tong} câu, mã cắt ở {s_tong_ma}")
+        if c_loi + c_dung != c_tong:
+            loi_so_hoc.append(f"tự mâu thuẫn: {c_loi} + {c_dung} = {c_loi + c_dung} ≠ {c_tong}")
+        if s_loi_ma + s_dung_ma > s_tong_ma:
+            loi_so_hoc.append(f"mã tự mâu thuẫn: bốc {s_loi_ma} lỗi + {s_dung_ma} đúng "
+                              f"= {s_loi_ma + s_dung_ma} > tổng {s_tong_ma}")
+        self.them("G23b", f"chữ trên màn hình khớp thuật toán ({c_loi}+{c_dung}={c_tong})",
+                  not loi_so_hoc,
+                  (f"chữ: 'Mỗi phiên {c_tong} câu — {c_loi} câu có lỗi (mỗi loại ít nhất "
+                   f"{c_moi_loai} câu) + {c_dung} câu đúng' · mã: while pick.length<{s_loi_ma}, "
+                   f"shuffle(dung).slice(0,{s_dung_ma}), shuffle(pick).slice(0,{s_tong_ma}) — khớp. "
+                   f"Đây chính là câu F3 tìm ra sai số học ngày 19/10 (cũ: '2 câu cho mỗi loại "
+                   f"lỗi' với 5 loại = 14 ≠ 12)")
+                  if not loi_so_hoc else "SAI SỐ HỌC: " + "; ".join(loi_so_hoc))
+
+        # ---- G23c: lời hứa "mỗi loại ít nhất K câu" phải THẬT trên bank đã duyệt ----
+        # Đây là phần chữ sửa thành "mỗi loại ít nhất 1 câu": lời hứa đó chỉ đúng nếu (a) mọi
+        # loại đều có >= 1 câu đã duyệt nhãn, và (b) số câu lỗi mỗi phiên >= số loại lỗi, vì
+        # thuật toán bốc vòng 1 mỗi loại 1 câu rồi mới bù — nếu số loại > số câu lỗi thì không
+        # thể nào đủ mỗi loại một câu.
+        loai_thieu = [k for k, v in theo_loai.items() if v < c_moi_loai]
+        du_cho_moi_loai = (s_loi_ma >= n_loai)
+        self.them("G23c", f"lời hứa 'mỗi loại ít nhất {c_moi_loai} câu' là THẬT",
+                  not loai_thieu and du_cho_moi_loai,
+                  (f"{n_loai} loại lỗi, mỗi phiên bốc {s_loi_ma} câu lỗi (>= số loại nên vòng 1 "
+                   f"'mỗi loại một câu' chạy được). Số câu đã duyệt theo loại: "
+                   + ", ".join(f"{k}={v}" for k, v in sorted(theo_loai.items()))
+                   + f" — loại ít nhất có {min(theo_loai.values())} câu >= {c_moi_loai}")
+                  if not loai_thieu and du_cho_moi_loai else
+                  ("LỜI HỨA BỊ THUẬT TOÁN BÁC: "
+                   + (f"các loại không đủ {c_moi_loai} câu đã duyệt: {loai_thieu} "
+                      f"({', '.join(f'{k}={theo_loai[k]}' for k in loai_thieu)}). " if loai_thieu else "")
+                   + (f"phiên chỉ bốc {s_loi_ma} câu lỗi trong khi có {n_loai} loại, không thể "
+                      f"mỗi loại một câu. " if not du_cho_moi_loai else "")
+                   + "Sửa chữ cho khớp thực tế, đừng để học sinh đọc một lời hứa sai"))
+
+
 def main():
     j = Judge()
     chi = [a.upper() for a in sys.argv[1:]]
     NHOM = ["G1", "G2", "G3", "G4", "G6", "G7", "G8", "G9", "G10", "G11", "G12", "G13",
-            "G14", "G15", "G16", "G17", "G18", "G19", "G20", "G21", "G22"]
+            "G14", "G15", "G16", "G17", "G18", "G19", "G20", "G21", "G22", "G23"]
     j.nhom_da_chay = [g for g in NHOM if not chi or g in chi]
     # Chỉ coi là chạy ĐẦY ĐỦ khi không lọc nhóm nào. Lần chạy lọc (vd `nghiem_thu.py G11`)
     # KHÔNG được ghi tệp bằng chứng — xem giải thích ở tong_ket.
