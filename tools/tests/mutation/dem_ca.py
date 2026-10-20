@@ -25,18 +25,50 @@ HAI SỐ PHẢI LUÔN TÁCH. Ca đối chứng âm không phải "cổng bắt �
 gộp lại thành một số là khai quá, và chính 5 script trong repo này từng gộp như vậy.
 
 CÁCH DÙNG
-    # chạy hết 12 script rồi đếm (làm một lệnh, không tự chạy hộ)
+    # chạy hết bộ script rồi đếm (làm một lệnh, không tự chạy hộ)
     cd soi-ai
     for b in tools/tests/mutation/*.py; do python3 "$b" > "/tmp/mut/$(basename $b .py).log" 2>&1; done
     python3 tools/tests/mutation/dem_ca.py /tmp/mut
+    # thêm --json= để nơi khác ĐỌC số này thay vì chép tay:
+    python3 tools/tests/mutation/dem_ca.py /tmp/mut --json=out/mutation_dem.json
 
 Tệp này KHÔNG tự chạy script nào: nó chỉ đọc log. Chạy hộ thì nó lại thành một công cụ sửa tệp
 repo mà người gọi không biết, và mỗi script mutation cần cây sạch trước khi bắt đầu.
+
+VÌ SAO CÓ --json (thêm 20/10). Con số này được chép TAY vào `tools/sinh_noi_dung_ho_so.py`
+(hằng MUTATION) rồi in lên slide nộp giám khảo, và nó đã cũ âm thầm hai lần: 50 ca -> 63 ca ->
+69 ca, mỗi lần thêm một script mutation. Cổng [14] của repo hồ sơ KHÔNG bắt được, vì kiểm nó đòi
+chạy lại cả bộ mutation (vài phút, mỗi script sửa tệp repo rồi khôi phục) trong khi [14] là phép
+kiểm nhanh. Một con số không có đường nào tự cập nhật thì sớm muộn cũng sai, nên nay tệp này XUẤT
+số đo ra JSON kèm commit + cờ `day_du`, và nơi đọc (sinh_noi_dung_ho_so.py) FAIL-CLOSED: thiếu
+tệp, phép đếm không đáng tin, hay commit của phép đếm khác commit mà bằng chứng cổng được sinh ra
+thì in `<<THIẾU>>` và từ chối ghi slide.
 """
 import io
+import json
 import os
 import re
+import subprocess
 import sys
+from datetime import datetime
+
+REPO = os.path.dirname(os.path.dirname(os.path.dirname(os.path.dirname(os.path.abspath(__file__)))))
+
+
+def head_repo():
+    """Commit ngắn của repo con lúc ĐẾM — để nơi đọc số này biết phép đếm thuộc bản mã nào.
+
+    Vì sao cần: con số mutation đi thẳng vào slide nộp giám khảo. Một phép đếm chạy trên cây cũ
+    rồi được chép vào tài liệu mô tả cây mới là đúng loại lỗi mà repo này đã mắc với nhãn commit
+    `f383ee7` (số 10.865 không đo được ở cây đó). Ghi commit kèm số thì nơi đọc so được.
+    Trả None khi không đọc được git — người gọi phải coi đó là THIẾU, không phải là "không quan trọng".
+    """
+    try:
+        r = subprocess.run(["git", "rev-parse", "--short", "HEAD"], cwd=REPO,
+                           capture_output=True, text=True, timeout=60)
+        return r.stdout.strip() if r.returncode == 0 else None
+    except (OSError, subprocess.SubprocessError):
+        return None
 
 # Khuôn A: bắt buộc có cả nhóm tách hai loại. Đây là khuôn CHUẨN.
 KA = re.compile(r"KẾT LUẬN: (\d+)/(\d+) ca đúng như kỳ vọng "
@@ -46,10 +78,20 @@ KB = re.compile(r"KẾT LUẬN: (\d+)/(\d+) ca phá [^\n]*")
 
 
 def main():
-    if len(sys.argv) < 2:
-        print("dùng: python3 dem_ca.py <thư_mục chứa log các script mutation>")
+    argv = sys.argv[1:]
+    duong_json = None
+    thu_muc = None
+    for a in argv:
+        if a.startswith("--json="):
+            duong_json = a.split("=", 1)[1]
+        elif a == "--json":
+            print("!!! --json cần dạng --json=<đường_dẫn>, không đoán tên tệp")
+            return 2
+        elif thu_muc is None:
+            thu_muc = a
+    if not thu_muc:
+        print("dùng: python3 dem_ca.py <thư_mục chứa log các script mutation> [--json=<tệp.json>]")
         return 2
-    thu_muc = sys.argv[1]
     if not os.path.isdir(thu_muc):
         print(f"!!! không thấy thư mục: {thu_muc}")
         return 2
@@ -96,7 +138,28 @@ def main():
 
     # Mã thoát phản ánh ĐỘ TIN CẬY CỦA PHÉP ĐẾM, không phải "có lỗi trong sản phẩm".
     # Người đọc phải phân biệt được "đếm xong, sạch" với "đếm thiếu một phần".
-    return 0 if (not khong_khop and not khong_dat) else 1
+    day_du = not khong_khop and not khong_dat
+
+    if duong_json:
+        p = duong_json if os.path.isabs(duong_json) else os.path.join(REPO, duong_json)
+        os.makedirs(os.path.dirname(p), exist_ok=True)
+        commit = head_repo()
+        payload = {
+            "tong": tong, "pha": pha, "doi_chung_am": dc,
+            "so_script": len(logs), "so_script_doc_duoc": len(logs) - len(khong_khop),
+            "khong_khop": khong_khop, "khong_dat": khong_dat,
+            "day_du": day_du,          # False = số ở trên KHÔNG đáng tin, đừng chép đi đâu cả
+            "commit": commit,           # None = không xác định được bản mã đã đếm
+            "luc": datetime.now().isoformat(timespec="seconds"),
+            "thu_muc_log": os.path.abspath(thu_muc),
+        }
+        io.open(p, "w", encoding="utf-8").write(
+            json.dumps(payload, ensure_ascii=False, indent=1) + "\n")
+        print(f"✓ đã ghi số đo -> {p} (day_du={day_du} · commit={commit})")
+        if commit is None:
+            print("  !!! không đọc được commit của repo — nơi đọc số này sẽ coi là THIẾU, không đoán")
+
+    return 0 if day_du else 1
 
 
 if __name__ == "__main__":
