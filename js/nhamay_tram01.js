@@ -234,7 +234,7 @@
     return ds;
   }
 
-  /** Vẽ ảnh để học sinh dán nhãn. Chưa tiết lộ nhãn thật. */
+  /** Vẽ ảnh để học sinh dán nhãn. Cho phép thay đổi nhãn bất cứ lúc nào. */
   function veAnhDanNhan(host){
     if(!t1State) return;
     host.textContent = "";
@@ -256,18 +256,34 @@
       b0.className = "dl-the"; b0.type = "button"; b0.textContent = "KHÔNG mũ";
       b0.dataset.i = i; b0.dataset.v = "0";
       [b1, b0].forEach(b => b.onclick = () => {
+        const giaTriCu = t1State.nhanHS[i];
         t1State.nhanHS[i] = Number(b.dataset.v);
         [...nut.children].forEach(c => c.classList.remove("chon"));
         b.classList.add("chon");
         capNhatTienDoT1();
+        // TÍNH NĂNG 1 & 2: Nếu đã dán ít nhất 3 ảnh, hiển thị trọng số và mặt phẳng
+        const soDaDan = t1State.nhanHS.filter(x => x !== null).length;
+        if(soDaDan >= 3){
+          hienThiTrongSoVaMatPhang();
+        }
       });
       nut.append(b1, b0);
       w.appendChild(nut);
-      // LƯU Ý: w đã được gắn vào grid ở đầu vòng lặp rồi. Bản đầu còn một dòng
-      // `if(!d.canvas) grid.appendChild(w)` ở cuối — thừa và có hại: appendChild một
-      // nút DOM đã có cha sẽ DI CHUYỂN nó, làm lệch thứ tự ảnh khi thiếu canvas.
     });
     host.appendChild(grid);
+    // Thêm khu vực hiển thị trọng số và mặt phẳng quyết định
+    const khuVucTrongSo = document.createElement("div");
+    khuVucTrongSo.id = "t1-trongso-khuVuc";
+    khuVucTrongSo.style.cssText = "margin-top:24px;padding:16px;background:var(--nen2);border-radius:8px;display:none";
+    khuVucTrongSo.innerHTML = `
+      <h3>Trọng số mô hình (cập nhật sau mỗi nhãn)</h3>
+      <p class="nho chu2">Mô hình perceptron học từ chính nhãn bạn vừa dán. Trọng số thay đổi cho thấy mô hình đang "hiểu" gì.</p>
+      <div id="t1-trongso-so"></div>
+      <h3 style="margin-top:16px">Mặt phẳng quyết định</h3>
+      <p class="nho chu2">Đường thẳng phân cách "CÓ mũ" và "KHÔNG mũ" trong không gian 2 đặc trưng. Chấm đỏ = dự đoán sai.</p>
+      <canvas id="t1-matphang" width="400" height="300" style="border:1px solid var(--vien);border-radius:4px;background:#fff"></canvas>
+    `;
+    host.appendChild(khuVucTrongSo);
   }
 
   function capNhatTienDoT1(){
@@ -379,6 +395,141 @@
    * Trả về MẢNG GỐC (không sao chép) vì chỉ dùng để đọc, không sửa. */
   function dsT0(){
     return t0State ? t0State.ds : null;
+  }
+
+  /** Hiển thị trọng số mô hình và mặt phẳng quyết định sau mỗi lần dán nhãn.
+   * TÍNH NĂNG 1 & 3: Cho học sinh thấy mô hình đang "hiểu" gì và đường phân cách nằm đâu. */
+  function hienThiTrongSoVaMatPhang(){
+    if(!t1State) return;
+    const khuVuc = $("t1-trongso-khuVuc");
+    if(!khuVuc) return;
+    
+    const soDaDan = t1State.nhanHS.filter(x => x !== null).length;
+    if(soDaDan < 3){
+      khuVuc.style.display = "none";
+      return;
+    }
+    
+    khuVuc.style.display = "block";
+    
+    // Huấn luyện perceptron trên nhãn học sinh vừa dán
+    const dsHoc = [];
+    t1State.ds.forEach((d, i) => {
+      if(t1State.nhanHS[i] !== null){
+        dsHoc.push({ ...d, nhan: t1State.nhanHS[i] });
+      }
+    });
+    
+    const model = new (L().Perceptron)();
+    model.hoc({ vong: 30, duLieu: dsHoc });
+    
+    // Hiển thị trọng số
+    const trongSoDiv = $("t1-trongso-so");
+    if(trongSoDiv){
+      const w = model.w;
+      const b = model.b;
+      trongSoDiv.innerHTML = `
+        <table style="width:100%;max-width:500px">
+          <tr><th>Đặc trưng</th><th>Trọng số</th><th>Ý nghĩa</th></tr>
+          <tr><td>① Rất sáng</td><td><b>${w[0].toFixed(3)}</b></td><td class="chu2">Tín hiệu mũ trắng ban ngày</td></tr>
+          <tr><td>② Sáng vừa</td><td><b>${w[1].toFixed(3)}</b></td><td class="chu2">Tín hiệu mũ xám ban đêm</td></tr>
+          <tr><td>③ Độ sáng đầu</td><td><b>${w[2].toFixed(3)}</b></td><td class="chu2">Ngữ cảnh ngày/đêm</td></tr>
+          <tr><td>④ Tỉ lệ tối</td><td><b>${w[3].toFixed(3)}</b></td><td class="chu2">Ngữ cảnh ngày/đêm</td></tr>
+          <tr><td>Hệ số chặn</td><td><b>${b.toFixed(3)}</b></td><td class="chu2">Ngưỡng quyết định</td></tr>
+        </table>
+        <p class="nho chu2" style="margin-top:8px">Công thức: z = w₁·x₁ + w₂·x₂ + w₃·x₃ + w₄·x₄ + b. Nếu z ≥ 0 → "CÓ mũ", ngược lại → "KHÔNG mũ".</p>
+      `;
+    }
+    
+    // Vẽ mặt phẳng quyết định 2D (dùng 2 đặc trưng chính)
+    const canvas = $("t1-matphang");
+    if(canvas){
+      const ctx = canvas.getContext("2d");
+      const W = canvas.width, H = canvas.height;
+      ctx.clearRect(0, 0, W, H);
+      
+      // Tìm giá trị min/max của 2 đặc trưng chính để chuẩn hóa
+      let min0 = Infinity, max0 = -Infinity, min1 = Infinity, max1 = -Infinity;
+      t1State.ds.forEach(d => {
+        const f = L().dacTrung(d.canvas);
+        min0 = Math.min(min0, f.tiLeRatSang);
+        max0 = Math.max(max0, f.tiLeRatSang);
+        min1 = Math.min(min1, f.tiLeTrungBinh);
+        max1 = Math.max(max1, f.tiLeTrungBinh);
+      });
+      
+      const scale = (v, min, max) => (v - min) / (max - min + 0.0001);
+      
+      // Vẽ lưới nền
+      ctx.strokeStyle = "#e0e0e0";
+      ctx.lineWidth = 1;
+      for(let i = 0; i <= 10; i++){
+        const x = i * W / 10;
+        const y = i * H / 10;
+        ctx.beginPath(); ctx.moveTo(x, 0); ctx.lineTo(x, H); ctx.stroke();
+        ctx.beginPath(); ctx.moveTo(0, y); ctx.lineTo(W, y); ctx.stroke();
+      }
+      
+      // Vẽ đường phân cách: w[0]*x + w[1]*y + (w[2]*mean2 + w[3]*mean3 + b) = 0
+      // => y = -(w[0]*x + w[2]*mean2 + w[3]*mean3 + b) / w[1]
+      const mean2 = 0.5, mean3 = 0.5; // giá trị trung bình của 2 đặc trưng còn lại
+      const heSo = w[2] * mean2 + w[3] * mean3 + b;
+      
+      ctx.strokeStyle = "#7C3AED";
+      ctx.lineWidth = 3;
+      ctx.beginPath();
+      let daVe = false;
+      for(let px = 0; px < W; px++){
+        const xChuan = px / W;
+        const xGoc = min0 + xChuan * (max0 - min0);
+        const yChuan = -(w[0] * xGoc + heSo) / (w[1] + 0.0001);
+        const yPixel = H - yChuan * H;
+        if(yPixel >= 0 && yPixel <= H){
+          if(!daVe){
+            ctx.moveTo(px, yPixel);
+            daVe = true;
+          } else {
+            ctx.lineTo(px, yPixel);
+          }
+        }
+      }
+      ctx.stroke();
+      
+      // Vẽ các điểm dữ liệu
+      t1State.ds.forEach((d, i) => {
+        if(t1State.nhanHS[i] === null) return;
+        const f = L().dacTrung(d.canvas);
+        const x = scale(f.tiLeRatSang, min0, max0) * W;
+        const y = H - scale(f.tiLeTrungBinh, min1, max1) * H;
+        
+        // Dự đoán của mô hình
+        const z = w[0]*f.tiLeRatSang + w[1]*f.tiLeTrungBinh + w[2]*f.doSangVungDau + w[3]*f.tiLeToi + b;
+        const duDoan = z >= 0 ? 1 : 0;
+        const dung = duDoan === t1State.nhanHS[i];
+        
+        ctx.fillStyle = dung ? "#15803D" : "#B91C1C";
+        ctx.beginPath();
+        ctx.arc(x, y, 6, 0, 2 * Math.PI);
+        ctx.fill();
+        
+        // Viền trắng để nổi bật
+        ctx.strokeStyle = "#fff";
+        ctx.lineWidth = 2;
+        ctx.stroke();
+      });
+      
+      // Chú thích
+      ctx.fillStyle = "#1E1B4B";
+      ctx.font = "12px sans-serif";
+      ctx.fillText("Trục X: Rất sáng", 10, H - 10);
+      ctx.fillText("Trục Y: Sáng vừa", 10, 20);
+      ctx.fillStyle = "#7C3AED";
+      ctx.fillText("— Đường phân cách", W - 120, 20);
+      ctx.fillStyle = "#15803D";
+      ctx.fillText("● Đúng", W - 120, 40);
+      ctx.fillStyle = "#B91C1C";
+      ctx.fillText("● Sai", W - 120, 60);
+    }
   }
 
   window.MX_NHAMAY01 = {
