@@ -122,18 +122,34 @@
   function khoiTaoGiaoDienMoi(){
     if(!t0State) return;
     
-    // BƯỚC 1: Vẽ 2 ảnh mẫu (ngày và đêm)
+    // BƯỚC 1: Vẽ 2 ảnh mẫu (ngày và đêm) - dùng seed đảm bảo khác biệt rõ
     const anhMauNgay = $("t0-anh-mau-ngay");
     const anhMauDem = $("t0-anh-mau-dem");
     if(anhMauNgay){
       const ctx = anhMauNgay.getContext("2d");
-      const canvasMau = L().veXeMay(160, 120, "mbh", "ngay", 12345);
+      const canvasMau = L().veXeMay(160, 120, "mbh", "ngay", 20261021);
       ctx.drawImage(canvasMau, 0, 0);
+      // Hiển thị 4 con số dưới ảnh
+      const f = L().dacTrung(canvasMau);
+      const vec = L().vec(f);
+      const info = document.createElement("div");
+      info.className = "nho";
+      info.style.cssText = "margin-top:8px;text-align:left;font-family:monospace";
+      info.innerHTML = `① ${vec[0].toFixed(3)}<br>② ${vec[1].toFixed(3)}<br>③ ${vec[2].toFixed(3)}<br>④ ${vec[3].toFixed(3)}`;
+      anhMauNgay.parentElement.appendChild(info);
     }
     if(anhMauDem){
       const ctx = anhMauDem.getContext("2d");
-      const canvasMau = L().veXeMay(160, 120, "mbh", "dem", 67890);
+      const canvasMau = L().veXeMay(160, 120, "mbh", "dem", 20261022);
       ctx.drawImage(canvasMau, 0, 0);
+      // Hiển thị 4 con số dưới ảnh
+      const f = L().dacTrung(canvasMau);
+      const vec = L().vec(f);
+      const info = document.createElement("div");
+      info.className = "nho";
+      info.style.cssText = "margin-top:8px;text-align:left;font-family:monospace";
+      info.innerHTML = `① ${vec[0].toFixed(3)}<br>② ${vec[1].toFixed(3)}<br>③ ${vec[2].toFixed(3)}<br>④ ${vec[3].toFixed(3)}`;
+      anhMauDem.parentElement.appendChild(info);
     }
     
     // BƯỚC 1: Xử lý nút dự đoán
