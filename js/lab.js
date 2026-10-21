@@ -30,62 +30,95 @@
     let s = seed >>> 0;
     const rnd = () => (s = (s*1664525 + 1013904223) >>> 0) / 4294967296;
 
-    // nền trời: ngày sáng vừa phải (không vượt ngưỡng "rất sáng"), đêm rất tối
+    // NỀN TRỜI RÕ RỆT: ngày = xanh sáng, đêm = đen tối
     if(light === "ngay"){
-      g.fillStyle = `hsl(${200+rnd()*15}, 65%, ${72+rnd()*8}%)`;
+      // Gradient trời xanh sáng
+      const grad = g.createLinearGradient(0, 0, 0, h*0.72);
+      grad.addColorStop(0, "#87CEEB"); // xanh da trời sáng
+      grad.addColorStop(1, "#B0E0E6"); // xanh nhạt hơn ở đường chân trời
+      g.fillStyle = grad;
     }else{
-      g.fillStyle = `hsl(225, 40%, ${6+rnd()*5}%)`;
+      // Gradient trời đêm tối
+      const grad = g.createLinearGradient(0, 0, 0, h*0.72);
+      grad.addColorStop(0, "#0a0e1a"); // đen xanh
+      grad.addColorStop(1, "#1a1f2e"); // xám tối
+      g.fillStyle = grad;
     }
     g.fillRect(0,0,w,h);
 
-    // mặt đường
-    g.fillStyle = light === "ngay" ? "#5a5f66" : "#14161a";
+    // MẶT ĐƯỜNG rõ ràng
+    g.fillStyle = light === "ngay" ? "#4a4f56" : "#0a0b0d";
     g.fillRect(0, h*0.72, w, h*0.28);
+    // Đường kẻ giữa đường
+    g.strokeStyle = light === "ngay" ? "#fff" : "#333";
+    g.lineWidth = 3;
+    g.setLineDash([10, 10]);
+    g.beginPath();
+    g.moveTo(0, h*0.86);
+    g.lineTo(w, h*0.86);
+    g.stroke();
+    g.setLineDash([]);
 
-    // VỊ TRÍ XE CỐ ĐỊNH (bỏ random) — để ảnh ổn định, không lệch khung.
-    // Đặc trưng KHÔNG đổi vì vùng trích (W*0.25-W*0.75, H*0.24-H*0.45) luôn chứa đầu.
-    const cx = w*0.5, cy = h*0.62;
+    // VỊ TRÍ XE CỐ ĐỊNH
+    const cx = w*0.5, cy = h*0.65;
 
-    // bánh xe (tăng kích thước 1.3x cho rõ)
-    g.fillStyle = light === "ngay" ? "#22252a" : "#0a0b0d";
-    g.beginPath(); g.arc(cx-w*0.16, cy+h*0.12, h*0.12, 0, 7); g.fill();
-    g.beginPath(); g.arc(cx+w*0.16, cy+h*0.12, h*0.12, 0, 7); g.fill();
-    // viền bánh xe
-    g.strokeStyle = light === "ngay" ? "#444" : "#222";
+    // BÁNH XE TO RÕ (tăng 1.5x)
+    g.fillStyle = "#1a1a1a";
+    g.beginPath(); g.arc(cx-w*0.18, cy+h*0.15, h*0.15, 0, 7); g.fill();
+    g.beginPath(); g.arc(cx+w*0.18, cy+h*0.15, h*0.15, 0, 7); g.fill();
+    // Viền bánh xe
+    g.strokeStyle = light === "ngay" ? "#333" : "#000";
+    g.lineWidth = 3;
+    g.beginPath(); g.arc(cx-w*0.18, cy+h*0.15, h*0.15, 0, 7); g.stroke();
+    g.beginPath(); g.arc(cx+w*0.18, cy+h*0.15, h*0.15, 0, 7); g.stroke();
+    // Nan hoa
+    g.strokeStyle = light === "ngay" ? "#666" : "#222";
     g.lineWidth = 2;
-    g.beginPath(); g.arc(cx-w*0.16, cy+h*0.12, h*0.12, 0, 7); g.stroke();
-    g.beginPath(); g.arc(cx+w*0.16, cy+h*0.12, h*0.12, 0, 7); g.stroke();
+    for(let i = 0; i < 4; i++){
+      const angle = i * Math.PI / 2;
+      g.beginPath();
+      g.moveTo(cx-w*0.18, cy+h*0.15);
+      g.lineTo(cx-w*0.18 + Math.cos(angle)*h*0.13, cy+h*0.15 + Math.sin(angle)*h*0.13);
+      g.stroke();
+      g.beginPath();
+      g.moveTo(cx+w*0.18, cy+h*0.15);
+      g.lineTo(cx+w*0.18 + Math.cos(angle)*h*0.13, cy+h*0.15 + Math.sin(angle)*h*0.13);
+      g.stroke();
+    }
 
-    // thân xe (tăng cao hơn)
-    g.fillStyle = light === "ngay" ? "#b02a37" : "#3a1116";
-    g.fillRect(cx-w*0.20, cy-h*0.04, w*0.40, h*0.14);
-    // viền thân xe
-    g.strokeStyle = light === "ngay" ? "#8a1f2a" : "#2a0d10";
-    g.lineWidth = 1.5;
-    g.strokeRect(cx-w*0.20, cy-h*0.04, w*0.40, h*0.14);
+    // THÂN XE TO HƠN
+    g.fillStyle = light === "ngay" ? "#c41e3a" : "#5a0f1a";
+    g.fillRect(cx-w*0.25, cy-h*0.05, w*0.50, h*0.18);
+    g.strokeStyle = light === "ngay" ? "#8a1528" : "#3a0a10";
+    g.lineWidth = 2;
+    g.strokeRect(cx-w*0.25, cy-h*0.05, w*0.50, h*0.18);
 
-    // người lái (thân áo - to hơn)
-    g.fillStyle = light === "ngay" ? "#2f5fa8" : "#101a2b";
-    g.fillRect(cx-w*0.07, cy-h*0.28, w*0.14, h*0.26);
+    // NGƯỜI LÁI TO RÕ
+    g.fillStyle = light === "ngay" ? "#2563eb" : "#1e3a8a";
+    g.fillRect(cx-w*0.08, cy-h*0.32, w*0.16, h*0.30);
+    g.strokeStyle = light === "ngay" ? "#1e40af" : "#172554";
+    g.lineWidth = 2;
+    g.strokeRect(cx-w*0.08, cy-h*0.32, w*0.16, h*0.30);
 
-    // đầu (to hơn 1.4x)
-    g.fillStyle = light === "ngay" ? "#e8b48c" : "#4a3a2e";
-    g.beginPath(); g.arc(cx, cy-h*0.34, h*0.085, 0, 7); g.fill();
-    // viền đầu
-    g.strokeStyle = light === "ngay" ? "#c4956e" : "#3a2a1e";
-    g.lineWidth = 1.5;
+    // ĐẦU TO RÕ (tăng 1.6x)
+    g.fillStyle = light === "ngay" ? "#fbbf24" : "#92400e"; // da người
+    g.beginPath(); g.arc(cx, cy-h*0.40, h*0.10, 0, 7); g.fill();
+    g.strokeStyle = light === "ngay" ? "#d97706" : "#78350f";
+    g.lineWidth = 2;
     g.stroke();
 
-    // mũ bảo hiểm (đặc trưng phân biệt): ngày = trắng tinh, đêm = xám vừa
-    // Tăng kích thước 1.4x cho rõ
+    // MŨ BẢO HIỂM RÕ RỆT (tăng 1.6x)
     if(kind === "mbh"){
-      g.fillStyle = light === "ngay" ? "#ffffff" : "#8a9099";
-      g.beginPath(); g.arc(cx, cy-h*0.37, h*0.105, Math.PI, 0); g.fill();
-      g.fillRect(cx-h*0.105, cy-h*0.375, h*0.21, h*0.025);
-      // viền mũ
-      g.strokeStyle = light === "ngay" ? "#ccc" : "#666";
-      g.lineWidth = 2;
-      g.beginPath(); g.arc(cx, cy-h*0.37, h*0.105, Math.PI, 0); g.stroke();
+      // Nửa tròn mũ
+      g.fillStyle = light === "ngay" ? "#ffffff" : "#9ca3af";
+      g.beginPath(); g.arc(cx, cy-h*0.44, h*0.13, Math.PI, 0); g.fill();
+      // Vành mũ
+      g.fillRect(cx-h*0.13, cy-h*0.45, h*0.26, h*0.03);
+      // Viền mũ đậm
+      g.strokeStyle = light === "ngay" ? "#6b7280" : "#4b5563";
+      g.lineWidth = 3;
+      g.beginPath(); g.arc(cx, cy-h*0.44, h*0.13, Math.PI, 0); g.stroke();
+      g.strokeRect(cx-h*0.13, cy-h*0.45, h*0.26, h*0.03);
     }
     return c;
   }
