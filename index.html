@@ -3,11 +3,11 @@
 <head>
 <meta charset="utf-8">
 <meta name="viewport" content="width=device-width, initial-scale=1">
-<title>AInatomy — Phòng thực hành Trí tuệ nhân tạo</title>
-<meta name="description" content="AInatomy — phần mềm dạy và kiểm định năng lực AI cho học sinh trung học phổ thông, bám Khung 2422/QĐ-BGDĐT. Chạy được trên máy cũ, không cần Internet, không cần tài khoản, không thu phí.">
+<title>AInatomy: Phòng thực hành Trí tuệ nhân tạo</title>
+<meta name="description" content="AInatomy: Phòng thực hành Trí tuệ nhân tạo, phần mềm dạy và kiểm định năng lực AI cho học sinh trung học phổ thông, bám Khung 2422/QĐ-BGDĐT. Chạy được trên máy cũ, không cần Internet, không cần tài khoản, không thu phí.">
 <link rel="stylesheet" href="css/style.css">
 </head>
-<body>
+<body class="it-chu">
 <!-- Sprite SVG Lucide (giấy phép ISC, xem vendor/lucide/LICENSE).
      Nội tuyến trong HTML thay vì tệp riêng vì giao thức file:// bị CORS chặn
      ở một số trình duyệt. Sinh tự động bằng tools/thay_emoji_bang_svg.py —
@@ -48,9 +48,6 @@
     <div class="tagline">Phòng thực hành Trí tuệ nhân tạo · học sinh vận hành và kiểm tra hệ thống AI · theo Quyết định 2422/QĐ-BGDĐT</div>
     <div class="spacer"></div>
     <div id="lbl-user" class="tagline"></div>
-    <button class="btn nho" id="btn-it-chu" type="button" aria-pressed="false"
-            title="Ẩn các dòng phụ chú, chỉ giữ câu hỏi, phương án và phản hồi">
-      <svg class="ic" aria-hidden="true"><use href="#i-eye"/></svg> <span id="lbl-it-chu">Ít chữ</span></button>
     <button class="btn nho" id="btn-ve-home"><svg class="ic" aria-hidden="true"><use href="#i-house"/></svg> Trang chủ</button>
   </div>
 </header>
@@ -90,32 +87,32 @@
     <div class="grid g3">
       <button class="btn menu-o" id="btn-kichban" style="border-color:var(--primary)">
         <svg class="ic to" aria-hidden="true"><use href="#i-play"/></svg>
-        <div><b>XEM KỊCH BẢN — hành trình của một bức ảnh</b>
+        <div><b>XEM KỊCH BẢN: hành trình của một bức ảnh</b></div>
         <span class="chu2">9 cảnh tự chạy, ít chữ. Ảnh → số → nhãn → trọng số → kiểm định → máy bịa → con người chặn → vòng lặp.</span></div>
       </button>
       <button class="btn menu-o" id="btn-nhamay" style="border-color:var(--primary,#7C3AED)">
         <svg class="ic to" aria-hidden="true"><use href="#i-factory"/></svg>
-        <div><b>NHÀ MÁY AI — đi hết dây chuyền</b>
+        <div><b>NHÀ MÁY AI: đi hết dây chuyền</b></div>
         <span class="chu2">7 trạm từ nguyên liệu đến thành phẩm — nhập liệu → dán nhãn → huấn luyện → mô hình → kiểm định → <b>ứng dụng (dùng AI thật)</b> → con người kiểm. Trạm nào cũng mở nắp ra xem được.</span></div>
       </button>
       <button class="btn menu-o" id="btn-lab">
         <svg class="ic to" aria-hidden="true"><use href="#i-flask-conical"/></svg>
-        <div><b>Tầng 1 — Xưởng huấn luyện AI</b>
+        <div><b>Tầng 1: Xưởng huấn luyện AI</b></div>
         <span class="chu2">Tự huấn luyện một mô hình AI, rồi tìm ra vì sao nó thiên vị.</span></div>
       </button>
       <button class="btn menu-o" id="btn-dautruong">
         <svg class="ic to" aria-hidden="true"><use href="#i-search"/></svg>
-        <div><b>Tầng 2 — Đấu trường bắt lỗi AI</b>
+        <div><b>Tầng 2: Đấu trường bắt lỗi AI</b></div>
         <span class="chu2">Đọc các câu trả lời của AI và tìm ra lỗi được cài sẵn.</span></div>
       </button>
       <button class="btn menu-o" id="btn-baocao">
         <svg class="ic to" aria-hidden="true"><use href="#i-chart-column"/></svg>
-        <div><b>Tầng 3 — Bản đồ năng lực cá nhân</b>
+        <div><b>Tầng 3: Bản đồ năng lực cá nhân</b></div>
         <span class="chu2">Xem kết quả tự chấm theo 5 loại lỗi và 12 khối năng lực AI.</span></div>
       </button>
       <button class="btn menu-o" id="btn-logic" style="border-color:var(--vang)">
         <svg class="ic to" aria-hidden="true"><use href="#i-git-branch"/></svg>
-        <div><b>Lôgic &amp; AI — nối với Bài 5 Tin học 10</b>
+        <div><b>Lôgic và AI: nối với Bài 5 Tin học 10</b></div>
         <span class="chu2">Dữ liệu lôgic, phép AND/OR/NOT, bảng chân lí, kèm bảng nhầm lẫn của chính người học.</span></div>
       </button>
       <button class="btn menu-o" id="btn-kienthuc" style="border-color:var(--dung)">
@@ -125,17 +122,17 @@
       </button>
       <button class="btn menu-o" id="btn-tinhhuong" style="border-color:var(--sai)">
         <svg class="ic to" aria-hidden="true"><use href="#i-shield-check"/></svg>
-        <div><b>Tình huống &amp; trách nhiệm — rủi ro, nội quy, pháp luật</b>
+        <div><b>Tình huống và trách nhiệm: rủi ro, nội quy, pháp luật</b></div>
         <span class="chu2">12 tình huống có thật ở trường Việt Nam — AI đọc X-quang, nhận diện khuôn mặt, ghép ảnh bạn học, dán bảng điểm lên mạng. Chọn cách xử lí và xem giải thích kèm biện pháp hạn chế.</span></div>
       </button>
       <button class="btn menu-o" id="btn-lab3d" style="border-color:var(--nhan)">
         <svg class="ic to" aria-hidden="true"><use href="#i-box"/></svg>
-        <div><b>Phòng 3D — Soi mô hình</b>
+        <div><b>Phòng 3D: Soi mô hình</b></div>
         <span class="chu2">Nhìn thấy dữ liệu huấn luyện và mặt phẳng quyết định trong không gian 3 chiều. Kéo tỉ lệ ảnh ngày/đêm và xem thiên kiến sinh ra trước mắt.</span></div>
       </button>
       <button class="btn menu-o" id="btn-pipe3d" style="border-color:var(--sai)">
         <svg class="ic to" aria-hidden="true"><use href="#i-git-branch"/></svg>
-        <div><b>Ống dẫn AI — Soi luồng hoạt động</b>
+        <div><b>Ống dẫn AI: Soi luồng hoạt động</b></div>
         <span class="chu2">Theo dõi dòng dữ liệu chảy qua 5 trạm của một hệ thống AI. Hệ thống làm hỏng một trạm, nhiệm vụ là đoán ra trạm nào.</span></div>
       </button>
     </div>
@@ -157,7 +154,7 @@
   <!-- ===== TẦNG 1 ===== -->
   <section id="v-lab" style="display:none">
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-flask-conical"/></svg> Tầng 1 — Xưởng huấn luyện AI giả lập</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-flask-conical"/></svg> Tầng 1: Xưởng huấn luyện AI giả lập</h2>
       <div class="steps">
         <span class="step on" id="st-1">1. Dữ liệu</span>
         <span class="step" id="st-2">2. Huấn luyện</span>
@@ -214,7 +211,7 @@
   <!-- ===== TẦNG 2 ===== -->
   <section id="v-dautruong" style="display:none">
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-search"/></svg> Tầng 2 — Đấu trường bắt lỗi AI</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-search"/></svg> Tầng 2: Đấu trường bắt lỗi AI</h2>
       <p><b id="dt-mode" class="tagline">Luyện tập</b> · <span class="nho chu2">Mỗi phiên 12 câu — 8 câu có lỗi (mỗi loại ít nhất 1 câu) + 4 câu đúng (mồi nhử).</span></p><!-- ĐÍNH CHÍNH 19/10 (review14/): cũ ghi "2 câu cho mỗi loại lỗi + 4 câu đúng" — SAI SỐ HỌC, vì META.loaiLoi có 5 loại nên 5×2+4 = 14 ≠ 12, và phiên chạy thật có loại chỉ ra 1 câu. Số đúng lấy theo dtBatDau trong js/app.js (while pick.length < 8 → 8 lỗi + 4 đúng = 12), khớp README.md:201 và huong-dan-danh-gia.md:187. Nguồn sự thật là dtBatDau trong js/app.js; comment giữ trên CÙNG dòng để soDongCode không đổi (số in trong 2 PDF nộp). -->
       <p class="chips" style="margin:4px 0 10px">
         <button class="btn nho" id="dt-btn-luyen">▶ Luyện tập</button>
@@ -262,7 +259,7 @@
   <!-- ===== TẦNG 3 ===== -->
   <section id="v-baocao" style="display:none">
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-chart-column"/></svg> Tầng 3 — Bản đồ năng lực AI cá nhân</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-chart-column"/></svg> Tầng 3: Bản đồ năng lực AI cá nhân</h2>
       <p class="chu2 nho">Hệ thống tự tổng hợp từ nhật ký làm bài, không cần giáo viên chấm.</p>
       <div id="bc-noi-dung"></div>
     </div>
@@ -275,7 +272,7 @@
   <section id="v-logic" style="display:none">
     <div class="card">
       <h2><svg class="ic to" aria-hidden="true"><use href="#i-git-branch"/></svg> Lôgic &amp; AI</h2>
-      <p class="tagline">Kết nối trực tiếp với <b>Bài 5 — Dữ liệu lôgic</b>, Tin học 10 (Chủ đề 1: Máy tính và xã hội tri thức)</p>
+      <p class="tagline">Kết nối trực tiếp với <b>Bài 5: Dữ liệu lôgic</b>, Tin học 10 (Chủ đề 1: Máy tính và xã hội số)</p>
       <p class="chu2">Bài 5 dạy giá trị chân lí và các phép AND / OR / NOT. Trang này cho thấy
       <b>chính trò chơi vừa chơi là một biểu thức lôgic</b> — và máy AI cũng quyết định bằng một phép so sánh lôgic.</p>
     </div>
@@ -302,9 +299,9 @@
       </div>
       <table style="margin-top:10px">
         <tr><th>Phép toán</th><th>Biểu thức</th><th>Kết quả</th><th>Đèn</th></tr>
-        <tr><td><b>AND</b> — chỉ TRUE khi cả hai TRUE</td><td><code id="expr-and"></code></td><td><b id="out-and"></b></td><td><span class="den" id="lamp-and"></span></td></tr>
-        <tr><td><b>OR</b> — TRUE khi ít nhất một TRUE</td><td><code id="expr-or"></code></td><td><b id="out-or"></b></td><td><span class="den" id="lamp-or"></span></td></tr>
-        <tr><td><b>NOT</b> — đảo giá trị</td><td><code id="expr-not"></code></td><td><b id="out-not"></b></td><td><span class="den" id="lamp-not"></span></td></tr>
+        <tr><td><b>AND</b>: chỉ TRUE khi cả hai TRUE</td><td><code id="expr-and"></code></td><td><b id="out-and"></b></td><td><span class="den" id="lamp-and"></span></td></tr>
+        <tr><td><b>OR</b>: TRUE khi ít nhất một TRUE</td><td><code id="expr-or"></code></td><td><b id="out-or"></b></td><td><span class="den" id="lamp-or"></span></td></tr>
+        <tr><td><b>NOT</b>: đảo giá trị</td><td><code id="expr-not"></code></td><td><b id="out-not"></b></td><td><span class="den" id="lamp-not"></span></td></tr>
       </table>
     </div>
 
@@ -325,7 +322,7 @@
     </div>
 
     <div class="card">
-      <h3>5. Luyện tập nhanh (Bài 5 — vận dụng)</h3>
+      <h3>5. Luyện tập nhanh (Bài 5: vận dụng)</h3>
       <p class="chu2 nho">Mỗi câu là một biểu thức lôgic trong ngữ cảnh AI. Hệ thống tự chấm.</p>
       <div id="logic-baitap"></div>
     </div>
@@ -334,9 +331,9 @@
   <!-- ===== KIẾN THỨC NỀN AI LỚP 10 ===== -->
   <section id="v-kienthuc" style="display:none">
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-book-open"/></svg> Kiến thức nền AI — lớp 10</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-book-open"/></svg> Kiến thức nền AI: lớp 10</h2>
       <p class="tagline">Bám theo <b>Khung nội dung giáo dục trí tuệ nhân tạo cho học sinh phổ thông</b>
-        (ban hành kèm Quyết định 2422/QĐ-BGDĐT ngày 18/8/2026) — các yêu cầu cần đạt của lớp 10.</p>
+        (ban hành kèm Quyết định 2422/QĐ-BGDĐT ngày 18/8/2026): các yêu cầu cần đạt của lớp 10.</p>
       <p class="chu2 nho">Mỗi mục dưới đây ghi rõ mã yêu cầu cần đạt (ví dụ <code>10.A3.1</code>)
         để thầy/cô đối chiếu khi soạn kế hoạch bài dạy.</p>
     </div>
@@ -386,7 +383,7 @@
   <!-- ===== PHÒNG 3D — SOI MÔ HÌNH ===== -->
   <section id="v-lab3d" style="display:none">
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-box"/></svg> Phòng 3D — Soi mô hình</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-box"/></svg> Phòng 3D: Soi mô hình</h2>
       <p class="tagline">YCCĐ lớp 10 (nguyên văn QĐ 2422/QĐ-BGDĐT):
         <b>10.C4.1</b> Phân tích được sự ảnh hưởng của chất lượng dữ liệu đến chất lượng AI ·
         <b>10.D2.2</b> vấn đề phát sinh khi vận hành AI và ý nghĩa của việc khắc phục ·
@@ -431,7 +428,7 @@
       </div>
 
       <div id="lab3d-kq" style="display:none">
-        <h3>Kết quả — đọc từ mô hình THẬT</h3>
+        <h3>Kết quả: đọc từ mô hình THẬT</h3>
         <div class="grid g3" id="lab3d-kpi"></div>
         <div class="card" style="background:var(--nen2)">
           <b>Trọng số mô hình sau khi học</b> (số thật, cập nhật mỗi vòng):<br>
@@ -458,7 +455,7 @@
   <!-- ===== ỐNG DẪN 3D — SOI LUỒNG AI ===== -->
   <section id="v-pipe3d" style="display:none">
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-git-branch"/></svg> Ống dẫn AI — Soi luồng hoạt động</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-git-branch"/></svg> Ống dẫn AI: Soi luồng hoạt động</h2>
       <p class="tagline">YCCĐ lớp 10: <b>10.D1.1</b> mối liên hệ giữa mục tiêu và các thành phần
         chính của hệ thống · <b>10.D2.1</b> các thành phần cơ bản (dữ liệu, mô hình, thuật toán,
         đầu ra, phản hồi) · <b>10.A1.2</b> vì sao con người cần kiểm soát AI ·
@@ -503,7 +500,7 @@
   <!-- ===== NHÀ MÁY AI — DÂY CHUYỀN 7 TRẠM ===== -->
   <section id="v-nhamay" style="display:none">
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-factory"/></svg> Nhà máy AI — đi hết dây chuyền sản xuất</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-factory"/></svg> Nhà máy AI: đi hết dây chuyền sản xuất</h2>
       <p class="chu2">Trí tuệ nhân tạo không phải một chiếc hộp đen. Nó là một <b>dây chuyền</b>:
         nguyên liệu đi vào, thành phẩm đi ra, và mỗi trạm đều có thể <b>mở nắp để xem</b>.
         Đi lần lượt từ trái sang phải. Trạm nào cũng tự tay làm một việc,
@@ -528,7 +525,7 @@
 
     <!-- ===== TRẠM 0: NHẬP LIỆU ===== -->
     <div class="card" id="nm-tram0" style="display:none">
-      <h3>Trạm 0 · NHẬP LIỆU — nguyên liệu thô của cả dây chuyền</h3>
+      <h3>Trạm 0 · NHẬP LIỆU: nguyên liệu thô của cả dây chuyền</h3>
       <p class="chu2">Máy tính không "nhìn" ảnh như con người. Nó chỉ đọc các <b>con số</b>.
         Trạm này mở nắp cho thấy ba dạng dữ liệu và cách mỗi dạng được đổi thành số.</p>
 
@@ -546,7 +543,7 @@
         </div>
       </div>
 
-      <h3>① Dạng ẢNH — và bốn con số máy thật sự đọc</h3>
+      <h3>① Dạng ẢNH: bốn con số máy thật sự đọc</h3>
       <!-- BT-01 Mức 3: dự đoán trước khi thấy ảnh ở mức chi tiết khác nhau (js/muc3.js) -->
       <div id="t0-muc3"></div>
       <!-- DÒNG NGẮN luôn hiện (kể cả chế độ ít chữ, nhờ lưới an toàn trong css/style.css):
@@ -572,7 +569,7 @@
 
     <!-- ===== TRẠM 1: DÁN NHÃN ===== -->
     <div class="card" id="nm-tram1" style="display:none">
-      <h3>Trạm 1 · DÁN NHÃN — sơ chế nguyên liệu</h3>
+      <h3>Trạm 1 · DÁN NHÃN: sơ chế nguyên liệu</h3>
       <p class="chu2">Mô hình học bằng cách so dự đoán của nó với <b>nhãn</b>. Ở trạm này
         <b>chính người học dán nhãn</b>. Sau đó hệ thống huấn luyện hai mô hình, một mô hình học
         từ nhãn vừa dán, một mô hình học từ nhãn đúng. Cả hai được kiểm tra trên cùng một
@@ -609,7 +606,7 @@
 
     <!-- ===== TRẠM 5: ỨNG DỤNG — bảng điều khiển thật ===== -->
     <div class="card" id="nm-tram5" style="display:none">
-      <h3>Trạm 5 · ỨNG DỤNG — dùng một hệ AI thật, chạy ngay trong máy này</h3>
+      <h3>Trạm 5 · ỨNG DỤNG: dùng một hệ AI thật, chạy ngay trong máy này</h3>
       <p class="chu2">Hệ này <b>không gọi ra Internet</b> và <b>không cần tài khoản</b>.
         Nó học từ một bộ ngữ liệu nhỏ nằm sẵn trong ứng dụng, rồi sinh câu trả lời
         theo xác suất. Vì chính hệ quyết định ngữ liệu nên hệ <b>biết trước</b> câu nào
