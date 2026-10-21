@@ -42,30 +42,50 @@
     g.fillStyle = light === "ngay" ? "#5a5f66" : "#14161a";
     g.fillRect(0, h*0.72, w, h*0.28);
 
-    const cx = w*(0.35+rnd()*0.3), cy = h*0.62;
+    // VỊ TRÍ XE CỐ ĐỊNH (bỏ random) — để ảnh ổn định, không lệch khung.
+    // Đặc trưng KHÔNG đổi vì vùng trích (W*0.25-W*0.75, H*0.24-H*0.45) luôn chứa đầu.
+    const cx = w*0.5, cy = h*0.62;
 
-    // bánh xe
+    // bánh xe (tăng kích thước 1.3x cho rõ)
     g.fillStyle = light === "ngay" ? "#22252a" : "#0a0b0d";
-    g.beginPath(); g.arc(cx-w*0.14, cy+h*0.12, h*0.09, 0, 7); g.fill();
-    g.beginPath(); g.arc(cx+w*0.14, cy+h*0.12, h*0.09, 0, 7); g.fill();
+    g.beginPath(); g.arc(cx-w*0.16, cy+h*0.12, h*0.12, 0, 7); g.fill();
+    g.beginPath(); g.arc(cx+w*0.16, cy+h*0.12, h*0.12, 0, 7); g.fill();
+    // viền bánh xe
+    g.strokeStyle = light === "ngay" ? "#444" : "#222";
+    g.lineWidth = 2;
+    g.beginPath(); g.arc(cx-w*0.16, cy+h*0.12, h*0.12, 0, 7); g.stroke();
+    g.beginPath(); g.arc(cx+w*0.16, cy+h*0.12, h*0.12, 0, 7); g.stroke();
 
-    // thân xe
+    // thân xe (tăng cao hơn)
     g.fillStyle = light === "ngay" ? "#b02a37" : "#3a1116";
-    g.fillRect(cx-w*0.16, cy-h*0.02, w*0.32, h*0.10);
+    g.fillRect(cx-w*0.20, cy-h*0.04, w*0.40, h*0.14);
+    // viền thân xe
+    g.strokeStyle = light === "ngay" ? "#8a1f2a" : "#2a0d10";
+    g.lineWidth = 1.5;
+    g.strokeRect(cx-w*0.20, cy-h*0.04, w*0.40, h*0.14);
 
-    // người lái (thân áo)
+    // người lái (thân áo - to hơn)
     g.fillStyle = light === "ngay" ? "#2f5fa8" : "#101a2b";
-    g.fillRect(cx-w*0.05, cy-h*0.22, w*0.10, h*0.22);
+    g.fillRect(cx-w*0.07, cy-h*0.28, w*0.14, h*0.26);
 
-    // đầu
+    // đầu (to hơn 1.4x)
     g.fillStyle = light === "ngay" ? "#e8b48c" : "#4a3a2e";
-    g.beginPath(); g.arc(cx, cy-h*0.28, h*0.06, 0, 7); g.fill();
+    g.beginPath(); g.arc(cx, cy-h*0.34, h*0.085, 0, 7); g.fill();
+    // viền đầu
+    g.strokeStyle = light === "ngay" ? "#c4956e" : "#3a2a1e";
+    g.lineWidth = 1.5;
+    g.stroke();
 
     // mũ bảo hiểm (đặc trưng phân biệt): ngày = trắng tinh, đêm = xám vừa
+    // Tăng kích thước 1.4x cho rõ
     if(kind === "mbh"){
       g.fillStyle = light === "ngay" ? "#ffffff" : "#8a9099";
-      g.beginPath(); g.arc(cx, cy-h*0.30, h*0.075, Math.PI, 0); g.fill();
-      g.fillRect(cx-h*0.075, cy-h*0.305, h*0.15, h*0.02);
+      g.beginPath(); g.arc(cx, cy-h*0.37, h*0.105, Math.PI, 0); g.fill();
+      g.fillRect(cx-h*0.105, cy-h*0.375, h*0.21, h*0.025);
+      // viền mũ
+      g.strokeStyle = light === "ngay" ? "#ccc" : "#666";
+      g.lineWidth = 2;
+      g.beginPath(); g.arc(cx, cy-h*0.37, h*0.105, Math.PI, 0); g.stroke();
     }
     return c;
   }
