@@ -569,45 +569,98 @@
     <!-- ===== TRẠM 0: NHẬP LIỆU ===== -->
     <div class="card" id="nm-tram0" style="display:none">
       <h3>Trạm 0 · NHẬP LIỆU: nguyên liệu thô của cả dây chuyền</h3>
-      <p class="chu2">Máy tính không "nhìn" ảnh như con người. Nó chỉ đọc các <b>con số</b>.
-        Trạm này mở nắp cho thấy ba dạng dữ liệu và cách mỗi dạng được đổi thành số.</p>
+      <p class="chu2">Máy tính không "nhìn" ảnh như con người. Nhưng nó đọc được gì từ ảnh? Hãy tự khám phá.</p>
 
-      <div class="grid g3" style="margin-bottom:10px">
-        <div>
-          <label for="t0-tile">Tỉ lệ ảnh ban ngày: <b id="t0-tile-so">92%</b></label>
-          <input type="range" id="t0-tile" min="0" max="100" step="1" value="92">
+      <!-- BƯỚC 1: DỰ ĐOÁN - kích thích tò mò -->
+      <div class="card" style="background:var(--nen2);border-left:4px solid var(--primary)">
+        <h3 style="margin-top:0">🤔 Câu hỏi khởi động</h3>
+        <p><b>Nhìn hai ảnh dưới đây. Theo em, máy tính sẽ đọc được gì khác nhau từ chúng?</b></p>
+        <div class="grid g2" style="margin:16px 0">
+          <div style="text-align:center">
+            <canvas id="t0-anh-mau-ngay" width="160" height="120" style="border:1px solid var(--vien);border-radius:4px"></canvas>
+            <p class="nho" style="margin-top:8px">Ảnh ban ngày</p>
+          </div>
+          <div style="text-align:center">
+            <canvas id="t0-anh-mau-dem" width="160" height="120" style="border:1px solid var(--vien);border-radius:4px"></canvas>
+            <p class="nho" style="margin-top:8px">Ảnh ban đêm</p>
+          </div>
         </div>
-        <div>
-          <label for="t0-so">Số ảnh: <b id="t0-so-num">12</b></label>
-          <input type="range" id="t0-so" min="8" max="24" step="2" value="12">
+        <div class="chips" style="margin:12px 0">
+          <button class="btn" id="t0-duDoan-1">Màu sắc khác nhau</button>
+          <button class="btn" id="t0-duDoan-2">Độ sáng vùng đầu khác nhau</button>
+          <button class="btn" id="t0-duDoan-3">Hình dáng người lái khác nhau</button>
+          <button class="btn" id="t0-duDoan-4">Không biết, cho xem tiếp</button>
         </div>
-        <div>
-          <p><button class="btn chinh" id="t0-tao">Tạo lại bộ dữ liệu</button></p>
+        <div id="t0-phanHoiDuDoan" style="display:none;margin-top:12px"></div>
+      </div>
+
+      <!-- BƯỚC 2: TƯƠNG TÁC - kéo slider để thấy số thay đổi real-time -->
+      <div class="card" style="background:var(--nen2);border-left:4px solid var(--dung)">
+        <h3 style="margin-top:0">🔬 Thí nghiệm: Thay đổi điều kiện sáng</h3>
+        <p class="chu2">Kéo thanh trượt để thay đổi điều kiện sáng của ảnh. Xem 4 con số máy đọc thay đổi thế nào.</p>
+        
+        <div class="grid g2" style="margin:16px 0">
+          <div>
+            <label for="t0-slider-sang">Điều kiện sáng: <b id="t0-slider-sang-giaTri">ban ngày</b></label>
+            <input type="range" id="t0-slider-sang" min="0" max="100" value="100" style="width:100%">
+            <p class="nho chu2">0% = ban đêm tối · 100% = ban ngày sáng</p>
+          </div>
+          <div style="text-align:center">
+            <canvas id="t0-anh-tuongTac" width="160" height="120" style="border:1px solid var(--vien);border-radius:4px"></canvas>
+          </div>
+        </div>
+
+        <h4 style="margin:16px 0 8px">4 con số máy đọc được:</h4>
+        <div class="grid g4" id="t0-bonSo" style="text-align:center">
+          <div class="kpi">
+            <div class="so" id="t0-so-1" style="font-size:24px;color:var(--primary)">0.000</div>
+            <div class="nhan">① Rất sáng</div>
+            <p class="nho chu2">% điểm ảnh >220 trong vùng đầu</p>
+          </div>
+          <div class="kpi">
+            <div class="so" id="t0-so-2" style="font-size:24px;color:var(--primary)">0.000</div>
+            <div class="nhan">② Sáng vừa</div>
+            <p class="nho chu2">% điểm ảnh 100-180 trong vùng đầu</p>
+          </div>
+          <div class="kpi">
+            <div class="so" id="t0-so-3" style="font-size:24px;color:var(--primary)">0.000</div>
+            <div class="nhan">③ Độ sáng đầu</div>
+            <p class="nho chu2">Trung bình độ sáng vùng đầu (0-1)</p>
+          </div>
+          <div class="kpi">
+            <div class="so" id="t0-so-4" style="font-size:24px;color:var(--primary)">0.000</div>
+            <div class="nhan">④ Tỉ lệ tối</div>
+            <p class="nho chu2">% điểm ảnh <60 toàn ảnh</p>
+          </div>
+        </div>
+
+        <div class="card" style="background:#fff;margin-top:16px">
+          <p><b>💡 Em thấy gì?</b></p>
+          <p class="chu2">Khi kéo từ ban ngày sang ban đêm, số ① và ② thay đổi rõ rệt, còn ③ và ④ thay đổi ít hơn. Điều này cho thấy máy phân biệt ngày/đêm chủ yếu dựa vào <b>tín hiệu mũ</b> (trắng ban ngày, xám ban đêm), không phải độ sáng tổng thể.</p>
         </div>
       </div>
 
-      <h3>① Dạng ẢNH: bốn con số máy thật sự đọc</h3>
-      <!-- BT-01 Mức 3: dự đoán trước khi thấy ảnh ở mức chi tiết khác nhau (js/muc3.js) -->
-      <div id="t0-muc3"></div>
-      <!-- DÒNG NGẮN luôn hiện (kể cả chế độ ít chữ, nhờ lưới an toàn trong css/style.css):
-           thiếu nó thì người xem không giải mã được các khối hình. Phần giải thích dài mang class
-           .chu2 nên vẫn bị ẩn ở chế độ ít chữ, đúng mục đích giảm chữ của chế độ đó. -->
-      <p class="nho" id="t0-chu-thich-anh" style="margin:8px 0 4px">
-        <b>Hình mô phỏng do máy vẽ</b>, không phải ảnh chụp. Mũ bảo hiểm là nửa vòng tròn trắng
-        trên đầu người lái.</p>
-      <p class="nho chu2" style="margin:0 0 4px">Người đi xe máy được vẽ nhìn ngang, đơn giản hoá còn
-        vài khối hình, vì máy chỉ cần đọc <b>bốn con số</b> từ vùng đầu người lái chứ không "nhìn"
-        hình như người nhìn. Nhãn của mỗi hình do hệ tự sinh (có vẽ mũ hay không) nên hệ
-        <b>biết trước đáp án</b> và tự chấm được.</p>
-      <div id="t0-anh"></div>
+      <!-- BƯỚC 3: ỨNG DỤNG - tự dán nhãn để hiểu -->
+      <div class="card" style="background:var(--nen2);border-left:4px solid var(--vang)">
+        <h3 style="margin-top:0">🎯 Thử tài: Dán nhãn cho 3 ảnh</h3>
+        <p class="chu2">Dựa vào 4 con số trên, em hãy đoán xem 3 ảnh dưới đây có đội mũ bảo hiểm không.</p>
+        <div class="grid g3" id="t0-thuTai" style="margin:16px 0"></div>
+        <div id="t0-ketQuaThuTai" style="display:none;margin-top:12px"></div>
+      </div>
 
-      <h3>② Dạng VĂN BẢN</h3>
-      <div id="t0-vanban"></div>
-
-      <h3>③ Dạng SỐ</h3>
-      <div id="t0-so-lieu"></div>
-
-      <div id="t0-cauhoi"></div>
+      <!-- BƯỚC 4: TỔNG KẾT - kết nối với khái niệm -->
+      <div class="card" style="background:var(--nen2);border-left:4px solid var(--nhan)">
+        <h3 style="margin-top:0">📚 Bài học rút ra</h3>
+        <p><b>Máy tính không "nhìn" ảnh. Máy đọc 4 con số trích từ vùng đầu người lái:</b></p>
+        <ul>
+          <li><b>① Rất sáng</b> → tín hiệu mũ TRẮNG (chỉ xuất hiện ban ngày)</li>
+          <li><b>② Sáng vừa</b> → tín hiệu mũ XÁM (xuất hiện cả ngày lẫn đêm)</li>
+          <li><b>③ Độ sáng đầu</b> → ngữ cảnh sáng/tối</li>
+          <li><b>④ Tỉ lệ tối</b> → ngữ cảnh ngày/đêm</li>
+        </ul>
+        <p class="chu2">Mô hình AI sẽ học cách kết hợp 4 con số này để quyết định "có mũ" hay "không mũ". Nếu dữ liệu huấn luyện chỉ có ảnh ban ngày, mô hình sẽ không học được đặc trưng ② (mũ xám ban đêm) → đó là nguồn gốc của thiên kiến.</p>
+        <p class="nho chu2">Yêu cầu cần đạt 10.C4.MR1: Phân tích được các dạng dữ liệu (hình ảnh, âm thanh, từ ngữ, …) được sử dụng để huấn luyện AI.</p>
+      </div>
     </div>
 
     <!-- ===== TRẠM 1: DÁN NHÃN ===== -->

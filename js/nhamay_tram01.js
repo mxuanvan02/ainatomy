@@ -111,7 +111,134 @@
       d.f = L().dacTrung(d.canvas);
     });
     t0State = { ds, tiLeNgay, soAnh };
+    
+    // Khởi tạo giao diện inquiry-based
+    khoiTaoGiaoDienMoi();
+    
     return ds;
+  }
+
+  /** Khởi tạo giao diện mới theo hướng inquiry-based learning */
+  function khoiTaoGiaoDienMoi(){
+    if(!t0State) return;
+    
+    // BƯỚC 1: Vẽ 2 ảnh mẫu (ngày và đêm)
+    const anhMauNgay = $("t0-anh-mau-ngay");
+    const anhMauDem = $("t0-anh-mau-dem");
+    if(anhMauNgay){
+      const ctx = anhMauNgay.getContext("2d");
+      const canvasMau = L().veXeMay(160, 120, "mbh", "ngay", 12345);
+      ctx.drawImage(canvasMau, 0, 0);
+    }
+    if(anhMauDem){
+      const ctx = anhMauDem.getContext("2d");
+      const canvasMau = L().veXeMay(160, 120, "mbh", "dem", 67890);
+      ctx.drawImage(canvasMau, 0, 0);
+    }
+    
+    // BƯỚC 1: Xử lý nút dự đoán
+    ["t0-duDoan-1", "t0-duDoan-2", "t0-duDoan-3", "t0-duDoan-4"].forEach((id, idx) => {
+      const btn = $(id);
+      if(btn){
+        btn.onclick = () => {
+          const phanHoi = $("t0-phanHoiDuDoan");
+          if(phanHoi){
+            const dapAnDung = idx === 1; // Đáp án đúng là "Độ sáng vùng đầu khác nhau"
+            phanHoi.style.display = "block";
+            phanHoi.className = dapAnDung ? "card dung" : "card sai";
+            phanHoi.innerHTML = dapAnDung 
+              ? "<b>✓ Chính xác!</b> Máy tính đọc 4 con số trích từ vùng đầu người lái. Hãy kéo thanh trượt bên dưới để thấy các con số thay đổi thế nào."
+              : "<b>✗ Chưa đúng.</b> Máy tính không 'nhìn' hình dáng hay màu sắc như người. Nó đọc 4 con số trích từ vùng đầu người lái. Hãy kéo thanh trượt bên dưới để khám phá.";
+          }
+        };
+      }
+    });
+    
+    // BƯỚC 2: Xử lý slider tương tác
+    const slider = $("t0-slider-sang");
+    const anhTuongTac = $("t0-anh-tuongTac");
+    if(slider && anhTuongTac){
+      slider.oninput = () => {
+        const giaTri = Number(slider.value);
+        const label = $("t0-slider-sang-giaTri");
+        if(label){
+          if(giaTri > 70) label.textContent = "ban ngày";
+          else if(giaTri > 30) label.textContent = "hoàng hôn";
+          else label.textContent = "ban đêm";
+        }
+        
+        // Vẽ lại ảnh với điều kiện sáng mới
+        const ctx = anhTuongTac.getContext("2d");
+        const light = giaTri > 50 ? "ngay" : "dem";
+        const canvasMoi = L().veXeMay(160, 120, "mbh", light, 99999);
+        ctx.drawImage(canvasMoi, 0, 0);
+        
+        // Tính và hiển thị 4 đặc trưng
+        const f = L().dacTrung(canvasMoi);
+        const vec = L().vec(f);
+        $("t0-so-1").textContent = vec[0].toFixed(3);
+        $("t0-so-2").textContent = vec[1].toFixed(3);
+        $("t0-so-3").textContent = vec[2].toFixed(3);
+        $("t0-so-4").textContent = vec[3].toFixed(3);
+      };
+      
+      // Kích hoạt lần đầu
+      slider.dispatchEvent(new Event("input"));
+    }
+    
+    // BƯỚC 3: Tạo 3 ảnh ngẫu nhiên cho phần "Thử tài"
+    const thuTai = $("t0-thuTai");
+    if(thuTai){
+      thuTai.innerHTML = "";
+      for(let i = 0; i < 3; i++){
+        const light = i === 0 ? "ngay" : (i === 1 ? "dem" : "ngay");
+        const kind = i === 0 ? "mbh" : (i === 1 ? "khong" : "mbh");
+        const canvas = L().veXeMay(160, 120, kind, light, 10000 + i);
+        const f = L().dacTrung(canvas);
+        const vec = L().vec(f);
+        
+        const div = document.createElement("div");
+        div.className = "card";
+        div.style.cssText = "padding:8px;text-align:center";
+        div.innerHTML = `
+          <canvas width="160" height="120" style="border:1px solid var(--vien);border-radius:4px"></canvas>
+          <div class="nho" style="margin:8px 0">
+            <div>① ${vec[0].toFixed(3)}</div>
+            <div>② ${vec[1].toFixed(3)}</div>
+            <div>③ ${vec[2].toFixed(3)}</div>
+            <div>④ ${vec[3].toFixed(3)}</div>
+          </div>
+          <div class="chips">
+            <button class="btn" data-i="${i}" data-v="1">Có mũ</button>
+            <button class="btn" data-i="${i}" data-v="0">Không mũ</button>
+          </div>
+        `;
+        const canvasEl = div.querySelector("canvas");
+        canvasEl.getContext("2d").drawImage(canvas, 0, 0);
+        
+        // Xử lý nút bấm
+        div.querySelectorAll("button").forEach(btn => {
+          btn.onclick = () => {
+            const dapAn = Number(btn.dataset.v);
+            const dung = dapAn === kind.charAt(0) === "m" ? 1 : 0;
+            const ketQua = $("t0-ketQuaThuTai");
+            if(ketQua){
+              ketQua.style.display = "block";
+              ketQua.className = dung ? "card dung" : "card sai";
+              ketQua.innerHTML = dung 
+                ? `<b>✓ Chính xác!</b> Ảnh ${Number(btn.dataset.i) + 1} ${kind === "mbh" ? "có" : "không có"} mũ bảo hiểm.`
+                : `<b>✗ Chưa đúng.</b> Ảnh ${Number(btn.dataset.i) + 1} ${kind === "mbh" ? "có" : "không có"} mũ bảo hiểm. Hãy nhìn vào 4 con số để nhận biết.`;
+            }
+            // Disable nút sau khi chọn
+            div.querySelectorAll("button").forEach(b => b.disabled = true);
+            btn.style.background = "var(--primary)";
+            btn.style.color = "#fff";
+          };
+        });
+        
+        thuTai.appendChild(div);
+      }
+    }
   }
 
   /** Vẽ lưới ảnh kèm BẢNG ĐẶC TRƯNG — đây là phần 'mở nắp' của Trạm 0. */
