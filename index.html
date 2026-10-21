@@ -153,6 +153,11 @@
 
   <!-- ===== TẦNG 1 ===== -->
   <section id="v-lab" style="display:none">
+    <div class="breadcrumb">
+      <a href="#" onclick="hien('v-home');return false">Trang chủ</a>
+      <span class="sep">›</span>
+      <span>Tầng 1: Xưởng huấn luyện AI</span>
+    </div>
     <div class="card">
       <h2><svg class="ic to" aria-hidden="true"><use href="#i-flask-conical"/></svg> Tầng 1: Xưởng huấn luyện AI giả lập</h2>
       <div class="steps">
@@ -205,11 +210,21 @@
         <p class="chu2">Trả lời các câu hỏi dưới đây. Hệ thống tự chấm và giải thích ngay.</p>
         <div id="lab-cauhoi"></div>
       </div>
+
+      <div class="nav-buttons">
+        <button class="btn" onclick="hien('v-home')">← Quay lại</button>
+        <button class="btn chinh" onclick="hien('v-dautruong')">Tiếp theo: Tầng 2 →</button>
+      </div>
     </div>
   </section>
 
   <!-- ===== TẦNG 2 ===== -->
   <section id="v-dautruong" style="display:none">
+    <div class="breadcrumb">
+      <a href="#" onclick="hien('v-home');return false">Trang chủ</a>
+      <span class="sep">›</span>
+      <span>Tầng 2: Đấu trường bắt lỗi AI</span>
+    </div>
     <div class="card">
       <h2><svg class="ic to" aria-hidden="true"><use href="#i-search"/></svg> Tầng 2: Đấu trường bắt lỗi AI</h2>
       <p><b id="dt-mode" class="tagline">Luyện tập</b> · <span class="nho chu2">Mỗi phiên 12 câu — 8 câu có lỗi (mỗi loại ít nhất 1 câu) + 4 câu đúng (mồi nhử).</span></p><!-- ĐÍNH CHÍNH 19/10 (review14/): cũ ghi "2 câu cho mỗi loại lỗi + 4 câu đúng" — SAI SỐ HỌC, vì META.loaiLoi có 5 loại nên 5×2+4 = 14 ≠ 12, và phiên chạy thật có loại chỉ ra 1 câu. Số đúng lấy theo dtBatDau trong js/app.js (while pick.length < 8 → 8 lỗi + 4 đúng = 12), khớp README.md:201 và huong-dan-danh-gia.md:187. Nguồn sự thật là dtBatDau trong js/app.js; comment giữ trên CÙNG dòng để soDongCode không đổi (số in trong 2 PDF nộp). -->
@@ -254,10 +269,20 @@
         thì bài đạt yêu cầu.</p>
       <div id="dt-bt09"></div>
     </div>
+
+    <div class="nav-buttons">
+      <button class="btn" onclick="hien('v-lab')">← Tầng 1</button>
+      <button class="btn chinh" onclick="hien('v-baocao')">Tiếp theo: Tầng 3 →</button>
+    </div>
   </section>
 
   <!-- ===== TẦNG 3 ===== -->
   <section id="v-baocao" style="display:none">
+    <div class="breadcrumb">
+      <a href="#" onclick="hien('v-home');return false">Trang chủ</a>
+      <span class="sep">›</span>
+      <span>Tầng 3: Bản đồ năng lực</span>
+    </div>
     <div class="card">
       <h2><svg class="ic to" aria-hidden="true"><use href="#i-chart-column"/></svg> Tầng 3: Bản đồ năng lực AI cá nhân</h2>
       <p class="chu2 nho">Hệ thống tự tổng hợp từ nhật ký làm bài, không cần giáo viên chấm.</p>
@@ -265,6 +290,11 @@
     </div>
     <div class="card" id="bc-lop" style="display:none">
       <h3>Báo cáo tổng hợp lớp (dành cho giáo viên)</h3>
+    </div>
+
+    <div class="nav-buttons">
+      <button class="btn" onclick="hien('v-dautruong')">← Tầng 2</button>
+      <button class="btn" onclick="hien('v-home')">Quay về Trang chủ</button>
     </div>
   </section>
 

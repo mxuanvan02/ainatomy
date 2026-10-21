@@ -65,6 +65,22 @@ header.top .wrap{display:flex;align-items:center;gap:16px;flex-wrap:wrap;padding
 .tagline{color:var(--chu2);font-size:13px}
 .spacer{flex:1}
 
+/* ===== breadcrumb ===== */
+.breadcrumb{display:flex;align-items:center;gap:8px;padding:12px 0;font-size:14px;color:var(--chu2)}
+.breadcrumb a{color:var(--nhan);text-decoration:none}
+.breadcrumb a:hover{text-decoration:underline}
+.breadcrumb .sep{color:var(--vien)}
+
+/* ===== navigation buttons ===== */
+.nav-buttons{display:flex;justify-content:space-between;align-items:center;margin-top:32px;padding-top:24px;border-top:1px solid var(--vienNhat)}
+.nav-buttons .btn{min-width:140px}
+.nav-buttons .btn.chinh{order:2}
+.nav-buttons .btn:not(.chinh){order:1}
+
+/* ===== progress indicator ===== */
+.progress-bar{background:var(--nen2);border-radius:8px;height:8px;margin:16px 0;overflow:hidden}
+.progress-bar .fill{background:var(--primary);height:100%;transition:width 0.3s ease}
+
 /* ===== biểu tượng SVG (thay emoji — MASTER.md cấm emoji làm biểu tượng) ===== */
 .ic{width:1.05em;height:1.05em;flex:0 0 auto;vertical-align:-.15em;fill:none;
   stroke:currentColor;stroke-width:2;stroke-linecap:round;stroke-linejoin:round}
