@@ -154,8 +154,9 @@
     });
 
     handle.khiTick(dt => {
-      // chỉ hoạt hoạ nhẹ: quay mặt phẳng khi đang học để học sinh thấy nó dịch
-      if(state.dangHoc && state.matPhang.visible) state.matPhang.rotation.z += dt * 0.05;
+      // KHÔNG quay mặt phẳng khi đang học - mặt phẳng phải trùng với biên quyết định thật
+      // Animation quay chỉ làm học sinh hiểu sai về ranh giới quyết định
+      // if(state.dangHoc && state.matPhang.visible) state.matPhang.rotation.z += dt * 0.05;
     });
     /* Chế độ nhẹ thì KHÔNG chạy vòng lặp rAF — chỉ render đồng bộ mỗi khi có thay đổi.
      * Tiết kiệm CPU/GPU cho máy trường yếu; bài học vẫn đầy đủ vì mọi cập nhật
@@ -168,10 +169,25 @@
   }
 
   /* ---------------- tạo/sinh lại đám mây điểm từ DỮ LIỆU THẬT ---------------- */
+  // Cache geometry để tránh rò rỉ VRAM khi tạo lại bộ dữ liệu nhiều lần
+  let geoMui = null, geoKhong = null;
+  function layGeo(kind){
+    if(kind === 1){
+      if(!geoMui) geoMui = new THREE.SphereGeometry(0.13, 10, 10);
+      return geoMui;
+    } else {
+      if(!geoKhong) geoKhong = new THREE.TetrahedronGeometry(0.17);
+      return geoKhong;
+    }
+  }
   function dungDuLieu(soLuong){
     if(!state) return null;
-    // xoá điểm cũ
-    state.diem.forEach(m => handle.scene.remove(m));
+    // xoá điểm cũ VÀ dispose material để tránh rò rỉ VRAM
+    state.diem.forEach(m => {
+      handle.scene.remove(m);
+      if(m.material) m.material.dispose();
+      // geometry dùng chung (cache), không dispose ở đây
+    });
     state.diem = [];
 
     const ds = L().taoDuLieu({ soLuong: cheDoNhe
@@ -192,8 +208,6 @@
     state.duLieu = ds;
     state.chuan = boChuanHoa(ds);
     const M = handle.MAU;
-    const geoMui = new THREE.SphereGeometry(0.13, 10, 10);      // có mũ bảo hiểm
-    const geoKhong = new THREE.TetrahedronGeometry(0.17);        // không mũ
 
     for(const d of ds){
       const [x, y, z] = toaDo(d, state.chuan);

@@ -153,14 +153,11 @@
          * lên 2–3; trừ một lần vẫn > 1 → curve.getPoint(t>1) ném TypeError trong three.js
          * và giết vòng render. Modulo đưa t về [0,1) với MỌI dt. */
         if(h.userData.t > 1) h.userData.t %= 1;
-        // trạm hỏng: hạt kẹt lại ngay trước trạm đó và đổi màu đỏ
-        /* BUG ĐÃ SỬA (05/10, bắt được bằng hook rAF + stack thật): khi trạm hỏng là
-         * trạm ĐẦU TIÊN (index 0), vị trí kẹt = 0/(5-1) − 0.02 = −0.02. CatmullRomCurve3
-         * .getPoint(t) với t < 0 ném "Cannot read properties of undefined (reading 'x')"
-         * trong three.js, exception lọt ra ngoài callback rAF làm CHẾT cả vòng render —
-         * cảnh 3D đứng hình vĩnh viễn mà console chỉ hiện "Script error." (file:// che
-         * stack). Xác suất trúng ≈ 1/5 lượt chơi. Sửa: clamp vị trí kẹt vào [0, 1). */
-        const tKet = Math.max(0, st.tramHong/(TRAM.length-1) - 0.02);
+        // trạm hỏng: hạt đổi màu đỏ và kẹt ở vị trí TRUNG TÍNH (không lộ đáp án)
+        // Vị trí kẹt thật chỉ hiện SAU khi học sinh đoán sai
+        const tKetTrungTinh = 0.3; // giữa trạm 1 và 2, không gần trạm nào
+        const tKetThat = Math.max(0, st.tramHong/(TRAM.length-1) - 0.02);
+        const tKet = st.daCham && !st.doanCuaHS === st.tramHong ? tKetThat : tKetTrungTinh;
         if(st.biKet && st.tramHong !== null && h.userData.t >= tKet){
           h.userData.t = tKet;
           h.material.color.setHex(M.sai);
