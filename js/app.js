@@ -237,7 +237,7 @@
   }
 
   function labTaoDuLieu(){
-    lab.train = LAB.taoDuLieu({ soLuong: 60, lechAnhSang: true, seed: 20261004 });
+    lab.train = LAB.taoDuLieu({ soLuong: 60, lechAnhSang: true, seed: 20261006 });
     lab.testNgay = LAB.taoDuLieu({ soLuong: 10, light: "ngay", seed: 777 });
     lab.testDem  = LAB.taoDuLieu({ soLuong: 10, light: "dem",  seed: 888 });
     // thống kê lệch
@@ -821,7 +821,7 @@
     hien("v-lab3d");
     if(lab3dDaKhoiTao) return;
     const r = window.MX_LAB3D.init({
-      canvas: $("c-lab3d"), root: $("lab3d-fallback"), tiLeNgay: 92, seed: 20261004,
+      canvas: $("c-lab3d"), root: $("lab3d-fallback"), tiLeNgay: 92, seed: 20261006,
       onChonDiem: (d)=>{
         $("lab3d-note").innerHTML = svgIco("search") + " " + esc(d.ten)
           + " · đặc trưng: <code>" + esc(d.f.map(x=>x.toFixed(3)).join(", ")) + "</code>";

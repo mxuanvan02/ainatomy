@@ -193,7 +193,7 @@
     const ds = L().taoDuLieu({ soLuong: cheDoNhe
         ? Math.min(28, soLuong || 28)     // chế độ nhẹ: ít chấm hơn để máy yếu vẫn mượt
         : (soLuong || 48),
-      seed: state.opts.seed || 20261004 });
+      seed: state.opts.seed || 20261006 });
     // áp tỉ lệ ngày/đêm do học sinh chọn (đây chính là biến số của bài học)
     const p = Math.max(0, Math.min(100, state.tiLeNgay)) / 100;
     let seed = (state.opts.seed || 777) >>> 0;
@@ -305,7 +305,7 @@
    * không thể bấm lại liên tục để dò điểm "dễ". */
   function chonDiemNgauNhien(){
     if(!state || !state.duLieu || !state.duLieu.length) return null;
-    const seed = (state.opts.seed || 20261004) >>> 0;
+    const seed = (state.opts.seed || 20261006) >>> 0;
     const idx = (seed * 2654435761 >>> 0) % state.duLieu.length;
     const d = state.duLieu[idx];
     /* BUG ĐÃ SỬA: bản đầu viết d.f.slice() nhưng d.f là OBJECT đặc trưng đặt tên

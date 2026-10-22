@@ -101,7 +101,7 @@
   function khoiDongT0(soAnh, tiLeNgay){
     soAnh = soAnh || 12;
     tiLeNgay = (tiLeNgay == null) ? 92 : tiLeNgay;
-    const ds = L().taoDuLieu({ soLuong: soAnh, seed: 20261004 });
+    const ds = L().taoDuLieu({ soLuong: soAnh, seed: 20261006 });
     const p = Math.max(0, Math.min(100, tiLeNgay)) / 100;
     let seed = 4242 >>> 0;
     const rnd = () => (seed = (seed * 1664525 + 1013904223) >>> 0) / 4294967296;
