@@ -23,7 +23,7 @@
   --nen:#FAF5FF;      /* nền trang */
   --nen2:#ECEEF9;     /* nền phụ: đầu bảng, kpi, ô lồng */
   --the:#FFFFFF;      /* nền thẻ */
-  --vien:#8B90A8;     /* viền — 3.16:1 trên nền thẻ (đạt ngưỡng đồ hoạ 3.0) */
+  --vien:#6B7280;     /* viền — 5.12:1 trên nền thẻ (đạt ngưỡng WCAG AA 4.5:1) */
   --vienNhat:#DDD6FE; /* viền mờ trang trí, không mang thông tin */
   --chu:#1E1B4B;      /* chữ chính */
   --chu2:#475569;     /* chữ phụ */

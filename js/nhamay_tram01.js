@@ -163,8 +163,8 @@
             phanHoi.style.display = "block";
             phanHoi.className = dapAnDung ? "card dung" : "card sai";
             phanHoi.innerHTML = dapAnDung 
-              ? "<b>✓ Chính xác!</b> Máy tính đọc 4 con số trích từ vùng đầu người lái. Hãy kéo thanh trượt bên dưới để thấy các con số thay đổi thế nào."
-              : "<b>✗ Chưa đúng.</b> Máy tính không 'nhìn' hình dáng hay màu sắc như người. Nó đọc 4 con số trích từ vùng đầu người lái. Hãy kéo thanh trượt bên dưới để khám phá.";
+              ? "<b>" + svgIco("check") + " Chính xác!</b> Máy tính đọc 4 con số trích từ vùng đầu người lái. Hãy kéo thanh trượt bên dưới để thấy các con số thay đổi thế nào."
+              : "<b>" + svgIco("x") + " Chưa đúng.</b> Máy tính không 'nhìn' hình dáng hay màu sắc như người. Nó đọc 4 con số trích từ vùng đầu người lái. Hãy kéo thanh trượt bên dưới để khám phá.";
           }
         };
       }
@@ -242,8 +242,8 @@
               ketQua.style.display = "block";
               ketQua.className = dung ? "card dung" : "card sai";
               ketQua.innerHTML = dung 
-                ? `<b>✓ Chính xác!</b> Ảnh ${Number(btn.dataset.i) + 1} ${kind === "mbh" ? "có" : "không có"} mũ bảo hiểm.`
-                : `<b>✗ Chưa đúng.</b> Ảnh ${Number(btn.dataset.i) + 1} ${kind === "mbh" ? "có" : "không có"} mũ bảo hiểm. Hãy nhìn vào 4 con số để nhận biết.`;
+                ? `<b>${svgIco("check")} Chính xác!</b> Ảnh ${Number(btn.dataset.i) + 1} ${kind === "mbh" ? "có" : "không có"} mũ bảo hiểm.`
+                : `<b>${svgIco("x")} Chưa đúng.</b> Ảnh ${Number(btn.dataset.i) + 1} ${kind === "mbh" ? "có" : "không có"} mũ bảo hiểm. Hãy nhìn vào 4 con số để nhận biết.`;
             }
             // Disable nút sau khi chọn
             div.querySelectorAll("button").forEach(b => b.disabled = true);
