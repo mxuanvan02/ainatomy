@@ -82,12 +82,17 @@
       sub:"Nhãn sai thì mô hình học sai.",
       canh:"dannhan" },
 
-    { id:"huanluyen", ten:"Trạm 2 · Huấn luyện", dur:14000,
+    { id:"huanluyen", ten:"Trạm 2 · Huấn luyện", dur:12000,
       caption:"Mô hình đoán, so với nhãn, rồi tự sửa trọng số.",
       sub:"Lặp lại nhiều vòng. Không có ai viết sẵn đáp án.",
       canh:"huanluyen" },
 
-    { id:"kiemdinh", ten:"Trạm 4 · Kiểm định", dur:14000,
+    { id:"mohinh", ten:"Trạm 3 · Mô hình", dur:10000,
+      caption:"Trọng số đã học thành hình. Ranh giới quyết định hiện ra.",
+      sub:"Mỗi đặc trưng một trọng số. Cộng lại thành phán đoán.",
+      canh:"mohinh" },
+
+    { id:"kiemdinh", ten:"Trạm 4 · Kiểm định", dur:12000,
       caption:"Ban ngày đúng tất cả. Ban đêm sai gần nửa.",
       sub:"Vì 92 phần trăm ảnh huấn luyện là ảnh ban ngày.",
       canh:"kiemdinh" },
@@ -381,6 +386,49 @@
       const vong = el("div", "kb-vong kb-tre", "vòng 1 → 60");
       vong.style.animationDelay = "0.2s";
       s.appendChild(vong);
+    },
+
+    mohinh(s){
+      // Hiển thị trọng số đã học và ranh giới quyết định
+      const trongSo = [0.3668, -0.0226, -0.0187, 0.2397];
+      const ten = ["rất sáng", "sáng vừa", "độ sáng đầu", "tỉ lệ tối"];
+      
+      const container = el("div", "kb-trongso-container");
+      
+      // Hiển thị 4 trọng số
+      trongSo.forEach((w, i) => {
+        const row = el("div", "kb-trongso-row");
+        const label = el("span", "kb-trongso-label", ten[i]);
+        const bar = el("div", "kb-trongso-bar");
+        const fill = el("div", "kb-trongso-fill");
+        
+        // Tính vị trí và độ rộng thanh
+        const width = Math.abs(w) * 100;
+        const isNegative = w < 0;
+        
+        fill.style.width = width + "%";
+        if(isNegative){
+          fill.classList.add("am");
+          fill.style.right = "50%";
+        } else {
+          fill.style.left = "50%";
+        }
+        
+        bar.appendChild(fill);
+        row.appendChild(label);
+        row.appendChild(bar);
+        row.appendChild(el("span", "kb-trongso-value", w.toFixed(4)));
+        container.appendChild(row);
+      });
+      
+      // Đường ranh giới quyết định
+      const boundary = el("div", "kb-boundary kb-tre");
+      boundary.style.animationDelay = "1.5s";
+      boundary.appendChild(el("div", "kb-boundary-line"));
+      boundary.appendChild(el("div", "kb-boundary-label", "ranh giới quyết định"));
+      
+      s.appendChild(container);
+      s.appendChild(boundary);
     },
 
     kiemdinh(s){
