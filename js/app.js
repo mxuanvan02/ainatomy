@@ -182,6 +182,8 @@
     if(view !== "v-pipe3d" && pipe3dDaKhoiTao){ try{ window.MX_PIPE3D.huy(); }catch(e){} pipe3dDaKhoiTao = false; }
     window.scrollTo(0,0);
   }
+  // Export ra window để inline onclick trong HTML hoạt động
+  window.hien = hien;
 
   function dangNhap(){
     const hs = $("in-maHS").value.trim();
@@ -1399,14 +1401,16 @@
     if(!M){ return; }
     $("nm-tram0").style.display = "";
 
-    M.khoiDongT0(parseInt($("t0-so").value, 10), parseInt($("t0-tile").value, 10));
-    M.veAnhVaDacTrung($("t0-anh"));
-    M.veVanBan($("t0-vanban"));
-    M.veSo($("t0-so-lieu"));
+    // Trạm 0 inquiry-based: không cần t0-so/t0-tile/t0-tao nữa
+    // Giao diện mới dùng t0-slider-sang, t0-anh-tuongTac, t0-so-1/2/3/4
+    // khoiDongT0() sẽ tự khởi tạo giao diện inquiry qua khoiTaoGiaoDienMoi()
+    if(M.khoiDongT0){
+      M.khoiDongT0(12, 92); // số ảnh mặc định, tỉ lệ ngày mặc định
+    }
 
     /* Câu hỏi chỉ dựng MỘT lần: nếu dựng lại mỗi lần vào trạm thì trạng thái
      * đã trả lời bị mất và học sinh có thể bấm lại vô hạn để dò đáp án. */
-    if(!nmT0DaNap){
+    if(!nmT0DaNap && $("t0-cauhoi")){
       M.veCauHoiT0($("t0-cauhoi"), (q, chon, dung) => {
         if(ENG) ENG.logSuKien(maHS, {
           loai:"nhamay", suKien:"tram0", tram:0,
@@ -1423,16 +1427,19 @@
      * một lượt mới, và nếu giữ ô cũ thì học sinh đã chốt rồi mà dữ liệu lại đổi — dự đoán
      * cũ vô nghĩa. traLoiBT01() tự trả null nếu chưa đo được (vd bộ dữ liệu thiếu ca ban
      * đêm), khi đó ô không chấm thay vì chấm bừa. */
-    m3.bt01 = M3() ? M3().mo("BT-01", $("t0-muc3"), traLoiBT01) : null;
+    if($("t0-muc3")){
+      m3.bt01 = M3() ? M3().mo("BT-01", $("t0-muc3"), traLoiBT01) : null;
+    }
   }
 
   function nmT0TaoLai(){
     const M = window.MX_NHAMAY01;
     if(!M) return;
-    M.khoiDongT0(parseInt($("t0-so").value, 10), parseInt($("t0-tile").value, 10));
-    M.veAnhVaDacTrung($("t0-anh"));
+    // Trạm 0 inquiry-based: không có slider t0-so/t0-tile nữa
+    // Chỉ cần gọi lại khoiDongT0 để khởi tạo lại giao diện
+    M.khoiDongT0(12, 92);
     if(ENG) ENG.logSuKien(maHS, { loai:"nhamay", suKien:"tram0TaoDuLieu",
-      soAnh: parseInt($("t0-so").value,10), tiLeNgay: parseInt($("t0-tile").value,10) });
+      soAnh: 12, tiLeNgay: 92 });
   }
 
   /* ---------- TRẠM 1: DÁN NHÃN (học sinh tự dán -> thấy hậu quả bằng số) ---------- */
@@ -1707,7 +1714,11 @@
   }
 
   /* ================= KHỞI ĐỘNG ================= */
-  window.addEventListener("DOMContentLoaded", ()=>{
+  window.addEventListener("DOMContentLoaded", () => {
+    // Helper: gán onclick chỉ khi phần tử tồn tại (tránh TypeError chết toàn bộ khối)
+    const bind = (id, handler) => { const el = $(id); if(el) el.onclick = handler; };
+    const bindInput = (id, handler) => { const el = $(id); if(el) el.oninput = handler; };
+
     // Gộp ngân hàng mở rộng (nếu có) vào ngân hàng chính — 1 lần duy nhất.
     // `choDuyet:1` đánh dấu 56 câu SINH BẰNG LLM chưa được tác giả xác nhận nhãn; xem
     // chú thích ở dtHienCau() vì sao dấu này phải tồn tại (lời khai trong hồ sơ từng
@@ -1717,70 +1728,70 @@
         window.MX_BANK_MORE.map(it => Object.assign({}, it, { choDuyet: 1 })));
       Object.defineProperty(window.MX_BANK, "_merged", {value:true});
     }
-    $("btn-vao").onclick = dangNhap;
+    bind("btn-vao", dangNhap);
     /* Chế độ ít chữ được bật mặc định qua class trên body */
 
-    $("btn-ve-home").onclick = ()=>hien("v-home");
-    $("btn-lab").onclick = ()=>{ hien("v-lab"); labBuoc(1); };
-    $("btn-dautruong").onclick = ()=>{ hien("v-dautruong"); dtBatDau("luyen");
+    bind("btn-ve-home", ()=>hien("v-home"));
+    bind("btn-lab", ()=>{ hien("v-lab"); labBuoc(1); });
+    bind("btn-dautruong", ()=>{ hien("v-dautruong"); dtBatDau("luyen");
       /* BT-09 Mức 3 nằm cùng view với Đấu trường nhưng ở tệp riêng js/bt09.js, vì phần
        * này có trạng thái riêng (nhớ loại lỗi nào đã ghi) còn Đấu trường chỉ chạy phiên.
        * Gọi ở đây để mỗi lần mở view đều dựng lại với đúng mã học sinh đang dùng. */
-      const _b09 = window.MX_BT09; if(_b09) _b09.init(maHS); };
-    $("dt-btn-luyen").onclick = ()=>dtBatDau("luyen");
-    $("dt-btn-pre").onclick   = ()=>dtBatDau("pre");
-    $("dt-btn-post").onclick  = ()=>dtBatDau("post");
-    $("btn-baocao").onclick = ()=>{ hien("v-baocao"); veBaoCao(); };
-    $("btn-logic").onclick = ()=>{ hien("v-logic"); window.MX_LOGIC.init(maHS); };
-    $("btn-kienthuc").onclick = ()=>{ hien("v-kienthuc"); window.MX_KIEN_THUC.init(maHS);
+      const _b09 = window.MX_BT09; if(_b09) _b09.init(maHS); });
+    bind("dt-btn-luyen", ()=>dtBatDau("luyen"));
+    bind("dt-btn-pre", ()=>dtBatDau("pre"));
+    bind("dt-btn-post", ()=>dtBatDau("post"));
+    bind("btn-baocao", ()=>{ hien("v-baocao"); veBaoCao(); });
+    bind("btn-logic", ()=>{ hien("v-logic"); window.MX_LOGIC.init(maHS); });
+    bind("btn-kienthuc", ()=>{ hien("v-kienthuc"); window.MX_KIEN_THUC.init(maHS);
       /* BT-13 Mức 2 + Mức 3 (10.C2.3) nằm trong cùng view Kiến thức nền nhưng ở tệp
        * riêng js/bt13.js, vì phần này có trạng thái (nhớ lần kiểm tra đầu của từng
        * tình huống) còn js/kienthuc.js chỉ render bảng tĩnh. Gọi ở đây để mỗi lần mở
        * view đều dựng lại phần tình huống với đúng mã học sinh đang dùng. */
-      const _b13 = window.MX_BT13; if(_b13) _b13.init(maHS); };
-    $("btn-tinhhuong").onclick = ()=> thMo();
-    /* Nút kịch bản có thể chưa tồn tại nếu index.html bị revert một phần, nên kiểm
-     * null thay vì gán thẳng như các nút cũ — gán thẳng sẽ ném lỗi và CHẶN toàn bộ
-     * đoạn nối nút phía sau. */
-    const _bKb = $("btn-kichban"); if(_bKb) _bKb.onclick = ()=> kbMo();
-    $("btn-lab3d").onclick = ()=> lab3dMo();
-    $("btn-pipe3d").onclick = ()=> pipe3dMo();
+      const _b13 = window.MX_BT13; if(_b13) _b13.init(maHS); });
+    bind("btn-tinhhuong", ()=> thMo());
+    bind("btn-kichban", ()=> kbMo());
+    bind("btn-lab3d", ()=> lab3dMo());
+    bind("btn-pipe3d", ()=> pipe3dMo());
     /* NHÀ MÁY AI — dây chuyền 7 trạm (điều hướng chính mới) */
-    $("btn-nhamay").onclick = ()=>{ hien("v-nhamay"); nmVeSoDo(); nmMoTram(0); };
-    /* --- Trạm 0: NHẬP LIỆU --- */
-    $("t0-tao").onclick = ()=> nmT0TaoLai();
-    $("t0-tile").oninput = e=>{ $("t0-tile-so").textContent = e.target.value + "%"; };
-    $("t0-so").oninput   = e=>{ $("t0-so-num").textContent = e.target.value; };
+    bind("btn-nhamay", ()=>{ hien("v-nhamay"); nmVeSoDo(); nmMoTram(0); });
+    /* --- Trạm 0: NHẬP LIỆU (inquiry-based, không còn t0-tao/t0-tile/t0-so) --- */
+    bind("t0-tao", ()=> nmT0TaoLai());
+    bindInput("t0-tile", e=>{ const el = $("t0-tile-so"); if(el) el.textContent = e.target.value + "%"; });
+    bindInput("t0-so", e=>{ const el = $("t0-so-num"); if(el) el.textContent = e.target.value; });
     /* --- Trạm 1: DÁN NHÃN --- */
-    $("t1-tao").onclick   = ()=> nmKhoiDongTram1(true);
+    bind("t1-tao", ()=> nmKhoiDongTram1(true));
     /* BT-02: ô dự đoán dựng trực tiếp từ MX_DUDOAN (biến ddT1) chứ không qua BANG của
      * muc3.js, nên phải truyền hàm đọc trạng thái chốt của chính nó — M3().daChotRoi("BT-02")
      * sẽ luôn false vì mã đó không nằm trong DA_CHOT. ddT1 có thể null (chưa tạo bộ ảnh),
      * nên đọc qua vòng ?. và coi null là "chưa chốt". */
-    $("t1-cham").onclick  = ()=> epDuDoan("BT-02", "t1-duDoan", nmT1Cham,
-                                          ()=> ddT1 ? ddT1.daChot() : false);
-    $("t1-lamlai").onclick= ()=> nmKhoiDongTram1(true);
+    bind("t1-cham", ()=> epDuDoan("BT-02", "t1-duDoan", nmT1Cham,
+                                          ()=> ddT1 ? ddT1.daChot() : false));
+    bind("t1-lamlai", ()=> nmKhoiDongTram1(true));
     /* --- Trạm 5: ỨNG DỤNG --- */
     /* BT-07: nút này sinh ra câu trả lời mà dự đoán của học sinh sẽ được đối chiếu với nó. */
-    $("nm-sinh").onclick  = ()=> epDuDoan("BT-07", "nm-muc3-bt07", nmSinh);
-    $("nm-xoa5").onclick  = ()=>{ nmItem = null; $("nm-prompt").value = "";
-      $("nm-dau-ra").style.display = "none"; $("nm-rubric").innerHTML = "";
-      $("nm-kq5").innerHTML = ""; $("nm-van-ban").textContent = ""; };
-    $("nm-can-cu").onclick = ()=> nmPhanQuyet(true);
-    $("nm-bia").onclick    = ()=> nmPhanQuyet(false);
-    $("pipe3d-hong").onclick = ()=> pipe3dHong();
-    $("pipe3d-reset").onclick = ()=>{ window.MX_PIPE3D.datLai(); $("pipe3d-doan").style.display="none";
-      $("pipe3d-chitiet").innerHTML=""; $("pipe3d-note").innerHTML="Đã đặt lại. Bấm <b>Làm hỏng một trạm</b> để chơi lượt mới."; pipe3dHud(); };
-    $("btn-gioithieu").onclick = ()=>hien("v-gioithieu");
-    $("btn-tao-dulieu").onclick = labTaoDuLieu;
+    bind("nm-sinh", ()=> epDuDoan("BT-07", "nm-muc3-bt07", nmSinh));
+    bind("nm-xoa5", ()=>{ nmItem = null; const prompt = $("nm-prompt"); if(prompt) prompt.value = "";
+      const dauRa = $("nm-dau-ra"); if(dauRa) dauRa.style.display = "none";
+      const rubric = $("nm-rubric"); if(rubric) rubric.innerHTML = "";
+      const kq5 = $("nm-kq5"); if(kq5) kq5.innerHTML = "";
+      const vanBan = $("nm-van-ban"); if(vanBan) vanBan.textContent = ""; });
+    bind("nm-can-cu", ()=> nmPhanQuyet(true));
+    bind("nm-bia", ()=> nmPhanQuyet(false));
+    bind("pipe3d-hong", ()=> pipe3dHong());
+    bind("pipe3d-reset", ()=>{ window.MX_PIPE3D.datLai(); const doan = $("pipe3d-doan"); if(doan) doan.style.display="none";
+      const chitiet = $("pipe3d-chitiet"); if(chitiet) chitiet.innerHTML="";
+      const note = $("pipe3d-note"); if(note) note.innerHTML="Đã đặt lại. Bấm <b>Làm hỏng một trạm</b> để chơi lượt mới."; pipe3dHud(); });
+    bind("btn-gioithieu", ()=>hien("v-gioithieu"));
+    bind("btn-tao-dulieu", labTaoDuLieu);
     /* CỔNG ÉP DỰ ĐOÁN (07/10): nút này chạy ra con số mà BT-03 dùng làm đáp án, nên nếu cho
      * bấm trước khi học sinh chốt dự đoán thì ô dự đoán thành trang trí — học sinh thấy kết quả
      * rồi mới "dự đoán" là dự đoán ngược. Bọc chứ không khoá cứng nút: xem epDuDoan(). */
-    $("btn-huanluyen").onclick = ()=> epDuDoan("BT-03", "lab-muc3-bt03", labHuanLuyen);
-    $("btn-sosanh").onclick    = ()=> epDuDoan("BT-06", "lab-muc3-bt06", labSoSanh);
-    $("btn-lab-cauhoi").onclick = labCauHoi;
-    $("dt-nop").onclick = dtNop;
-    $("dt-tiep").onclick = dtTiep;
+    bind("btn-huanluyen", ()=> epDuDoan("BT-03", "lab-muc3-bt03", labHuanLuyen));
+    bind("btn-sosanh", ()=> epDuDoan("BT-06", "lab-muc3-bt06", labSoSanh));
+    bind("btn-lab-cauhoi", labCauHoi);
+    bind("dt-nop", dtNop);
+    bind("dt-tiep", dtTiep);
     hien("v-home");
   });
 })();
