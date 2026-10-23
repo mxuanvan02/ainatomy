@@ -6,13 +6,34 @@ AInatomy hỗ trợ dạy **28 bài** trong SGK Tin học 10, phủ **22/22 YCC�
 
 ---
 
+## Mục lục
+
+- [Cấu trúc chương trình](#cấu-trúc-chương-trình)
+- [Chủ đề A: Máy tính và xã hội tri thức](#chủ-đề-a-máy-tính-và-xã-hội-tri-thức)
+- [Chủ đề B: Mạng máy tính và Internet](#chủ-đề-b-mạng-máy-tính-và-internet)
+- [Chủ đề D: Đạo đức, pháp luật và văn hóa trong môi trường số](#chủ-đề-d-đạo-đức-pháp-luật-và-văn-hóa-trong-môi-trường-số)
+- [Chủ đề E: Phần mềm thiết kế đồ họa (định hướng ICT)](#chủ-đề-e-phần-mềm-thiết-kế-đồ-họa-định-hướng-ict)
+- [Chủ đề F: Giải quyết vấn đề với sự trợ giúp của máy tính](#chủ-đề-f-giải-quyết-vấn-đề-với-sự-trợ-giúp-của-máy-tính)
+- [Chủ đề G: Hướng nghiệp với Tin học](#chủ-đề-g-hướng-nghiệp-với-tin-học)
+- [Tổng kết](#tổng-kết)
+- [Phân phối 12 tiết đề xuất](#phân-phối-12-tiết-đề-xuất)
+- [Lưu ý](#lưu-ý)
+- [Tài liệu tham khảo](#tài-liệu-tham-khảo)
+
+---
+
 ## Cấu trúc chương trình
 
 Chương trình Tin học 10 có **6 chủ đề** (A-F), ~34 bài:
 - **Định hướng ICT**: thêm chủ đề E (Thiết kế đồ họa)
 - **Định hướng CS**: thêm chủ đề G (Biểu diễn thông tin)
 
-AInatomy tích hợp được cả hai định hướng.
+AInatomy tích hợp vào cả hai định hướng.
+
+**Mối quan hệ giữa chủ đề SGK và mạch QĐ 2422:**
+- Chủ đề A, B, D trong SGK tương ứng mạch A, B, D trong QĐ 2422
+- Chủ đề F trong SGK (Lập trình Python) tích hợp YCCĐ mạch C (Kỹ thuật và ứng dụng AI)
+- Chủ đề E, G là định hướng riêng, không nằm trong mạch QĐ 2422
 
 ---
 
@@ -22,9 +43,9 @@ AInatomy tích hợp được cả hai định hướng.
 **YCCĐ:** 10.A1.1, 10.A1.2
 
 **Hoạt động:**
-- Kịch bản 9 cảnh (5 phút)
-- Trạm 0 - Nhập liệu (5-8 phút)
-- Nhà máy AI - Trạm 5 (5 phút)
+- Kịch bản 9 cảnh (xem 5 phút)
+- Trạm 0 – Nhập liệu (5-8 phút)
+- Nhà máy AI – Trạm 5 (5 phút)
 
 **Thời lượng:** 15-20 phút
 
@@ -45,7 +66,7 @@ AInatomy tích hợp được cả hai định hướng.
 **YCCĐ:** 10.A3.1
 
 **Hoạt động:**
-- Tình huống (phủ 10.B2.1) (5 phút)
+- Tình huống (liên quan 10.B2.1) (5 phút)
 - Kiến thức Tin học (3-5 phút)
 
 **Thời lượng:** 10 phút
@@ -80,8 +101,8 @@ AInatomy tích hợp được cả hai định hướng.
 **YCCĐ:** 10.B3.1
 
 **Hoạt động:**
-- Tầng 1 - Xưởng huấn luyện (15-20 phút)
-- Nhà máy AI - Trạm 1 (8 phút)
+- Tầng 1 – Xưởng huấn luyện (15-20 phút)
+- Nhà máy AI – Trạm 1 (8 phút)
 
 **Thời lượng:** 20-25 phút
 
@@ -152,9 +173,9 @@ AInatomy tích hợp được cả hai định hướng.
 **YCCĐ:** 10.C4.1, 10.C4.MR1
 
 **Hoạt động:**
-- Tầng 1 - Xưởng huấn luyện (20 phút)
-- Nhà máy AI - Trạm 0 (8 phút)
-- Nhà máy AI - Trạm 1 (8 phút)
+- Tầng 1 – Xưởng huấn luyện (20 phút)
+- Nhà máy AI – Trạm 0 (8 phút)
+- Nhà máy AI – Trạm 1 (8 phút)
 
 **Thời lượng:** 30-35 phút
 
@@ -186,9 +207,9 @@ AInatomy tích hợp được cả hai định hướng.
 **YCCĐ:** 10.D2.2
 
 **Hoạt động:**
-- Tầng 1 - Xưởng huấn luyện (20 phút)
-- Nhà máy AI - Trạm 4 (8 phút)
-- Nhà máy AI - Trạm 6 (5 phút)
+- Tầng 1 – Xưởng huấn luyện (20 phút)
+- Nhà máy AI – Trạm 4 (8 phút)
+- Nhà máy AI – Trạm 6 (5 phút)
 
 **Thời lượng:** 30-35 phút
 
@@ -243,9 +264,9 @@ AInatomy tích hợp được cả hai định hướng.
 
 ## Lưu ý
 
-1. **Không cần dạy theo thứ tự** — chọn hoạt động phù hợp bài đang dạy
+1. **Không bắt buộc dạy theo thứ tự** — chọn hoạt động phù hợp bài đang dạy
 2. **Mỗi hoạt động 5-20 phút** — dùng làm khởi động, hình thành khái niệm, hoặc thực hành
-3. **Tự chấm** — không cần giáo viên chấm bài
+3. **Hệ thống tự chấm** — không cần giáo viên chấm bài
 4. **Offline** — không cần Internet, không cần tài khoản
 5. **Phủ 22/22 YCCĐ** — đáp ứng QĐ 2422/QĐ-BGDĐT
 
