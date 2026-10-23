@@ -8,6 +8,8 @@ Học sinh **bắt lỗi AI** thay vì hỏi AI; hệ thống **tự chấm** v�
 
 **Repo:** https://github.com/mxuanvan02/ainatomy · **Bản chạy thử:** https://mxuanvan02.github.io/ainatomy/
 
+**Tác giả:** GV Mai Xuân Văn — Trường THPT Thuận Hoá, Đại học Sư Phạm, Đại học Huế
+
 ## 0. Repo này tự chứa (chạy được ở máy khác)
 
 Mọi công cụ trong `tools/` tự suy gốc repo từ vị trí tệp, **không ghi cứng đường dẫn máy tác giả**:
