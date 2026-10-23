@@ -26,7 +26,17 @@ def title(s,t,sub=''):
     if sub: tx(s,.58,1.68,12,.28,sub,12,MUTED)
 
 def pic(s,path,x,y,w,h):
-    shp(s,x-.04,y-.04,w+.08,h+.08,WHITE,BORDER,MSO_SHAPE.RECTANGLE); s.shapes.add_picture(path,Inches(x),Inches(y),width=Inches(w),height=Inches(h))
+    # Khung ảnh cố định; giữ nguyên tỉ lệ, không kéo giãn ảnh chụp thật.
+    shp(s,x-.04,y-.04,w+.08,h+.08,PALE,BORDER,MSO_SHAPE.RECTANGLE)
+    im=Image.open(path)
+    ratio=im.width/im.height
+    box_ratio=w/h
+    if ratio >= box_ratio:
+        draw_w=w; draw_h=w/ratio
+    else:
+        draw_h=h; draw_w=h*ratio
+    draw_x=x+(w-draw_w)/2; draw_y=y+(h-draw_h)/2
+    s.shapes.add_picture(path,Inches(draw_x),Inches(draw_y),width=Inches(draw_w),height=Inches(draw_h))
 
 def card(s,x,y,w,h,hdr,body,accent=BLUE):
     shp(s,x,y,w,h); q=s.shapes.add_shape(MSO_SHAPE.RECTANGLE,Inches(x),Inches(y),Pt(5),Inches(h)); q.fill.solid(); q.fill.fore_color.rgb=accent; q.line.fill.background(); tx(s,x+.18,y+.15,w-.3,.28,hdr,14,accent,True); tx(s,x+.18,y+.58,w-.3,h-.7,body,14,TEXT)
