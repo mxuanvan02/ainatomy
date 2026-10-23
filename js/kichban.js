@@ -50,18 +50,26 @@
    * từ tệp đó, không tự vẽ. Lý do nhúng sẵn thay vì fetch lúc chạy: mở index.html bằng
    * file:// thì fetch tệp SVG bị chặn CORS, kịch bản sẽ vỡ đúng trên máy trường không
    * có mạng — là tình huống bắt buộc phải chạy được.
-   * Đây là chỗ thay cho emoji: MASTER.md cấm dùng emoji làm biểu tượng. */
+   * Đây là chỗ thay cho emoji: MASTER.md cấm dùng emoji làm biểu tượng.
+   *
+   * SỬA 23/10: icon SVG 44×44 quá nhỏ và trừu tượng — học sinh không nhận ra đây là xe máy.
+   * Thay bằng canvas vẽ thật từ veXeMay() ở kích thước 120×90, phóng to bằng CSS lên 240×180.
+   * Giữ nguyên 120×90 nội bộ để không ảnh hưởng độ phân giải dữ liệu huấn luyện (đã đo: vẽ lại
+   * ở độ phân giải cao làm mô hình sập 100%→50%). Chỉ phóng to bằng CSS cho hiển thị.
+   */
   function svgAnh(cls){
-    const svg = document.createElementNS(NS_SVG, "svg");
-    svg.setAttribute("viewBox", "0 0 24 24");
-    svg.setAttribute("class", "ic-kb" + (cls ? " " + cls : ""));
-    svg.setAttribute("aria-hidden", "true");
-    svg.setAttribute("width", "44"); svg.setAttribute("height", "44");
-    _pt(svg, "circle", { "cx":"18.5", "cy":"17.5", "r":"3.5" });
-    _pt(svg, "circle", { "cx":"5.5", "cy":"17.5", "r":"3.5" });
-    _pt(svg, "circle", { "cx":"15", "cy":"5", "r":"1" });
-    _pt(svg, "path", { "d":"M12 17.5V14l-3-3 4-3 2 3h2" });
-    return svg;
+    // Tạo canvas thay vì SVG icon
+    const canvas = document.createElement("canvas");
+    canvas.width = 120;
+    canvas.height = 90;
+    canvas.className = "ic-kb" + (cls ? " " + cls : "");
+    canvas.style.cssText = "width:240px;height:180px;border-radius:8px;border:1px solid var(--vien)";
+    canvas.setAttribute("aria-label", "Hình mô phỏng người đi xe máy");
+    // Vẽ hình xe máy có mũ bảo hiểm (mặc định cho kịch bản)
+    const ctx = canvas.getContext("2d");
+    const xe = window.MX_LAB.veXeMay(120, 90, "mbh", "ngay", 20261023);
+    ctx.drawImage(xe, 0, 0);
+    return canvas;
   }
 
 
