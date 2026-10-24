@@ -342,9 +342,10 @@ p.font.color.rgb = BLUE
 
 tx = slide.shapes.add_textbox(Inches(0.9), Inches(2.35), Inches(11.5), Inches(0.6))
 p = tx.text_frame.paragraphs[0]
-p.text = "Xây dựng phòng thí nghiệm AI offline (AInatomy) giúp học sinh THPT phát triển năng lực kiểm chứng AI, đáp ứng yêu cầu của Chương trình giáo dục phổ thông 2018 và Quyết định 2422/QĐ-BGDĐT."
-p.font.size = Pt(13)
+p.text = "Xây dựng phòng thí nghiệm AI offline (AInatomy) giúp học sinh THPT phát triển năng lực kiểm chứng AI, đáp ứng Chương trình GDPT 2018 và QĐ 2422/QĐ-BGDĐT."
+p.font.size = Pt(11)
 p.font.color.rgb = TEXT
+p.alignment = PP_ALIGN.LEFT
 
 # 3 mục tiêu cụ thể
 objectives = [
@@ -420,7 +421,7 @@ items = [
 ]
 
 for i, item in enumerate(items):
-    tx = slide.shapes.add_textbox(Inches(0.9), Inches(2.4 + i * 0.45), Inches(5.4), Inches(0.4))
+    tx = slide.shapes.add_textbox(Inches(0.9), Inches(2.4 + i * 0.33), Inches(5.4), Inches(0.3))
     p = tx.text_frame.paragraphs[0]
     p.text = f"• {item}"
     p.font.size = Pt(11)
@@ -449,7 +450,7 @@ items = [
 ]
 
 for i, item in enumerate(items):
-    tx = slide.shapes.add_textbox(Inches(7.0), Inches(2.4 + i * 0.45), Inches(5.4), Inches(0.4))
+    tx = slide.shapes.add_textbox(Inches(7.0), Inches(2.4 + i * 0.33), Inches(5.4), Inches(0.3))
     p = tx.text_frame.paragraphs[0]
     p.text = f"• {item}"
     p.font.size = Pt(11)
@@ -622,10 +623,10 @@ p.font.color.rgb = TEXT
 
 # 4 bước flow
 steps = [
-    ("1", "Đọc", "Học sinh đọc tình huống, nhận diện vấn đề"),
-    ("2", "Dự đoán", "Học sinh dự đoán đầu ra AI trước khi xem kết quả"),
-    ("3", "Thực hiện", "Học sinh chạy mô phỏng AI, quan sát quy trình"),
-    ("4", "Phản hồi", "Học sinh so sánh dự đoán với kết quả, rút ra bài học"),
+    ("1", "Đọc", "Đọc tình huống, nhận diện vấn đề"),
+    ("2", "Dự đoán", "Dự đoán đầu ra AI trước khi xem"),
+    ("3", "Thực hiện", "Chạy mô phỏng, quan sát quy trình"),
+    ("4", "Phản hồi", "So sánh dự đoán với kết quả, rút bài học"),
 ]
 
 for i, (num, title, desc) in enumerate(steps):
@@ -649,7 +650,7 @@ for i, (num, title, desc) in enumerate(steps):
     tf.vertical_anchor = MSO_ANCHOR.MIDDLE
     
     # Tiêu đề
-    tx = slide.shapes.add_textbox(Inches(x + 0.7), Inches(3.25), Inches(2.2), Inches(0.3))
+    tx = slide.shapes.add_textbox(Inches(x + 0.7), Inches(3.25), Inches(2.5), Inches(0.3))
     p = tx.text_frame.paragraphs[0]
     p.text = title
     p.font.size = Pt(14)
@@ -657,7 +658,7 @@ for i, (num, title, desc) in enumerate(steps):
     p.font.color.rgb = NAVY
     
     # Mô tả
-    tx = slide.shapes.add_textbox(Inches(x + 0.7), Inches(3.55), Inches(2.2), Inches(0.5))
+    tx = slide.shapes.add_textbox(Inches(x + 0.7), Inches(3.55), Inches(2.5), Inches(0.5))
     p = tx.text_frame.paragraphs[0]
     p.text = desc
     p.font.size = Pt(10)
@@ -845,7 +846,7 @@ for i, (num, label, desc) in enumerate(metrics):
     tx = slide.shapes.add_textbox(Inches(x + 0.1), Inches(2.9), Inches(2.6), Inches(0.6))
     p = tx.text_frame.paragraphs[0]
     p.text = desc
-    p.font.size = Pt(9)
+    p.font.size = Pt(11)
     p.font.color.rgb = TEXT
     p.alignment = PP_ALIGN.CENTER
 
@@ -875,7 +876,7 @@ for i, impact in enumerate(impacts):
     tx = slide.shapes.add_textbox(Inches(0.9), Inches(4.5 + i * 0.55), Inches(11.5), Inches(0.5))
     p = tx.text_frame.paragraphs[0]
     p.text = f"✓ {impact}"
-    p.font.size = Pt(11)
+    p.font.size = Pt(12)
     p.font.color.rgb = TEXT
 
 notes(slide, """KỊCH BẢN VIDEO 5 PHÚT — SLIDE 11/15 (30 giây)
