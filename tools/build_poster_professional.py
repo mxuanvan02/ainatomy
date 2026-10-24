@@ -106,11 +106,11 @@ def add_metric_card(slide, value, label, x, y, w, h, color=SUCCESS):
     # Card background
     add_section_box(slide, x, y, w, h, fill=WHITE, line=color, radius=True)
     
-    # Large value
-    add_text_block(slide, value, x, y + 0.5, w, 2.5, size=72, color=color, bold=True, align=PP_ALIGN.CENTER)
+    # Large value - increased size for A0 readability
+    add_text_block(slide, value, x, y + 0.5, w, 3, size=85, color=color, bold=True, align=PP_ALIGN.CENTER)
     
     # Label
-    add_text_block(slide, label, x, y + 3.2, w, 1.5, size=24, color=DARK, bold=True, align=PP_ALIGN.CENTER)
+    add_text_block(slide, label, x, y + 3.8, w, 1.5, size=28, color=DARK, bold=True, align=PP_ALIGN.CENTER)
 
 
 def add_image_fit(slide, path, x, y, w, h):
@@ -186,29 +186,29 @@ def main():
         "Phòng máy yếu, internet không ổn định",
         "Học sinh dùng AI nhưng thiếu kỹ năng kiểm chứng",
         "Đối tượng: học sinh THPT và giáo viên Tin học"
-    ], LEFT_X + 0.5, CONTENT_Y + 2.5, COL_W - 1, 15, size=28)
+    ], LEFT_X + 0.5, CONTENT_Y + 2.5, COL_W - 1, 15, size=32)
     
     # Section 2: Giải pháp & Công cụ AI
     add_section_box(slide, LEFT_X, CONTENT_Y + 20, COL_W, 22)
     add_section_header(slide, "2. GIẢI PHÁP & CÔNG CỤ AI", LEFT_X, CONTENT_Y + 20, COL_W, color=SECONDARY)
     add_text_block(slide, "AInatomy là phòng thí nghiệm AI offline giúp học sinh:", 
-                   LEFT_X + 0.5, CONTENT_Y + 22, COL_W - 1, 3, size=28, bold=True)
+                   LEFT_X + 0.5, CONTENT_Y + 22, COL_W - 1, 3, size=32, bold=True)
     add_bullet_list(slide, [
         "Quan sát quy trình AI từ đầu đến cuối",
         "Dự đoán, kiểm tra và bắt lỗi đầu ra AI",
         "Học trên máy cấu hình thấp, không cần tài khoản"
-    ], LEFT_X + 0.5, CONTENT_Y + 25.5, COL_W - 1, 10, size=26)
+    ], LEFT_X + 0.5, CONTENT_Y + 25.5, COL_W - 1, 10, size=30)
     add_text_block(slide, "Công cụ: HTML5, CSS3, JavaScript, Three.js", 
-                   LEFT_X + 0.5, CONTENT_Y + 36, COL_W - 1, 3, size=24, color=MUTED)
+                   LEFT_X + 0.5, CONTENT_Y + 36, COL_W - 1, 3, size=28, color=MUTED)
     
     # Section 3: Triển khai trong thực tế
     add_section_box(slide, LEFT_X, CONTENT_Y + 44, COL_W, 20)
-    add_section_header(slide, "3. TRIỂN KHAI TRONG THỰC TẾ", LEFT_X, CONTENT_Y + 44, COL_W, color=ACCENT)
+    add_section_header(slide, "3. TRIỂN KHAI TRONG THỰC TẾ", LEFT_X, CONTENT_Y + 44, COL_W, color=PRIMARY)
     add_bullet_list(slide, [
         "Giai đoạn 1 — Thiết kế: phân tích CT GDPT 2018, xây dựng prototype",
         "Giai đoạn 2 — Phát triển: 28 bài học theo 22 YCCĐ, mô phỏng 3D, chấm điểm tự động",
         "Giai đoạn 3 — Đánh giá: triển khai tại THPT Thuận Hoá, thu thập dữ liệu tương tác"
-    ], LEFT_X + 0.5, CONTENT_Y + 46.5, COL_W - 1, 17, size=26)
+    ], LEFT_X + 0.5, CONTENT_Y + 46.5, COL_W - 1, 17, size=30)
     
     # ===== RIGHT COLUMN =====
     
@@ -228,13 +228,13 @@ def main():
     add_section_box(slide, RIGHT_X, CONTENT_Y + 18, COL_W, 22)
     add_section_header(slide, "5. KẾT QUẢ & TÁC ĐỘNG", RIGHT_X, CONTENT_Y + 18, COL_W, color=SUCCESS)
     
-    # Metric cards in 2x2 grid
+    # Metric cards in 2x2 grid - larger and more prominent
     metric_w = (COL_W - 1.5) / 2
-    metric_h = 8
+    metric_h = 9
     add_metric_card(slide, "28/28", "YCCĐ Tin học 10", RIGHT_X + 0.5, CONTENT_Y + 20.5, metric_w, metric_h, SUCCESS)
     add_metric_card(slide, "97/97", "Kiểm thử đạt", RIGHT_X + 0.5 + metric_w + 0.5, CONTENT_Y + 20.5, metric_w, metric_h, SUCCESS)
-    add_metric_card(slide, "100%", "Offline", RIGHT_X + 0.5, CONTENT_Y + 29, metric_w, metric_h, SECONDARY)
-    add_metric_card(slide, "3D", "Mô phỏng AI", RIGHT_X + 0.5 + metric_w + 0.5, CONTENT_Y + 29, metric_w, metric_h, SECONDARY)
+    add_metric_card(slide, "100%", "Offline", RIGHT_X + 0.5, CONTENT_Y + 30, metric_w, metric_h, PRIMARY)
+    add_metric_card(slide, "3D", "Mô phỏng AI", RIGHT_X + 0.5 + metric_w + 0.5, CONTENT_Y + 30, metric_w, metric_h, PRIMARY)
     
     # Section 6: Bền vững & Khả năng mở rộng
     add_section_box(slide, RIGHT_X, CONTENT_Y + 42, COL_W, 16)
@@ -244,7 +244,7 @@ def main():
         "Mã nguồn mở, dễ bảo trì và cập nhật",
         "Mọi trường THPT có thể triển khai",
         "Có thể mở rộng sang khối 11, 12 và các chủ đề AI nâng cao"
-    ], RIGHT_X + 0.5, CONTENT_Y + 44.5, COL_W - 1, 13, size=26)
+    ], RIGHT_X + 0.5, CONTENT_Y + 44.5, COL_W - 1, 13, size=30)
     
     # QR code and call-to-action at bottom
     qr = ROOT / "qr_ainatomy.png"
