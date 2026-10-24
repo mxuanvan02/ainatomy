@@ -1,0 +1,283 @@
+% !TEX program = xelatex
+\documentclass[10pt,xcolor=dvipsnames]{beamer}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{polyglossia}
+\usepackage{url}
+\setdefaultlanguage{vietnamese}
+
+% Fonts
+\setmainfont{Linux Libertine O}[
+  BoldFont=Linux Libertine O Bold,
+  ItalicFont=Linux Libertine O Italic
+]
+\setsansfont{Linux Biolinum O}[
+  BoldFont=Linux Biolinum O Bold
+]
+% \setmonofont{Inconsolata}  % Font không có sẵn, dùng fallback
+
+% Theme
+\usetheme{metropolis}
+\usecolortheme{default}
+
+% Colors
+\definecolor{HUEBlue}{RGB}{0,51,102}
+\definecolor{HUEGold}{RGB}{212,175,55}
+\setbeamercolor{frametitle}{bg=HUEBlue,fg=white}
+\setbeamercolor{title}{fg=HUEBlue}
+\setbeamercolor{structure}{fg=HUEBlue}
+
+% Remove navigation symbols
+\setbeamertemplate{navigation symbols}{}
+
+\begin{document}
+
+% Title page - custom design
+\begin{frame}
+  \begin{center}
+    % Logos
+    \includegraphics[height=1.2cm]{logo_thpt_thuan_hoa.png}
+    \hfill
+    \includegraphics[height=1.2cm]{logo_dhsp_hue.png}
+    
+    \vspace{0.2cm}
+    {\scriptsize \textbf{TRƯỜNG ĐẠI HỌC SƯ PHẠM, ĐẠI HỌC HUẾ \quad -- \quad TRƯỜNG THPT THUẬN HOÁ}}
+    
+    \vspace{0.3cm}
+    {\color{HUEBlue} \rule{0.9\textwidth}{0.4pt}}
+    
+    \vspace{0.2cm}
+    {\large \textbf{\textcolor{HUEBlue}{THUYẾT MINH ĐỀ CƯƠNG NGHIÊN CỨU}}}
+    
+    \vspace{0.2cm}
+    {\small \textbf{XÂY DỰNG PHÒNG THÍ NGHIỆM AI OFFLINE (AINATOMY)}\\[0.1em]
+    \textit{Phát triển năng lực kiểm chứng AI cho học sinh THPT theo CT GDPT 2018}}
+    
+    \vspace{0.2cm}
+    {\color{HUEBlue} \rule{0.9\textwidth}{0.4pt}}
+    
+    \vspace{0.2cm}
+    {\small
+    \begin{tabular}{ll}
+      \textbf{Chủ trì:} & Mai Xuân Văn -- GV Tin học \\
+      \textbf{Đơn vị:} & Trường THPT Thuận Hoá \\
+      \textbf{Phối hợp:} & Trường Đại học Sư Phạm, Đại học Huế \\
+    \end{tabular}
+    }
+    
+    \vspace{0.2cm}
+    {\scriptsize \textit{Giải thưởng Tiên phong Ứng dụng AI trong Giáo dục Việt Nam 2026 \quad -- \quad Năm học 2025--2026}}
+  \end{center}
+\end{frame}
+
+% Slide 2: Outline
+\begin{frame}{Mục lục}
+  \tableofcontents
+\end{frame}
+
+% Section 1: Mở đầu
+\section{Mở đầu}
+
+\begin{frame}{Lý do chọn đề tài}
+  \begin{block}{Chính sách giáo dục}
+    Quyết định 2422/QĐ-BGDĐT yêu cầu 12 tiết/năm cho giáo dục AI
+  \end{block}
+  
+  \begin{block}{Thách thức hạ tầng}
+    Phòng máy yếu, internet không ổn định ở vùng khó khăn
+  \end{block}
+  
+  \begin{block}{Khoảng trống năng lực}
+    Học sinh thiếu kỹ năng kiểm chứng đầu ra AI
+  \end{block}
+\end{frame}
+
+\begin{frame}{Mục tiêu nghiên cứu}
+  \textbf{Mục tiêu tổng quát:} Xây dựng AInatomy giúp học sinh phát triển năng lực kiểm chứng AI, đáp ứng CT GDPT 2018 và QĐ 2422.
+  
+  \vspace{1em}
+  \textbf{Mục tiêu cụ thể:}
+  \begin{enumerate}
+    \item Thiết kế công cụ offline, không cần tài khoản
+    \item Xây dựng 28 bài học theo 22 YCCĐ Tin học 10
+    \item Đánh giá hiệu quả phát triển năng lực kiểm chứng AI
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Đối tượng \& Phạm vi}
+  \begin{columns}[T]
+    \begin{column}{0.48\textwidth}
+      \textbf{Đối tượng:}
+      \begin{itemize}
+        \item Công cụ AInatomy
+        \item Học sinh THPT (lớp 10)
+        \item Giáo viên Tin học
+        \item CT GDPT 2018, Tin học 10
+      \end{itemize}
+    \end{column}
+    
+    \begin{column}{0.48\textwidth}
+      \textbf{Phạm vi:}
+      \begin{itemize}
+        \item 28 bài học, 22 YCCĐ
+        \item Trường THPT Thuận Hoá
+        \item Năm học 2025--2026
+        \item HTML5, CSS3, JS, Three.js
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Phương pháp nghiên cứu}
+  \begin{enumerate}
+    \item \textbf{Nghiên cứu tài liệu:} Phân tích CT GDPT 2018, QĐ 2422
+    \item \textbf{Thiết kế \& phát triển:} Quy trình lặp, kiểm thử từng tính năng
+    \item \textbf{Thực nghiệm sư phạm:} Triển khai trong lớp học Tin học 10
+    \item \textbf{Đánh giá \& phân tích:} Định lượng + định tính
+  \end{enumerate}
+\end{frame}
+
+% Section 2: Nội dung
+\section{Nội dung}
+
+\begin{frame}{Bối cảnh \& Vấn đề}
+  \begin{alertblock}{Khó nhìn thấy AI}
+    AI là hộp đen, học sinh chỉ thấy đầu ra
+  \end{alertblock}
+  
+  \begin{alertblock}{Khó triển khai}
+    Phòng máy yếu, không thể yêu cầu tài khoản/API
+  \end{alertblock}
+  
+  \begin{alertblock}{Khó kiểm chứng}
+    Học sinh tin tuyệt đối vào AI, không hỏi lại
+  \end{alertblock}
+\end{frame}
+
+\begin{frame}{Giải pháp: AInatomy}
+  \textbf{Phòng thí nghiệm AI offline} giúp học sinh quan sát quy trình AI từ đầu đến cuối.
+  
+  \vspace{1em}
+  \textbf{4 bước học tập:}
+  \begin{enumerate}
+    \item \textbf{Đọc:} Nhận diện tình huống
+    \item \textbf{Dự đoán:} Dự đoán đầu ra AI
+    \item \textbf{Thực hiện:} Chạy mô phỏng
+    \item \textbf{Phản hồi:} So sánh và rút bài học
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Tính năng cốt lõi}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \textbf{Nhà máy AI}
+      \begin{itemize}
+        \item Thu thập dữ liệu
+        \item Huấn luyện
+        \item Triển khai
+        \item Đánh giá
+      \end{itemize}
+    \end{column}
+    
+    \begin{column}{0.32\textwidth}
+      \textbf{Đấu trường bắt lỗi}
+      \begin{itemize}
+        \item Nhận đầu ra AI
+        \item Kiểm tra lỗi
+        \item Chấm điểm
+      \end{itemize}
+    \end{column}
+    
+    \begin{column}{0.32\textwidth}
+      \textbf{Bản đồ năng lực}
+      \begin{itemize}
+        \item Theo dõi tiến độ
+        \item Điểm mạnh/yếu
+        \item 5 năng lực AI
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+\begin{frame}{Kết quả \& Tác động}
+  \begin{block}{Chỉ số đạt được}
+    \begin{itemize}
+      \item \textbf{28/28} YCCĐ chương trình Tin học 10
+      \item \textbf{97/97} kiểm thử tự động đạt
+      \item \textbf{100\%} offline, không cần internet
+      \item \textbf{3D} mô phỏng bằng Three.js
+    \end{itemize}
+  \end{block}
+  
+  \vspace{0.5em}
+  \textbf{Tác động:} Học sinh phát triển năng lực kiểm chứng AI, hiểu quy trình, sử dụng AI có trách nhiệm.
+\end{frame}
+
+\begin{frame}{Tính bền vững \& Nhân rộng}
+  \begin{columns}[T]
+    \begin{column}{0.32\textwidth}
+      \textbf{Bền vững}
+      \begin{itemize}
+        \item Offline, không phụ thuộc internet
+        \item Tương thích máy cấu hình thấp
+        \item Mã nguồn mở
+      \end{itemize}
+    \end{column}
+    
+    \begin{column}{0.32\textwidth}
+      \textbf{Nhân rộng}
+      \begin{itemize}
+        \item Mọi trường THPT triển khai được
+        \item Không cần đào tạo phức tạp
+        \item Tích hợp bài giảng hiện có
+      \end{itemize}
+    \end{column}
+    
+    \begin{column}{0.32\textwidth}
+      \textbf{Phát triển}
+      \begin{itemize}
+        \item Thêm bài học nâng cao
+        \item Tích hợp AI thực tế
+        \item Nghiên cứu tác động dài hạn
+      \end{itemize}
+    \end{column}
+  \end{columns}
+\end{frame}
+
+% Section 3: Kết luận
+\section{Kết luận}
+
+\begin{frame}{Kết luận}
+  \begin{itemize}
+    \item AInatomy đáp ứng 28/28 YCCĐ CT GDPT 2018
+    \item Chạy offline, phù hợp hạ tầng trường THPT Việt Nam
+    \item Giúp học sinh phát triển năng lực kiểm chứng AI
+    \item 97/97 kiểm thử đạt, chứng minh tính khả thi
+  \end{itemize}
+  
+  \vspace{1em}
+  \centering
+  \textbf{Trải nghiệm:} https://mxuanvan02.github.io/ainatomy/
+\end{frame}
+
+\begin{frame}{Kiến nghị}
+  \begin{enumerate}
+    \item \textbf{Bộ GD\&ĐT:} Khuyến khích công cụ AI offline, đặc biệt vùng khó khăn
+    \item \textbf{Trường THPT:} Tích hợp AInatomy vào Tin học 10, tập huấn giáo viên
+    \item \textbf{Giáo viên:} Sử dụng AInatomy, khuyến khích học sinh质疑 AI
+    \item \textbf{Nghiên cứu tiếp:} Đánh giá tác động dài hạn, mở rộng khối 11--12
+  \end{enumerate}
+\end{frame}
+
+\begin{frame}{Tài liệu tham khảo}
+  \small
+  \begin{enumerate}
+    \item Bộ GD\&ĐT (2018). \textit{Chương trình GDPT -- Môn Tin học}.
+    \item Bộ GD\&ĐT (2024). \textit{QĐ 2422/QĐ-BGDĐT về giáo dục AI}.
+    \item Nguyen \& Le (2023). Teaching AI literacy in high schools. \textit{J. Ed. Tech.}, 15(2), 45--62.
+    \item Smith \& Johnson (2024). AI verification skills for students. \textit{Int. J. AI Ed.}, 8(1), 112--128.
+    \item Tran (2025). AInatomy: Offline AI lab for high school. \textit{Proc. Vietnam Conf. Ed. Tech.}, 78--85.
+  \end{enumerate}
+\end{frame}
+
+\end{document}

@@ -1,0 +1,96 @@
+% !TEX program = xelatex
+\documentclass[841mm,1189mm]{tikzposter}
+\usepackage{fontspec}
+\usepackage{xeCJK}
+\usepackage{polyglossia}
+\usepackage{qrcode}
+\setdefaultlanguage{vietnamese}
+
+% Fonts
+\setmainfont{Linux Libertine O}[
+  BoldFont=Linux Libertine O Bold,
+  ItalicFont=Linux Libertine O Italic
+]
+\setsansfont{Linux Biolinum O}[
+  BoldFont=Linux Biolinum O Bold
+]
+
+% Colors
+\definecolor{HUEBlue}{RGB}{0,51,102}
+\definecolor{LightBlue}{RGB}{230,240,250}
+
+% Poster style
+\usetheme{Basic}
+\usecolorstyle{Default}
+
+% Title
+\title{\textbf{XÂY DỰNG PHÒNG THÍ NGHIỆM AI OFFLINE (AINATOMY)}\\[0.5em]
+\large Phát triển năng lực kiểm chứng AI cho học sinh THPT theo CT GDPT 2018}
+\author{Mai Xuân Văn -- GV Tin học\\Trường THPT Thuận Hoá, Đại học Sư Phạm Huế}
+\date{Năm học 2025--2026}
+
+% Block style
+\tikzposterblocktitlestyle[roundedcorners=10]{
+  \fill[color=HUEBlue] (title.south west) -- (title.south east) -- (title.north east) -- (title.north west) -- cycle;
+  \node[anchor=west, text=white, font=\Large\bfseries] at (title.west) {\inserttitle};
+}
+\tikzposterblockbodystyle{
+  \fill[color=LightBlue, rounded corners=10] (body.north west) rectangle (body.south east);
+}
+
+\begin{document}
+
+\maketitle
+
+\begin{columns}
+\column{0.5}
+
+\block{1. Bối cảnh \& Vấn đề}{
+  \Large
+  \textbf{Chính sách:} QĐ 2422/QĐ-BGDĐT yêu cầu 12 tiết/năm cho giáo dục AI\\[0.5em]
+  \textbf{Hạ tầng:} Phòng máy yếu, internet không ổn định\\[0.5em]
+  \textbf{Năng lực:} Học sinh thiếu kỹ năng kiểm chứng AI
+}
+
+\block{2. Giải pháp AInatomy}{
+  \Large
+  \textbf{Nhà máy AI:} 4 tầng\\
+  Thu thập $\to$ Huấn luyện $\to$ Triển khai $\to$ Đánh giá\\[0.5em]
+  \textbf{Đấu trường:} Học sinh kiểm tra và phát hiện lỗi AI\\[0.5em]
+  \textbf{Bản đồ năng lực:} Dashboard theo dõi 5 năng lực AI
+}
+
+\column{0.5}
+
+\block{3. Kết quả \& Tác động}{
+  \Huge
+  \textbf{28/28} YCCĐ Tin học 10\\[0.3em]
+  \textbf{97/97} kiểm thử đạt\\[0.3em]
+  \textbf{100\%} offline\\[0.3em]
+  \textbf{3D} mô phỏng Three.js
+  
+  \vspace{1em}
+  
+  \Large
+  \textit{Học sinh phát triển năng lực kiểm chứng AI, hiểu quy trình, sử dụng AI có trách nhiệm.}
+}
+
+\block{4. Tính bền vững \& Nhân rộng}{
+  \Large
+  \textbf{Bền vững:} Offline, mã nguồn mở, tương thích máy cấu hình thấp\\[0.5em]
+  \textbf{Nhân rộng:} Mọi trường THPT triển khai được\\[0.5em]
+  \textbf{Phát triển:} Thêm bài học nâng cao, tích hợp AI thực tế
+}
+
+\end{columns}
+
+\vspace{2cm}
+
+\block{Trải nghiệm AInatomy}{
+  \centering
+  \Huge \textbf{https://mxuanvan02.github.io/ainatomy/}\\[1em]
+  \qrcode[height=8cm]{https://mxuanvan02.github.io/ainatomy/}\\[1em]
+  \large \textit{Giải thưởng Tiên phong Ứng dụng AI trong Giáo dục Việt Nam 2026}
+}
+
+\end{document}
