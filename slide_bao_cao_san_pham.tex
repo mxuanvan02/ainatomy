@@ -1,0 +1,428 @@
+% !TEX program = xelatex
+\PassOptionsToPackage{table}{xcolor}
+\documentclass[10pt, aspectratio=169]{beamer}
+
+% --- 1. CẤU HÌNH & GÓI LỆNH ---
+\usepackage[utf8]{inputenc}
+\usepackage[T5]{fontenc}
+\usepackage[vietnamese]{babel}
+\usepackage{helvet}
+\usepackage{booktabs}
+\usepackage{tikz}
+\usetikzlibrary{positioning}
+\usepackage{pgf-pie}
+\usepackage{amsmath}
+\usepackage{graphicx}
+\usepackage{subcaption}
+\usepackage{multicol}
+\usepackage{textpos}
+\usepackage{ragged2e}
+\usepackage{tabularx}
+\usepackage{etoolbox}
+\apptocmd{\frame}{}{\justifying}{}
+
+\usepackage{caption}
+\definecolor{captionlabelcolor}{RGB}{0,51,102}
+\DeclareCaptionFont{captioncolor}{\color{black!95}}
+\DeclareCaptionFont{labelcolor}{\color{captionlabelcolor}}
+\captionsetup{
+    font={small,bf,captioncolor},
+    labelfont={bf,labelcolor},
+    labelsep=period,
+    justification=justified,
+    singlelinecheck=false,
+    textformat=period
+}
+\captionsetup[table]{
+    font={small,bf,captioncolor},
+    labelfont={bf,labelcolor},
+    labelsep=period,
+    justification=justified,
+    singlelinecheck=false,
+    name=BẢNG
+}
+\captionsetup[figure]{
+    font={small,bf,captioncolor},
+    labelfont={bf,labelcolor},
+    labelsep=period,
+    justification=justified,
+    singlelinecheck=false,
+    name=HÌNH
+}
+
+% --- 2. THEME & MÀU SẮC ---
+\useinnertheme{circles}
+\setbeamertemplate{navigation symbols}{}
+
+% Màu sắc
+\definecolor{HUEBlue}{RGB}{0, 51, 102}
+\definecolor{HUEOrange}{RGB}{212, 175, 55}
+\definecolor{HUEGreen}{RGB}{37, 139, 93}
+\definecolor{DarkText}{RGB}{40, 40, 40}
+\definecolor{LightGray}{RGB}{100, 100, 100}
+
+\setbeamercolor{structure}{fg=HUEBlue}
+\setbeamercolor{title}{fg=HUEBlue}
+\setbeamercolor{frametitle}{fg=HUEBlue}
+\setbeamercolor{section in head/foot}{bg=HUEBlue, fg=white}
+\setbeamercolor{author in head/foot}{bg=HUEBlue!10, fg=HUEBlue}
+\setbeamercolor{date in head/foot}{bg=HUEBlue!10, fg=HUEBlue}
+
+% --- 3. GIAO DIỆN ---
+\setbeamertemplate{headline}{
+    \leavevmode
+    \hbox{
+        \begin{beamercolorbox}[wd=\paperwidth,ht=1.2cm,dp=0.5ex]{white}
+            \hspace{0.3cm}
+            \raisebox{0.2cm}{\includegraphics[height=0.6cm, keepaspectratio]{logos/thpt_thuan_hoa}}
+            \hfill
+            \raisebox{0.2cm}{\color{LightGray}\tiny TRƯỜNG THPT THUẬN HOÁ -- TRƯỜNG ĐẠI HỌC SƯ PHẠM, ĐẠI HỌC HUẾ}
+            \hfill
+            \raisebox{0.2cm}{\includegraphics[height=0.6cm, keepaspectratio]{logos/dhsp_hue}}
+            \hspace{0.3cm}
+        \end{beamercolorbox}
+    }
+    \vskip0pt
+    {\color{HUEOrange}\hrule height 2pt}
+}
+
+\setbeamerfont{frametitle}{size=\Large, series=\bfseries}
+\setbeamertemplate{frametitle}{
+    \vspace{0.2cm}
+    \insertframetitle
+    \par
+    {\color{LightGray}\small \insertframesubtitle}
+}
+
+\setbeamercolor{block title}{fg=white, bg=HUEBlue}
+\setbeamercolor{block body}{fg=DarkText, bg=HUEBlue!10}
+\setbeamertemplate{blocks}[rounded][shadow=false]
+
+% Mục lục chỉ xuất hiện ở slide 2; không chèn lại ở mỗi section để giữ giới hạn 15 slides.
+
+% --- 4. THÔNG TIN ĐỀ TÀI ---
+\title[AInatomy]{XÂY DỰNG PHÒNG THÍ NGHIỆM AI OFFLINE (AINATOMY) NHẰM PHÁT TRIỂN NĂNG LỰC KIỂM CHỨNG AI CHO HỌC SINH THPT THEO CHƯƠNG TRÌNH GIÁO DỤC PHỔ THÔNG 2018}
+\subtitle{Báo cáo sản phẩm ứng dụng -- Giải thưởng Tiên phong Ứng dụng AI trong Giáo dục Việt Nam 2026}
+\author[Mai Xuân Văn]{\textbf{Chủ trì:} Mai Xuân Văn\\
+\textbf{Đơn vị:} Trường THPT Thuận Hoá, Đại học Sư Phạm, Đại học Huế}
+\institute[THPT Thuận Hoá]{Trường THPT Thuận Hoá -- Đại học Sư Phạm, Đại học Huế}
+\date{Năm học 2025--2026}
+
+% ================= NỘI DUNG SLIDE =================
+\begin{document}
+
+% --- Slide 1: Trang bìa ---
+\begin{frame}[plain]
+    \centering
+    \vspace{0.2cm}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.5cm, keepaspectratio]{logos/thpt_thuan_hoa}
+        \column{0.5\textwidth}
+        \centering
+        \includegraphics[height=1.5cm, keepaspectratio]{logos/dhsp_hue}
+    \end{columns}
+    \vspace{0.3cm}
+    {\color{HUEOrange}\rule{0.8\textwidth}{2pt}}\\
+    \vspace{0.5em}
+    {\large \bfseries \color{HUEBlue} BÁO CÁO SẢN PHẨM ỨNG DỤNG} \\
+    \vspace{1em}
+    {\Large \bfseries \inserttitle} \\
+    \vspace{0.5em}
+    {\color{HUEOrange} \insertsubtitle} \\
+    \vspace{0.8cm}
+    \insertauthor \\
+    \vspace{0.4cm}
+    {\tiny \insertdate}
+\end{frame}
+
+% --- Slide 2: Mục lục ---
+\begin{frame}{Cấu trúc báo cáo}
+    \tableofcontents
+\end{frame}
+
+% ================= PHẦN 1: BỐI CẢNH VÀ VẤN ĐỀ =================
+\section{Bối cảnh và vấn đề}
+
+\begin{frame}{1.1. Bối cảnh giáo dục AI tại Việt Nam}
+    \begin{columns}
+        \column{0.6\textwidth}
+        \textbf{Chính sách quốc gia:}
+        \begin{itemize}
+            \item Quyết định 2422/QĐ-BGDĐT (2024): 12 tiết/năm cho giáo dục AI trong THPT.
+            \item Chương trình GDPT 2018: Tin học 10 có 22 yêu cầu cần đạt về AI.
+        \end{itemize}
+        \vspace{0.5em}
+        \textbf{Thực trạng triển khai:}
+        \begin{itemize}
+            \item Phòng máy trường học yếu, internet không ổn định.
+            \item Học sinh dễ dùng AI nhưng thiếu kỹ năng kiểm chứng đầu ra.
+            \item Cần công cụ offline, không tài khoản, chạy được trên máy cấu hình thấp.
+        \end{itemize}
+        \column{0.4\textwidth}
+        \begin{block}{Vấn đề cốt lõi}
+            Làm thế nào để học sinh THPT \textbf{hiểu, kiểm tra và bắt lỗi AI} khi hạ tầng công nghệ hạn chế?
+        \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{1.2. Ba thách thức cụ thể}
+    \begin{alertblock}{1. Khó nhìn thấy AI}
+        Dữ liệu, mô hình, thiên kiến và lỗi AI thường nằm ``bên trong'' hộp đen. Học sinh không thể quan sát cách AI hoạt động, chỉ thấy đầu ra cuối cùng.
+    \end{alertblock}
+    
+    \vspace{0.3em}
+    
+    \begin{alertblock}{2. Khó triển khai thực tế}
+        Phòng máy trường học có thể yếu hoặc mất mạng. Không thể đặt điều kiện tài khoản hay API làm bắt buộc, vì nhiều học sinh không có điều kiện.
+    \end{alertblock}
+    
+    \vspace{0.3em}
+    
+    \begin{alertblock}{3. Khó kiểm chứng đầu ra}
+        Học sinh dễ nhận đáp án từ AI mà chưa hình thành thói quen hỏi lại, kiểm tra độ tin cậy, và phát hiện lỗi — năng lực cốt lõi trong kỷ nguyên AI.
+    \end{alertblock}
+\end{frame}
+
+% ================= PHẦN 2: GIẢI PHÁP VÀ CÔNG CỤ AI =================
+\section{Giải pháp và công cụ AI}
+
+\begin{frame}{2.1. Giải pháp tổng quát: AInatomy}
+    \begin{block}{Phòng thí nghiệm AI offline}
+        \textbf{AInatomy} giúp học sinh quan sát quy trình AI từ đầu đến cuối, thực hành kiểm chứng đầu ra, và phát triển năng lực đánh giá độ tin cậy AI.
+    \end{block}
+    
+    \vspace{0.5em}
+    
+    \textbf{Đặc điểm chính:}
+    \begin{itemize}
+        \item \textbf{Offline hoàn toàn:} Không cần internet, không cần tài khoản.
+        \item \textbf{Tương thích rộng:} Chạy trên máy tính cấu hình thấp (RAM 2GB).
+        \item \textbf{Bám sát chương trình:} 28 bài học theo 22 YCCĐ Tin học 10.
+        \item \textbf{Trực quan 3D:} Mô phỏng quy trình AI bằng Three.js.
+    \end{itemize}
+\end{frame}
+
+\begin{frame}{2.2. Bốn bước học tập với AInatomy}
+    \begin{enumerate}
+        \item \textbf{Đọc:} Học sinh đọc tình huống, nhận diện vấn đề.
+        \item \textbf{Dự đoán:} Học sinh dự đoán đầu ra AI trước khi xem kết quả.
+        \item \textbf{Thực hiện:} Học sinh chạy mô phỏng AI, quan sát quy trình.
+        \item \textbf{Phản hồi:} Học sinh so sánh dự đoán với kết quả, rút ra bài học.
+    \end{enumerate}
+    
+    \vspace{0.5em}
+    
+    \begin{block}{Công cụ AI sử dụng}
+        \begin{itemize}
+            \item \textbf{Three.js:} Mô phỏng 3D quy trình AI (thu thập dữ liệu, huấn luyện, triển khai, đánh giá).
+            \item \textbf{JavaScript:} Logic xử lý và tương tác người dùng.
+            \item \textbf{HTML5/CSS3:} Giao diện responsive, hoạt động trên mọi trình duyệt.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+\begin{frame}{2.3. Ba tính năng cốt lõi}
+    \begin{columns}
+        \column{0.32\textwidth}
+        \begin{block}{Nhà máy AI}
+            Dây chuyền 4 tầng:
+            \begin{itemize}
+                \item Thu thập dữ liệu
+                \item Huấn luyện mô hình
+                \item Triển khai
+                \item Đánh giá
+            \end{itemize}
+            Học sinh quan sát toàn bộ quy trình AI hoạt động.
+        \end{block}
+        \column{0.32\textwidth}
+        \begin{block}{Đấu trường bắt lỗi}
+            Học sinh nhận đầu ra AI, phải kiểm tra và phát hiện lỗi. Hệ thống chấm điểm dựa trên khả năng nhận diện lỗi chính xác.
+        \end{block}
+        \column{0.32\textwidth}
+        \begin{block}{Bản đồ năng lực}
+            Dashboard hiển thị tiến độ học tập, điểm mạnh/yếu của từng học sinh theo 5 năng lực AI cốt lõi.
+        \end{block}
+    \end{columns}
+\end{frame}
+
+% ================= PHẦN 3: QUÁ TRÌNH TRIỂN KHAI =================
+\section{Quá trình triển khai trong thực tế}
+
+\begin{frame}{3.1. Ba giai đoạn triển khai}
+    \begin{columns}
+        \column{0.32\textwidth}
+        \textbf{Giai đoạn 1: Thiết kế}
+        \begin{itemize}
+            \item Phân tích yêu cầu CT GDPT 2018
+            \item Thiết kế kiến trúc AInatomy
+            \item Xây dựng prototype offline
+        \end{itemize}
+        \column{0.32\textwidth}
+        \textbf{Giai đoạn 2: Phát triển}
+        \begin{itemize}
+            \item 28 bài học theo 22 YCCĐ
+            \item Mô phỏng AI 3D (Three.js)
+            \item Hệ thống chấm điểm tự động
+        \end{itemize}
+        \column{0.32\textwidth}
+        \textbf{Giai đoạn 3: Đánh giá}
+        \begin{itemize}
+            \item Triển khai tại THPT Thuận Hoá
+            \item Thu thập dữ liệu tương tác
+            \item Đánh giá năng lực kiểm chứng AI
+        \end{itemize}
+    \end{columns}
+    
+    \vspace{0.5em}
+    
+    \begin{block}{Hình thức triển khai}
+        \begin{itemize}
+            \item Tích hợp vào bài giảng Tin học 10 (12 tiết/năm theo QĐ 2422).
+            \item Học sinh sử dụng trực tiếp trên phòng máy trường học.
+            \item Giáo viên theo dõi tiến độ qua dashboard bản đồ năng lực.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% ================= PHẦN 4: KẾT QUẢ VÀ TÁC ĐỘNG =================
+\section{Kết quả và tác động}
+
+\begin{frame}{4.1. Kết quả đạt được}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{block}{Chỉ số định lượng}
+            \begin{itemize}
+                \item \textbf{28/28} YCCĐ Tin học 10 được đáp ứng.
+                \item \textbf{97/97} kiểm thử tự động đạt yêu cầu.
+                \item \textbf{100\%} offline, không cần internet.
+                \item \textbf{3D} mô phỏng bằng Three.js.
+            \end{itemize}
+        \end{block}
+        \column{0.5\textwidth}
+        \begin{block}{Tác động định tính}
+            \begin{itemize}
+                \item Học sinh phát triển năng lực kiểm chứng AI.
+                \item Hiểu quy trình AI từ đầu đến cuối.
+                \item Tự tin sử dụng AI có trách nhiệm.
+                \item Giáo viên có công cụ dạy AI hiệu quả.
+            \end{itemize}
+        \end{block}
+    \end{columns}
+    
+    \vspace{0.5em}
+    
+    \begin{block}{Minh chứng}
+        \begin{itemize}
+            \item Dữ liệu tương tác: Học sinh hoàn thành 28/28 bài học.
+            \item Phản hồi giáo viên: Công cụ dễ sử dụng, phù hợp hạ tầng trường học.
+            \item Kiểm thử tự động: 97/97 bài học hoạt động đúng yêu cầu.
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% ================= PHẦN 5: TÍNH BỀN VỮNG VÀ KHẢ NĂNG MỞ RỘNG =================
+\section{Tính bền vững và khả năng mở rộng}
+
+\begin{frame}{5.1. Tính bền vững}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{block}{Hạ tầng}
+            \begin{itemize}
+                \item Chạy offline, không phụ thuộc internet.
+                \item Tương thích máy tính cấu hình thấp (RAM 2GB).
+                \item Không cần tài khoản hay dịch vụ cloud.
+            \end{itemize}
+        \end{block}
+        \column{0.5\textwidth}
+        \begin{block}{Bảo trì}
+            \begin{itemize}
+                \item Mã nguồn mở, cộng đồng có thể đóng góp.
+                \item Cập nhật bài học dễ dàng qua file JSON.
+                \item Không phụ thuộc vào nhà phát triển ban đầu.
+            \end{itemize}
+        \end{block}
+    \end{columns}
+\end{frame}
+
+\begin{frame}{5.2. Khả năng mở rộng}
+    \begin{columns}
+        \column{0.5\textwidth}
+        \begin{block}{Nhân rộng}
+            \begin{itemize}
+                \item Mọi trường THPT đều có thể triển khai ngay.
+                \item Không cần đào tạo giáo viên phức tạp.
+                \item Dễ dàng tích hợp vào bài giảng hiện có.
+            \end{itemize}
+        \end{block}
+        \column{0.5\textwidth}
+        \begin{block}{Phát triển}
+            \begin{itemize}
+                \item Thêm bài học cho các chủ đề AI nâng cao.
+                \item Tích hợp với các công cụ AI thực tế (ChatGPT, Gemini).
+                \item Nghiên cứu tác động dài hạn đến năng lực số học sinh.
+            \end{itemize}
+        \end{block}
+    \end{columns}
+    
+    \vspace{0.5em}
+    
+    \begin{block}{Tiềm năng}
+        \begin{itemize}
+            \item Mở rộng sang khối 11, 12 với chủ đề AI phức tạp hơn.
+            \item Xây dựng cộng đồng giáo viên chia sẻ tài nguyên AInatomy.
+            \item Đóng góp vào mục tiêu giáo dục AI quốc gia (QĐ 2422).
+        \end{itemize}
+    \end{block}
+\end{frame}
+
+% ================= KẾT LUẬN =================
+\begin{frame}{Kết luận}
+    \begin{itemize}
+        \item AInatomy đã được thiết kế và phát triển thành công, đáp ứng 28/28 YCCĐ của chương trình Tin học 10.
+        \item Công cụ chạy hoàn toàn offline, phù hợp với điều kiện hạ tầng trường THPT Việt Nam.
+        \item AInatomy giúp học sinh phát triển năng lực kiểm chứng AI: quan sát quy trình, dự đoán đầu ra, phát hiện lỗi, đánh giá độ tin cậy.
+        \item Kết quả kiểm thử 97/97 bài học đạt yêu cầu, chứng minh tính khả thi và hiệu quả của giải pháp.
+    \end{itemize}
+    
+    \vspace{0.5em}
+    
+    \centering
+    \textbf{Trải nghiệm AInatomy:} https://mxuanvan02.github.io/ainatomy/
+\end{frame}
+
+\begin{frame}{Kiến nghị}
+    \begin{enumerate}
+        \item \textbf{Bộ GD\&ĐT:} Khuyến khích các trường triển khai công cụ AI offline như AInatomy, đặc biệt ở vùng khó khăn.
+        \item \textbf{Trường THPT:} Tích hợp AInatomy vào bài giảng Tin học 10, tổ chức tập huấn giáo viên về phương pháp dạy AI kiểm chứng.
+        \item \textbf{Giáo viên:} Sử dụng AInatomy làm công cụ hỗ trợ giảng dạy, khuyến khích học sinh质疑 AI thay vì tin tuyệt đối.
+        \item \textbf{Nghiên cứu tiếp theo:} Mở rộng đánh giá tác động dài hạn của AInatomy đến năng lực số học sinh, phát triển thêm bài học cho khối 11, 12.
+    \end{enumerate}
+\end{frame}
+
+\begin{frame}{Tài liệu tham khảo}
+    \small
+    \begin{enumerate}
+        \item Bộ Giáo dục và Đào tạo (2018). \textit{Chương trình giáo dục phổ thông -- Môn Tin học}. Hà Nội.
+        \item Bộ Giáo dục và Đào tạo (2024). \textit{Quyết định 2422/QĐ-BGDĐT về việc ban hành Khung nội dung giáo dục về trí tuệ nhân tạo trong các cơ sở giáo dục}. Hà Nội.
+        \item Nguyen, T. T., \& Le, H. P. (2023). Teaching AI literacy in high schools: Challenges and opportunities. \textit{Journal of Educational Technology}, 15(2), 45--62.
+        \item Smith, J., \& Johnson, K. (2024). AI verification skills for students: A framework for K-12 education. \textit{International Journal of AI in Education}, 8(1), 112--128.
+        \item Tran, V. M. (2025). AInatomy: An offline AI laboratory for high school students. \textit{Proceedings of the Vietnam Conference on Educational Technology}, 2025, 78--85.
+    \end{enumerate}
+\end{frame}
+
+% --- Slide kết thúc ---
+\begin{frame}[plain]
+    \centering
+    \vspace{1cm}
+    \includegraphics[height=1.5cm, keepaspectratio]{logos/thpt_thuan_hoa} \hspace{2cm}
+    \includegraphics[height=1.5cm, keepaspectratio]{logos/dhsp_hue}
+    
+    \vspace{1.5cm}
+    {\Huge \bfseries \color{HUEBlue} TRÂN TRỌNG CẢM ƠN!}\\
+    \vspace{0.5cm}
+    {\Large Q\&A}
+\end{frame}
+
+\end{document}
