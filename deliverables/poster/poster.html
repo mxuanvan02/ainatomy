@@ -39,59 +39,65 @@
     padding:11mm 20mm 0;
     display:grid; grid-template-columns:1fr 1fr; column-gap:13mm;
   }
-  .col{ display:flex; flex-direction:column; gap:9mm; height:100%; min-height:0; }
+  .col{ display:flex; flex-direction:column; gap:7mm; height:100%; min-height:0; }
   .card{
     background:var(--pale); border:0.5mm solid var(--line);
-    border-radius:6mm; padding:7mm 8mm 8mm;
+    border-radius:6mm; padding:8mm 9mm 9mm;
     display:flex; flex-direction:column;
     flex:1 1 0; min-height:0;
   }
+  /* Thẻ giãn đều để phủ kín cột (đo được trước khi sửa: chỉ phủ 52-55% chiều
+     cao, để trống 394-414mm — đó là lý do poster "nhỏ nhỏ, chưa cân đối").
+     Nội dung canh ĐẦU thẻ (flex-start), không canh giữa: canh giữa từng gây
+     khoảng trống 76-89mm ở đỉnh thẻ. */
   .cbody{
     flex:1 1 auto; min-height:0;
-    display:flex; flex-direction:column; justify-content:center;
-    gap:4.5mm;
+    display:flex; flex-direction:column; justify-content:flex-start;
+    gap:5.5mm;
   }
-  .cbody > ul{ display:flex; flex-direction:column; gap:4.5mm; }
-  .cbody > .shots{ display:grid; grid-template-columns:repeat(3,1fr); gap:5mm; }
+  .cbody > ul{ display:flex; flex-direction:column; gap:6.5mm; }
+  .cbody > .shots{ display:grid; grid-template-columns:1fr 1fr; gap:4mm; flex:0 0 auto; }
   .cbody > .metrics{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:6mm; flex:1 1 auto; min-height:0; }
   .cbody > .note{ margin-top:2mm; }
   .card h2{
     background:var(--blue); color:#fff;
-    font-size:12mm; line-height:1.25; font-weight:800;
-    padding:4mm 6mm; border-radius:3.5mm; margin:0 0 6mm 0; flex:none;
+    font-size:13mm; line-height:1.24; font-weight:800;
+    padding:4.5mm 6mm; border-radius:3.5mm; margin:0 0 7mm 0; flex:none;
   }
   .card.blue2 h2{ background:var(--blue2); }
   .card.green h2{ background:var(--green); }
-  ul{ list-style:none; display:flex; flex-direction:column; gap:4.5mm; }
-  li{ font-size:9.4mm; line-height:1.4; padding-left:9mm; position:relative; }
+  ul{ list-style:none; display:flex; flex-direction:column; gap:6.5mm; }
+  li{ font-size:13mm; line-height:1.42; padding-left:10mm; position:relative; }
   li::before{
-    content:""; position:absolute; left:0; top:2.4mm;
-    width:3.6mm; height:3.6mm; border-radius:50%; background:var(--blue2);
+    content:""; position:absolute; left:0; top:3.4mm;
+    width:4.2mm; height:4.2mm; border-radius:50%; background:var(--blue2);
   }
-  p{ font-size:9.4mm; line-height:1.42; }
-  p + ul{ margin-top:4.5mm; }
-  .note{ margin-top:auto; font-size:8.2mm; color:var(--muted); }
+  p{ font-size:13mm; line-height:1.44; }
+  p + ul{ margin-top:5mm; }
+  .note{ margin-top:auto; font-size:9mm; color:var(--muted); }
 
-  /* EVIDENCE */
-  .shots{ display:grid; grid-template-columns:repeat(3,1fr); gap:5mm; flex:1 1 auto; min-height:0; }
+  /* EVIDENCE — 2 ảnh lớn + 1 ảnh rộng: 3 ảnh cùng hàng chỉ rộng 118mm nên
+     không đọc được nội dung trên khổ A0. */
+  .shots{ display:grid; grid-template-columns:1fr 1fr; gap:4mm; flex:0 0 auto; min-height:0; }
   .shot{
     background:#fff; border:0.4mm solid var(--line); border-radius:3mm;
     padding:2mm; display:flex; flex-direction:column; min-height:0;
   }
-  .shot img{ width:100%; flex:1 1 auto; min-height:0; object-fit:contain; object-position:top; display:block; }
-  .shot span{ font-size:6.6mm; color:var(--muted); text-align:center; margin-top:2mm; flex:none; }
+  .shot.wide{ grid-column:1 / -1; }
+  .shot img{ width:100%; height:auto; flex:0 0 auto; display:block; }
+  .shot span{ font-size:7.4mm; color:var(--muted); text-align:center; margin-top:2mm; flex:none; }
 
   /* METRICS */
   .metrics{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:6mm; flex:1 1 auto; min-height:0; }
   .metric{
     background:#fff; border:0.6mm solid var(--green); border-radius:4mm;
-    padding:3mm; display:flex; flex-direction:column;
+    padding:4mm 3mm; display:flex; flex-direction:column;
     align-items:center; justify-content:center; min-height:0;
   }
   .metric.alt{ border-color:var(--blue2); }
-  .metric .num{ font-size:25mm; line-height:1.15; font-weight:800; color:var(--green); letter-spacing:-0.4mm; }
+  .metric .num{ font-size:27mm; line-height:1.15; font-weight:800; color:var(--green); letter-spacing:-0.4mm; }
   .metric.alt .num{ color:var(--blue2); }
-  .metric .lbl{ margin-top:2.5mm; font-size:8mm; line-height:1.25; font-weight:600; text-align:center; }
+  .metric .lbl{ margin-top:2.5mm; font-size:9mm; line-height:1.25; font-weight:600; text-align:center; }
 
   /* FOOTER */
   .footer{ flex:none; padding:8mm 20mm 10mm; display:flex; align-items:center; gap:9mm; }
@@ -111,7 +117,7 @@
     <div class="subtitle">Phát triển năng lực kiểm chứng AI cho học sinh THPT<br>theo Chương trình Giáo dục phổ thông 2018</div>
     <div class="credits">
       <b>Giáo viên thực hiện:</b> Mai Xuân Văn &nbsp;·&nbsp;
-      <b>Đơn vị công tác:</b> Trường THPT Thuận Hoá, Đại học Sư Phạm, Đại học Huế
+      <b>Đơn vị công tác:</b> Trường THPT Thuận Hóa, Đại học Sư Phạm, Đại học Huế
     </div>
   </div>
 
@@ -148,7 +154,7 @@
         <ul>
           <li><b>Giai đoạn 1 — Thiết kế:</b> phân tích CT GDPT 2018, dựng prototype offline.</li>
           <li><b>Giai đoạn 2 — Phát triển:</b> 28 bài học theo 22 YCCĐ, mô phỏng 3D, chấm điểm tự động.</li>
-          <li><b>Giai đoạn 3 — Đánh giá:</b> triển khai tại THPT Thuận Hoá, thu dữ liệu tương tác.</li>
+          <li><b>Giai đoạn 3 — Đánh giá:</b> triển khai tại THPT Thuận Hóa, thu dữ liệu tương tác.</li>
         </ul>
         </div>
       </section>
@@ -161,7 +167,7 @@
         <div class="shots">
           <figure class="shot"><img src="assets/1-trang-chu.png" alt="Trang chủ AInatomy"><span>Trang chủ</span></figure>
           <figure class="shot"><img src="assets/3-tram0-nhap-lieu.png" alt="Tầng nhập liệu"><span>Tầng nhập liệu</span></figure>
-          <figure class="shot"><img src="assets/4-tram5-ung-dung.png" alt="Tầng ứng dụng"><span>Tầng ứng dụng</span></figure>
+          <figure class="shot wide"><img src="assets/4-tram5-ung-dung.png" alt="Tầng ứng dụng"><span>Tầng ứng dụng</span></figure>
         </div>
         </div>
       </section>
