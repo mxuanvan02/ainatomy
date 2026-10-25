@@ -1,0 +1,205 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+<meta charset="utf-8">
+<title>AInatomy — Poster iEEAI 2026</title>
+<style>
+  @page { size: 841mm 1189mm; margin: 0; }
+  * { margin:0; padding:0; box-sizing:border-box; }
+  :root{
+    --blue:#12406e;
+    --blue2:#1c6fa8;
+    --green:#1f7a52;
+    --ink:#1e242c;
+    --muted:#55606c;
+    --line:#ccd7e3;
+    --pale:#f2f7fc;
+  }
+  html,body{ width:841mm; height:1189mm; }
+  body{
+    font-family:"Inter","Noto Sans","Lato",Arial,sans-serif;
+    color:var(--ink); background:#fff;
+    -webkit-font-smoothing:antialiased;
+  }
+  .page{ width:841mm; height:1189mm; display:flex; flex-direction:column; }
+
+  /* HEADER: official banner asset (3975x724 => 5.49:1) */
+  .banner{ width:841mm; height:153.2mm; display:block; flex:none; }
+
+  /* TITLE */
+  .titleblock{ padding:13mm 24mm 0; text-align:center; flex:none; }
+  h1{ font-size:23mm; line-height:1.28; font-weight:800; color:var(--blue); letter-spacing:-0.2mm; }
+  .subtitle{ margin-top:5mm; font-size:11mm; line-height:1.3; font-weight:600; color:var(--blue2); }
+  .credits{ margin-top:6mm; font-size:9.2mm; line-height:1.45; }
+  .credits b{ color:var(--blue); }
+
+  /* CONTENT fills the remaining height exactly */
+  .content{
+    flex:1 1 auto; min-height:0;
+    padding:11mm 20mm 0;
+    display:grid; grid-template-columns:1fr 1fr; column-gap:13mm;
+  }
+  .col{ display:flex; flex-direction:column; gap:9mm; height:100%; min-height:0; }
+  .card{
+    background:var(--pale); border:0.5mm solid var(--line);
+    border-radius:6mm; padding:7mm 8mm 8mm;
+    display:flex; flex-direction:column;
+    flex:1 1 0; min-height:0;
+  }
+  .cbody{
+    flex:1 1 auto; min-height:0;
+    display:flex; flex-direction:column; justify-content:center;
+    gap:4.5mm;
+  }
+  .cbody > ul{ display:flex; flex-direction:column; gap:4.5mm; }
+  .cbody > .shots{ display:grid; grid-template-columns:repeat(3,1fr); gap:5mm; }
+  .cbody > .metrics{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:6mm; flex:1 1 auto; min-height:0; }
+  .cbody > .note{ margin-top:2mm; }
+  .card h2{
+    background:var(--blue); color:#fff;
+    font-size:12mm; line-height:1.25; font-weight:800;
+    padding:4mm 6mm; border-radius:3.5mm; margin:0 0 6mm 0; flex:none;
+  }
+  .card.blue2 h2{ background:var(--blue2); }
+  .card.green h2{ background:var(--green); }
+  ul{ list-style:none; display:flex; flex-direction:column; gap:4.5mm; }
+  li{ font-size:9.4mm; line-height:1.4; padding-left:9mm; position:relative; }
+  li::before{
+    content:""; position:absolute; left:0; top:2.4mm;
+    width:3.6mm; height:3.6mm; border-radius:50%; background:var(--blue2);
+  }
+  p{ font-size:9.4mm; line-height:1.42; }
+  p + ul{ margin-top:4.5mm; }
+  .note{ margin-top:auto; font-size:8.2mm; color:var(--muted); }
+
+  /* EVIDENCE */
+  .shots{ display:grid; grid-template-columns:repeat(3,1fr); gap:5mm; flex:1 1 auto; min-height:0; }
+  .shot{
+    background:#fff; border:0.4mm solid var(--line); border-radius:3mm;
+    padding:2mm; display:flex; flex-direction:column; min-height:0;
+  }
+  .shot img{ width:100%; flex:1 1 auto; min-height:0; object-fit:contain; object-position:top; display:block; }
+  .shot span{ font-size:6.6mm; color:var(--muted); text-align:center; margin-top:2mm; flex:none; }
+
+  /* METRICS */
+  .metrics{ display:grid; grid-template-columns:1fr 1fr; grid-template-rows:1fr 1fr; gap:6mm; flex:1 1 auto; min-height:0; }
+  .metric{
+    background:#fff; border:0.6mm solid var(--green); border-radius:4mm;
+    padding:3mm; display:flex; flex-direction:column;
+    align-items:center; justify-content:center; min-height:0;
+  }
+  .metric.alt{ border-color:var(--blue2); }
+  .metric .num{ font-size:25mm; line-height:1.15; font-weight:800; color:var(--green); letter-spacing:-0.4mm; }
+  .metric.alt .num{ color:var(--blue2); }
+  .metric .lbl{ margin-top:2.5mm; font-size:8mm; line-height:1.25; font-weight:600; text-align:center; }
+
+  /* FOOTER */
+  .footer{ flex:none; padding:8mm 20mm 10mm; display:flex; align-items:center; gap:9mm; }
+  .footer img{ width:40mm; height:40mm; flex:none; }
+  .footer .cta{ display:flex; flex-direction:column; gap:2.5mm; }
+  .footer .cta .big{ font-size:11.5mm; font-weight:800; color:var(--blue); }
+  .footer .cta .url{ font-size:8.6mm; color:var(--muted); }
+</style>
+</head>
+<body>
+<div class="page">
+
+  <img class="banner" src="../references/ieeai-2026/poster_bg.png" alt="Header chính thức iEEAI 2026">
+
+  <div class="titleblock">
+    <h1>AINATOMY — PHÒNG THÍ NGHIỆM AI OFFLINE</h1>
+    <div class="subtitle">Phát triển năng lực kiểm chứng AI cho học sinh THPT<br>theo Chương trình Giáo dục phổ thông 2018</div>
+    <div class="credits">
+      <b>Giáo viên thực hiện:</b> Mai Xuân Văn &nbsp;·&nbsp;
+      <b>Đơn vị công tác:</b> Trường THPT Thuận Hoá, Đại học Sư Phạm, Đại học Huế
+    </div>
+  </div>
+
+  <div class="content">
+    <div class="col">
+      <section class="card" data-block>
+        <h2 data-text>1. Bối cảnh &amp; vấn đề</h2>
+        <div class="cbody">
+        <ul>
+          <li>Quyết định 2422/QĐ-BGDĐT yêu cầu 12 tiết/năm cho giáo dục AI.</li>
+          <li>Phòng máy yếu, internet không ổn định ở nhiều trường.</li>
+          <li>Học sinh dùng AI nhưng thiếu kỹ năng kiểm chứng đầu ra.</li>
+          <li>Đối tượng hưởng lợi: học sinh THPT và giáo viên Tin học.</li>
+        </ul>
+        </div>
+      </section>
+
+      <section class="card blue2" data-block>
+        <h2 data-text>2. Giải pháp &amp; công cụ AI</h2>
+        <div class="cbody">
+        <p>AInatomy là phòng thí nghiệm AI chạy hoàn toàn offline, giúp học sinh:</p>
+        <ul>
+          <li>Quan sát quy trình AI từ dữ liệu đến đầu ra.</li>
+          <li>Dự đoán, kiểm tra và bắt lỗi câu trả lời của AI.</li>
+          <li>Học trên máy cấu hình thấp, không cần tài khoản.</li>
+        </ul>
+        <p class="note">Công cụ: HTML5 · CSS3 · JavaScript · Three.js</p>
+        </div>
+      </section>
+
+      <section class="card" data-block>
+        <h2 data-text>3. Triển khai trong thực tế</h2>
+        <div class="cbody">
+        <ul>
+          <li><b>Giai đoạn 1 — Thiết kế:</b> phân tích CT GDPT 2018, dựng prototype offline.</li>
+          <li><b>Giai đoạn 2 — Phát triển:</b> 28 bài học theo 22 YCCĐ, mô phỏng 3D, chấm điểm tự động.</li>
+          <li><b>Giai đoạn 3 — Đánh giá:</b> triển khai tại THPT Thuận Hoá, thu dữ liệu tương tác.</li>
+        </ul>
+        </div>
+      </section>
+    </div>
+
+    <div class="col">
+      <section class="card green" data-block>
+        <h2 data-text>4. Minh chứng sản phẩm</h2>
+        <div class="cbody">
+        <div class="shots">
+          <figure class="shot"><img src="assets/1-trang-chu.png" alt="Trang chủ AInatomy"><span>Trang chủ</span></figure>
+          <figure class="shot"><img src="assets/3-tram0-nhap-lieu.png" alt="Tầng nhập liệu"><span>Tầng nhập liệu</span></figure>
+          <figure class="shot"><img src="assets/4-tram5-ung-dung.png" alt="Tầng ứng dụng"><span>Tầng ứng dụng</span></figure>
+        </div>
+        </div>
+      </section>
+
+      <section class="card green" data-block>
+        <h2 data-text>5. Kết quả &amp; tác động</h2>
+        <div class="cbody">
+        <div class="metrics">
+          <div class="metric"><div class="num">28/28</div><div class="lbl">YCCĐ Tin học 10</div></div>
+          <div class="metric"><div class="num">97/97</div><div class="lbl">Kiểm thử đạt</div></div>
+          <div class="metric alt"><div class="num">100%</div><div class="lbl">Chạy offline</div></div>
+          <div class="metric alt"><div class="num">3D</div><div class="lbl">Mô phỏng AI</div></div>
+        </div>
+        </div>
+      </section>
+
+      <section class="card" data-block>
+        <h2 data-text>6. Bền vững &amp; khả năng mở rộng</h2>
+        <div class="cbody">
+        <ul>
+          <li>Chạy offline, không phụ thuộc internet hay cloud.</li>
+          <li>Mã nguồn mở, dễ bảo trì và cập nhật.</li>
+          <li>Mọi trường THPT có thể triển khai ngay.</li>
+          <li>Mở rộng sang khối 11, 12 và chủ đề AI nâng cao.</li>
+        </ul>
+        </div>
+      </section>
+    </div>
+  </div>
+
+  <div class="footer" data-block>
+    <img src="assets/qr_ainatomy.png" alt="QR trải nghiệm AInatomy">
+    <div class="cta">
+      <div class="big">Trải nghiệm AInatomy</div>
+      <div class="url">https://mxuanvan02.github.io/ainatomy/</div>
+    </div>
+  </div>
+
+</div>
+</body>
+</html>

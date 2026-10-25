@@ -221,15 +221,44 @@ Xem `ke-hoach-12-tiet.md` (thư mục cha): phân bổ 12 tiết × 4 mạch × 
 
 ```
 soi-ai/
-├── index.html            # toàn bộ giao diện (mở file này)
+├── index.html              # toàn bộ giao diện (mở file này)
 ├── css/style.css
-├── data/meta.js          # 4 mạch QĐ 2422, 5 loại lỗi, 12 khối UNESCO, template nhận xét
-├── data/cauhoi.js        # ngân hàng gốc 22 item (tác giả viết tay, đã duyệt)
-├── data/cauhoi_moRong.js # 56 item sinh bằng LLM + QC tự động (đang chờ tác giả duyệt nhãn 100%)
-├── js/lab.js             # Tầng 1: sinh ảnh canvas + perceptron học thật + 4 nhiệm vụ oracle
-├── js/engine.js          # Tầng 2+3: chấm tất định, log localStorage, báo cáo, xuất CSV/JSON
-└── js/app.js             # điều hướng + UI 3 tầng + chọn phiên phân tầng 12 câu
+├── data/meta.js            # 4 mạch QĐ 2422, 5 loại lỗi, 12 khối UNESCO, template nhận xét
+├── data/cauhoi.js          # ngân hàng gốc 22 item (tác giả viết tay, đã duyệt)
+├── data/cauhoi_moRong.js   # 56 item sinh bằng LLM + QC tự động (đang chờ tác giả duyệt nhãn 100%)
+├── js/lab.js               # Tầng 1: sinh ảnh canvas + perceptron học thật + 4 nhiệm vụ oracle
+├── js/engine.js            # Tầng 2+3: chấm tất định, log localStorage, báo cáo, xuất CSV/JSON
+├── js/app.js               # điều hướng + UI 3 tầng + chọn phiên phân tầng 12 câu
+│
+├── deliverables/           # HỒ SƠ DỰ THI — chỉ chứa bản nộp, không chứa mã chạy
+│   ├── slide/              # slide_bao_cao_san_pham.tex + .pdf (15 slide)
+│   ├── poster/             # poster.html + poster_A0.pdf (A0 dọc 841×1189mm)
+│   └── references/         # mẫu chính thức BTC iEEAI 2026 (slide, poster, banner)
+│
+├── docs/                   # tài liệu kỹ thuật & hướng dẫn (không phải bản nộp)
+│   ├── THIET_KE_TONG_QUAN.md
+│   ├── THIET_KE_NHA_MAY.md
+│   ├── HUONG_DAN_TICH_HOP.md
+│   ├── HUONG_DAN_CHEN_LOGO.md
+│   ├── SLIDE_BAO_CAO_SAN_PHAM_UNG_DUNG.md
+│   └── CLOUDFLARE_DEPLOY.md
+│
+├── tools/                  # công cụ đo + cổng nghiệm thu + render
+│   ├── nghiem_thu.py       # cổng 97 tiêu chí
+│   ├── kiem_noi_dung.py    # kiểm nội dung ngân hàng câu hỏi
+│   ├── tinh_do_phu.py      # độ phủ 22 YCCĐ
+│   ├── sinh_manifest.py    # sinh SHA256SUMS.txt từ git ls-files
+│   ├── render_poster.py    # render poster A0 từ HTML bằng Chrome headless
+│   └── verify_yccd.py      # đối chiếu YCCĐ với văn bản Bộ
+│
+├── data-source/            # văn bản pháp lý gốc (Khung 2422 PDF + bản chữ)
+├── ho-so/                  # mẫu văn bản hành chính (xin phép BGH)
+└── out/                    # bằng chứng do cổng sinh ra (không track git)
 ```
+
+**Nguyên tắc sắp xếp:** `deliverables/` là thứ đem đi nộp; `docs/` là tài liệu đọc;
+`tools/` là thứ đo và kiểm. Không trộn bản nộp với mã chạy, không để file rời ở gốc repo.
+Render lại poster: `python3 tools/render_poster.py` (tự kiểm 1 trang + khổ A0 + dung lượng).
 
 Thêm câu hỏi mới: chép 1 item trong `data/cauhoi.js`, sửa nội dung, giữ nguyên cấu trúc khóa
 (`id, mach, unesco, loai, loaiLoi, claimLoi, boiCanh, claims[3], giaiThich`).
