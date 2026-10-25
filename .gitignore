@@ -30,3 +30,12 @@ Thumbs.db
 # Nơi lưu đúng: ~/ieeai2026_backups/<ten>-<timestamp>/
 _backups/
 *.bak
+
+# File phụ sinh ra khi biên dịch LaTeX — không phải sản phẩm
+*.aux
+*.log
+*.nav
+*.out
+*.snm
+*.toc
+*.synctex.gz

@@ -3,10 +3,22 @@
 \documentclass[10pt, aspectratio=169]{beamer}
 
 % --- 1. CẤU HÌNH & GÓI LỆNH ---
-\usepackage[utf8]{inputenc}
-\usepackage[T5]{fontenc}
-\usepackage[vietnamese]{babel}
-\usepackage{helvet}
+% VÌ SAO DÙNG FONTSPEC CHỨ KHÔNG DÙNG inputenc+T5:
+%   Bản trước khai báo xelatex nhưng lại nạp inputenc + fontenc[T5] (setup của
+%   pdflatex). Kết quả: PDF dùng font T5 "VnNimbusSansL", lớp text bị mất dấu —
+%   pdftotext trả "Chờnh sòch" thay vì "Chính sách". XeLaTeX cần fontspec với
+%   font Unicode thật để vừa hiển thị đúng vừa giữ được dấu khi copy/tìm kiếm.
+\usepackage{fontspec}
+\usepackage{polyglossia}
+\setdefaultlanguage{vietnamese}
+\setmainfont{Linux Libertine O}[
+  BoldFont=Linux Libertine O Bold,
+  ItalicFont=Linux Libertine O Italic
+]
+\setsansfont{Linux Biolinum O}[
+  BoldFont=Linux Biolinum O Bold
+]
+\renewcommand{\familydefault}{\sfdefault}
 \usepackage{booktabs}
 \usepackage{tikz}
 \usetikzlibrary{positioning}
@@ -396,7 +408,7 @@
     \begin{enumerate}
         \item \textbf{Bộ GD\&ĐT:} Khuyến khích các trường triển khai công cụ AI offline như AInatomy, đặc biệt ở vùng khó khăn.
         \item \textbf{Trường THPT:} Tích hợp AInatomy vào bài giảng Tin học 10, tổ chức tập huấn giáo viên về phương pháp dạy AI kiểm chứng.
-        \item \textbf{Giáo viên:} Sử dụng AInatomy làm công cụ hỗ trợ giảng dạy, khuyến khích học sinh质疑 AI thay vì tin tuyệt đối.
+        \item \textbf{Giáo viên:} Sử dụng AInatomy làm công cụ hỗ trợ giảng dạy, khuyến khích học sinh chất vấn AI thay vì tin tuyệt đối.
         \item \textbf{Nghiên cứu tiếp theo:} Mở rộng đánh giá tác động dài hạn của AInatomy đến năng lực số học sinh, phát triển thêm bài học cho khối 11, 12.
     \end{enumerate}
 \end{frame}
