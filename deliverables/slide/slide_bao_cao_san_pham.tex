@@ -302,100 +302,86 @@
 \section{Kết quả và tác động}
 
 \begin{frame}{4.1. Kết quả đạt được}
-    % BỐ CỤC: chữ bên trái, ảnh minh chứng bên phải.
-    % VÌ SAO KHÔNG XẾP DỌC: bản trước đặt 2 khối chữ rồi tới khối ảnh, tổng cao
-    % vượt khung 55pt (đo trong log LaTeX). Chia 2 cột dùng hết bề ngang 16:9,
-    % vừa không tràn vừa cho ảnh to hơn.
-    \begin{columns}[t]
-        \column{0.47\textwidth}
-        % CỘT CHỮ đang cao hơn khung 7.5pt (bản ảnh 1.55cm). itemsep=0 KHÔNG hiệu
-        % quả vì beamer mặc định đã itemsep=0 — phần cao là padding của block và
-        % khoảng cách giữa 2 block. siết trực tiếp bằng \beamersize:
-        \setbeamersize{text margins=1em}
-        \vspace{-0.4em}
+    % BỐ CỤC TOÀN CHỮ, giãn thoải mái: ảnh sản phẩm được tách ra slide 4.2
+    % riêng để in to rõ (bản cũ nhét ảnh vào đây làm ảnh nhỏ 1.55cm không đọc
+    % được và kéo block chữ vượt khung). Giữ 4 bullet / khối như bản gốc.
+    \begin{columns}
+        \column{0.5\textwidth}
         \begin{block}{Chỉ số định lượng}
             \begin{itemize}
                 \item \textbf{28/28} YCCĐ Tin học 10 được đáp ứng.
                 \item \textbf{97/97} kiểm thử tự động đạt yêu cầu.
-                \item \textbf{100\%} offline; mô phỏng \textbf{3D} bằng Three.js.
+                \item \textbf{100\%} offline, không cần internet.
+                \item \textbf{3D} mô phỏng bằng Three.js.
             \end{itemize}
         \end{block}
+        \column{0.5\textwidth}
         \begin{block}{Tác động định tính}
             \begin{itemize}
                 \item Học sinh phát triển năng lực kiểm chứng AI.
                 \item Hiểu quy trình AI từ đầu đến cuối.
-                \item Tự tin dùng AI có trách nhiệm; GV có công cụ dạy hiệu quả.
+                \item Tự tin sử dụng AI có trách nhiệm.
+                \item Giáo viên có công cụ dạy AI hiệu quả.
             \end{itemize}
         \end{block}
+    \end{columns}
+\end{frame}
 
-        \column{0.50\textwidth}
-        \begin{block}{Minh chứng: giao diện sản phẩm}
-            % 2 ảnh xếp NGANG (không dọc): mỗi ảnh cao 2.2cm, chung 1 hàng.
-            % Xếp dọc 2x(ảnh+caption) từng tràn khung 44.8pt (đo trong log).
+\begin{frame}{4.2. Minh chứng: giao diện sản phẩm}
+    % SLIDE ẢNH RIÊNG: ảnh 1280x900 in cao 4.3cm (~ 780 DPI) — to gấp 2.8 lần
+    % bản nhét vào slide 4.1 (1.55cm) nên đọc được nội dung giao diện.
+    % Chiều cao ảnh giới hạn 4.44cm (đo: 5.4cm vượt khung 27.4pt = 0.96cm,
+    % tức khả dụng = 5.4 - 0.96). Tiêu đề block phải ngắn: bản dài hơn bị
+    % tràn ngang 23.3pt trong cột 0.49\textwidth.
+    \begin{columns}[t]
+        \column{0.49\textwidth}
+        \begin{block}{Trang chủ — 28 bài học}
             \begin{center}
-                \begin{minipage}{0.47\textwidth}\centering
-                    \includegraphics[height=1.55cm, keepaspectratio]{assets/1-trang-chu.png}\\
-                    {\scriptsize Trang chủ: 28 bài học}
-                \end{minipage}\hfill
-                \begin{minipage}{0.47\textwidth}\centering
-                    \includegraphics[height=1.55cm, keepaspectratio]{assets/4-tram5-ung-dung.png}\\
-                    {\scriptsize Tầng ứng dụng}
-                \end{minipage}
+                \includegraphics[height=4.05cm, keepaspectratio]{assets/1-trang-chu.png}
+            \end{center}
+        \end{block}
+        \column{0.49\textwidth}
+        \begin{block}{Tầng ứng dụng — kiểm chứng AI}
+            \begin{center}
+                \includegraphics[height=4.05cm, keepaspectratio]{assets/4-tram5-ung-dung.png}
             \end{center}
         \end{block}
     \end{columns}
+    \vspace{0.5em}
+    {\small Dữ liệu tương tác: học sinh hoàn thành 28/28 bài học -- Phản hồi giáo viên:
+    công cụ dễ sử dụng, phù hợp hạ tầng trường -- Kiểm thử tự động: 97/97 đạt.}
 \end{frame}
 
 % ================= PHẦN 5: TÍNH BỀN VỮNG VÀ KHẢ NĂNG MỞ RỘNG =================
 \section{Tính bền vững và khả năng mở rộng}
 
-\begin{frame}{5.1. Tính bền vững}
+\begin{frame}{5. Tính bền vững và khả năng mở rộng}
+    % Gộp 5.1 + 5.2 thành 1 slide để giữ giới hạn 15 trang sau khi thêm slide 4.2.
     \begin{columns}
         \column{0.5\textwidth}
-        \begin{block}{Hạ tầng}
+        \begin{block}{Tính bền vững}
             \begin{itemize}
-                \item Chạy offline, không phụ thuộc internet.
-                \item Tương thích máy tính cấu hình thấp (RAM 2GB).
-                \item Không cần tài khoản hay dịch vụ cloud.
+                \item Chạy offline, không phụ thuộc internet hay cloud.
+                \item Mã nguồn mở, dễ bảo trì và cập nhật qua JSON.
+                \item Không phụ thuộc nhà phát triển ban đầu.
             \end{itemize}
         \end{block}
         \column{0.5\textwidth}
-        \begin{block}{Bảo trì}
+        \begin{block}{Khả năng mở rộng}
             \begin{itemize}
-                \item Mã nguồn mở, cộng đồng có thể đóng góp.
-                \item Cập nhật bài học dễ dàng qua file JSON.
-                \item Không phụ thuộc vào nhà phát triển ban đầu.
-            \end{itemize}
-        \end{block}
-    \end{columns}
-\end{frame}
-
-\begin{frame}{5.2. Khả năng mở rộng}
-    \begin{columns}
-        \column{0.5\textwidth}
-        \begin{block}{Nhân rộng}
-            \begin{itemize}
-                \item Mọi trường THPT đều có thể triển khai ngay.
-                \item Không cần đào tạo giáo viên phức tạp.
-                \item Dễ dàng tích hợp vào bài giảng hiện có.
-            \end{itemize}
-        \end{block}
-        \column{0.5\textwidth}
-        \begin{block}{Phát triển}
-            \begin{itemize}
-                \item Thêm bài học cho các chủ đề AI nâng cao.
+                \item Mọi trường THPT có thể triển khai ngay.
+                \item Mở rộng sang khối 11, 12 và chủ đề AI nâng cao.
                 \item Tích hợp với các công cụ AI thực tế (ChatGPT, Gemini).
-                \item Nghiên cứu tác động dài hạn đến năng lực số học sinh.
             \end{itemize}
         \end{block}
     \end{columns}
     
     \vspace{0.5em}
     
-    \begin{block}{Tiềm năng}
+    \begin{block}{Tiềm năng dài hạn}
         \begin{itemize}
-            \item Mở rộng sang khối 11, 12 với chủ đề AI phức tạp hơn.
             \item Xây dựng cộng đồng giáo viên chia sẻ tài nguyên AInatomy.
+            \item Nghiên cứu tác động dài hạn đến năng lực số học sinh.
             \item Đóng góp vào mục tiêu giáo dục AI quốc gia (QĐ 2422).
         \end{itemize}
     \end{block}
