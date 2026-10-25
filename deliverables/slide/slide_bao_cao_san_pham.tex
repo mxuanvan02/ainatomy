@@ -126,26 +126,26 @@
 % --- Slide 1: Trang bìa ---
 \begin{frame}[plain]
     \centering
-    \vspace{0.2cm}
+    \vspace{0.1cm}
     \begin{columns}
         \column{0.5\textwidth}
         \centering
-        \includegraphics[height=1.5cm, keepaspectratio]{logos/thpt_thuan_hoa}
+        \includegraphics[height=1.1cm, keepaspectratio]{logos/thpt_thuan_hoa}
         \column{0.5\textwidth}
         \centering
-        \includegraphics[height=1.5cm, keepaspectratio]{logos/dhsp_hue}
+        \includegraphics[height=1.1cm, keepaspectratio]{logos/dhsp_hue}
     \end{columns}
-    \vspace{0.3cm}
+    \vspace{0.2cm}
     {\color{HUEOrange}\rule{0.8\textwidth}{2pt}}\\
-    \vspace{0.5em}
+    \vspace{0.3em}
     {\large \bfseries \color{HUEBlue} BÁO CÁO SẢN PHẨM ỨNG DỤNG} \\
-    \vspace{1em}
-    {\Large \bfseries \inserttitle} \\
     \vspace{0.5em}
+    {\Large \bfseries \inserttitle} \\
+    \vspace{0.3em}
     {\color{HUEOrange} \insertsubtitle} \\
-    \vspace{0.8cm}
-    \insertauthor \\
     \vspace{0.4cm}
+    \insertauthor \\
+    \vspace{0.2cm}
     {\tiny \insertdate}
 \end{frame}
 
@@ -302,36 +302,48 @@
 \section{Kết quả và tác động}
 
 \begin{frame}{4.1. Kết quả đạt được}
-    \begin{columns}
-        \column{0.5\textwidth}
+    % BỐ CỤC: chữ bên trái, ảnh minh chứng bên phải.
+    % VÌ SAO KHÔNG XẾP DỌC: bản trước đặt 2 khối chữ rồi tới khối ảnh, tổng cao
+    % vượt khung 55pt (đo trong log LaTeX). Chia 2 cột dùng hết bề ngang 16:9,
+    % vừa không tràn vừa cho ảnh to hơn.
+    \begin{columns}[t]
+        \column{0.47\textwidth}
+        % CỘT CHỮ đang cao hơn khung 7.5pt (bản ảnh 1.55cm). itemsep=0 KHÔNG hiệu
+        % quả vì beamer mặc định đã itemsep=0 — phần cao là padding của block và
+        % khoảng cách giữa 2 block. siết trực tiếp bằng \beamersize:
+        \setbeamersize{text margins=1em}
+        \vspace{-0.4em}
         \begin{block}{Chỉ số định lượng}
             \begin{itemize}
                 \item \textbf{28/28} YCCĐ Tin học 10 được đáp ứng.
                 \item \textbf{97/97} kiểm thử tự động đạt yêu cầu.
-                \item \textbf{100\%} offline, không cần internet.
-                \item \textbf{3D} mô phỏng bằng Three.js.
+                \item \textbf{100\%} offline; mô phỏng \textbf{3D} bằng Three.js.
             \end{itemize}
         \end{block}
-        \column{0.5\textwidth}
         \begin{block}{Tác động định tính}
             \begin{itemize}
                 \item Học sinh phát triển năng lực kiểm chứng AI.
                 \item Hiểu quy trình AI từ đầu đến cuối.
-                \item Tự tin sử dụng AI có trách nhiệm.
-                \item Giáo viên có công cụ dạy AI hiệu quả.
+                \item Tự tin dùng AI có trách nhiệm; GV có công cụ dạy hiệu quả.
             \end{itemize}
         \end{block}
+
+        \column{0.50\textwidth}
+        \begin{block}{Minh chứng: giao diện sản phẩm}
+            % 2 ảnh xếp NGANG (không dọc): mỗi ảnh cao 2.2cm, chung 1 hàng.
+            % Xếp dọc 2x(ảnh+caption) từng tràn khung 44.8pt (đo trong log).
+            \begin{center}
+                \begin{minipage}{0.47\textwidth}\centering
+                    \includegraphics[height=1.55cm, keepaspectratio]{assets/1-trang-chu.png}\\
+                    {\scriptsize Trang chủ: 28 bài học}
+                \end{minipage}\hfill
+                \begin{minipage}{0.47\textwidth}\centering
+                    \includegraphics[height=1.55cm, keepaspectratio]{assets/4-tram5-ung-dung.png}\\
+                    {\scriptsize Tầng ứng dụng}
+                \end{minipage}
+            \end{center}
+        \end{block}
     \end{columns}
-    
-    \vspace{0.5em}
-    
-    \begin{block}{Minh chứng}
-        \begin{itemize}
-            \item Dữ liệu tương tác: Học sinh hoàn thành 28/28 bài học.
-            \item Phản hồi giáo viên: Công cụ dễ sử dụng, phù hợp hạ tầng trường học.
-            \item Kiểm thử tự động: 97/97 bài học hoạt động đúng yêu cầu.
-        \end{itemize}
-    \end{block}
 \end{frame}
 
 % ================= PHẦN 5: TÍNH BỀN VỮNG VÀ KHẢ NĂNG MỞ RỘNG =================
