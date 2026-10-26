@@ -676,8 +676,20 @@
         từ nhãn vừa dán, một mô hình học từ nhãn đúng. Cả hai được kiểm tra trên cùng một
         bộ ảnh mới. Nếu dán sai, hậu quả hiện ra bằng con số, không ai cần chấm bài.</p>
 
+      <div class="card" style="background:#e8f5e9;border-left:4px solid #2e7d32;margin:16px 0">
+        <h4 style="color:#2e7d32;margin:0 0 8px 0">📋 Hướng dẫn dán nhãn</h4>
+        <p class="chu2" style="margin:0">
+          <b>Nhiệm vụ:</b> Xem từng ảnh và quyết định người lái xe <b>CÓ đội mũ bảo hiểm</b> hay <b>KHÔNG</b>.<br>
+          <b>Cách làm:</b> Bấm nút <span style="background:#1976d2;color:white;padding:2px 8px;border-radius:4px">Có mũ</span> 
+          hoặc <span style="background:#d32f2f;color:white;padding:2px 8px;border-radius:4px">Không mũ</span> cho mỗi ảnh.<br>
+          <b>Mẹo:</b> Nhìn vào <b>vùng đầu người lái</b> - nếu thấy nửa vòng tròn trắng trên đầu → có mũ.
+        </p>
+      </div>
+
       <p><button class="btn chinh" id="t1-tao">Tạo bộ ảnh cần dán nhãn</button>
+         <button class="btn" id="t1-xem-vi-du" style="margin-left:8px">Xem ví dụ mẫu</button>
          <span class="nho chu2" id="t1-tiendo" style="margin-left:10px"></span></p>
+      <div id="t1-vi-du" style="display:none;margin:16px 0"></div>
       <!-- CHÚ THÍCH BỘ DỮ LIỆU — thêm 12/10 sau phản hồi của anh Văn ("cái ảnh chụp ban ngày đó
            là ảnh gì vậy? phải cụ thể vào"). Người xem bản nháp video không giải mã được các khối
            hình trên màn hình, và app thì gọi chúng là "ảnh chụp" trong khi chúng do máy vẽ.
