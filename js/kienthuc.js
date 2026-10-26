@@ -6,6 +6,11 @@
  * Chấm bài "đặt prompt" (10.C3.2): đối chiếu từ khoá theo rubric đã thiết kế sẵn.
  * Đây là chấm BẰNG TỪ KHOÁ (không phải hiểu ngữ nghĩa) — hồ sơ phải nói rõ giới hạn này:
  * hệ đếm tiêu chí có mặt, GV vẫn là người nhận xét chất lượng diễn đạt.
+ *
+ * SỬA 26/10 (điểm 5): Cấu trúc lại theo khối lớp → bài học → kiến thức nền + bài tập
+ * - Dropdown chọn khối lớp (10, 11, 12) ở index.html
+ * - Render nội dung động theo khối lớp đã chọn
+ * - Mỗi bài có: kiến thức nền giải thích → bài tập từ dễ đến khó → hướng dẫn → bài tập bổ sung
  */
 (function(){
   "use strict";
@@ -196,11 +201,85 @@
     });
   }
 
+  /* ============ RENDER NỘI DUNG THEO KHỐI LỚP (cập nhật 26/10 - điểm 5) ============ */
+  function veNoiDungLop(soLop){
+    const box = $("kt-noi-dung"); if(!box) return;
+    const lop = window.MX_KT.lop[soLop];
+    if(!lop || !lop.baiHoc || Object.keys(lop.baiHoc).length === 0){
+      box.innerHTML = `<div class="card" style="background:#fff3cd;border-left:4px solid #ffc107">
+        <p><b>Khối lớp ${soLop} chưa có nội dung.</b></p>
+        <p class="chu2">Hiện tại chỉ có nội dung cho khối lớp 10. Các khối lớp 11 và 12 sẽ được bổ sung sau.</p>
+      </div>`;
+      return;
+    }
+
+    let html = "";
+    for(const maBai in lop.baiHoc){
+      const bai = lop.baiHoc[maBai];
+      html += `<div class="card">
+        <h3>${esc(bai.ten)} <span class="tagline">${esc(bai.yccd)}</span></h3>
+        
+        <div style="background:#e8f5e9;border-left:4px solid #2e7d32;padding:12px;margin:12px 0;border-radius:4px">
+          <h4 style="margin:0 0 8px 0;color:#2e7d32">📖 Kiến thức nền</h4>
+          <div class="chu2">${bai.kienThucNen}</div>
+        </div>
+
+        <div style="background:#e3f2fd;border-left:4px solid #1976d2;padding:12px;margin:12px 0;border-radius:4px">
+          <h4 style="margin:0 0 8px 0;color:#1976d2">💡 Hướng dẫn</h4>
+          <p class="chu2" style="margin:0">${esc(bai.huongDan)}</p>
+        </div>
+
+        <h4 style="margin-top:20px">📝 Bài tập</h4>`;
+      
+      // Render bài tập
+      if(bai.baiTap && bai.baiTap.length > 0){
+        bai.baiTap.forEach((bt, idx) => {
+          html += `<div class="card" style="background:var(--nen2);margin:10px 0">
+            <p><b>${esc(bt.ten)}</b></p>
+            <p class="chu2">${esc(bt.de)}</p>
+            <button class="btn" onclick="alert('${esc(bt.dapAn).replace(/'/g, "\\'")}')">Xem đáp án</button>
+            <div class="nho chu2" style="margin-top:8px"><b>Giải thích:</b> ${esc(bt.giaiThich)}</div>
+          </div>`;
+        });
+      }
+
+      // Render bài tập bổ sung
+      if(bai.baiTapBoSung && bai.baiTapBoSung.length > 0){
+        html += `<h4 style="margin-top:20px">📚 Bài tập bổ sung</h4>`;
+        bai.baiTapBoSung.forEach((bt, idx) => {
+          html += `<div class="card" style="background:#f3e5f5;border-left:4px solid #9c27b0;margin:10px 0">
+            <p><b>${esc(bt.ten)}</b></p>
+            <p class="chu2">${esc(bt.de)}</p>
+            <button class="btn" onclick="alert('${esc(bt.dapAn).replace(/'/g, "\\'")}')">Xem đáp án</button>
+            <div class="nho chu2" style="margin-top:8px"><b>Giải thích:</b> ${esc(bt.giaiThich)}</div>
+          </div>`;
+        });
+      }
+
+      html += `</div>`;
+    }
+
+    box.innerHTML = html;
+  }
+
+  function khoiTaoChonLop(){
+    const select = $("kt-chose-lop");
+    if(!select) return;
+    select.addEventListener("change", (e) => {
+      const soLop = parseInt(e.target.value, 10);
+      veNoiDungLop(soLop);
+    });
+    // Render mặc định lớp 10
+    veNoiDungLop(10);
+  }
+
   window.MX_KIEN_THUC = {
     init: function(maHS){
       veLuat(); veUngDung(); veSoSanh(); veTieuChiPrompt();
       veBaiTapPrompt(maHS); veQuiz(maHS);
+      khoiTaoChonLop();
     },
-    chamPrompt
+    chamPrompt,
+    veNoiDungLop
   };
 })();
