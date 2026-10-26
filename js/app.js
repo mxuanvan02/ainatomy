@@ -820,6 +820,9 @@
   function lab3dMo(){
     hien("v-lab3d");
     if(lab3dDaKhoiTao) return;
+    // Hiển thị spinner loading khi đang khởi tạo phòng 3D (điểm 6)
+    const loading = $("lab3d-loading");
+    if(loading) loading.style.display = "block";
     const r = window.MX_LAB3D.init({
       canvas: $("c-lab3d"), root: $("lab3d-fallback"), tiLeNgay: 92, seed: 20261006,
       onChonDiem: (d)=>{
@@ -827,6 +830,8 @@
           + " · đặc trưng: <code>" + esc(d.f.map(x=>x.toFixed(3)).join(", ")) + "</code>";
       }
     });
+    // Ẩn spinner sau khi init xong
+    if(loading) loading.style.display = "none";
     if(!r || !r.ok){
       $("btn-lab3d").disabled = true;   // máy không có 3D → ẩn lối vào, bản chữ vẫn còn ở fallback
       $("lab3d-tile").disabled = $("lab3d-so").disabled = true;
