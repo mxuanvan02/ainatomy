@@ -820,6 +820,9 @@
   function lab3dMo(){
     hien("v-lab3d");
     if(lab3dDaKhoiTao) return;
+    // Hiển thị spinner loading khi đang khởi tạo phòng 3D (điểm 6)
+    const loading = $("lab3d-loading");
+    if(loading) loading.style.display = "block";
     const r = window.MX_LAB3D.init({
       canvas: $("c-lab3d"), root: $("lab3d-fallback"), tiLeNgay: 92, seed: 20261006,
       onChonDiem: (d)=>{
@@ -827,6 +830,8 @@
           + " · đặc trưng: <code>" + esc(d.f.map(x=>x.toFixed(3)).join(", ")) + "</code>";
       }
     });
+    // Ẩn spinner sau khi init xong
+    if(loading) loading.style.display = "none";
     if(!r || !r.ok){
       $("btn-lab3d").disabled = true;   // máy không có 3D → ẩn lối vào, bản chữ vẫn còn ở fallback
       $("lab3d-tile").disabled = $("lab3d-so").disabled = true;
@@ -1761,6 +1766,46 @@
     bindInput("t0-so", e=>{ const el = $("t0-so-num"); if(el) el.textContent = e.target.value; });
     /* --- Trạm 1: DÁN NHÃN --- */
     bind("t1-tao", ()=> nmKhoiDongTram1(true));
+    bind("t1-xem-vi-du", ()=> {
+      const div = $("t1-vi-du");
+      if(!div) return;
+      if(div.style.display === "none"){
+        // Tạo 2 ví dụ: 1 có mũ, 1 không mũ
+        const coMu = window.MX_LAB.veXeMay(160, 120, "mbh", "ngay", 12345);
+        const khongMu = window.MX_LAB.veXeMay(160, 120, "khong", "dem", 67890);
+        div.innerHTML = `
+          <div class="card" style="background:#fff3e0;border-left:4px solid #f57c00">
+            <h4 style="color:#f57c00;margin:0 0 12px 0">💡 Ví dụ mẫu</h4>
+            <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap">
+              <div style="text-align:center">
+                <div style="font-weight:bold;margin-bottom:8px">Ảnh CÓ mũ:</div>
+                <div style="border:2px solid #2e7d32;border-radius:8px;padding:4px;background:#e8f5e9">
+                  <canvas id="vi-du-co-mu" width="160" height="120"></canvas>
+                </div>
+                <div class="nho chu2" style="margin-top:4px">Nửa vòng tròn trắng trên đầu</div>
+              </div>
+              <div style="text-align:center">
+                <div style="font-weight:bold;margin-bottom:8px">Ảnh KHÔNG mũ:</div>
+                <div style="border:2px solid #d32f2f;border-radius:8px;padding:4px;background:#ffebee">
+                  <canvas id="vi-du-khong-mu" width="160" height="120"></canvas>
+                </div>
+                <div class="nho chu2" style="margin-top:4px">Đầu trọc, không có gì trên đầu</div>
+              </div>
+            </div>
+          </div>
+        `;
+        // Vẽ ví dụ lên canvas
+        const ctx1 = $("vi-du-co-mu").getContext("2d");
+        ctx1.drawImage(coMu, 0, 0);
+        const ctx2 = $("vi-du-khong-mu").getContext("2d");
+        ctx2.drawImage(khongMu, 0, 0);
+        div.style.display = "block";
+        $("t1-xem-vi-du").textContent = "Ẩn ví dụ";
+      } else {
+        div.style.display = "none";
+        $("t1-xem-vi-du").textContent = "Xem ví dụ mẫu";
+      }
+    });
     /* BT-02: ô dự đoán dựng trực tiếp từ MX_DUDOAN (biến ddT1) chứ không qua BANG của
      * muc3.js, nên phải truyền hàm đọc trạng thái chốt của chính nó — M3().daChotRoi("BT-02")
      * sẽ luôn false vì mã đó không nằm trong DA_CHOT. ddT1 có thể null (chưa tạo bộ ảnh),

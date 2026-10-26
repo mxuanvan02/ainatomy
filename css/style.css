@@ -511,3 +511,6 @@ body.it-chu #t0-chu-thich-anh,body.it-chu #t1-chu-thich-anh{display:revert !impo
 
 /* Nút bật/tắt: phải đạt tương phản WCAG như mọi nút khác, không dùng màu mới */
 #btn-it-chu[aria-pressed="true"]{border-color:var(--primary);background:var(--nenChon)}
+
+/* Spinner loading cho phòng 3D (điểm 6: không để UI chết khi đang tải) */
+@keyframes spin{to{transform:rotate(360deg)}}

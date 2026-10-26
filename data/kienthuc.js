@@ -10,6 +10,16 @@
  *   10.C3.2 (cốt lõi) — thực hành đặt prompt giải quyết vấn đề gần gũi
  *   10.C3.3 (cốt lõi) — phân biệt AI tạo sinh với AI phân loại/dự đoán
  * Mọi mục đều có nhãn đúng cố định → hệ tự chấm, không cần giáo viên.
+ *
+ * CẤU TRÚC DỮ LIỆU THEO KHỐI LỚP (cập nhật 26/10):
+ *   window.MX_KT.lop[soLop].baiHoc[maBai] = {
+ *     ten: tên bài học,
+ *     yccd: mã YCCĐ,
+ *     kienThucNen: nội dung kiến thức nền (HTML),
+ *     baiTap: [{ten, de, dapAn, giaiThich}],
+ *     huongDan: hướng dẫn làm bài,
+ *     baiTapBoSung: [{ten, de, dapAn, giaiThich}]
+ *   }
  */
 window.MX_KT = {
 
@@ -309,5 +319,94 @@ window.MX_KT = {
       dapAn: "b",
       giaiThich: "Ẩn danh hoá là bước bắt buộc, vì dữ liệu cá nhân của trẻ em được Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 bảo vệ, và CV 5588/BGDĐT-GDPT yêu cầu không tạo rủi ro dữ liệu cho học sinh. Điểm số vẫn cần giữ vì đó là dữ liệu để phân tích; họ tên thì không cần cho việc này."
     }
-  ]
+  ],
+
+  /* ============ CẤU TRÚC THEO KHỐI LỚP VÀ BÀI HỌC (cập nhật 26/10) ============ */
+  lop: {
+    10: {
+      ten: "Lớp 10",
+      baiHoc: {
+        "bai-1": {
+          ten: "Bài 1: Luật bảo vệ người dùng trong không gian số",
+          yccd: "10.A3.1",
+          kienThucNen: "<p><b>Mục tiêu:</b> Kể tên được các quy định, luật bảo vệ người dùng trong không gian số.</p><p><b>Nội dung chính:</b></p><ul><li>Luật An ninh mạng 24/2018/QH14</li><li>Luật Dữ liệu 60/2024/QH15</li><li>Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15</li><li>Luật Trí tuệ nhân tạo 134/2025/QH15</li></ul><p><b>Điểm quan trọng:</b> Dữ liệu cá nhân của trẻ em chỉ được xử lí khi có sự đồng ý của cha mẹ hoặc người giám hộ. AI phục vụ con người, không thay thế thẩm quyền và trách nhiệm của con người.</p>",
+          baiTap: [
+            {
+              ten: "Câu 1: Luật nào quy định về dữ liệu cá nhân của trẻ em?",
+              de: "Văn bản nào sau đây quy định rằng dữ liệu cá nhân của TRẺ EM chỉ được xử lí khi có sự đồng ý của cha mẹ hoặc người giám hộ?",
+              dapAn: "a",
+              giaiThich: "Luật Bảo vệ dữ liệu cá nhân 91/2025/QH15 (Quốc hội thông qua 26/6/2025, hiệu lực 01/01/2026) quy định về quyền của chủ thể dữ liệu và việc xử lí dữ liệu cá nhân của trẻ em."
+            },
+            {
+              ten: "Câu 2: Nguyên tắc nền tảng của Luật AI",
+              de: "Luật Trí tuệ nhân tạo của Việt Nam (số 134/2025/QH15) khẳng định nguyên tắc nền tảng nào?",
+              dapAn: "b",
+              giaiThich: "Nguyên tắc 'AI phục vụ con người, không thay thế thẩm quyền và trách nhiệm của con người' là nền tảng của Luật Trí tuệ nhân tạo 134/2025/QH15."
+            }
+          ],
+          huongDan: "Đọc kỹ nội dung kiến thức nền, sau đó làm các câu hỏi trắc nghiệm. Mỗi câu hỏi có giải thích chi tiết để hiểu rõ hơn về luật.",
+          baiTapBoSung: [
+            {
+              ten: "Bài tập mở rộng: Tìm hiểu thêm về Luật Dữ liệu",
+              de: "Luật Dữ liệu 60/2024/QH15 có hiệu lực từ ngày nào? Nêu 3 nội dung chính của luật này.",
+              dapAn: "Luật có hiệu lực từ 01/7/2025. Ba nội dung chính: (1) xây dựng và phát triển dữ liệu, (2) bảo vệ và quản trị dữ liệu, (3) xử lí và sử dụng dữ liệu.",
+              giaiThich: "Đây là đạo luật đầu tiên quy định toàn diện về dữ liệu số tại Việt Nam, bao gồm 5 chương và 46 điều."
+            }
+          ]
+        },
+        "bai-2": {
+          ten: "Bài 2: Ứng dụng AI theo tính năng của hệ thống",
+          yccd: "10.C2.2",
+          kienThucNen: "<p><b>Mục tiêu:</b> Liệt kê được các ứng dụng AI theo tính năng của hệ thống.</p><p><b>6 nhóm tính năng AI:</b></p><ul><li><b>Phân loại:</b> Gán đối tượng vào một nhóm có sẵn (ví dụ: lọc thư rác, nhận diện khuôn mặt)</li><li><b>Dự đoán:</b> Ước lượng giá trị hoặc sự kiện tương lai (ví dụ: dự báo thời tiết)</li><li><b>Tạo sinh:</b> Tạo ra nội dung MỚI (ví dụ: trợ lý ảo viết văn bản, tạo ảnh)</li><li><b>Nhận dạng mẫu:</b> Tìm quy luật lặp lại trong dữ liệu lớn</li><li><b>Xử lí ngôn ngữ:</b> Hiểu và sinh ngôn ngữ tự nhiên (dịch, tóm tắt)</li><li><b>Tối ưu & ra quyết định:</b> Chọn phương án tốt nhất theo ràng buộc</li></ul>",
+          baiTap: [
+            {
+              ten: "Câu 3: Hệ thống phân loại bài làm",
+              de: "Một hệ thống tự động đọc ảnh chụp bài làm của học sinh rồi xếp vào 3 nhóm 'đạt / cần cố gắng / chưa đạt' thuộc loại tính năng AI nào?",
+              dapAn: "b",
+              giaiThich: "Hệ thống gán đối tượng (bài làm) vào một nhóm nhãn CÓ SẴN — đó là bài toán phân loại."
+            }
+          ],
+          huongDan: "Học thuộc 6 nhóm tính năng AI. Khi gặp một ứng dụng, hãy xác định xem nó thuộc nhóm nào dựa trên đầu vào và đầu ra.",
+          baiTapBoSung: [
+            {
+              ten: "Bài tập thực hành: Phân loại ứng dụng",
+              de: "Hãy liệt kê 3 ứng dụng AI bạn thường dùng và xác định chúng thuộc nhóm tính năng nào.",
+              dapAn: "Ví dụ: (1) Google Dịch - Xử lí ngôn ngữ, (2) ChatGPT - Tạo sinh, (3) Camera nhận diện khuôn mặt - Phân loại.",
+              giaiThich: "Một ứng dụng có thể kết hợp nhiều nhóm tính năng. Hãy phân tích kỹ đầu vào và đầu ra để xác định nhóm chính."
+            }
+          ]
+        },
+        "bai-3": {
+          ten: "Bài 3: AI tạo sinh vs AI phân loại/dự đoán",
+          yccd: "10.C3.3",
+          kienThucNen: "<p><b>Mục tiêu:</b> Phân biệt được AI tạo sinh với AI phân loại/dự đoán.</p><p><b>So sánh:</b></p><table border='1' style='border-collapse:collapse;width:100%'><tr><th>Tiêu chí</th><th>AI Phân loại/Dự đoán</th><th>AI Tạo sinh</th></tr><tr><td>Nhiệm vụ</td><td>Chọn đáp án từ tập nhãn CÓ SẴN</td><td>Tạo nội dung MỚI chưa tồn tại</td></tr><tr><td>Đầu ra</td><td>Một nhãn hoặc một con số</td><td>Văn bản, hình ảnh, âm thanh, mã lệnh</td></tr><tr><td>Kiểm tra đúng/sai</td><td>DỄ: so với nhãn đúng đã biết</td><td>KHÓ: có thể trôi chảy nhưng sai sự thật</td></tr><tr><td>Lỗi điển hình</td><td>Thiên kiến do dữ liệu huấn luyện lệch</td><td>Bịa đặt (hallucination), đạo văn</td></tr></table><p><b>Kết luận:</b> AI tạo sinh khó kiểm chứng hơn vì đầu ra không có nhãn đúng sẵn.</p>",
+          baiTap: [
+            {
+              ten: "Câu 4: Vì sao AI tạo sinh khó kiểm chứng?",
+              de: "Vì sao nội dung do AI TẠO SINH khó kiểm chứng hơn kết quả của AI PHÂN LOẠI?",
+              dapAn: "b",
+              giaiThich: "AI phân loại có tập nhãn cố định nên đo được độ chính xác. AI tạo sinh tạo nội dung mới — không có sẵn 'đáp án đúng' để so, nên có thể viết rất tự tin mà vẫn bịa số liệu hoặc bịa nguồn."
+            }
+          ],
+          huongDan: "Khi sử dụng AI tạo sinh (như ChatGPT), luôn kiểm chứng thông tin bằng cách đối chiếu với nguồn đáng tin cậy.",
+          baiTapBoSung: [
+            {
+              ten: "Bài tập tình huống: Kiểm chứng thông tin",
+              de: "Bạn dùng ChatGPT để viết bài luận về lịch sử Việt Nam. Hãy nêu 3 cách kiểm chứng thông tin trong bài luận đó.",
+              dapAn: "(1) Đối chiếu với sách giáo khoa, (2) Tra cứu thêm từ các nguồn chính thức (ví dụ: trang web của Bộ Giáo dục), (3) Hỏi giáo viên hoặc chuyên gia.",
+              giaiThich: "AI tạo sinh có thể bịa đặt thông tin nghe có vẻ hợp lý. Việc kiểm chứng là bắt buộc trước khi sử dụng."
+            }
+          ]
+        }
+      }
+    },
+    11: {
+      ten: "Lớp 11",
+      baiHoc: {}
+    },
+    12: {
+      ten: "Lớp 12",
+      baiHoc: {}
+    }
+  }
 };

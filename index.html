@@ -374,52 +374,29 @@
   <!-- ===== KIẾN THỨC NỀN AI LỚP 10 ===== -->
   <section id="v-kienthuc" style="display:none">
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-book-open"/></svg> Kiến thức nền AI: lớp 10</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-book-open"/></svg> Kiến thức nền AI</h2>
       <p class="tagline">Bám theo <b>Khung nội dung giáo dục trí tuệ nhân tạo cho học sinh phổ thông</b>
-        (ban hành kèm Quyết định 2422/QĐ-BGDĐT ngày 18/8/2026): các yêu cầu cần đạt của lớp 10.</p>
+        (ban hành kèm Quyết định 2422/QĐ-BGDĐT ngày 18/8/2026).</p>
+      <div style="margin:16px 0">
+        <label for="kt-chose-lop" style="font-weight:bold;margin-right:8px">Chọn khối lớp:</label>
+        <select id="kt-chose-lop" style="padding:6px 12px;border-radius:4px;border:1px solid var(--vien)">
+          <option value="10">Lớp 10</option>
+          <option value="11">Lớp 11</option>
+          <option value="12">Lớp 12</option>
+        </select>
+      </div>
       <p class="chu2 nho">Mỗi mục dưới đây ghi rõ mã yêu cầu cần đạt (ví dụ <code>10.A3.1</code>)
         để thầy/cô đối chiếu khi soạn kế hoạch bài dạy.</p>
     </div>
 
-    <div class="card">
-      <h3>1. Luật bảo vệ người dùng trong không gian số <span class="tagline">10.A3.1</span></h3>
-      <p class="chu2 nho">Bốn văn bản quan trọng nhất. Mỗi mục có ghi nguồn tra cứu để tự kiểm chứng.</p>
-      <div id="kt-luat"></div>
+    <div id="kt-noi-dung">
+      <!-- Nội dung sẽ được render bởi JS dựa trên khối lớp đã chọn -->
     </div>
 
-    <div class="card">
-      <h3>2. Ứng dụng AI theo tính năng của hệ thống <span class="tagline">10.C2.2</span></h3>
-      <div id="kt-ungdung"></div>
-    </div>
-
-    <div class="card">
-      <h3>3. Xếp ứng dụng AI vào đúng nhóm tính năng <span class="tagline">10.C2.3</span></h3>
-      <p class="chu2">Sáu tình huống AI hỗ trợ việc học. Với mỗi tình huống, chọn nhóm tính năng
-        rồi nói rõ <b>đầu vào</b> và <b>đầu ra</b> của hệ thống. Cuối mục là phần tự tìm một ứng dụng
-        AI đang dùng trong việc học của bản thân.</p>
-      <div id="kt-bt13"></div>
-    </div>
-
-    <div class="card">
-      <h3>4. AI tạo sinh khác AI phân loại / dự đoán thế nào? <span class="tagline">10.C3.3</span></h3>
-      <div id="kt-sosanh"></div>
-    </div>
-
-    <div class="card">
-      <h3>5. Một prompt tốt cần những gì? <span class="tagline">10.C3.1</span></h3>
-      <div id="kt-tieuchi"></div>
-    </div>
-
-    <div class="card">
-      <h3>6. Thực hành viết prompt <span class="tagline">10.C3.2</span></h3>
-      <p class="chu2">Viết prompt cho tình huống, hệ thống sẽ đối chiếu với các tiêu chí bắt buộc
-        và chỉ ra những tiêu chí còn thiếu.</p>
-      <div id="kt-prompt"></div>
-    </div>
-
-    <div class="card">
-      <h3>7. Kiểm tra nhanh <span class="tagline">tự chấm</span></h3>
-      <div id="kt-quiz"></div>
+    <div class="card" style="background:var(--nen2);border-left:4px solid var(--primary)">
+      <h3>📚 Bài tập luyện tập bổ sung</h3>
+      <p class="chu2">Ngoài các bài tập trong phần kiến thức nền, học sinh có thể làm thêm các bài tập sau để củng cố và nâng cao:</p>
+      <div id="kt-baitap-bo sung"></div>
     </div>
   </section>
 
@@ -448,6 +425,10 @@
 
       <div id="lab3d-fallback"></div>
       <div class="scene"><canvas id="c-lab3d"></canvas>
+        <div id="lab3d-loading" style="position:absolute;top:50%;left:50%;transform:translate(-50%,-50%);display:none;text-align:center">
+          <div style="width:40px;height:40px;border:4px solid var(--vien);border-top-color:var(--xanh);border-radius:50%;animation:spin 1s linear infinite;margin:0 auto 12px"></div>
+          <div>Đang tải phòng 3D...</div>
+        </div>
         <div class="hud" id="lab3d-hud"></div>
         <div class="note" id="lab3d-note">Bấm <b>Tạo bộ dữ liệu</b> để bắt đầu.</div>
       </div>
@@ -672,8 +653,20 @@
         từ nhãn vừa dán, một mô hình học từ nhãn đúng. Cả hai được kiểm tra trên cùng một
         bộ ảnh mới. Nếu dán sai, hậu quả hiện ra bằng con số, không ai cần chấm bài.</p>
 
+      <div class="card" style="background:#e8f5e9;border-left:4px solid #2e7d32;margin:16px 0">
+        <h4 style="color:#2e7d32;margin:0 0 8px 0">📋 Hướng dẫn dán nhãn</h4>
+        <p class="chu2" style="margin:0">
+          <b>Nhiệm vụ:</b> Xem từng ảnh và quyết định người lái xe <b>CÓ đội mũ bảo hiểm</b> hay <b>KHÔNG</b>.<br>
+          <b>Cách làm:</b> Bấm nút <span style="background:#1976d2;color:white;padding:2px 8px;border-radius:4px">Có mũ</span> 
+          hoặc <span style="background:#d32f2f;color:white;padding:2px 8px;border-radius:4px">Không mũ</span> cho mỗi ảnh.<br>
+          <b>Mẹo:</b> Nhìn vào <b>vùng đầu người lái</b> - nếu thấy nửa vòng tròn trắng trên đầu → có mũ.
+        </p>
+      </div>
+
       <p><button class="btn chinh" id="t1-tao">Tạo bộ ảnh cần dán nhãn</button>
+         <button class="btn" id="t1-xem-vi-du" style="margin-left:8px">Xem ví dụ mẫu</button>
          <span class="nho chu2" id="t1-tiendo" style="margin-left:10px"></span></p>
+      <div id="t1-vi-du" style="display:none;margin:16px 0"></div>
       <!-- CHÚ THÍCH BỘ DỮ LIỆU — thêm 12/10 sau phản hồi của anh Văn ("cái ảnh chụp ban ngày đó
            là ảnh gì vậy? phải cụ thể vào"). Người xem bản nháp video không giải mã được các khối
            hình trên màn hình, và app thì gọi chúng là "ảnh chụp" trong khi chúng do máy vẽ.
@@ -782,6 +775,19 @@
   <section id="v-kichban" style="display:none">
     <div class="card">
       <h2><svg class="ic to" aria-hidden="true"><use href="#i-play"/></svg> Hành trình của một bức ảnh</h2>
+      
+      <div class="card" style="background:#e3f2fd;border-left:4px solid #1976d2;margin:16px 0">
+        <h3 style="color:#1976d2;margin:0 0 12px 0">📖 Giới thiệu kịch bản</h3>
+        <p class="chu2" style="margin:0 0 8px 0">
+          Kịch bản này minh họa <b>quy trình xử lý ảnh</b> từ lúc chụp đến lúc AI đưa ra kết quả. 
+          Bạn sẽ thấy 9 bước đi qua các trạm: <b>Nhập liệu → Dán nhãn → Huấn luyện → Mô hình → Kiểm định → Ứng dụng → Con người kiểm → Vòng phản hồi</b>.
+        </p>
+        <p class="chu2" style="margin:0">
+          <b>Cách xem:</b> Kịch bản tự chạy, mỗi cảnh hiện khoảng 8-14 giây. Bạn có thể bấm nút <b>Tạm dừng</b> để xem kỹ hơn, 
+          hoặc kéo thanh tiến độ để nhảy đến cảnh bất kỳ. Chữ trên màn hình rất ít (≤14 từ/cảnh) — hãy đọc cả phần chú thích bên dưới.
+        </p>
+      </div>
+
       <p class="nho chu2">9 cảnh tự chạy · không cần mạng · thời gian hiện ở góc phải</p>
       <div id="kb-host"></div>
     </div>
