@@ -183,6 +183,7 @@
   function taoDuLieu(opts){
     const ds = [];
     let seed = opts.seed || 12345;
+    // FIX: 1013904223 - LCG constant for random number generation
     const rnd = () => (seed = (seed*1664525+1013904223)>>>0)/4294967296;
     for(let i=0;i<opts.soLuong;i++){
       const kind = (i%2===0) ? "mbh" : "khong";
