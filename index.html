@@ -102,17 +102,17 @@
     <div class="grid g3">
       <button class="btn menu-o" id="btn-lab">
         <svg class="ic to" aria-hidden="true"><use href="#i-flask-conical"/></svg>
-        <div><b>Tầng 1: Xưởng huấn luyện AI</b></div>
+        <div><b>Tầng 1: Phòng huấn luyện AI</b></div>
         <span class="chu2">Tự huấn luyện một mô hình AI, rồi tìm ra vì sao nó thiên vị.</span>
       </button>
       <button class="btn menu-o" id="btn-dautruong">
         <svg class="ic to" aria-hidden="true"><use href="#i-search"/></svg>
-        <div><b>Tầng 2: Đấu trường bắt lỗi AI</b></div>
+        <div><b>Tầng 2: Thử tài phát hiện lỗi AI</b></div>
         <span class="chu2">Đọc các câu trả lời của AI và tìm ra lỗi được cài sẵn.</span>
       </button>
       <button class="btn menu-o" id="btn-baocao">
         <svg class="ic to" aria-hidden="true"><use href="#i-chart-column"/></svg>
-        <div><b>Tầng 3: Bản đồ năng lực cá nhân</b></div>
+        <div><b>Tầng 3: Kết quả của bạn</b></div>
         <span class="chu2">Xem kết quả tự chấm theo 5 loại lỗi và 12 khối năng lực AI.</span>
       </button>
     </div>
@@ -169,10 +169,13 @@
     <div class="breadcrumb">
       <a href="#" onclick="hien('v-home');return false">Trang chủ</a>
       <span class="sep">›</span>
-      <span>Tầng 1: Xưởng huấn luyện AI</span>
+      <span>Tầng 1: Phòng huấn luyện AI</span>
     </div>
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-flask-conical"/></svg> Tầng 1: Xưởng huấn luyện AI giả lập</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-flask-conical"/></svg> Tầng 1: Phòng huấn luyện AI</h2>
+      <div class="card" style="background:#e8f5e9;border-left:4px solid #2e7d32;padding:12px;margin:12px 0">
+        <p style="margin:0"><b>Hướng dẫn:</b> Bạn sẽ huấn luyện một AI nhận diện người đội mũ bảo hiểm. Làm theo 4 bước bên dưới.</p>
+      </div>
       <div class="steps">
         <span class="step on" id="st-1">1. Dữ liệu</span>
         <span class="step" id="st-2">2. Huấn luyện</span>
@@ -236,10 +239,14 @@
     <div class="breadcrumb">
       <a href="#" onclick="hien('v-home');return false">Trang chủ</a>
       <span class="sep">›</span>
-      <span>Tầng 2: Đấu trường bắt lỗi AI</span>
+      <span>Tầng 2: Thử tài phát hiện lỗi AI</span>
     </div>
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-search"/></svg> Tầng 2: Đấu trường bắt lỗi AI</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-search"/></svg> Tầng 2: Thử tài phát hiện lỗi AI</h2>
+      <div class="card" style="background:#e3f2fd;border-left:4px solid #1976d2;padding:12px;margin:12px 0">
+        <p style="margin:0"><b>Hướng dẫn:</b> AI đôi khi trả lời sai. Nhiệm vụ của bạn là tìm ra các lỗi trong câu trả lời của AI.</p>
+        <p style="margin:8px 0 0 0" class="chu2">Bấm "Luyện tập" để bắt đầu. Mỗi lượt 12 câu — đọc kĩ, chọn câu nghi là sai, rồi chọn loại lỗi.</p>
+      </div>
       <p><b id="dt-mode" class="tagline">Luyện tập</b> · <span class="nho chu2">Mỗi phiên 12 câu — 8 câu có lỗi (mỗi loại ít nhất 1 câu) + 4 câu đúng (mồi nhử).</span></p><!-- ĐÍNH CHÍNH 19/10 (review14/): cũ ghi "2 câu cho mỗi loại lỗi + 4 câu đúng" — SAI SỐ HỌC, vì META.loaiLoi có 5 loại nên 5×2+4 = 14 ≠ 12, và phiên chạy thật có loại chỉ ra 1 câu. Số đúng lấy theo dtBatDau trong js/app.js (while pick.length < 8 → 8 lỗi + 4 đúng = 12), khớp README.md:201 và huong-dan-danh-gia.md:187. Nguồn sự thật là dtBatDau trong js/app.js; comment giữ trên CÙNG dòng để soDongCode không đổi (số in trong 2 PDF nộp). -->
       <p class="chips" style="margin:4px 0 10px">
         <button class="btn nho" id="dt-btn-luyen">▶ Luyện tập</button>
@@ -248,7 +255,7 @@
       </p>
       <p class="chu2">Dưới đây là các câu trả lời do một trợ lý AI tạo ra.
       <b>Một số câu có lỗi được cố tình cài sẵn</b>, một số câu hoàn toàn đúng.
-      Đọc kĩ, bấm vào câu nghi là sai, rồi phán quyết.</p>
+      Đọc kĩ, bấm vào câu nghi là sai, rồi chọn "Có lỗi" hoặc "Không có lỗi".</p>
       <p><span id="dt-tien-do" class="tagline"></span> · <span id="dt-boicanh" class="nho chu2"></span></p>
       <!-- NHÃN "CHỜ DUYỆT" cho câu sinh bằng LLM chưa được tác giả xác nhận nhãn.
            Phần tử này là thứ làm cho lời khai trong hồ sơ thành SỰ THẬT — xem chú thích
@@ -262,12 +269,12 @@
         <div id="dt-claims"></div>
       </div>
 
-      <h3>Phán quyết đã ghi</h3>
+      <h3>Lựa chọn của bạn</h3>
       <div class="chips" id="dt-chips-verdict"></div>
       <div class="chips" id="dt-chips-loai" style="display:none"></div>
 
       <p>
-        <button class="btn chinh" id="dt-nop" disabled>Nộp phán quyết</button>
+        <button class="btn chinh" id="dt-nop" disabled>Gửi câu trả lời</button>
         <button class="btn" id="dt-tiep" style="display:none" aria-label="Xem kết quả"></button>
       </p>
       <div id="dt-kq" class="phanhoi" style="display:none"></div>
@@ -294,10 +301,13 @@
     <div class="breadcrumb">
       <a href="#" onclick="hien('v-home');return false">Trang chủ</a>
       <span class="sep">›</span>
-      <span>Tầng 3: Bản đồ năng lực</span>
+      <span>Tầng 3: Kết quả của bạn</span>
     </div>
     <div class="card">
-      <h2><svg class="ic to" aria-hidden="true"><use href="#i-chart-column"/></svg> Tầng 3: Bản đồ năng lực AI cá nhân</h2>
+      <h2><svg class="ic to" aria-hidden="true"><use href="#i-chart-column"/></svg> Tầng 3: Kết quả của bạn</h2>
+      <div class="card" style="background:#fff3cd;border-left:4px solid #ffc107;padding:12px;margin:12px 0">
+        <p style="margin:0"><b>Hướng dẫn:</b> Hệ thống tự tổng hợp kết quả từ các tầng bạn đã làm. Xem biểu đồ để biết mình mạnh/yếu ở nhóm lỗi nào.</p>
+      </div>
       <p class="chu2 nho">Hệ thống tự tổng hợp từ nhật ký làm bài, không cần giáo viên chấm.</p>
       <div id="bc-noi-dung"></div>
     </div>
@@ -851,7 +861,7 @@
       và <b>Công văn 5588/BGDĐT-GDPT</b> (19/8/2026) về yêu cầu phiên bản ngoại tuyến, không tài khoản, 
       ưu tiên mã nguồn mở.</p>
       <p>Kết quả: <b>phủ 22/22 yêu cầu cần đạt lớp 10</b> theo 4 mạch A-D, triển khai qua 5 phân hệ 
-      (Kịch bản · Nhà máy AI 7 trạm · Xưởng huấn luyện · Đấu trường bắt lỗi · Bản đồ năng lực) 
+      (Kịch bản · Nhà máy AI 7 trạm · Phòng huấn luyện · Thử tài phát hiện lỗi · Kết quả của bạn) 
       và 3 tầng học tập (Làm quen · Thực hành · Kiểm định).</p>
 
       <h3>Điều kiện vận hành</h3>

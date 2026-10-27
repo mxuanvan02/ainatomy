@@ -590,8 +590,8 @@
     box.className = "phanhoi " + (kq.diem ? "dung" : "sai");
     let head = kq.diem ? svgIco("check") + " <b>Chính xác!</b> "
                        : svgIco("x") + " <b>Chưa đúng.</b> ";
-    if(kq.batOan) head += "Câu này ĐÚNG, phán quyết vừa rồi là 'bắt oan'. ";
-    if(kq.boSot) head += "Câu này CÓ lỗi (" + META.loaiLoi[item.loaiLoi].ten + "), lỗi này đã bị bỏ sót. ";
+    if(kq.batOan) head += "Câu này ĐÚNG, bạn nhận nhầm là có lỗi. ";
+    if(kq.boSot) head += "Câu này CÓ lỗi (" + META.loaiLoi[item.loaiLoi].ten + "), nhưng bạn đã bỏ qua. ";
     box.innerHTML = head + esc(item.giaiThich);
     $("dt-nop").disabled = true;
     $("dt-tiep").style.display = "";
@@ -625,9 +625,9 @@
     $("dt-boicanh").textContent = "";
     $("dt-claims").innerHTML = `
       <div class="grid g3">
-        <div class="kpi"><div class="so">${dung}/${dt.ketQua.length}</div><div class="nhan">phán quyết đúng</div></div>
-        <div class="kpi"><div class="so ko">${boSot}</div><div class="nhan">lỗi bỏ sót</div></div>
-        <div class="kpi"><div class="so vang">${batOan}</div><div class="nhan">câu đúng bị 'bắt oan'</div></div>
+        <div class="kpi"><div class="so">${dung}/${dt.ketQua.length}</div><div class="nhan">trả lời đúng</div></div>
+        <div class="kpi"><div class="so ko">${boSot}</div><div class="nhan">lỗi bị bỏ qua</div></div>
+        <div class="kpi"><div class="so vang">${batOan}</div><div class="nhan">câu đúng bị nhận nhầm</div></div>
       </div>
       <p class="chu2 nho">Kết quả đã được ghi vào nhật ký lớp (chỉ lưu mã ${esc(maHS)}, không lưu tên). Giáo viên sẽ xem báo cáo tổng hợp của cả lớp.</p>`;
     ["dt-chips-verdict","dt-chips-loai"].forEach(id=>$(id).innerHTML="");
@@ -663,7 +663,7 @@
       : `<p class="nho chu2"><b>Dự đoán trước khi chạy:</b> chưa có lượt nào.</p>`;
     let html = `
       <div class="grid g3">
-        <div class="kpi"><div class="so">${th.dauTruong.tong}</div><div class="nhan">câu đã phán quyết</div></div>
+        <div class="kpi"><div class="so">${th.dauTruong.tong}</div><div class="nhan">câu đã trả lời</div></div>
         <div class="kpi"><div class="so">${pct(th.dauTruong.tiLe)}</div><div class="nhan">mức độ đáp ứng<br><span class="nho chu2">(minh chứng, không phải điểm)</span></div></div>
         <div class="kpi"><div class="so">${th.lab.tong}</div><div class="nhan">nhiệm vụ phòng lab</div></div>
       </div>
@@ -674,7 +674,7 @@
      * chỗ nào giải thích. Học sinh nhìn vào chỉ thấy một con số không tên.
      * Giữ thuật ngữ gốc trong ngoặc SAU tiếng Việt: giáo viên và giám khảo cần đối chiếu với
      * hồ sơ chuyên môn, nhưng người đọc chính (học sinh) phải hiểu được trước đã. */
-    html += `<table><tr><th>Loại lỗi</th><th>Phát hiện đúng</th><th>Tỉ lệ bắt đúng lỗi (recall)</th><th>Bắt oan</th></tr>`;
+    html += `<table><tr><th>Loại lỗi</th><th>Phát hiện đúng</th><th>Tỉ lệ phát hiện</th><th>Nhận nhầm</th></tr>`;
     for(const r of th.recallTheoLoai){
       html += `<tr><td><span style="color:${META.loaiLoi[r.maLoai].mau}">●</span> ${esc(r.ten)}</td>
         <td>${r.phatHien}/${r.tongCoLoi}</td><td>${pct(r.recall)}</td><td>${r.batOan}</td></tr>`;
@@ -743,12 +743,12 @@
         : `<p class="nho chu2"><b>Dự đoán trước khi chạy — cả lớp:</b> chưa có lượt nào.</p>`;
       let h2 = `<p class="nho chu2">Tổng hợp ${lop.soHS} học sinh${maLop? " lớp "+esc(maLop):""} — dữ liệu ẩn danh, lưu cục bộ trên máy này.</p>
       <div class="grid g3">
-        <div class="kpi"><div class="so">${lop.dauTruong.tong}</div><div class="nhan">tổng phán quyết</div></div>
+        <div class="kpi"><div class="so">${lop.dauTruong.tong}</div><div class="nhan">tổng câu đã trả lời</div></div>
         <div class="kpi"><div class="so">${pct(lop.tiLe)}</div><div class="nhan">tỉ lệ đúng cả lớp</div></div>
         <div class="kpi"><div class="so">${lop.lab.tong}</div><div class="nhan">nhiệm vụ lab</div></div>
       </div>
       ${ddLop}
-      <table><tr><th>Loại lỗi</th><th>Cả lớp phát hiện</th><th>Tỉ lệ bắt đúng lỗi (recall)</th><th>Bắt oan</th></tr>`;
+      <table><tr><th>Loại lỗi</th><th>Cả lớp phát hiện</th><th>Tỉ lệ phát hiện</th><th>Nhận nhầm</th></tr>`;
       for(const k of Object.keys(lop.recall)){
         const r = lop.recall[k];
         h2 += `<tr><td><span style="color:${META.loaiLoi[k].mau}">●</span> ${META.loaiLoi[k].ten}</td>
