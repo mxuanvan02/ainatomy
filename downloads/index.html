@@ -1,0 +1,186 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Tải xuống - AInatomy</title>
+    <style>
+        body {
+            font-family: 'Segoe UI', Tahoma, Geneva, Verdana, sans-serif;
+            max-width: 900px;
+            margin: 50px auto;
+            padding: 20px;
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            min-height: 100vh;
+        }
+        .container {
+            background: white;
+            border-radius: 15px;
+            padding: 40px;
+            box-shadow: 0 10px 40px rgba(0,0,0,0.2);
+        }
+        h1 {
+            color: #667eea;
+            text-align: center;
+            margin-bottom: 10px;
+        }
+        .subtitle {
+            text-align: center;
+            color: #666;
+            margin-bottom: 40px;
+            font-size: 1.1em;
+        }
+        .file-list {
+            display: grid;
+            gap: 20px;
+        }
+        .file-item {
+            border: 2px solid #e0e0e0;
+            border-radius: 10px;
+            padding: 20px;
+            transition: all 0.3s ease;
+            display: flex;
+            align-items: center;
+            gap: 20px;
+        }
+        .file-item:hover {
+            border-color: #667eea;
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.2);
+            transform: translateY(-2px);
+        }
+        .file-icon {
+            font-size: 3em;
+            min-width: 60px;
+            text-align: center;
+        }
+        .file-info {
+            flex: 1;
+        }
+        .file-name {
+            font-weight: bold;
+            color: #333;
+            margin-bottom: 5px;
+            font-size: 1.1em;
+        }
+        .file-desc {
+            color: #666;
+            font-size: 0.95em;
+            margin-bottom: 10px;
+        }
+        .file-meta {
+            display: flex;
+            gap: 15px;
+            font-size: 0.85em;
+            color: #999;
+        }
+        .download-btn {
+            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+            color: white;
+            padding: 12px 25px;
+            border-radius: 8px;
+            text-decoration: none;
+            font-weight: bold;
+            transition: all 0.3s ease;
+            display: inline-block;
+        }
+        .download-btn:hover {
+            transform: scale(1.05);
+            box-shadow: 0 5px 15px rgba(102, 126, 234, 0.4);
+        }
+        .back-link {
+            text-align: center;
+            margin-top: 30px;
+        }
+        .back-link a {
+            color: #667eea;
+            text-decoration: none;
+            font-weight: bold;
+        }
+        .back-link a:hover {
+            text-decoration: underline;
+        }
+    </style>
+</head>
+<body>
+    <div class="container">
+        <h1>📥 Tải xuống Tài liệu AInatomy</h1>
+        <p class="subtitle">Bộ công cụ dạy thử và khảo sát học sinh</p>
+        
+        <div class="file-list">
+            <div class="file-item">
+                <div class="file-icon">📋</div>
+                <div class="file-info">
+                    <div class="file-name">Phiếu khảo sát chi tiết (DOCX)</div>
+                    <div class="file-desc">Phiếu khảo sát 25 câu hỏi cho học sinh sau khi trải nghiệm AInatomy</div>
+                    <div class="file-meta">
+                        <span>📄 DOCX</span>
+                        <span>📊 25 câu hỏi</span>
+                        <span>👥 Dành cho HS</span>
+                    </div>
+                </div>
+                <a href="Phieu_khao_sat_chi_tiet.docx" class="download-btn" download>Tải xuống</a>
+            </div>
+
+            <div class="file-item">
+                <div class="file-icon">📄</div>
+                <div class="file-info">
+                    <div class="file-name">Phiếu khảo sát chi tiết (PDF)</div>
+                    <div class="file-desc">Phiếu khảo sát 25 câu hỏi - phiên bản PDF</div>
+                    <div class="file-meta">
+                        <span>📄 PDF</span>
+                        <span>📊 25 câu hỏi</span>
+                        <span>👥 Dành cho HS</span>
+                    </div>
+                </div>
+                <a href="Phieu_khao_sat_chi_tiet.pdf" class="download-btn" download>Tải xuống</a>
+            </div>
+
+            <div class="file-item">
+                <div class="file-icon">📚</div>
+                <div class="file-info">
+                    <div class="file-name">Kế hoạch bài dạy (KHBD)</div>
+                    <div class="file-desc">Kế hoạch tích hợp AInatomy vào Bài 12 Tin học 10</div>
+                    <div class="file-meta">
+                        <span>📄 DOCX</span>
+                        <span>⏱️ 2 tiết (90 phút)</span>
+                        <span>👨‍🏫 Dành cho GV</span>
+                    </div>
+                </div>
+                <a href="KHBD_AInatomy_Tin10.docx" class="download-btn" download>Tải xuống</a>
+            </div>
+
+            <div class="file-item">
+                <div class="file-icon">✅</div>
+                <div class="file-info">
+                    <div class="file-name">Bảng kiểm đánh giá</div>
+                    <div class="file-desc">Bảng kiểm 15 tiêu chí đánh giá năng lực AI của học sinh</div>
+                    <div class="file-meta">
+                        <span>📄 DOCX</span>
+                        <span>📊 15 tiêu chí</span>
+                        <span>👨‍🏫 Dành cho GV</span>
+                    </div>
+                </div>
+                <a href="Bang_kiem_danh_gia.docx" class="download-btn" download>Tải xuống</a>
+            </div>
+
+            <div class="file-item">
+                <div class="file-icon">📝</div>
+                <div class="file-info">
+                    <div class="file-name">Phiếu tự đánh giá (PDF)</div>
+                    <div class="file-desc">Phiếu tự đánh giá ngắn gọn 10 câu hỏi cho học sinh</div>
+                    <div class="file-meta">
+                        <span>📄 PDF</span>
+                        <span>📊 10 câu hỏi</span>
+                        <span>👥 Dành cho HS</span>
+                    </div>
+                </div>
+                <a href="Phieu_tu_danh_gia_HS.pdf" class="download-btn" download>Tải xuống</a>
+            </div>
+        </div>
+
+        <div class="back-link">
+            <a href="/">← Quay về trang chủ AInatomy</a>
+        </div>
+    </div>
+</body>
+</html>
