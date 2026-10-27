@@ -402,11 +402,181 @@ window.MX_KT = {
     },
     11: {
       ten: "Lớp 11",
-      baiHoc: {}
+      baiHoc: {
+        "bai-1": {
+          ten: "Bài 1: Mô hình AI hoạt động như thế nào?",
+          yccd: "11.A1.1",
+          kienThucNen: "<p><b>Mục tiêu:</b> Hiểu được quy trình huấn luyện, kiểm thử và đánh giá mô hình AI.</p><p><b>Ba bước chính:</b></p><ul><li><b>Bước 1 — Chuẩn bị dữ liệu:</b> Thu thập ảnh, văn bản, âm thanh... rồi gán nhãn (ví dụ: ảnh chó/mèo). Dữ liệu càng nhiều và đa dạng, mô hình càng học tốt.</li><li><b>Bước 2 — Huấn luyện:</b> Máy tính tìm quy luật từ dữ liệu. Quá trình này lặp đi lặp lại hàng nghìn lần để mô hình 'khôn' dần.</li><li><b>Bước 3 — Đánh giá:</b> Cho mô hình làm bài trên dữ liệu mới (chưa từng thấy). Đo độ chính xác, độ chính xác (precision), độ bao phủ (recall).</li></ul><p><b>Điểm quan trọng:</b> Mô hình AI không 'hiểu' như người — nó chỉ khớp mẫu. Nếu dữ liệu huấn luyện lệch, mô hình sẽ dự đoán lệch.</p>",
+          baiTap: [
+            {
+              ten: "Câu 1: Tại sao cần dữ liệu kiểm thử riêng?",
+              de: "Trong quy trình huấn luyện AI, tại sao phải chia dữ liệu thành 'tập huấn luyện' và 'tập kiểm thử' riêng biệt?",
+              dapAn: "b",
+              giaiThich: "Nếu dùng cùng dữ liệu để huấn luyện và kiểm thử, ta không biết mô hình thực sự 'học' hay chỉ 'học vẹt'. Tập kiểm thử phải là dữ liệu mới, chưa từng thấy, để đo khả năng tổng quát hóa."
+            },
+            {
+              ten: "Câu 2: Precision và Recall",
+              de: "Một mô hình phát hiện bệnh hiếm gặp: nó báo đúng 9/10 người bệnh (recall 90%) nhưng cứ 100 lần báo thì có 50 lần báo nhầm (precision 50%). Nên ưu tiên chỉ số nào?",
+              dapAn: "a",
+              giaiThich: "Với bệnh hiếm, bỏ sót người bệnh (recall thấp) nguy hiểm hơn báo nhầm (precision thấp). Ưu tiên recall cao để không bỏ sót, sau đó tối ưu precision."
+            }
+          ],
+          huongDan: "Hãy tưởng tượng bạn dạy em nhỏ nhận biết trái cây: cho xem nhiều ảnh táo, cam (huấn luyện), rồi đưa quả mới để kiểm tra (kiểm thử). Nếu em chỉ nhớ đúng quả đã xem, đó là 'học vẹt' — mô hình AI cũng vậy.",
+          baiTapBoSung: [
+            {
+              ten: "Bài tập thực hành: Thiết kế tập dữ liệu",
+              de: "Bạn muốn xây dựng AI phân loại rác (nhựa, giấy, kim loại). Hãy liệt kê: (1) ít nhất 5 loại dữ liệu cần thu thập, (2) cách gán nhãn, (3) cách chia tập huấn luyện/kiểm thử theo tỉ lệ 80/20.",
+              dapAn: "(1) Ảnh chai nhựa, báo cũ, lon nhôm, túi nilon, hộp giấy... chụp ở nhiều góc, ánh sáng. (2) Gán nhãn bằng tay: mỗi ảnh ghi 'nhựa'/'giấy'/'kim loại'. (3) Xáo trộn ngẫu nhiên, lấy 80% để huấn luyện, 20% giữ lại kiểm thử — đảm bảo cả hai tập đều có đủ 3 loại.",
+              giaiThich: "Chia dữ liệu ngẫu nhiên giúp tránh thiên kiến (ví dụ: tất cả ảnh nhựa đều chụp buổi sáng). Kiểm thử trên dữ liệu đa dạng mới đo được khả năng thực tế."
+            }
+          ]
+        },
+        "bai-2": {
+          ten: "Bài 2: Thiên kiến (bias) trong AI",
+          yccd: "11.A2.1",
+          kienThucNen: "<p><b>Mục tiêu:</b> Nhận diện được thiên kiến trong dữ liệu và mô hình AI.</p><p><b>Thiên kiến là gì?</b> Khi mô hình AI đối xử không công bằng với một nhóm người vì dữ liệu huấn luyện không đại diện.</p><p><b>Ví dụ thực tế:</b></p><ul><li>AI nhận diện khuôn mặt nhận diện người da trắng tốt hơn người da màu, vì dữ liệu huấn luyện chủ yếu là ảnh người da trắng.</li><li>AI tuyển dụng tự động loại hồ sơ ứng viên nữ, vì dữ liệu lịch sử cho thấy nam giới được tuyển nhiều hơn.</li></ul><p><b>Cách giảm thiên kiến:</b></p><ul><li>Thu thập dữ liệu đa dạng (đủ giới tính, độ tuổi, vùng miền...).</li><li>Kiểm tra mô hình trên từng nhóm riêng biệt.</li><li>Con người giám sát quyết định cuối cùng.</li></ul>",
+          baiTap: [
+            {
+              ten: "Câu 3: Phát hiện thiên kiến",
+              de: "Một AI chấm điểm tín dụng cho vay ngân hàng: người từ vùng nông thôn bị từ chối nhiều hơn người thành phố, dù thu nhập tương đương. Đây có phải thiên kiến không?",
+              dapAn: "a",
+              giaiThich: "Có — mô hình học từ dữ liệu lịch sử, trong đó người nông thôn có thể bị từ chối nhiều hơn vì định kiến (không phải vì họ thực sự rủi ro hơn). Đây là thiên kiến địa lý, cần được hiệu chỉnh bằng cách thu thập dữ liệu công bằng hơn hoặc thêm biến giải thích."
+            },
+            {
+              ten: "Câu 4: Cách giảm thiên kiến",
+              de: "Để giảm thiên kiến giới tính trong AI tuyển dụng, biện pháp nào HIỆU QUẢ NHẤT?",
+              dapAn: "c",
+              giaiThich: "Thu thập dữ liệu cân bằng (50% nam, 50% nữ) giải quyết gốc rễ. Các biện pháp khác (chỉ dùng ảnh nam, bỏ hoàn toàn giới tính) không khả thi hoặc mất thông tin hữu ích. Giám sát con người là lớp bảo vệ cuối cùng."
+            }
+          ],
+          huongDan: "Khi gặp một hệ thống AI, hãy tự hỏi: 'Dữ liệu huấn luyện có đại diện cho tất cả mọi người không?' Nếu chỉ có ảnh người trẻ, AI sẽ không nhận diện được người già. Thiên kiến không phải lỗi cố ý — nó đến từ dữ liệu không cân bằng.",
+          baiTapBoSung: [
+            {
+              ten: "Bài tập tình huống: AI nhận diện giọng nói",
+              de: "Một trợ lý giọng nói hiểu tốt giọng miền Bắc nhưng hay nhầm giọng miền Nam và miền Trung. (1) Nguyên nhân có thể là gì? (2) Đề xuất 2 cách khắc phục.",
+              dapAn: "(1) Dữ liệu huấn luyện chủ yếu là giọng miền Bắc. (2) Cách khắc phục: (a) Thu thập thêm dữ liệu giọng miền Nam/Trung với số lượng tương đương, (b) Huấn luyện mô hình riêng cho từng vùng rồi kết hợp, hoặc dùng mô hình đa vùng.",
+              giaiThich: "Thiên kiến vùng miền phổ biến trong AI giọng nói vì dữ liệu thường tập trung vào giọng chuẩn (Hà Nội/TP.HCM). Giải pháp là đa dạng hóa dữ liệu hoặc thiết kế mô hình thích ứng."
+            }
+          ]
+        },
+        "bai-3": {
+          ten: "Bài 3: Đạo đức và trách nhiệm khi sử dụng AI",
+          yccd: "11.A3.1",
+          kienThucNen: "<p><b>Mục tiêu:</b> Hiểu được trách nhiệm của người sử dụng AI.</p><p><b>Nguyên tắc đạo đức AI:</b></p><ul><li><b>Minh bạch:</b> Cho người dùng biết họ đang tương tác với AI, không phải người thật.</li><li><b>Trách nhiệm giải trình:</b> Khi AI gây hại, ai chịu trách nhiệm? Người phát triển, người triển khai, hay người sử dụng?</li><li><b>Tôn trọng quyền riêng tư:</b> Không thu thập dữ liệu cá nhân khi chưa được đồng ý.</li><li><b>Không gây hại:</b> AI không được tạo nội dung lừa đảo, phân biệt đối xử, hoặc nguy hiểm.</li></ul><p><b>Trách nhiệm của bạn:</b></p><ul><li>Không dùng AI để gian lận học tập.</li><li>Kiểm chứng thông tin AI đưa ra trước khi tin.</li><li>Báo cáo nếu phát hiện AI gây hại.</li></ul>",
+          baiTap: [
+            {
+              ten: "Câu 5: Trách nhiệm khi AI gây hại",
+              de: "Một bác sĩ dùng AI hỗ trợ chẩn đoán, AI gợi ý sai khiến bệnh nhân bị điều trị sai. Ai chịu trách nhiệm CHÍNH?",
+              dapAn: "b",
+              giaiThich: "Bác sĩ chịu trách nhiệm chính vì AI chỉ là công cụ hỗ trợ, quyết định cuối cùng thuộc về con người. Nhà phát triển AI có thể chịu trách nhiệm phụ nếu AI có lỗi kỹ thuật, nhưng bác sĩ phải kiểm tra và xác nhận kết quả trước khi áp dụng."
+            },
+            {
+              ten: "Câu 6: Sử dụng AI trong học tập",
+              de: "Bạn dùng ChatGPT để viết bài luận nộp cho giáo viên. Hành động nào SAU ĐÂY là đúng?",
+              dapAn: "c",
+              giaiThich: "Dùng AI để gợi ý ý tưởng, dàn bài, hoặc kiểm tra ngữ pháp là hợp lý. Nhưng nộp nguyên văn bài AI viết là gian lận — bạn không học được gì và vi phạm quy định học thuật. Luôn ghi rõ nguồn nếu sử dụng AI."
+            }
+          ],
+          huongDan: "Hãy nhớ: AI là công cụ, không phải người thay thế. Bạn chịu trách nhiệm cho mọi quyết định dựa trên AI. Khi nghi ngờ, hãy hỏi: 'Nếu AI sai, ai sẽ chịu hậu quả?' — câu trả lời thường là BẠN.",
+          baiTapBoSung: [
+            {
+              ten: "Bài tập thảo luận: Quy tắc sử dụng AI",
+              de: "Hãy đề xuất 5 quy tắc sử dụng AI trong lớp học mà bạn nghĩ là công bằng và hiệu quả. Giải thích lý do cho mỗi quy tắc.",
+              dapAn: "Ví dụ: (1) Được dùng AI để gợi ý ý tưởng, không được nộp nguyên văn. (2) Phải ghi rõ đã dùng AI ở phần nào. (3) Không dùng AI trong bài kiểm tra trên lớp. (4) Kiểm chứng mọi thông tin AI đưa ra. (5) Chia sẻ cách dùng AI hiệu quả với bạn bè.",
+              giaiThich: "Quy tắc tốt cân bằng giữa tận dụng công nghệ và đảm bảo học thật. Mục tiêu là dùng AI để học tốt hơn, không phải để đối phó."
+            }
+          ]
+        }
+      }
     },
     12: {
       ten: "Lớp 12",
-      baiHoc: {}
+      baiHoc: {
+        "bai-1": {
+          ten: "Bài 1: Ứng dụng AI trong thực tiễn",
+          yccd: "12.A1.1",
+          kienThucNen: "<p><b>Mục tiêu:</b> Liệt kê được các ứng dụng AI trong đời sống và phân tích tác động.</p><p><b>Các lĩnh vực ứng dụng AI:</b></p><ul><li><b>Y tế:</b> Chẩn đoán bệnh từ ảnh X-quang, dự đoán nguy cơ bệnh tim mạch, hỗ trợ phẫu thuật robot.</li><li><b>Giao thông:</b> Xe tự lái, tối ưu lộ trình, dự báo tắc đường.</li><li><b>Giáo dục:</b> Hệ thống học thích ứng (adaptive learning), chấm bài tự động, trợ lý ảo.</li><li><b>Tài chính:</b> Phát hiện gian lận, chấm điểm tín dụng, giao dịch tự động.</li><li><b>Nông nghiệp:</b> Dự báo thời tiết, phát hiện sâu bệnh từ ảnh drone, tối ưu tưới tiêu.</li></ul><p><b>Tác động hai mặt:</b></p><ul><li><b>Tích cực:</b> Tăng hiệu quả, giảm chi phí, giải quyết bài toán phức tạp.</li><li><b>Tiêu cực:</b> Mất việc làm, thiên kiến, rủi ro bảo mật, phụ thuộc công nghệ.</li></ul>",
+          baiTap: [
+            {
+              ten: "Câu 1: Phân tích ứng dụng AI",
+              de: "Một bệnh viện triển khai AI chẩn đoán ung thư phổi từ ảnh CT. Ưu điểm và rủi ro lớn nhất là gì?",
+              dapAn: "a",
+              giaiThich: "Ưu điểm: phát hiện sớm, chính xác cao, giảm tải cho bác sĩ. Rủi ro: AI có thể bỏ sót trường hợp hiếm (false negative) hoặc báo nhầm (false positive), cần bác sĩ kiểm tra lại. Không thể thay thế hoàn toàn bác sĩ vì AI không hiểu ngữ cảnh lâm sàng."
+            },
+            {
+              ten: "Câu 2: AI và việc làm",
+              de: "AI tự động hóa nhiều công việc lặp lại. Ngành nào SAU ĐÂY có nguy cơ bị thay thế CAO NHẤT?",
+              dapAn: "c",
+              giaiThich: "Nhân viên nhập liệu — công việc lặp đi lặp lại, dễ tự động hóa. Giáo viên, bác sĩ, nghệ sĩ cần sáng tạo, tương tác người, ra quyết định phức tạp — AI khó thay thế hoàn toàn, chỉ hỗ trợ."
+            }
+          ],
+          huongDan: "Khi phân tích ứng dụng AI, hãy cân nhắc cả lợi ích và rủi ro. Không có công nghệ nào hoàn hảo — quan trọng là dùng đúng cách và có con người giám sát.",
+          baiTapBoSung: [
+            {
+              ten: "Bài tập nghiên cứu: AI trong lĩnh vực bạn quan tâm",
+              de: "Chọn một lĩnh vực bạn quan tâm (thể thao, âm nhạc, thời trang...). Tìm hiểu và viết 1 trang về: (1) AI đang được dùng như thế nào trong lĩnh vực đó, (2) Ưu điểm và hạn chế, (3) Dự đoán xu hướng trong 5 năm tới.",
+              dapAn: "Ví dụ (thể thao): (1) AI phân tích video trận đấu, dự đoán chấn thương cầu thủ, tối ưu chiến thuật. (2) Ưu: phân tích nhanh, chính xác. Hạn chế: cần dữ liệu lớn, không thay thế trực giác huấn luyện viên. (3) Xu hướng: AI cá nhân hóa chương trình tập luyện cho từng vận động viên.",
+              giaiThich: "Bài tập này giúp bạn kết nối kiến thức AI với sở thích cá nhân, đồng thời rèn kỹ năng nghiên cứu và trình bày."
+            }
+          ]
+        },
+        "bai-2": {
+          ten: "Bài 2: Xây dựng hệ thống AI đơn giản",
+          yccd: "12.A2.1",
+          kienThucNen: "<p><b>Mục tiêu:</b> Hiểu được các bước xây dựng một hệ thống AI hoàn chỉnh.</p><p><b>Quy trình 6 bước:</b></p><ol><li><b>Xác định bài toán:</b> Phân loại, dự đoán, hay tạo sinh? Đầu vào/đầu ra là gì?</li><li><b>Thu thập dữ liệu:</b> Càng nhiều càng tốt, đảm bảo đa dạng và chất lượng.</li><li><b>Tiền xử lý dữ liệu:</b> Làm sạch (xóa nhiễu, điền khuyết), chuẩn hóa (cùng đơn vị, kích thước), gán nhãn.</li><li><b>Chọn mô hình:</b> Cây quyết định, mạng neural, SVM... tùy bài toán và dữ liệu.</li><li><b>Huấn luyện và đánh giá:</b> Chia tập train/test, huấn luyện, đo độ chính xác, điều chỉnh siêu tham số.</li><li><b>Triển khai và giám sát:</b> Đưa vào sử dụng, theo dõi hiệu suất, cập nhật khi cần.</li></ol><p><b>Công cụ phổ biến:</b> Python + thư viện scikit-learn, TensorFlow, PyTorch.</p>",
+          baiTap: [
+            {
+              ten: "Câu 3: Thứ tự các bước",
+              de: "Sắp xếp đúng thứ tự các bước xây dựng hệ thống AI: (a) Huấn luyện mô hình, (b) Thu thập dữ liệu, (c) Triển khai, (d) Xác định bài toán, (e) Tiền xử lý dữ liệu.",
+              dapAn: "b",
+              giaiThich: "Thứ tự đúng: (d) Xác định bài toán → (b) Thu thập dữ liệu → (e) Tiền xử lý → (a) Huấn luyện → (c) Triển khai. Phải biết bài toán trước khi thu thập dữ liệu, phải làm sạch dữ liệu trước khi huấn luyện."
+            },
+            {
+              ten: "Câu 4: Chọn mô hình",
+              de: "Bài toán dự đoán giá nhà dựa trên diện tích, vị trí, số phòng. Mô hình nào PHÙ HỢP NHẤT?",
+              dapAn: "a",
+              giaiThich: "Hồi quy tuyến tính (linear regression) phù hợp vì đầu ra là giá trị liên tục (giá nhà). Phân loại (classification) dùng cho bài toán nhãn rời rạc (chó/mèo). CNN dùng cho ảnh. RNN dùng cho chuỗi thời gian."
+            }
+          ],
+          huongDan: "Xây dựng AI không chỉ là code — quan trọng nhất là hiểu bài toán và chuẩn bị dữ liệu tốt. Dữ liệu xấu → mô hình tồi, dù thuật toán xịn. Hãy dành 70% thời gian cho dữ liệu, 30% cho mô hình.",
+          baiTapBoSung: [
+            {
+              ten: "Bài tập thực hành: Thiết kế hệ thống AI",
+              de: "Thiết kế hệ thống AI phân loại email spam/không spam. Trình bày: (1) Đầu vào/đầu ra, (2) Cách thu thập dữ liệu, (3) Tiền xử lý (làm gì với email?), (4) Chọn mô hình, (5) Đánh giá bằng chỉ số nào.",
+              dapAn: "(1) Đầu vào: nội dung email (tiêu đề + thân). Đầu ra: 'spam' hoặc 'không spam'. (2) Thu thập từ hộp thư của bạn, gán nhãn thủ công. (3) Tiền xử lý: xóa HTML, chuyển về chữ thường, loại bỏ từ dừng (của, là, và...), trích xuất đặc trưng (TF-IDF). (4) Mô hình: Naive Bayes hoặc SVM. (5) Đánh giá: precision, recall, F1-score — ưu tiên precision để không nhầm email quan trọng thành spam.",
+              giaiThich: "Đây là bài toán kinh điển trong xử lý ngôn ngữ. Bạn có thể thử với thư viện scikit-learn trong Python — chỉ cần ~50 dòng code."
+            }
+          ]
+        },
+        "bai-3": {
+          ten: "Bài 3: Tương lai của AI và chuẩn bị cho sự nghiệp",
+          yccd: "12.A3.1",
+          kienThucNen: "<p><b>Mục tiêu:</b> Hiểu được xu hướng AI và cách chuẩn bị bản thân.</p><p><b>Xu hướng AI 2025-2030:</b></p><ul><li><b>AI tạo sinh (Generative AI):</b> ChatGPT, Midjourney, Sora... tạo văn bản, ảnh, video chất lượng cao.</li><li><b>AI đa phương thức:</b> Một mô hình hiểu cả văn bản, ảnh, âm thanh.</li><li><b>AI cá nhân hóa:</b> Trợ lý ảo hiểu sở thích, thói quen của từng người.</li><li><b>AI biên (Edge AI):</b> Chạy trên điện thoại, thiết bị IoT, không cần internet.</li><li><b>AI đáng tin cậy (Trustworthy AI):</b> Minh bạch, giải thích được, bảo vệ quyền riêng tư.</li></ul><p><b>Kỹ năng cần chuẩn bị:</b></p><ul><li><b>Kỹ năng kỹ thuật:</b> Lập trình Python, toán (đại số, xác suất), hiểu nguyên lý AI.</li><li><b>Kỹ năng mềm:</b> Tư duy phản biện, sáng tạo, giao tiếp, làm việc nhóm.</li><li><b>Hiểu biết đạo đức:</b> Nhận diện thiên kiến, bảo vệ quyền riêng tư, sử dụng AI có trách nhiệm.</li></ul><p><b>Cơ hội nghề nghiệp:</b> Kỹ sư AI, nhà khoa học dữ liệu, chuyên gia đạo đức AI, quản lý sản phẩm AI...</p>",
+          baiTap: [
+            {
+              ten: "Câu 5: Kỹ năng thời đại AI",
+              de: "Trong thời đại AI, kỹ năng nào TRỞ NÊN QUAN TRỌNG HƠN cho con người?",
+              dapAn: "b",
+              giaiThich: "Tư duy phản biện và sáng tạo — vì AI giỏi làm việc lặp lại, tính toán, nhưng kém về sáng tạo, đánh giá ngữ cảnh, ra quyết định đạo đức. Kỹ năng lập trình vẫn cần nhưng không còn là lợi thế duy nhất."
+            },
+            {
+              ten: "Câu 6: Chuẩn bị cho tương lai",
+              de: "Bạn muốn trở thành kỹ sư AI. Lộ trình nào HỢP LÝ NHẤT?",
+              dapAn: "c",
+              giaiThich: "Học toán (đại số, xác suất) + lập trình Python → học machine learning cơ bản → thực hành với dự án nhỏ → chuyên sâu vào lĩnh vực cụ thể (NLP, computer vision...). Không cần đợi đến đại học — có thể bắt đầu từ bây giờ với các khóa online miễn phí."
+            }
+          ],
+          huongDan: "AI không thay thế con người — nhưng người biết dùng AI sẽ thay thế người không biết. Hãy bắt đầu học từ bây giờ, không cần phải là thiên tài toán hay lập trình siêu đẳng. Quan trọng là tò mò, kiên nhẫn, và không sợ sai.",
+          baiTapBoSung: [
+            {
+              ten: "Bài tập lập kế hoạch: Lộ trình học AI của bạn",
+              de: "Viết kế hoạch 6 tháng để học AI cơ bản. Bao gồm: (1) Mục tiêu cụ thể, (2) Tài nguyên học (sách, khóa online, YouTube), (3) Thời gian biểu hàng tuần, (4) Dự án thực hành, (5) Cách đánh giá tiến độ.",
+              dapAn: "Ví dụ: Tháng 1-2: Học Python cơ bản (khóa Codecademy, 5h/tuần). Tháng 3-4: Học machine learning (khóa Coursera Andrew Ng, 6h/tuần). Tháng 5: Thực hành dự án phân loại ảnh chó/mèo với TensorFlow. Tháng 6: Viết blog chia sẻ kiến thức, tham gia cộng đồng AI. Đánh giá: hoàn thành bài tập hàng tuần, chạy được dự án cuối khóa.",
+              giaiThich: "Kế hoạch tốt phải cụ thể, đo được, và linh hoạt. Đừng tham lam học nhiều thứ cùng lúc — tập trung vào một thứ, làm xong rồi mới chuyển sang thứ khác."
+            }
+          ]
+        }
+      }
     }
   }
 };
