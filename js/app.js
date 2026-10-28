@@ -66,21 +66,13 @@
      DA_CHOT. Còn việc ghi boQua thì vẫn mượn M3().boQuaCoY(ma) được cho mọi mã bài, vì hàm đó
      chỉ cần mã để ghi nhật ký — engine.js đếm boQua theo `loai:"duDoan"` chứ không theo module. */
   function epDuDoan(ma, hostId, chay, daChot){
-    console.log('[DEBUG] epDuDoan() bắt đầu với ma=' + ma);
     const host = $(hostId);
     const M = M3();
     const daChotRoi = daChot ? !!daChot() : (M ? M.daChotRoi(ma) : true);
     const daBoQuaRoi = M ? M.daBoQua(ma) : true;
-    console.log('[DEBUG] host exists:', !!host, 'children:', host ? host.children.length : 0);
-    console.log('[DEBUG] daChotRoi:', daChotRoi, 'daBoQuaRoi:', daBoQuaRoi);
     // ô chưa dựng, hoặc đã chốt, hoặc đã chủ động bỏ qua -> chạy ngay, không hỏi lại lần hai
-    if(!host || !host.children.length || daChotRoi || daBoQuaRoi){ 
-      console.log('[DEBUG] Gọi chay() ngay');
-      chay(); 
-      return; 
-    }
+    if(!host || !host.children.length || daChotRoi || daBoQuaRoi){ chay(); return; }
     
-    console.log('[DEBUG] Tạo warning div...');
     // Thay confirm() bằng UI inline không chặn - hiển thị cảnh báo và tự chạy sau 3 giây
     const warning = document.createElement('div');
     warning.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff3cd;border:2px solid #ffc107;padding:20px;border-radius:8px;z-index:10000;max-width:500px;box-shadow:0 4px 6px rgba(0,0,0,0.3)';
@@ -91,25 +83,15 @@
       <button id="btn-bo-qua" style="background:#ffc107;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:bold">Bỏ qua ngay</button>
       <button id="btn-quay-lai" style="background:#6c757d;color:white;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;margin-left:10px">Quay lại điền</button>
     `;
-    console.log('[DEBUG] Append warning vào body...');
     document.body.appendChild(warning);
-    console.log('[DEBUG] Warning đã append, bắt đầu countdown...');
-    
-    // Kiểm tra ngay sau khi append
-    console.log('[DEBUG] Kiểm tra warning trong DOM:', document.body.contains(warning));
-    console.log('[DEBUG] Warning offsetHeight:', warning.offsetHeight);
     
     // Đếm ngược 3 giây
     let countdown = 3;
     const countdownEl = warning.querySelector('#countdown');
-    console.log('[DEBUG] countdownEl exists:', !!countdownEl);
-    
     const interval = setInterval(() => {
-      console.log('[DEBUG] Countdown tick:', countdown);
       countdown--;
       if(countdownEl) countdownEl.textContent = countdown;
       if(countdown <= 0){
-        console.log('[DEBUG] Countdown hết, remove warning và gọi chay()');
         clearInterval(interval);
         document.body.removeChild(warning);
         if(M) M.boQuaCoY(ma);
