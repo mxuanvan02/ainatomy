@@ -80,6 +80,7 @@
       return; 
     }
     
+    console.log('[DEBUG] Tạo warning div...');
     // Thay confirm() bằng UI inline không chặn - hiển thị cảnh báo và tự chạy sau 3 giây
     const warning = document.createElement('div');
     warning.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff3cd;border:2px solid #ffc107;padding:20px;border-radius:8px;z-index:10000;max-width:500px;box-shadow:0 4px 6px rgba(0,0,0,0.3)';
@@ -90,7 +91,9 @@
       <button id="btn-bo-qua" style="background:#ffc107;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:bold">Bỏ qua ngay</button>
       <button id="btn-quay-lai" style="background:#6c757d;color:white;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;margin-left:10px">Quay lại điền</button>
     `;
+    console.log('[DEBUG] Append warning vào body...');
     document.body.appendChild(warning);
+    console.log('[DEBUG] Warning đã append, bắt đầu countdown...');
     
     // Đếm ngược 3 giây
     let countdown = 3;
