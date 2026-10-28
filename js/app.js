@@ -236,8 +236,14 @@
   }
 
   function dangNhap(){
-    const hs = $("in-maHS").value.trim();
-    const lop = $("in-maLop").value.trim();
+    let hs = $("in-maHS").value.trim();
+    let lop = $("in-maLop").value.trim();
+    // Validation: cắt mã về đúng độ dài tối đa 12 ký tự
+    if(hs.length > 12) hs = hs.slice(0, 12);
+    if(lop.length > 12) lop = lop.slice(0, 12);
+    // Cập nhật lại input với giá trị đã cắt
+    $("in-maHS").value = hs;
+    $("in-maLop").value = lop;
     if(!hs){ baoLoi("btn-vao", "Cần nhập mã học sinh (ví dụ A001)."); return; }
     maHS = hs.toUpperCase(); maLop = lop.toUpperCase() || maLop;
     ENG.vaoLop(maHS, maLop);
