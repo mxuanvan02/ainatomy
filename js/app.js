@@ -66,12 +66,19 @@
      DA_CHOT. Còn việc ghi boQua thì vẫn mượn M3().boQuaCoY(ma) được cho mọi mã bài, vì hàm đó
      chỉ cần mã để ghi nhật ký — engine.js đếm boQua theo `loai:"duDoan"` chứ không theo module. */
   function epDuDoan(ma, hostId, chay, daChot){
+    console.log('[DEBUG] epDuDoan() bắt đầu với ma=' + ma);
     const host = $(hostId);
     const M = M3();
     const daChotRoi = daChot ? !!daChot() : (M ? M.daChotRoi(ma) : true);
     const daBoQuaRoi = M ? M.daBoQua(ma) : true;
+    console.log('[DEBUG] host exists:', !!host, 'children:', host ? host.children.length : 0);
+    console.log('[DEBUG] daChotRoi:', daChotRoi, 'daBoQuaRoi:', daBoQuaRoi);
     // ô chưa dựng, hoặc đã chốt, hoặc đã chủ động bỏ qua -> chạy ngay, không hỏi lại lần hai
-    if(!host || !host.children.length || daChotRoi || daBoQuaRoi){ chay(); return; }
+    if(!host || !host.children.length || daChotRoi || daBoQuaRoi){ 
+      console.log('[DEBUG] Gọi chay() ngay');
+      chay(); 
+      return; 
+    }
     
     // Thay confirm() bằng UI inline không chặn - hiển thị cảnh báo và tự chạy sau 3 giây
     const warning = document.createElement('div');
