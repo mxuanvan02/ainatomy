@@ -72,20 +72,49 @@
     const daBoQuaRoi = M ? M.daBoQua(ma) : true;
     // ô chưa dựng, hoặc đã chốt, hoặc đã chủ động bỏ qua -> chạy ngay, không hỏi lại lần hai
     if(!host || !host.children.length || daChotRoi || daBoQuaRoi){ chay(); return; }
-    const ok = confirm(
-        "Chưa chốt dự đoán cho bài này.\n\n"
-      + "Dự đoán TRƯỚC khi thấy kết quả là phần quan trọng nhất của bài: kết quả thật hiện ra\n"
-      + "sẽ cho thấy chỗ nào đang bị hiểu sai.\n\n"
-      + "· Bấm OK = BỎ QUA dự đoán (việc này được ghi vào nhật ký lớp).\n"
-      + "· Bấm Huỷ = quay lại điền dự đoán.");
-    if(ok){
+    
+    // Thay confirm() bằng UI inline không chặn - hiển thị cảnh báo và tự chạy sau 3 giây
+    const warning = document.createElement('div');
+    warning.style.cssText = 'position:fixed;top:50%;left:50%;transform:translate(-50%,-50%);background:#fff3cd;border:2px solid #ffc107;padding:20px;border-radius:8px;z-index:10000;max-width:500px;box-shadow:0 4px 6px rgba(0,0,0,0.3)';
+    warning.innerHTML = `
+      <h3 style="margin:0 0 10px 0;color:#856404">⚠️ Chưa chốt dự đoán</h3>
+      <p style="margin:0 0 10px 0">Dự đoán TRƯỚC khi thấy kết quả là phần quan trọng nhất của bài.</p>
+      <p style="margin:0 0 15px 0;color:#6c757d;font-size:14px">Tự động tiếp tục sau <span id="countdown">3</span> giây...</p>
+      <button id="btn-bo-qua" style="background:#ffc107;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;font-weight:bold">Bỏ qua ngay</button>
+      <button id="btn-quay-lai" style="background:#6c757d;color:white;border:none;padding:8px 16px;border-radius:4px;cursor:pointer;margin-left:10px">Quay lại điền</button>
+    `;
+    document.body.appendChild(warning);
+    
+    // Đếm ngược 3 giây
+    let countdown = 3;
+    const countdownEl = warning.querySelector('#countdown');
+    const interval = setInterval(() => {
+      countdown--;
+      if(countdownEl) countdownEl.textContent = countdown;
+      if(countdown <= 0){
+        clearInterval(interval);
+        document.body.removeChild(warning);
+        if(M) M.boQuaCoY(ma);
+        chay();
+      }
+    }, 1000);
+    
+    // Nút "Bỏ qua ngay"
+    warning.querySelector('#btn-bo-qua').onclick = () => {
+      clearInterval(interval);
+      document.body.removeChild(warning);
       if(M) M.boQuaCoY(ma);
       chay();
-      return;
-    }
-    host.scrollIntoView({ behavior:"smooth", block:"center" });
-    const o = host.querySelector("input[type=range], textarea, .chip");
-    if(o) o.focus();
+    };
+    
+    // Nút "Quay lại điền"
+    warning.querySelector('#btn-quay-lai').onclick = () => {
+      clearInterval(interval);
+      document.body.removeChild(warning);
+      host.scrollIntoView({ behavior:"smooth", block:"center" });
+      const o = host.querySelector("input[type=range], textarea, .chip");
+      if(o) o.focus();
+    };
   }
 
   /* BT-01 — đáp án ĐO ĐƯỢC: so bốn đặc trưng của hai ảnh CÙNG nhãn, CÙNG loại đối tượng,
