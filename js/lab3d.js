@@ -213,7 +213,7 @@
       const [x, y, z] = toaDo(d, state.chuan);
       const mau = d.light === "ngay" ? M.vang : M.nhan;
       const mat = new THREE.MeshBasicMaterial({ color: mau });
-      const mesh = new THREE.Mesh(d.nhan === 1 ? geoMui : geoKhong, mat);
+      const mesh = new THREE.Mesh(layGeo(d.nhan), mat);
       mesh.position.set(x, y, z);
       mesh.userData = {
         kind: d.kind, light: d.light, nhan: d.nhan,
