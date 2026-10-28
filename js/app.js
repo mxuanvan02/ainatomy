@@ -95,13 +95,21 @@
     document.body.appendChild(warning);
     console.log('[DEBUG] Warning đã append, bắt đầu countdown...');
     
+    // Kiểm tra ngay sau khi append
+    console.log('[DEBUG] Kiểm tra warning trong DOM:', document.body.contains(warning));
+    console.log('[DEBUG] Warning offsetHeight:', warning.offsetHeight);
+    
     // Đếm ngược 3 giây
     let countdown = 3;
     const countdownEl = warning.querySelector('#countdown');
+    console.log('[DEBUG] countdownEl exists:', !!countdownEl);
+    
     const interval = setInterval(() => {
+      console.log('[DEBUG] Countdown tick:', countdown);
       countdown--;
       if(countdownEl) countdownEl.textContent = countdown;
       if(countdown <= 0){
+        console.log('[DEBUG] Countdown hết, remove warning và gọi chay()');
         clearInterval(interval);
         document.body.removeChild(warning);
         if(M) M.boQuaCoY(ma);
