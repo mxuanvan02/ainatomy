@@ -1,0 +1,59 @@
+<!DOCTYPE html>
+<html>
+<head>
+    <meta charset="UTF-8">
+    <title>Test hàm hoc()</title>
+</head>
+<body>
+    <h1>Test hàm hoc() - Perceptron</h1>
+    <div id="output"></div>
+    
+    <script src="js/lab.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        function log(msg) {
+            console.log(msg);
+            output.innerHTML += msg + '<br>';
+        }
+        
+        log('Bắt đầu test...');
+        
+        // Tạo dữ liệu
+        log('Tạo dữ liệu...');
+        const train = MX_LAB.taoDuLieu({ soLuong: 60, lechAnhSang: true, seed: 20261006 });
+        log(`Đã tạo ${train.length} mẫu train`);
+        
+        // Tạo model
+        log('Tạo model...');
+        const model = new MX_LAB.Perceptron();
+        log('Đã tạo model');
+        
+        // Chuẩn bị dữ liệu
+        const duLieu = train.map(d => ({ f: d.f, nhan: d.nhan }));
+        log(`Đã chuẩn bị ${duLieu.length} mẫu`);
+        
+        // Test với 1 epoch trước
+        log('Test với 1 epoch...');
+        const start1 = Date.now();
+        model.hoc({ duLieu: duLieu, vong: 1 });
+        const elapsed1 = Date.now() - start1;
+        log(`✓ 1 epoch: ${elapsed1}ms`);
+        
+        // Test với 10 epochs
+        log('Test với 10 epochs...');
+        const start2 = Date.now();
+        model.hoc({ duLieu: duLieu, vong: 10 });
+        const elapsed2 = Date.now() - start2;
+        log(`✓ 10 epochs: ${elapsed2}ms`);
+        
+        // Test với 60 epochs (như thật)
+        log('Test với 60 epochs...');
+        const start3 = Date.now();
+        model.hoc({ duLieu: duLieu, vong: 60 });
+        const elapsed3 = Date.now() - start3;
+        log(`✓ 60 epochs: ${elapsed3}ms`);
+        
+        log('=== HOÀN TẤT ===');
+    </script>
+</body>
+</html>

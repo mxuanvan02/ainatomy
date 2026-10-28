@@ -1,0 +1,142 @@
+<!DOCTYPE html>
+<html lang="vi">
+<head>
+    <meta charset="UTF-8">
+    <title>Debug labHuanLuyen</title>
+    <style>
+        body { font-family: monospace; padding: 20px; }
+        .log { margin: 5px 0; }
+        .error { color: red; }
+        .success { color: green; }
+    </style>
+</head>
+<body>
+    <h1>Debug labHuanLuyen</h1>
+    <div id="output"></div>
+    
+    <script src="js/lab.js"></script>
+    <script src="js/engine.js"></script>
+    <script src="js/muc3.js"></script>
+    <script>
+        const output = document.getElementById('output');
+        function log(msg, type = '') {
+            console.log(msg);
+            const div = document.createElement('div');
+            div.className = 'log ' + type;
+            div.textContent = msg;
+            output.appendChild(div);
+        }
+        
+        // Mock dependencies
+        const $ = (id) => document.getElementById(id);
+        const maHS = 'TEST001';
+        const pct = (x) => x===null||x===undefined ? "—" : Math.round(x*100) + "%";
+        const esc = (s) => String(s).replace(/[&<>"']/g, c => ({"&":"&amp;","<":"&lt;",">":"&gt;",'"':"&quot;","'":"&#39;"}[c]));
+        
+        // Create mock elements
+        ['kq-train', 'kq-ngay', 'kq-dem', 'bar-dem', 'bar-ngay', 'lab-muc3-bt06'].forEach(id => {
+            const el = document.createElement('div');
+            el.id = id;
+            document.body.appendChild(el);
+        });
+        
+        // Mock lab object
+        const lab = {
+            model: null,
+            train: null,
+            testNgay: null,
+            testDem: null,
+            kqTrain: null,
+            kqNgay: null,
+            kqDem: null,
+            kqDemC2: null
+        };
+        
+        const m3 = { bt03: null, bt06: null };
+        
+        function labBuoc(step) {
+            log(`labBuoc(${step})`);
+        }
+        
+        // Copy labHuanLuyen function
+        function labHuanLuyen(){
+            log('Bắt đầu labHuanLuyen()');
+            
+            log('Tạo model Perceptron...');
+            lab.model = new LAB.Perceptron();
+            log('✓ Đã tạo model');
+            
+            log('Chuẩn bị dữ liệu...');
+            const duLieu = lab.train.map(d=>({ f: d.f, nhan: d.nhan }));
+            log(`✓ Đã chuẩn bị ${duLieu.length} mẫu`);
+            
+            log('Gọi hoc()...');
+            const start = Date.now();
+            lab.model.hoc({ duLieu: duLieu, vong: LAB.EPOCHS });
+            log(`✓ hoc() hoàn thành trong ${Date.now() - start}ms`);
+            
+            log('Kiểm tra trên train...');
+            lab.kqTrain = LAB.kiemTra(lab.model, lab.train);
+            log(`✓ kqTrain: ${pct(lab.kqTrain.doChinhXac)}`);
+            
+            log('Kiểm tra trên testNgay...');
+            lab.kqNgay = LAB.kiemTra(lab.model, lab.testNgay);
+            log(`✓ kqNgay: ${pct(lab.kqNgay.doChinhXac)}`);
+            
+            log('Kiểm tra trên testDem...');
+            lab.kqDem = LAB.kiemTra(lab.model, lab.testDem);
+            log(`✓ kqDem: ${pct(lab.kqDem.doChinhXac)}`);
+            
+            log('Cập nhật UI...');
+            $("kq-train").textContent = pct(lab.kqTrain.doChinhXac);
+            $("kq-ngay").textContent = pct(lab.kqNgay.doChinhXac);
+            $("kq-dem").textContent = pct(lab.kqDem.doChinhXac);
+            $("bar-dem").style.width = Math.round(lab.kqDem.doChinhXac*100)+"%";
+            $("bar-ngay").style.width = Math.round(lab.kqNgay.doChinhXac*100)+"%";
+            log('✓ Đã cập nhật UI');
+            
+            log('Log sự kiện...');
+            ENG.logSuKien(maHS, { loai:"huanLuyen", cheDo:"lech", doChinhXacTrain: lab.kqTrain.doChinhXac, ngay: lab.kqNgay.doChinhXac, dem: lab.kqDem.doChinhXac });
+            log('✓ Đã log sự kiện');
+            
+            log('Gọi M3().cham()...');
+            if(m3.bt03 && window.MX_MUC3) {
+                window.MX_MUC3.cham(m3.bt03);
+                log('✓ Đã gọi M3().cham()');
+            } else {
+                log('⊘ Bỏ qua M3().cham() (không có bt03 hoặc MX_MUC3)');
+            }
+            
+            log('Gọi labBuoc(3)...');
+            labBuoc(3);
+            log('✓ Đã gọi labBuoc(3)');
+            
+            log('Tạo BT-06...');
+            m3.bt06 = window.MX_MUC3 ? window.MX_MUC3.mo("BT-06", $("lab-muc3-bt06"), () => ({
+                so: lab.kqDemC2 ? lab.kqDemC2.doChinhXac : null
+            })) : null;
+            log('✓ Đã tạo BT-06');
+            
+            log('=== HOÀN TẤT ===', 'success');
+        }
+        
+        // Test
+        log('Khởi tạo dữ liệu...');
+        lab.train = LAB.taoDuLieu({ soLuong: 60, lechAnhSang: true, seed: 20261006 });
+        lab.testNgay = LAB.taoDuLieu({ soLuong: 10, light: "ngay", seed: 777 });
+        lab.testDem = LAB.taoDuLieu({ soLuong: 10, light: "dem", seed: 888 });
+        log(`✓ Đã tạo: ${lab.train.length} train, ${lab.testNgay.length} testNgay, ${lab.testDem.length} testDem`);
+        
+        log('Bắt đầu test labHuanLuyen()...');
+        const startTime = Date.now();
+        
+        try {
+            labHuanLuyen();
+            log(`Tổng thời gian: ${Date.now() - startTime}ms`, 'success');
+        } catch (e) {
+            log(`LỖI: ${e.message}`, 'error');
+            log(`Stack: ${e.stack}`, 'error');
+        }
+    </script>
+</body>
+</html>

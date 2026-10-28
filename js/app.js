@@ -1913,4 +1913,12 @@
     bind("dt-tiep", dtTiep);
     hien("v-home");
   });
+
+  // Validation mã HS: chặn nhập quá 12 ký tự (cả khi paste)
+  const inMaHS = $("in-maHS");
+  if(inMaHS){
+    inMaHS.addEventListener("input", function(){
+      if(this.value.length > 12) this.value = this.value.slice(0, 12);
+    });
+  }
 })();
