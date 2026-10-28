@@ -19,7 +19,7 @@
   "use strict";
 
   const LR = 0.25;        // tốc độ học
-  const EPOCHS = 60;      // số vòng lặp (đo thực nghiệm: hội tụ ổn định trên cả 2 chế độ dữ liệu)
+  const EPOCHS = 10;      // GIẢM TỪ 60 XUỐNG 10 ĐỂ TEST - nếu OK thì tăng lại
 
   /* ---------- Sinh ảnh tổng hợp (vẽ bằng canvas, không cần file ảnh/mạng) ---------- */
   // kind: 'mbh' (có mũ) | 'khong' (không mũ); light: 'ngay' | 'dem' | 'hoangHon'
