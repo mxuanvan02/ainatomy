@@ -237,7 +237,8 @@
           html += `<div class="card" style="background:var(--nen2);margin:10px 0">
             <p><b>${esc(bt.ten)}</b></p>
             <p class="chu2">${esc(bt.de)}</p>
-            <button class="btn" onclick="alert('${esc(bt.dapAn).replace(/'/g, "\\'")}')">Xem đáp án</button>
+            <button class="btn kt-xem-dap-an" type="button" data-answer="${esc(bt.dapAn)}">Xem đáp án</button>
+            <div class="kt-dap-an chu2" style="display:none;background:#e8f5e9;border-left:4px solid #2e7d32;padding:8px;margin-top:8px"></div>
             <div class="nho chu2" style="margin-top:8px"><b>Giải thích:</b> ${esc(bt.giaiThich)}</div>
           </div>`;
         });
@@ -250,7 +251,8 @@
           html += `<div class="card" style="background:#f3e5f5;border-left:4px solid #9c27b0;margin:10px 0">
             <p><b>${esc(bt.ten)}</b></p>
             <p class="chu2">${esc(bt.de)}</p>
-            <button class="btn" onclick="alert('${esc(bt.dapAn).replace(/'/g, "\\'")}')">Xem đáp án</button>
+            <button class="btn kt-xem-dap-an" type="button" data-answer="${esc(bt.dapAn)}">Xem đáp án</button>
+            <div class="kt-dap-an chu2" style="display:none;background:#e8f5e9;border-left:4px solid #2e7d32;padding:8px;margin-top:8px"></div>
             <div class="nho chu2" style="margin-top:8px"><b>Giải thích:</b> ${esc(bt.giaiThich)}</div>
           </div>`;
         });
@@ -260,6 +262,17 @@
     }
 
     box.innerHTML = html;
+    box.querySelectorAll(".kt-xem-dap-an").forEach(btn => {
+      btn.addEventListener("click", () => {
+        const answer = btn.getAttribute("data-answer") || "";
+        const out = btn.nextElementSibling;
+        if(!out) return;
+        const dangMo = out.style.display !== "none";
+        out.textContent = dangMo ? "" : "Đáp án: " + answer;
+        out.style.display = dangMo ? "none" : "block";
+        btn.textContent = dangMo ? "Xem đáp án" : "Ẩn đáp án";
+      });
+    });
   }
 
   function khoiTaoChonLop(){
