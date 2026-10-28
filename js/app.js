@@ -214,10 +214,31 @@
   // Export ra window để inline onclick trong HTML hoạt động
   window.hien = hien;
 
+  /* BÁO LỖI INLINE KHÔNG CHẶN — thay alert() trong các nhánh kiểm tra đầu vào.
+   * VÌ SAO: alert() là hộp thoại CHẶN (modal) — script dừng cho tới khi người dùng bấm.
+   * Trên máy chiếu/kiosk mà cửa sổ bị chặn popup hoặc trong bài kiểm tra tự động, hộp thoại
+   * không được trả lời → cả trang treo, đúng lỗi "bấm gì cũng không chạy" mà học sinh báo.
+   * Thay bằng khối chữ đỏ hiện dưới nút, tự ẩn sau 4 giây. Chuỗi thông báo là HẰNG SỐ
+   * của mã nguồn (không có dữ liệu người dùng) nên innerHTML ở đây không có vectơ XSS. */
+  function baoLoi(hostId, thongBao){
+    const host = $(hostId);
+    if(!host) return;
+    let o = $("app-bao-loi-" + hostId);
+    if(!o){
+      o = document.createElement("p");
+      o.id = "app-bao-loi-" + hostId;
+      o.style.cssText = "color:var(--sai);font-weight:bold;margin:8px 0";
+      host.insertAdjacentElement("afterend", o);
+    }
+    o.textContent = svgIco("triangle-alert") + " " + thongBao;
+    clearTimeout(o.__henGio);
+    o.__henGio = setTimeout(() => { o.textContent = ""; }, 4000);
+  }
+
   function dangNhap(){
     const hs = $("in-maHS").value.trim();
     const lop = $("in-maLop").value.trim();
-    if(!hs){ alert("Cần nhập mã học sinh (ví dụ A001)."); return; }
+    if(!hs){ baoLoi("btn-vao", "Cần nhập mã học sinh (ví dụ A001)."); return; }
     maHS = hs.toUpperCase(); maLop = lop.toUpperCase() || maLop;
     ENG.vaoLop(maHS, maLop);
     /* Gắn hàm ghi nhật ký lớp cho tầng Mức 3 (js/muc3.js). Làm ở đây vì chỉ app.js biết
@@ -814,18 +835,42 @@
       $("btn-xoa").onclick = ()=>{
         const ten = `soiai_SAO_LUU_truoc_khi_xoa_${Date.now()}.json`;
         taiFile(ENG.xuatJSON(), ten, "application/json");
-        const traLoi = prompt(
-            `ĐÃ TỰ ĐỘNG TẢI BẢN SAO LƯU VỀ MÁY:\n${ten}\n\n`
-          + `Hãy mở thử tệp đó, thấy có dữ liệu, RỒI mới gõ chữ XÓA vào ô dưới đây.\n\n`
-          + `Lệnh này xoá nhật ký của CẢ LỚP trên máy này và KHÔNG LẤY LẠI ĐƯỢC.`);
-        if(traLoi === null) return;
-        const chuan = traLoi.trim().toUpperCase()
-                        .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
-                        .replace(/Đ/g, "D");
-        if(chuan === "XOA"){ ENG.xoaHet(); veBaoCao(); }
-        else if(traLoi.trim() !== ""){
-          alert("Chưa xoá: phải gõ đúng chữ XÓA. Bản sao lưu vẫn đã được tải về máy.");
+        /* UI GÕ CHỮ XÁC NHẬN INLINE (thay prompt()) — prompt() là hộp thoại CHẶN:
+         * script dừng tới khi được trả lời, và trong môi trường kiosk/chặn popup nó
+         * không bao giờ được trả lời → cả trang treo, đúng lỗi "bấm gì cũng không chạy"
+         * mà học sinh báo. Khối này hiện ngay dưới nút, gồm: tên bản sao lưu vừa tải,
+         * ô nhập chữ và hai nút. Nhập đúng chữ XÓA (bỏ dấu/không dấu đều nhận) mới xoá. */
+        let o = $("xoa-xac-nhan");
+        if(!o){
+          o = document.createElement("div");
+          o.id = "xoa-xac-nhan";
+          o.className = "card";
+          o.style.cssText = "background:#fff3cd;border-left:4px solid #ffc107;padding:12px;margin:12px 0";
+          $("bc-lop").appendChild(o);
         }
+        o.style.display = "";
+        o.innerHTML =
+          `<p class="nho"><b>ĐÃ TỰ ĐỘNG TẢI BẢN SAO LƯU VỀ MÁY:</b><br><code>${esc(ten)}</code></p>
+           <p class="nho chu2">Hãy mở thử tệp đó, thấy có dữ liệu, RỒI mới gõ chữ XÓA vào ô dưới đây.
+           Lệnh này xoá nhật ký của CẢ LỚP trên máy này và KHÔNG LẤY LẠI ĐƯỢC.</p>
+           <p><input id="xoa-chu" placeholder="Gõ chữ XÓA để xác nhận" autocomplete="off"
+              style="max-width:280px;margin-right:8px">
+              <button class="btn" type="button" id="xoa-nut">Xoá nhật ký lớp</button>
+              <button class="btn" type="button" id="xoa-huy">Huỷ</button></p>
+           <p class="nho" id="xoa-loi" style="color:var(--sai);font-weight:bold;margin:4px 0"></p>`;
+        $("xoa-chu").focus();
+        $("xoa-huy").onclick = ()=>{ o.style.display = "none"; o.innerHTML = ""; };
+        $("xoa-nut").onclick = ()=>{
+          const traLoi = ($("xoa-chu").value || "").trim().toUpperCase()
+                          .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
+                          .replace(/Đ/g, "D");
+          if(traLoi === "XOA"){
+            ENG.xoaHet(); veBaoCao();
+            o.style.display = "none"; o.innerHTML = "";
+          } else if(traLoi !== ""){
+            $("xoa-loi").textContent = "Chưa xoá: phải gõ đúng chữ XÓA. Bản sao lưu vẫn đã được tải về máy.";
+          }
+        };
       };
     } else {
       bcL.innerHTML = '<p class="chu2 nho">Chưa có dữ liệu lớp trên máy này.</p>';
@@ -1659,7 +1704,7 @@
   function nmSinh(){
     const N = window.MX_NHAMAY_TEXT;
     const p = $("nm-prompt").value.trim();
-    if(!p){ alert("Cần viết câu hỏi trước."); return; }
+    if(!p){ baoLoi("nm-sinh", "Cần viết câu hỏi trước."); return; }
     const t0 = performance.now();
     nmItem = N.ungDung(p, { seed: (Date.now() % 99991) + 1 });
     const ms = (performance.now() - t0);
@@ -1705,7 +1750,7 @@
   }
 
   function nmPhanQuyet(coCanCu){
-    if(!nmItem){ alert("Cần sinh câu trả lời trước."); return; }
+    if(!nmItem){ baoLoi("nm-can-cu", "Cần sinh câu trả lời trước."); return; }
     const N = window.MX_NHAMAY_TEXT;
     const kq = N.chamUngDung(nmItem, { coCanCu });
     (coCanCu ? $("nm-can-cu") : $("nm-bia")).classList.add("chon");
