@@ -893,7 +893,12 @@
                           .normalize("NFD").replace(/[\u0300-\u036f]/g, "")
                           .replace(/Đ/g, "D");
           if(traLoi === "XOA"){
-            ENG.xoaHet(); veBaoCao();
+            ENG.xoaHet();
+            /* XÓA PHIÊN ĐĂNG NHẬP — sửa 29/10.
+             * Trước đây xóa dữ liệu nhưng giữ ainatomy_phien, nên app tự khôi phục
+             * mã HS và user vẫn đăng nhập. GV muốn xóa sạch thì phải xóa cả phiên. */
+            try{ localStorage.removeItem("ainatomy_phien"); }catch(e){}
+            veBaoCao();
             o.style.display = "none"; o.innerHTML = "";
           } else if(traLoi !== ""){
             $("xoa-loi").textContent = "Chưa xoá: phải gõ đúng chữ XÓA. Bản sao lưu vẫn đã được tải về máy.";
