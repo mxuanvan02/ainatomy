@@ -291,7 +291,7 @@
   function labBuoc(b){
     [1,2,3,4].forEach(i=>{
       $("lab-b"+i).style.display = (i===b) ? "" : "none";
-      const s = $("st-"+i); if(s) s.className = "step" + (i<=b?" on":"");
+      const s = $("st-"+i); if(s) s.className = "step" + (i===b?" on":"");
     });
   }
 
