@@ -1409,13 +1409,13 @@
       yccd:"10.D2.1", view:"v-lab3d", trangThai:"co" },
     { id:4, so:"TRẠM 4", ten:"KIỂM ĐỊNH", anDuy:"KCS — kiểm tra chất lượng",
       moTa:"Thử mô hình trên bộ dữ liệu MỚI mà nó chưa từng học. Tách riêng ban ngày và ban đêm để thấy thiên kiến.",
-      yccd:"10.D2.2 · 10.C4.1", view:"v-lab3d", trangThai:"co" },
+      yccd:"10.D2.2 · 10.C4.1", view:"v-pipe3d", trangThai:"co" },
     { id:5, so:"TRẠM 5", ten:"ỨNG DỤNG", anDuy:"xuất xưởng, dùng AI thật",
       moTa:"Đặt câu hỏi cho một hệ AI chạy ngay trong máy này, rồi tự kiểm định xem nó nói có căn cứ hay bịa.",
       yccd:"10.C2.MR2 · 10.C3.1 · 10.C3.2 · 10.B2.MR1", view:"nhamay5", trangThai:"co" },
     { id:6, so:"TRẠM 6", ten:"CON NGƯỜI KIỂM", anDuy:"KCS cuối + vòng phản hồi",
       moTa:"Con người rà soát đầu ra và chịu trách nhiệm. Dữ liệu mới từ đây quay vòng về Trạm 0.",
-      yccd:"10.A1.1 · 10.A1.2 · 10.D1.1 · 10.D2.1", view:"v-pipe3d", trangThai:"co" }
+      yccd:"10.A1.1 · 10.A1.2 · 10.D1.1 · 10.D2.1", view:"v-tinhhuong", trangThai:"co" }
   ];
   let nmTramDaMo = null;
 
