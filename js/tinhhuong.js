@@ -200,16 +200,31 @@
   const TAT_CA = NHOM_RUI_RO.concat(NHOM_VI_PHAM, NHOM_YEU_CAU);
 
   /* ================= GIAO DIỆN: dựng bằng createElement + textContent =================
-   * Không dùng innerHTML cho bất kì nội dung nào trong tệp này. */
+   * Không dùng innerHTML cho bất kì nội dung nào trong tệp này.
+   * Accordion: chỉ hiện 1 tình huống tại một thời điểm để HS không bị choáng. */
   function veTinhHuong(host, onCham){
     host.textContent = "";
-    TAT_CA.forEach((q, qi) => {
-      const box = document.createElement("div");
-      box.className = "card";
-      box.style.background = "var(--nen2)";
+    let currentIndex = 0;
+    const container = document.createElement("div");
+    const box = document.createElement("div");
+    box.className = "card";
+    box.style.background = "var(--nen2)";
+    container.appendChild(box);
+
+    // Progress bar
+    const progress = document.createElement("p");
+    progress.className = "nho chu2";
+    progress.style.textAlign = "center";
+    progress.style.marginBottom = "12px";
+    container.insertBefore(progress, box);
+
+    function renderCurrent(){
+      const q = TAT_CA[currentIndex];
+      progress.textContent = "Câu " + (currentIndex + 1) + " / " + TAT_CA.length;
+      box.textContent = "";
 
       const h = document.createElement("h3");
-      h.textContent = "Tình huống " + (qi + 1) + " · " + q.yccd;
+      h.textContent = "Tình huống " + (currentIndex + 1) + " · " + q.yccd;
       box.appendChild(h);
 
       const t = document.createElement("p");
@@ -227,17 +242,6 @@
       chips.className = "chips";
       const fb = document.createElement("div");
 
-      /* XÁO VỊ TRÍ PHƯƠNG ÁN (06/10) — đây là nơi mẹo lộ rõ nhất trong cả app.
-       * ĐO ĐƯỢC trên chính dữ liệu repo: đáp án là "b" ở 11/12 tình huống, và "b" đồng
-       * thời là phương án DÀI NHẤT ở 11/12 -> học sinh không cần đọc, cứ bấm B là đạt 92%.
-       * Ba thứ phải sửa CÙNG LÚC, thiếu một là công sức đổ sông:
-       *   (1) xáo thứ tự trước khi vẽ;
-       *   (2) chữ cái in ra phải theo VỊ TRÍ sau khi xáo (chuCai(i)), KHÔNG theo l.id —
-       *       vì l.id là nhãn cố định trong dữ liệu, in nó ra thì đáp án vẫn luôn là chữ B;
-       *   (3) dòng "Phương án đúng: B" ở cuối phải đổi sang chữ cái theo VỊ TRÍ, nếu không
-       *       học sinh đọc được đáp án đúng là chữ gì trong khi trên màn hình nó nằm chỗ khác.
-       * Chi tiết và giới hạn (xáo vị trí KHÔNG diệt được mẹo "chọn câu dài nhất"):
-       * js/engine.js hàm xaoLuaChon, và cổng G12 trong tools/nghiem_thu.py. */
       const ds = window.MX_ENGINE.xaoLuaChon(q.luaChon, q.id);
       const viTriDapAn = ds.findIndex(x => x.id === q.dapAn);
       ds.forEach((l, i) => {
@@ -251,11 +255,6 @@
           fb.textContent = "";
           const p1 = document.createElement("p");
           const b1 = document.createElement("b");
-          /* KHÔNG dùng chữ "đúng/sai" làm nhãn năng lực: Khung 2422 phần VI quy định
-           * không xác lập đầu điểm riêng cho nội dung giáo dục AI. Phản hồi ở đây là
-           * xác nhận đáp án của một câu hỏi kiến thức, không phải điểm của học sinh. */
-          /* Chuỗi hoàn toàn tĩnh nên đổi sang innerHTML là an toàn; phần giải thích động
-           * vẫn được thêm bằng textNode riêng ở dòng dưới, không đi qua innerHTML. */
           b1.innerHTML = dapUng ? svgIco("check") + " Đáp án đúng. "
                                  : svgIco("x") + " Chưa phải đáp án đúng. ";
           p1.appendChild(b1);
@@ -272,10 +271,6 @@
           }
           const p3 = document.createElement("p");
           p3.className = "nho chu2";
-          /* Chữ cái theo VỊ TRÍ đã xáo, không theo q.dapAn (nhãn cố định trong dữ liệu).
-           * Nếu in q.dapAn.toUpperCase() thì sau khi xáo, dòng này chỉ vào một ô SAI trên
-           * màn hình — học sinh sẽ thấy "phương án đúng: B" trong khi ô được tô viền xanh
-           * là ô D. Lỗi kiểu này tự nó dạy học sinh điều sai. */
           p3.textContent = "Phương án đúng: " + window.MX_ENGINE.chuCai(viTriDapAn)
                          + " · Yêu cầu cần đạt " + q.yccd + " · chủ đề " + q.chuDe;
           fb.appendChild(p3);
@@ -288,8 +283,36 @@
 
       box.appendChild(chips);
       box.appendChild(fb);
-      host.appendChild(box);
-    });
+
+      // Navigation buttons
+      const nav = document.createElement("div");
+      nav.style.display = "flex";
+      nav.style.justifyContent = "space-between";
+      nav.style.marginTop = "16px";
+      nav.style.gap = "8px";
+
+      const prevBtn = document.createElement("button");
+      prevBtn.type = "button";
+      prevBtn.className = "btn";
+      prevBtn.textContent = "← Câu trước";
+      prevBtn.disabled = currentIndex === 0;
+      prevBtn.onclick = () => { currentIndex--; renderCurrent(); };
+
+      const nextBtn = document.createElement("button");
+      nextBtn.type = "button";
+      nextBtn.className = "btn chinh";
+      nextBtn.textContent = currentIndex === TAT_CA.length - 1 ? "Hoàn thành ✓" : "Câu tiếp theo →";
+      nextBtn.onclick = () => {
+        if(currentIndex < TAT_CA.length - 1){ currentIndex++; renderCurrent(); }
+      };
+
+      nav.appendChild(prevBtn);
+      nav.appendChild(nextBtn);
+      box.appendChild(nav);
+    }
+
+    renderCurrent();
+    host.appendChild(container);
   }
 
   /** Danh sách 5 YCCĐ mà tệp này phủ — dùng cho báo cáo và bản đồ năng lực. */

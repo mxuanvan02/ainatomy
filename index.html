@@ -206,9 +206,10 @@
           <div class="kpi"><div class="so ok" id="kq-ngay">—</div><div class="nhan">ảnh kiểm thử BAN NGÀY</div></div>
           <div class="kpi"><div class="so ko" id="kq-dem">—</div><div class="nhan">ảnh kiểm thử BAN ĐÊM</div></div>
         </div>
-        <p>Ban ngày: <span class="bar" style="display:inline-block;width:60%"><i id="bar-ngay" style="width:0"></i></span></p>
-        <p>Ban đêm: <span class="bar" style="display:inline-block;width:60%"><i id="bar-dem" style="width:0;background:var(--sai)"></i></span></p>
+        <p>Ban ngày: <span class="bar" style="display:inline-block;width:60%"><i id="bar-ngay" style="width:0"></i></span> <b id="pct-ngay" style="margin-left:8px">—</b></p>
+        <p>Ban đêm: <span class="bar" style="display:inline-block;width:60%"><i id="bar-dem" style="width:0;background:var(--sai)"></i></span> <b id="pct-dem" style="margin-left:8px;color:var(--sai)">—</b></p>
         <p class="vang"><b>Mô hình báo "rất chính xác" nhưng lại sai gần hết vào ban đêm. Vì sao?</b></p>
+        <p class="nho chu2"><svg class="ic" aria-hidden="true"><use href="#i-lightbulb"/></svg> <b>Thiên kiến (bias)</b> là khi mô hình AI học không đều từ các nhóm dữ liệu khác nhau, dẫn đến kết quả kém chính xác cho nhóm bị thiếu dữ liệu.</p>
         <!-- BT-06 Mức 3: dự đoán tỉ lệ ban đêm SAU cân bằng, TRƯỚC khi bấm nút cân bằng -->
         <div id="lab-muc3-bt06"></div>
         <button class="btn" id="btn-sosanh"><svg class="ic" aria-hidden="true"><use href="#i-scale"/></svg>Thử lại với bộ dữ liệu CÂN BẰNG ngày/đêm </button>
@@ -275,9 +276,11 @@
 
       <p>
         <button class="btn chinh" id="dt-nop" disabled>Gửi câu trả lời</button>
-        <button class="btn" id="dt-tiep" style="display:none" aria-label="Xem kết quả"></button>
       </p>
       <div id="dt-kq" class="phanhoi" style="display:none"></div>
+      <p style="margin-top:12px">
+        <button class="btn" id="dt-tiep" style="display:none" aria-label="Xem kết quả"></button>
+      </p>
     </div>
 
     <div class="card">

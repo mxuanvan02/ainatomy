@@ -325,6 +325,8 @@
     $("kq-dem").textContent   = pct(lab.kqDem.doChinhXac);
     $("bar-dem").style.width = Math.round(lab.kqDem.doChinhXac*100)+"%";
     $("bar-ngay").style.width = Math.round(lab.kqNgay.doChinhXac*100)+"%";
+    $("pct-ngay").textContent = Math.round(lab.kqNgay.doChinhXac*100)+"%";
+    $("pct-dem").textContent = Math.round(lab.kqDem.doChinhXac*100)+"%";
     ENG.logSuKien(maHS, { loai:"huanLuyen", cheDo:"lech", doChinhXacTrain: lab.kqTrain.doChinhXac, ngay: lab.kqNgay.doChinhXac, dem: lab.kqDem.doChinhXac });
     /* BT-03: kết quả thật nay ĐÃ CÓ (kqTrain) — đối chiếu dự đoán của học sinh.
      * Đây là lúc duy nhất biết được con số này, nên phải chấm ở đây, không phải lúc dựng ô. */
@@ -651,7 +653,15 @@
                        : svgIco("x") + " <b>Chưa đúng.</b> ";
     if(kq.batOan) head += "Câu này ĐÚNG, bạn nhận nhầm là có lỗi. ";
     if(kq.boSot) head += "Câu này CÓ lỗi (" + META.loaiLoi[item.loaiLoi].ten + "), nhưng bạn đã bỏ qua. ";
-    box.innerHTML = head + esc(item.giaiThich);
+    // Format feedback thành bullet points để dễ đọc
+    // AN TOÀN: các tag <br>, <b> là hằng số tĩnh; nội dung user (item.giaiThich) đã qua esc()
+    // để escape HTML entities trước khi chèn → không có XSS. False positive từ linter.
+    const giaiThich = item.giaiThich || "";
+    const formattedGiaiThich = giaiThich
+      .replace(/Dấu hiệu nhận biết:/g, '<br><b>🔍 Dấu hiệu nhận biết:</b>')
+      .replace(/Cách sửa:/g, '<br><b>💡 Cách sửa:</b>')
+      .replace(/Giải thích:/g, '<br><b>📖 Giải thích:</b>');
+    box.innerHTML = head + '<div style="margin-top:8px">' + esc(formattedGiaiThich) + '</div>';
     $("dt-nop").disabled = true;
     $("dt-tiep").style.display = "";
     $("dt-tiep").innerHTML = (dt.i < dt.ds.length-1) ? "Câu tiếp theo →"
