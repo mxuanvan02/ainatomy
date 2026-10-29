@@ -1475,6 +1475,7 @@
       if(t.view === "v-lab")   { hien("v-lab"); labBuoc(1); }
       if(t.view === "v-lab3d") lab3dMo();
       if(t.view === "v-pipe3d") pipe3dMo();
+      if(t.view === "v-tinhhuong") thMo();
     };
     nd.appendChild(b);
   }
