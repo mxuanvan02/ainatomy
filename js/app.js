@@ -246,6 +246,14 @@
     $("in-maLop").value = lop;
     if(!hs){ baoLoi("btn-vao", "Cần nhập mã học sinh (ví dụ A001)."); return; }
     maHS = hs.toUpperCase(); maLop = lop.toUpperCase() || maLop;
+    /* NHỚ NGƯỜI ĐANG HỌC QUA LƯỢT TẢI LẠI (29/10).
+     * Trước đây F5 là mất đăng nhập: nhật ký vẫn còn trong localStorage nhưng app quên
+     * mã HS, nên học sinh thấy lại form trống và phải gõ lại mã. Trong phòng lab, F5
+     * xảy ra thường xuyên (máy treo, bấm nhầm). Lưu mã vào localStorage để khôi phục;
+     * KHÔNG lưu họ tên — app chỉ dùng mã ẩn danh theo Luật 91/2025/QH15. */
+    try{
+      localStorage.setItem("ainatomy_phien", JSON.stringify({ hs: maHS, lop: maLop }));
+    }catch(e){ /* chế độ riêng tư chặn localStorage: bỏ qua, đăng nhập vẫn dùng được */ }
     ENG.vaoLop(maHS, maLop);
     /* Gắn hàm ghi nhật ký lớp cho tầng Mức 3 (js/muc3.js). Làm ở đây vì chỉ app.js biết
      * `maHS` và có `ENG`. muc3.js cố ý không tự gọi ENG để không phụ thuộc thứ tự nạp
@@ -734,7 +742,7 @@
       <div class="grid g3">
         <div class="kpi"><div class="so">${th.dauTruong.tong}</div><div class="nhan">câu đã trả lời</div></div>
         <div class="kpi"><div class="so">${pct(th.dauTruong.tiLe)}</div><div class="nhan">mức độ đáp ứng<br><span class="nho chu2">(minh chứng, không phải điểm)</span></div></div>
-        <div class="kpi"><div class="so">${th.lab.tong}</div><div class="nhan">nhiệm vụ phòng lab</div></div>
+        <div class="kpi"><div class="so">${th.lab.tong}</div><div class="nhan">câu kiểm định phòng lab</div></div>
       </div>
       ${ddDong}
       <h3>Khả năng phát hiện theo từng loại lỗi AI</h3>`;
@@ -810,11 +818,12 @@
           + (ddl.boQua ? ` · <b>${ddl.boQua}</b> lượt bấm chạy mà không chốt dự đoán` : ``)
           + `</p>`
         : `<p class="nho chu2"><b>Dự đoán trước khi chạy — cả lớp:</b> chưa có lượt nào.</p>`;
-      let h2 = `<p class="nho chu2">Tổng hợp ${lop.soHS} học sinh${maLop? " lớp "+esc(maLop):""} — dữ liệu ẩn danh, lưu cục bộ trên máy này.</p>
+      let h2 = `<h3>Báo cáo tổng hợp lớp (dành cho giáo viên)</h3>
+      <p class="nho chu2">Tổng hợp ${lop.soHS} học sinh${maLop? " lớp "+esc(maLop):""} — dữ liệu ẩn danh, lưu cục bộ trên máy này.</p>
       <div class="grid g3">
         <div class="kpi"><div class="so">${lop.dauTruong.tong}</div><div class="nhan">tổng câu đã trả lời</div></div>
         <div class="kpi"><div class="so">${pct(lop.tiLe)}</div><div class="nhan">tỉ lệ đúng cả lớp</div></div>
-        <div class="kpi"><div class="so">${lop.lab.tong}</div><div class="nhan">nhiệm vụ lab</div></div>
+        <div class="kpi"><div class="so">${lop.lab.tong}</div><div class="nhan">câu kiểm định cả lớp</div></div>
       </div>
       ${ddLop}
       <table><tr><th>Loại lỗi</th><th>Cả lớp phát hiện</th><th>Tỉ lệ phát hiện</th><th>Nhận nhầm</th></tr>`;
@@ -1931,6 +1940,29 @@
     bind("btn-lab-cauhoi", labCauHoi);
     bind("dt-nop", dtNop);
     bind("dt-tiep", dtTiep);
+
+    /* KHÔI PHỤC PHIÊN SAU F5 — xem chú thích ở dangNhap().
+     * Chỉ khôi phục mã ẩn danh đã lưu; nếu không có thì hiện form như cũ.
+     * Không tự gọi ENG.vaoLop nếu mã rỗng để tránh tạo bản ghi rác. */
+    try{
+      const raw = localStorage.getItem("ainatomy_phien");
+      if(raw){
+        const p = JSON.parse(raw);
+        if(p && p.hs){
+          maHS = String(p.hs).toUpperCase();
+          maLop = String(p.lop || "").toUpperCase();
+          ENG.vaoLop(maHS, maLop);
+          if(M3()) M3().ghiLog((ma, giaTri, suKien, kqBoSung) => ENG.logSuKien(maHS, {
+            loai:"duDoan", suKien: suKien || "chot", baiToan:ma,
+            kq: Object.assign({ duDoan: giaTri }, kqBoSung || {})
+          }));
+          $("lbl-user").textContent = `${maHS}${maLop? " · "+maLop : ""}`;
+          const formDangNhap = document.querySelector('#v-home .card[style*="background"]');
+          if(formDangNhap) formDangNhap.style.display = "none";
+        }
+      }
+    }catch(e){ /* dữ liệu hỏng hoặc chế độ riêng tư: bỏ qua, hiện form đăng nhập */ }
+
     hien("v-home");
   });
 
