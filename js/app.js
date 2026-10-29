@@ -263,6 +263,9 @@
       kq: Object.assign({ duDoan: giaTri }, kqBoSung || {})
     }));
     $("lbl-user").textContent = `${maHS}${maLop? " · "+maLop : ""}`;
+    // Ẩn form đăng nhập sau khi vào thành công
+    const formDangNhap = document.querySelector('#v-home .card[style*="background"]');
+    if(formDangNhap) formDangNhap.style.display = "none";
     hien("v-home");
   }
 
