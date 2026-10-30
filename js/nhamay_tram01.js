@@ -170,7 +170,7 @@
       }
     });
     
-    // BƯỚC 2: Xử lý slider tương tác
+    // BƯỚC 2: Xử lý slider tương tác - truyền giá trị số (0-100) để nội suy mượt
     const slider = $("t0-slider-sang");
     const anhTuongTac = $("t0-anh-tuongTac");
     if(slider && anhTuongTac){
@@ -183,10 +183,9 @@
           else label.textContent = "ban đêm";
         }
         
-        // Vẽ lại ảnh với điều kiện sáng mới
+        // Vẽ lại ảnh với điều kiện sáng mới - truyền GIÁ TRỊ SỐ để nội suy mượt
         const ctx = anhTuongTac.getContext("2d");
-        const light = giaTri > 50 ? "ngay" : "dem";
-        const canvasMoi = L().veXeMay(160, 120, "mbh", light, 99999);
+        const canvasMoi = L().veXeMay(160, 120, "mbh", giaTri, 99999);
         ctx.drawImage(canvasMoi, 0, 0);
         
         // Tính và hiển thị 4 đặc trưng

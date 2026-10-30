@@ -22,7 +22,8 @@
   const EPOCHS = 60;      // số vòng lặp (đo thực nghiệm: hội tụ ổn định trên cả 2 chế độ dữ liệu)
 
   /* ---------- Sinh ảnh tổng hợp (vẽ bằng canvas, không cần file ảnh/mạng) ---------- */
-  // kind: 'mbh' (có mũ) | 'khong' (không mũ); light: 'ngay' | 'dem' | 'hoangHon'
+  // kind: 'mbh' (có mũ) | 'khong' (không mũ); light: 'ngay' | 'dem' | 'hoangHon' | số (0-100)
+  // Nếu light là số: 0-30 = đêm, 30-70 = hoàng hôn, 70-100 = ngày (nội suy mượt)
   function veXeMay(w, h, kind, light, seed){
     const c = document.createElement("canvas");
     c.width = w; c.height = h;
@@ -30,27 +31,66 @@
     let s = seed >>> 0;
     const rnd = () => (s = (s*1664525 + 1013904223) >>> 0) / 4294967296;
 
-    // NỀN TRỜI: ngày = xanh sáng, hoàng hôn = cam đỏ, đêm = đen tối
+    // Chuyển đổi light số sang 3 trạng thái nếu cần
+    let lightMode = light;
+    let lightValue = 1.0; // 0 = tối hoàn toàn, 1 = sáng hoàn toàn
+    if(typeof light === "number"){
+      lightValue = light / 100;
+      if(light <= 30) lightMode = "dem";
+      else if(light <= 70) lightMode = "hoangHon";
+      else lightMode = "ngay";
+    }
+
+    // NỀN TRỜI: nội suy màu sắc mượt mà
     const grad = g.createLinearGradient(0, 0, 0, h*0.72);
-    if(light === "ngay"){
-      grad.addColorStop(0, "#87CEEB"); // xanh da trời sáng
-      grad.addColorStop(1, "#B0E0E6"); // xanh nhạt hơn ở đường chân trời
-    } else if(light === "hoangHon"){
-      grad.addColorStop(0, "#FF6B35"); // cam hoàng hôn
-      grad.addColorStop(0.5, "#F7931E"); // vàng cam
-      grad.addColorStop(1, "#FFD700"); // vàng rực
+    if(lightMode === "ngay"){
+      // Nội suy từ hoàng hôn sang ngày
+      const t = (lightValue - 0.7) / 0.3; // 0-1 trong vùng ngày
+      const r1 = Math.round(255 * (1-t) + 135 * t); // FF -> 87
+      const g1 = Math.round(107 * (1-t) + 206 * t); // 6B -> CE
+      const b1 = Math.round(53 * (1-t) + 235 * t);  // 35 -> EB
+      const r2 = Math.round(247 * (1-t) + 176 * t); // F7 -> B0
+      const g2 = Math.round(147 * (1-t) + 224 * t); // 93 -> E0
+      const b2 = Math.round(30 * (1-t) + 230 * t);  // 1E -> E6
+      grad.addColorStop(0, `rgb(${r1},${g1},${b1})`);
+      grad.addColorStop(1, `rgb(${r2},${g2},${b2})`);
+    } else if(lightMode === "hoangHon"){
+      // Nội suy từ đêm sang hoàng hôn
+      const t = (lightValue - 0.3) / 0.4; // 0-1 trong vùng hoàng hôn
+      const r1 = Math.round(10 * (1-t) + 255 * t);  // 0A -> FF
+      const g1 = Math.round(14 * (1-t) + 107 * t);  // 0E -> 6B
+      const b1 = Math.round(26 * (1-t) + 53 * t);   // 1A -> 35
+      const r2 = Math.round(26 * (1-t) + 247 * t);  // 1A -> F7
+      const g2 = Math.round(31 * (1-t) + 147 * t);  // 1F -> 93
+      const b2 = Math.round(46 * (1-t) + 30 * t);   // 2E -> 1E
+      grad.addColorStop(0, `rgb(${r1},${g1},${b1})`);
+      grad.addColorStop(0.5, `rgb(${Math.round(26*(1-t)+247*t)},${Math.round(31*(1-t)+147*t)},${Math.round(46*(1-t)+30*t)})`);
+      grad.addColorStop(1, `rgb(${r2},${g2},${b2})`);
     } else {
-      grad.addColorStop(0, "#0a0e1a"); // đen xanh
-      grad.addColorStop(1, "#1a1f2e"); // xám tối
+      // Đêm: nội suy độ sáng trong vùng đêm
+      const t = lightValue / 0.3; // 0-1 trong vùng đêm
+      const r1 = Math.round(5 * t + 10);
+      const g1 = Math.round(7 * t + 14);
+      const b1 = Math.round(13 * t + 26);
+      const r2 = Math.round(13 * t + 26);
+      const g2 = Math.round(18 * t + 31);
+      const b2 = Math.round(30 * t + 46);
+      grad.addColorStop(0, `rgb(${r1},${g1},${b1})`);
+      grad.addColorStop(1, `rgb(${r2},${g2},${b2})`);
     }
     g.fillStyle = grad;
     g.fillRect(0,0,w,h);
 
-    // MẶT ĐƯỜNG: ngày = xám sáng, hoàng hôn = xám tối, đêm = đen
-    g.fillStyle = light === "ngay" ? "#4a4f56" : (light === "hoangHon" ? "#2d2d2d" : "#0a0b0d");
+    // MẶT ĐƯỜNG: nội suy màu sắc
+    const roadR = lightMode === "ngay" ? Math.round(74 + (1-lightValue)*20) : (lightMode === "hoangHon" ? Math.round(45 + (1-lightValue)*30) : Math.round(10 + lightValue*20));
+    const roadG = lightMode === "ngay" ? Math.round(79 + (1-lightValue)*20) : (lightMode === "hoangHon" ? Math.round(45 + (1-lightValue)*30) : Math.round(11 + lightValue*20));
+    const roadB = lightMode === "ngay" ? Math.round(86 + (1-lightValue)*20) : (lightMode === "hoangHon" ? Math.round(45 + (1-lightValue)*30) : Math.round(13 + lightValue*20));
+    g.fillStyle = `rgb(${roadR},${roadG},${roadB})`;
     g.fillRect(0, h*0.72, w, h*0.28);
     // Đường kẻ giữa đường
-    g.strokeStyle = light === "ngay" ? "#fff" : (light === "hoangHon" ? "#888" : "#333");
+    const lineR = lightMode === "ngay" ? 255 : (lightMode === "hoangHon" ? Math.round(136 + (1-lightValue)*50) : Math.round(51 + lightValue*50));
+    const lineG = lineR, lineB = lineR;
+    g.strokeStyle = `rgb(${lineR},${lineG},${lineB})`;
     g.lineWidth = 3;
     g.setLineDash([10, 10]);
     g.beginPath();
@@ -67,12 +107,16 @@
     g.beginPath(); g.arc(cx-w*0.18, cy+h*0.15, h*0.15, 0, 7); g.fill();
     g.beginPath(); g.arc(cx+w*0.18, cy+h*0.15, h*0.15, 0, 7); g.fill();
     // Viền bánh xe
-    g.strokeStyle = light === "ngay" ? "#333" : (light === "hoangHon" ? "#1a1a1a" : "#000");
+    const wheelBorderR = lightMode === "ngay" ? 51 : (lightMode === "hoangHon" ? Math.round(26 + (1-lightValue)*30) : Math.round(lightValue*40));
+    const wheelBorderG = wheelBorderR, wheelBorderB = wheelBorderR;
+    g.strokeStyle = `rgb(${wheelBorderR},${wheelBorderG},${wheelBorderB})`;
     g.lineWidth = 3;
     g.beginPath(); g.arc(cx-w*0.18, cy+h*0.15, h*0.15, 0, 7); g.stroke();
     g.beginPath(); g.arc(cx+w*0.18, cy+h*0.15, h*0.15, 0, 7); g.stroke();
     // Nan hoa
-    g.strokeStyle = light === "ngay" ? "#666" : (light === "hoangHon" ? "#444" : "#222");
+    const spokeR = lightMode === "ngay" ? 102 : (lightMode === "hoangHon" ? Math.round(68 + (1-lightValue)*40) : Math.round(34 + lightValue*40));
+    const spokeG = spokeR, spokeB = spokeR;
+    g.strokeStyle = `rgb(${spokeR},${spokeG},${spokeB})`;
     g.lineWidth = 2;
     for(let i = 0; i < 4; i++){
       const angle = i * Math.PI / 2;
@@ -86,36 +130,57 @@
       g.stroke();
     }
 
-    // THÂN XE TO HƠN: ngày = đỏ tươi, hoàng hôn = đỏ tối, đêm = đỏ sẫm
-    g.fillStyle = light === "ngay" ? "#c41e3a" : (light === "hoangHon" ? "#8b1528" : "#5a0f1a");
+    // THÂN XE TO HƠN: nội suy màu đỏ theo điều kiện sáng
+    const bodyR = lightMode === "ngay" ? 196 : (lightMode === "hoangHon" ? Math.round(139 + (1-lightValue)*50) : Math.round(90 + lightValue*50));
+    const bodyG = lightMode === "ngay" ? 30 : (lightMode === "hoangHon" ? Math.round(21 + (1-lightValue)*20) : Math.round(15 + lightValue*10));
+    const bodyB = lightMode === "ngay" ? 58 : (lightMode === "hoangHon" ? Math.round(40 + (1-lightValue)*20) : Math.round(26 + lightValue*20));
+    g.fillStyle = `rgb(${bodyR},${bodyG},${bodyB})`;
     g.fillRect(cx-w*0.25, cy-h*0.05, w*0.50, h*0.18);
-    g.strokeStyle = light === "ngay" ? "#8a1528" : (light === "hoangHon" ? "#5a0f1a" : "#3a0a10");
+    const bodyBorderR = lightMode === "ngay" ? 138 : (lightMode === "hoangHon" ? Math.round(90 + (1-lightValue)*50) : Math.round(58 + lightValue*40));
+    const bodyBorderG = lightMode === "ngay" ? 21 : (lightMode === "hoangHon" ? Math.round(15 + (1-lightValue)*20) : Math.round(10 + lightValue*10));
+    const bodyBorderB = lightMode === "ngay" ? 40 : (lightMode === "hoangHon" ? Math.round(26 + (1-lightValue)*20) : Math.round(16 + lightValue*20));
+    g.strokeStyle = `rgb(${bodyBorderR},${bodyBorderG},${bodyBorderB})`;
     g.lineWidth = 2;
     g.strokeRect(cx-w*0.25, cy-h*0.05, w*0.50, h*0.18);
 
-    // NGƯỜI LÁI TO RÕ: ngày = xanh sáng, hoàng hôn = xanh tối, đêm = xanh sẫm
-    g.fillStyle = light === "ngay" ? "#2563eb" : (light === "hoangHon" ? "#1e40af" : "#1e3a8a");
+    // NGƯỜI LÁI TO RÕ: nội suy màu xanh theo điều kiện sáng
+    const driverR = lightMode === "ngay" ? 37 : (lightMode === "hoangHon" ? Math.round(30 + (1-lightValue)*20) : Math.round(30 + lightValue*10));
+    const driverG = lightMode === "ngay" ? 99 : (lightMode === "hoangHon" ? Math.round(64 + (1-lightValue)*30) : Math.round(58 + lightValue*20));
+    const driverB = lightMode === "ngay" ? 235 : (lightMode === "hoangHon" ? Math.round(175 + (1-lightValue)*40) : Math.round(138 + lightValue*30));
+    g.fillStyle = `rgb(${driverR},${driverG},${driverB})`;
     g.fillRect(cx-w*0.08, cy-h*0.32, w*0.16, h*0.30);
-    g.strokeStyle = light === "ngay" ? "#1e40af" : (light === "hoangHon" ? "#172554" : "#172554");
+    const driverBorderR = lightMode === "ngay" ? 30 : (lightMode === "hoangHon" ? Math.round(23 + (1-lightValue)*20) : Math.round(23 + lightValue*10));
+    const driverBorderG = lightMode === "ngay" ? 64 : (lightMode === "hoangHon" ? Math.round(37 + (1-lightValue)*20) : Math.round(37 + lightValue*10));
+    const driverBorderB = lightMode === "ngay" ? 175 : (lightMode === "hoangHon" ? Math.round(84 + (1-lightValue)*40) : Math.round(84 + lightValue*20));
+    g.strokeStyle = `rgb(${driverBorderR},${driverBorderG},${driverBorderB})`;
     g.lineWidth = 2;
     g.strokeRect(cx-w*0.08, cy-h*0.32, w*0.16, h*0.30);
 
-    // ĐẦU TO RÕ (tăng 1.6x): ngày = da sáng, hoàng hôn = da tối, đêm = da sẫm
-    g.fillStyle = light === "ngay" ? "#fbbf24" : (light === "hoangHon" ? "#d97706" : "#92400e");
+    // ĐẦU TO RÕ (tăng 1.6x): nội suy màu da theo điều kiện sáng
+    const headR = lightMode === "ngay" ? 251 : (lightMode === "hoangHon" ? Math.round(217 + (1-lightValue)*40) : Math.round(146 + lightValue*70));
+    const headG = lightMode === "ngay" ? 191 : (lightMode === "hoangHon" ? Math.round(119 + (1-lightValue)*50) : Math.round(64 + lightValue*50));
+    const headB = lightMode === "ngay" ? 36 : (lightMode === "hoangHon" ? Math.round(6 + (1-lightValue)*20) : Math.round(14 + lightValue*10));
+    g.fillStyle = `rgb(${headR},${headG},${headB})`;
     g.beginPath(); g.arc(cx, cy-h*0.40, h*0.10, 0, 7); g.fill();
-    g.strokeStyle = light === "ngay" ? "#d97706" : (light === "hoangHon" ? "#92400e" : "#78350f");
+    const headBorderR = lightMode === "ngay" ? 217 : (lightMode === "hoangHon" ? Math.round(146 + (1-lightValue)*50) : Math.round(120 + lightValue*30));
+    const headBorderG = lightMode === "ngay" ? 119 : (lightMode === "hoangHon" ? Math.round(14 + (1-lightValue)*40) : Math.round(64 + lightValue*30));
+    const headBorderB = lightMode === "ngay" ? 6 : (lightMode === "hoangHon" ? Math.round(14 + (1-lightValue)*10) : Math.round(14 + lightValue*10));
+    g.strokeStyle = `rgb(${headBorderR},${headBorderG},${headBorderB})`;
     g.lineWidth = 2;
     g.stroke();
 
-    // MŨ BẢO HIỂM RÕ RỆT (tăng 1.6x)
+    // MŨ BẢO HIỂM RÕ RỆT (tăng 1.6x): nội suy màu mũ theo điều kiện sáng
+    // Công thức đảm bảo: ngày (100%) = trắng 255, hoàng hôn (50%) = xám sáng 220, đêm (0%) = xám tối 150
     if(kind === "mbh"){
-      // Nửa tròn mũ: ngày = trắng, hoàng hôn = xám sáng, đêm = xám tối
-      g.fillStyle = light === "ngay" ? "#ffffff" : (light === "hoangHon" ? "#d1d5db" : "#9ca3af");
+      // Nội suy tuyến tính: helmet = 150 + lightValue * 105 (150→255)
+      const helmetVal = Math.round(150 + lightValue * 105);
+      g.fillStyle = `rgb(${helmetVal},${helmetVal},${helmetVal})`;
       g.beginPath(); g.arc(cx, cy-h*0.44, h*0.13, Math.PI, 0); g.fill();
       // Vành mũ
       g.fillRect(cx-h*0.13, cy-h*0.45, h*0.26, h*0.03);
-      // Viền mũ đậm
-      g.strokeStyle = light === "ngay" ? "#6b7280" : (light === "hoangHon" ? "#4b5563" : "#4b5563");
+      // Viền mũ đậm: nội suy từ 75 (đêm) → 128 (ngày)
+      const borderVal = Math.round(75 + lightValue * 53);
+      g.strokeStyle = `rgb(${borderVal},${borderVal},${borderVal})`;
       g.lineWidth = 3;
       g.beginPath(); g.arc(cx, cy-h*0.44, h*0.13, Math.PI, 0); g.stroke();
       g.strokeRect(cx-h*0.13, cy-h*0.45, h*0.26, h*0.03);
@@ -123,13 +188,16 @@
     return c;
   }
 
-  /* ---------- Trích đặc trưng (vùng đầu người lái) ---------- */
+  /* ---------- Trích đặc trưng (vùng đầu + mũ bảo hiểm) ---------- */
   function dacTrung(canvas){
     const g = canvas.getContext("2d");
     const W = canvas.width, H = canvas.height;
     const d = g.getImageData(0,0,W,H).data;
+    // VÙNG TRÍCH XUẤT: bao gồm cả mũ bảo hiểm (vẽ ở h*0.08-h*0.21) và đầu (h*0.15-h*0.35)
+    // Sửa 29/10: y0 từ H*0.24 → H*0.08 để bao gồm mũ, giúp đặc trưng ① (điểm ảnh rất sáng)
+    // phát hiện được mũ trắng ban ngày. Trước đó mũ nằm ngoài vùng trích xuất → ① luôn = 0.
     const x0=Math.floor(W*0.25), x1=Math.ceil(W*0.75);
-    const y0=Math.floor(H*0.24), y1=Math.ceil(H*0.45);
+    const y0=Math.floor(H*0.08), y1=Math.ceil(H*0.45);
     let n=0, ratSang=0, trungBinh=0, sumVung=0, dark=0, nWhole=0;
     for(let y=0;y<H;y++){
       for(let x=0;x<W;x++){
