@@ -252,23 +252,23 @@
         \column{0.32\textwidth}
         \begin{block}{Trạm 0-2: Dữ liệu}
             \begin{itemize}
-                \item \textbf{Trạm 0 — Nhập liệu:} Slider nội suy mượt (0-100\%)
+                \item \textbf{Trạm 0 — Nhập liệu:} Thanh trượt điều chỉnh ánh sáng (0-100\%)
                 \item \textbf{Trạm 1 — Dán nhãn:} Học sinh tự dán nhãn
-                \item \textbf{Trạm 2 — Huấn luyện:} Perceptron 4 đặc trưng
+                \item \textbf{Trạm 2 — Huấn luyện:} Mô hình học đơn giản với 4 đặc trưng
             \end{itemize}
         \end{block}
         \column{0.32\textwidth}
         \begin{block}{Trạm 3-4: Mô hình}
             \begin{itemize}
-                \item \textbf{Trạm 3 — Mô hình 3D:} Mặt phẳng quyết định
-                \item \textbf{Trạm 4 — Kiểm định:} Fault injection, phát hiện thiên kiến
+                \item \textbf{Trạm 3 — Mô hình 3D:} Mặt phẳng quyết định trong không gian ba chiều
+                \item \textbf{Trạm 4 — Kiểm định:} Cố tình làm hỏng trạm để phát hiện thiên kiến
             \end{itemize}
         \end{block}
         \column{0.32\textwidth}
         \begin{block}{Trạm 5-6: Ứng dụng}
             \begin{itemize}
-                \item \textbf{Trạm 5 — Ứng dụng:} Máy sinh n-gram, kiểm chứng đầu ra
-                \item \textbf{Trạm 6 — Con người kiểm:} 12 tình huống accordion
+                \item \textbf{Trạm 5 — Ứng dụng:} Máy sinh câu từ ngữ liệu có sẵn, kiểm chứng đầu ra
+                \item \textbf{Trạm 6 — Con người kiểm:} 12 tình huống dạng mở từng câu
             \end{itemize}
         \end{block}
     \end{columns}
@@ -322,8 +322,8 @@
         \begin{block}{Đặc điểm kỹ thuật}
             \begin{itemize}
                 \item \textbf{100\%} offline, không cần internet.
-                \item \textbf{7 trạm} Nhà máy AI với slider nội suy mượt.
-                \item \textbf{12 tình huống} accordion về đạo đức AI.
+                \item \textbf{7 trạm} Nhà máy AI với thanh trượt điều chỉnh ánh sáng.
+                \item \textbf{12 tình huống} dạng mở từng câu về đạo đức AI.
                 \item \textbf{Phủ 22/22} YCCĐ Tin học 10.
             \end{itemize}
         \end{block}
@@ -331,18 +331,18 @@
         \begin{block}{Công nghệ}
             \begin{itemize}
                 \item HTML5, CSS3, JavaScript thuần
-                \item Three.js cho mô phỏng 3D
-                \item Perceptron tự huấn luyện trong trình duyệt
+                \item Three.js cho hình ảnh ba chiều (3D)
+                \item Mô hình học đơn giản tự huấn luyện trong trình duyệt
             \end{itemize}
         \end{block}
         \column{0.5\textwidth}
         \begin{block}{Tính năng chính}
             \begin{itemize}
-                \item Slider điều kiện sáng (0-100\%)
-                \item Mô phỏng huấn luyện AI trực tiếp
+                \item Thanh trượt điều kiện sáng (0-100\%)
+                \item Mô phỏng huấn luyện mô hình học trực tiếp
                 \item Phát hiện thiên kiến dữ liệu
-                \item Kiểm chứng đầu ra AI
-                \item Dashboard bản đồ năng lực
+                \item Kiểm chứng đầu ra
+                \item Bảng tổng hợp năng lực theo chủ đề
             \end{itemize}
         \end{block}
         
@@ -422,13 +422,13 @@
     {\small Từ hiểu AI (Tầng 1) $\rightarrow$ kiểm chứng AI (Tầng 2) $\rightarrow$ đánh giá năng lực (Tầng 3).}
 \end{frame}
 
-\begin{frame}{4.5. Slider nội suy điều kiện sáng}
+\begin{frame}{4.5. Thanh trượt điều kiện sáng}
     \begin{columns}[t]
         \column{0.49\textwidth}
         \begin{block}{Tính năng}
             \begin{itemize}
-                \item Slider trượt liên tục từ 0\% đến 100\%
-                \item Nội suy màu sắc mượt mà: đêm $\rightarrow$ hoàng hôn $\rightarrow$ ngày
+                \item Thanh trượt liên tục từ 0\% đến 100\%
+                \item Màu sắc thay đổi mượt mà: đêm $\rightarrow$ hoàng hôn $\rightarrow$ ngày
                 \item Học sinh tự khám phá thiên kiến dữ liệu
             \end{itemize}
         \end{block}
@@ -440,7 +440,7 @@
         \end{block}
     \end{columns}
     \vspace{0.3em}
-    {\small Khi kéo slider, học sinh quan sát 4 đặc trưng thay đổi theo điều kiện sáng, hiểu rõ nguồn gốc thiên kiến.}
+    {\small Khi kéo thanh trượt, học sinh quan sát 4 đặc trưng thay đổi theo điều kiện sáng, hiểu rõ nguồn gốc thiên kiến.}
 \end{frame}
 
 \begin{frame}{4.6. Tình huống đạo đức AI}
@@ -449,7 +449,7 @@
         \begin{block}{Tính năng}
             \begin{itemize}
                 \item 12 tình huống thực tế về đạo đức AI
-                \item Giao diện accordion, mỗi lần hiện 1 câu
+                \item Giao diện mở từng câu, tập trung vào từng tình huống
                 \item Phản hồi ngay sau khi chọn đáp án
             \end{itemize}
         \end{block}
@@ -483,7 +483,7 @@
             \begin{itemize}
                 \item Mọi trường THPT có thể triển khai ngay.
                 \item Mở rộng sang khối 11, 12 và chủ đề AI nâng cao.
-                \item Tích hợp với các công cụ AI thực tế (ChatGPT, Gemini).
+                \item Có thể kết nối với các công cụ trực tuyến khi có internet.
             \end{itemize}
         \end{block}
     \end{columns}
