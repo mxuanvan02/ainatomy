@@ -297,7 +297,10 @@
     return kq;
   }
 
-  function doiTiLeNgay(p){ state.tiLeNgay = p; }
+  function doiTiLeNgay(p){
+    if(!state) return;   // phòng 3D chưa khởi tạo -> bỏ qua
+    state.tiLeNgay = p;
+  }
 
   /* ---------------- BT-04 Mức 3: chọn điểm NGẪU NHIÊN để học sinh dự đoán nhãn ----
    * Trả về {index, f, light} — KHÔNG kèm nhãn, để học sinh phải tự dự đoán trước.

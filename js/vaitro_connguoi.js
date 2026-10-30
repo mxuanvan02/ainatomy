@@ -29,7 +29,7 @@
  *                       trượt. Thêm một dụng cụ yếu vào hồ sơ là thổi phồng, không phải tăng
  *                       hàm lượng khoa học.
  *   · "MỘT HỆ THỐNG AI CỤ THỂ" — ba câu đều nói về CHÍNH HỆ THỐNG mà học sinh vừa vận hành ở
- *                       trạm này (ống dẫn 5 trạm, trạm CON NGƯỜI KIỂM, bộ dữ liệu lệch 92% ảnh
+ *                       trạm này (ống dẫn 5 trạm, trạm CON NGƯỜI KIỂM, bộ dữ liệu 100% ảnh
  *                       ban ngày), không phải một ví dụ tưởng tượng trong sách.
  *
  * MỖI CÂU MỘT ĐỘNG TỪ của YCCĐ, để khi giáo viên nhìn báo cáo thì biết học sinh đạt ở vế nào:
@@ -111,13 +111,13 @@
     },
     {
       id: "a11-03", mach: "A", unesco: "A1", yccd: "10.A1.1", vai: "TÙY CHỈNH",
-      cauHoi: "Ở xưởng huấn luyện, bộ dữ liệu 92% ảnh ban ngày làm mô hình sai gần một nửa số ảnh "
+      cauHoi: "Ở xưởng huấn luyện, bộ dữ liệu 100% ảnh ban ngày làm mô hình sai gần một nửa số ảnh "
         + "ban đêm. Em đã cân bằng dữ liệu và đo lại. Việc đó cho thấy VAI TRÒ TÙY CHỈNH của con "
         + "người nằm ở đâu?",
       luaChon: [
         { id: "a", text: "Con người quyết định thu thập và cân bằng dữ liệu nào, rồi kiểm chứng bằng số đo" },
         /* Nhiễu b DÀI HƠN đáp án đúng (chống cue). Nó sai và sai ĐO ĐƯỢC: học sinh đã bấm tăng
-         * vòng huấn luyện trên chính bộ dữ liệu lệch 92% và thấy độ chính xác trên ảnh ban đêm
+         * vòng huấn luyện trên chính bộ dữ liệu 100% ảnh ngày và thấy độ chính xác trên ảnh ban đêm
          * không lên — huấn luyện thêm chỉ làm mô hình thuộc lòng thiên kiến sẵn có. */
         { id: "b", text: "Con người tăng số vòng huấn luyện và hạ thấp ngưỡng chấp nhận cho tới "
           + "khi mô hình tự hết thiên kiến, mà không cần đụng vào dữ liệu đã thu thập" },
@@ -128,7 +128,7 @@
       giaiThich: "Thiên kiến nằm ở DỮ LIỆU, nên sửa ở gốc là sửa dữ liệu — đó là quyết định của con "
         + "người, không phải của máy. Phương án b sai vì huấn luyện thêm trên đúng bộ dữ liệu lệch "
         + "chỉ củng cố thêm thiên kiến — em đã tự đo điều đó: tăng vòng huấn luyện trên bộ dữ "
-        + "liệu lệch 92% ảnh ban ngày thì độ chính xác trên ảnh ban đêm không lên. Phương án b "
+        + "liệu 100% ảnh ban ngày thì độ chính xác trên ảnh ban đêm không lên. Phương án b "
         + "dài nhất và nghe như một giải pháp kỹ thuật hợp lý, nhưng nó sửa ở ngọn. Phương án c "
         + "chỉ che hiện tượng. Phương án d là điều hệ thống này không tự làm được — và đó chính là "
         + "lý do cần con người trong vòng tùy chỉnh."

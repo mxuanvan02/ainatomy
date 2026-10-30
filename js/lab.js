@@ -3,16 +3,16 @@
  * đặc trưng ảnh trích từ canvas. Dữ liệu + ánh sáng do hệ kiểm soát nên hệ biết
  * trước mô hình sẽ thiên kiến ở đâu → oracle tự chấm (không cần người kiểm chứng).
  *
- * Câu chuyện sư phạm: bộ dữ liệu huấn luyện lệch 92% ảnh BAN NGÀY → mô hình
- * "đạt độ chính xác cao" nhưng gần như vô dụng với ảnh BAN ĐÊM. Học sinh phải
- * tìm ra nguyên nhân gốc (dữ liệu lệch) và chứng kiến việc bổ sung dữ liệu cân bằng
- * sửa được vấn đề.
+ * Câu chuyện sư phạm: bộ dữ liệu huấn luyện 100% ảnh BAN NGÀY → mô hình
+ * "đạt độ chính xác cao" nhưng gần như vô dụng với ảnh BAN ĐÊM (đoán mò 50%).
+ * Học sinh phải tìm ra nguyên nhân gốc (dữ liệu không có ảnh đêm) và chứng kiến
+ * việc bổ sung dữ liệu cân bằng sửa được vấn đề.
  *
  * Đặc trưng (minh bạch, giải thích được cho HS):
  *  - tiLeRatSang:  % pixel RẤT SÁNG (>220) trong vùng đầu người → tín hiệu mũ TRẮNG ban ngày
  *  - tiLeTrungBinh: % pixel SÁNG VỪA (100–180) trong vùng đầu → tín hiệu mũ XÁM ban đêm
  *  - doSangVungDau / tiLeToi: đặc trưng ngữ cảnh (ngày/đêm), không mang tín hiệu mũ
- * Khi chỉ huấn luyện bằng ảnh ngày, trọng số của tiLeTrungBinh không bao giờ được
+ * Khi huấn luyện chỉ bằng ảnh ngày, trọng số của tiLeTrungBinh không bao giờ được
  * cập nhật (giá trị luôn ~0 trong dữ liệu ngày) → đó chính là cơ chế của thiên kiến.
  */
 (function(){
@@ -39,6 +39,13 @@
       if(light <= 30) lightMode = "dem";
       else if(light <= 70) lightMode = "hoangHon";
       else lightMode = "ngay";
+    } else if(typeof light === "string"){
+      /* BẢN VÁ: chuỗi "dem"/"hoangHon"/"ngay" phải map sang lightValue TƯƠNG ỨNG.
+       * Trước đây lightValue mặc định 1.0 cho MỌI chuỗi -> ảnh ban đêm có mũ TRẮNG
+       * y hệt ban ngày -> không còn thiên kiến dữ liệu -> Tầng 1 mất ý nghĩa. */
+      if(light === "dem")      { lightMode = "dem";      lightValue = 0.0;  }
+      else if(light === "hoangHon") { lightMode = "hoangHon"; lightValue = 0.5;  }
+      else                      { lightMode = "ngay";     lightValue = 1.0;  }
     }
 
     // NỀN TRỜI: nội suy màu sắc mượt mà
@@ -185,6 +192,20 @@
       g.beginPath(); g.arc(cx, cy-h*0.44, h*0.13, Math.PI, 0); g.stroke();
       g.strokeRect(cx-h*0.13, cy-h*0.45, h*0.26, h*0.03);
     }
+    /* NHIỄU PIXEL: rnd() được khai báo nhưng TRƯỚC ĐÂY KHÔNG DÙNG trong veXeMay
+     * -> mọi ảnh cùng (kind, light) giống hệt nhau. 60 "ảnh" thực chất chỉ là
+     * 4 ảnh lặp lại, nên ảnh đêm trong tập huấn luyện trùng ĐÚNG ảnh đêm trong
+     * bộ kiểm thử -> 100% là NHỚ, không phải khái quát. Nay thêm nhiễu ±13 mức
+     * xám để mỗi ảnh khác nhau thật sự, đặc trưng ban đêm mới chưa từng được học. */
+    const img = g.getImageData(0, 0, w, h);
+    const px = img.data;
+    for (let i = 0; i < px.length; i += 4) {
+      const n = (rnd() - 0.5) * 26;
+      px[i]     = Math.max(0, Math.min(255, px[i]     + n));
+      px[i + 1] = Math.max(0, Math.min(255, px[i + 1] + n));
+      px[i + 2] = Math.max(0, Math.min(255, px[i + 2] + n));
+    }
+    g.putImageData(img, 0, 0);
     return c;
   }
 
@@ -257,8 +278,8 @@
       const kind = (i%2===0) ? "mbh" : "khong";
       let light;
       if(opts.light) light = opts.light;
-      else if(opts.lechAnhSang) light = rnd() < 0.92 ? "ngay" : "dem";  // LỆCH: 92% ngày
-      else light = rnd() < 0.5 ? "ngay" : "dem";                          // CÂN BẰNG
+      else if(opts.lechAnhSang) light = "ngay";  // LỆCH TUYỆT ĐỐI: 100% ngày, 0% đêm -> mô hình không học được ban đêm
+      else light = rnd() < 0.5 ? "ngay" : "dem";  // CÂN BẰNG: 50/50
       const c = veXeMay(160,120,kind,light, (seed>>>0)+i*7919);
       const f = dacTrung(c);
       ds.push({ canvas:c, f:f, nhan: kind==="mbh"?1:0, light:light, kind:kind });
@@ -314,7 +335,7 @@
           { id:"d", text:"Không cần quan tâm độ chính xác, cứ dùng là được." }
         ],
         dapAn: "b",
-        giaiThich: "Đúng. Một con số trung bình có thể CHE GIẤU bất công: nếu 92% dữ liệu là ban ngày, mô hình đoán đúng ban ngày đã đủ đạt điểm tổng thể cao dù sai gần hết ban đêm. Vì vậy phải tách ra xem theo từng nhóm — đây chính là kĩ năng kiểm định AI."
+        giaiThich: "Đúng. Một con số trung bình có thể CHE GIẤU bất công: nếu dữ liệu chỉ có ảnh ban ngày, mô hình đoán đúng ban ngày đã đủ đạt điểm tổng thể cao dù sai gần hết ban đêm. Vì vậy phải tách ra xem theo từng nhóm — đây chính là kĩ năng kiểm định AI."
       },
       {
         id: "lab-03", mach: "A", unesco: "A2",

@@ -307,11 +307,12 @@
     lab.train = LAB.taoDuLieu({ soLuong: 60, lechAnhSang: true, seed: 20261006 });
     lab.testNgay = LAB.taoDuLieu({ soLuong: 10, light: "ngay", seed: 777 });
     lab.testDem  = LAB.taoDuLieu({ soLuong: 10, light: "dem",  seed: 888 });
-    // thống kê lệch
+    // thống kê lệch (giờ luôn là 100% ngày)
     const ngay = lab.train.filter(d=>d.light==="ngay").length;
     $("lab-thongke").innerHTML =
-      `Bộ dữ liệu huấn luyện: <b>${lab.train.length} ảnh</b> — trong đó <b class="vang">${ngay} ảnh ban ngày (${pct(ngay/lab.train.length)})</b> và chỉ <b>${lab.train.length-ngay} ảnh ban đêm</b>.<br>` +
-      `Bộ kiểm thử: ${lab.testNgay.length} ảnh ban NGÀY và ${lab.testDem.length} ảnh ban ĐÊM (giữ riêng, mô hình chưa từng thấy).`;
+      `Bộ dữ liệu huấn luyện: <b>${lab.train.length} ảnh</b> — <b class="vang">100% ảnh ban ngày</b>, không có ảnh ban đêm.<br>` +
+      `Bộ kiểm thử: ${lab.testNgay.length} ảnh ban NGÀY và ${lab.testDem.length} ảnh ban ĐÊM (giữ riêng, mô hình chưa từng thấy).` +
+      `<br><span class="chu2">Mô hình sẽ học từ dữ liệu này, rồi ta kiểm tra xem nó có nhận diện được ảnh ban đêm không.</span>`;
     veThumb(lab.train, 10, $("lab-thumbs"));
     /* BT-03 Mức 3 — dựng TRƯỚC khi học sinh bấm "Huấn luyện mô hình AI".
      * Kết quả thật (kqTrain.doChinhXac) CHƯA có ở đây, nên ô chỉ dựng; việc đối chiếu
@@ -1173,7 +1174,7 @@
    *
    * VÌ SAO HOẠT ĐỘNG NÀY NẰM Ở TRẠM ỐNG DẪN. Động từ đòi "một hệ thống AI CỤ THỂ", nên chỗ
    * đúng là nơi học sinh VỪA TỰ VẬN HÀNH một hệ thống: các em đã bấm làm hỏng trạm CON NGƯỜI
-   * KIỂM và thấy lỗi đi thẳng tới người dùng, đã cân bằng bộ dữ liệu 92% ảnh ban ngày rồi đo
+   * KIỂM và thấy lỗi đi thẳng tới người dùng, đã cân bằng bộ dữ liệu 100% ảnh ban ngày rồi đo
    * lại. Ba câu hỏi chốt việc XÁC ĐỊNH vai trò con người trên chính hệ thống đó, mỗi câu một
    * vế của động từ: SỬ DỤNG, VẬN HÀNH, TÙY CHỈNH.
    *
@@ -1286,6 +1287,25 @@
 
   function pipe3dHong(){
     const r = window.MX_PIPE3D.batDauLuot();
+    if(!r){
+      // pipeline chưa khởi tạo -> khởi tạo trước khi làm hỏng
+      const canvas = $("pipe3d-canvas");
+      if(canvas && window.MX_PIPE3D.init){
+        window.MX_PIPE3D.init({ canvas, root: $("pipe3d-fallback") });
+      }
+      const r2 = window.MX_PIPE3D.batDauLuot();
+      if(!r2){
+        $("pipe3d-note").innerHTML = "Không khởi tạo được pipeline 3D.";
+        return;
+      }
+      $("pipe3d-doan").style.display = "";
+      $("pipe3d-kq").innerHTML = "";
+      $("pipe3d-note").innerHTML = "Có <b>" + r2.soTram + "</b> trạm trong hệ thống. Một trạm vừa bị làm hỏng — "
+        + "quan sát các hạt sáng rồi đoán xem trạm nào.";
+      if(ENG) ENG.logSuKien(maHS, { loai:"pipe3d", suKien:"batDauLuot" });
+      pipe3dHud();
+      return;
+    }
     $("pipe3d-doan").style.display = "";
     $("pipe3d-kq").innerHTML = "";
     /* BT-11 Mức 3: hệ ĐÃ làm hỏng trạm — đối chiếu dự đoán hiện tượng với hành vi thật */

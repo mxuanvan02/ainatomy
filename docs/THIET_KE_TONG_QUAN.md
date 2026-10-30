@@ -75,7 +75,7 @@ Học sinh tạo bộ dữ liệu ảnh do hệ vẽ bằng canvas, quan sát pe
 
 Phủ yêu cầu cần đạt 10.C4.1 về ảnh hưởng của chất lượng dữ liệu đến chất lượng AI, 10.D2.2 về vấn đề phát sinh khi vận hành và ý nghĩa của việc khắc phục, 10.B3.1 về thiên vị dữ liệu. Minh chứng ghi lại là số lần huấn luyện, tỉ lệ đúng tách theo ngày và đêm, và đáp án bốn nhiệm vụ.
 
-Kết quả đo thực tế trên phiên bản hiện tại: với dữ liệu lệch 92 phần trăm ảnh ngày, mô hình đạt 100 phần trăm trên ảnh ngày và 59 phần trăm trên ảnh đêm. Quan sát chi tiết hơn cho thấy ở các ảnh ban đêm mô hình dự đoán "có mũ bảo hiểm" cho mọi trường hợp, kể cả ảnh không có mũ. Con số 59 phần trăm vì thế không phản ánh năng lực nhận diện mà chỉ là tỉ lệ ảnh đêm tình cờ có mũ trong bộ kiểm tra. Đây là hiện tượng đáng giá về mặt sư phạm và cần được trình bày đúng bản chất trong giao diện: mô hình không học sai, mô hình không học gì về ban đêm.
+Kết quả đo thực tế trên phiên bản hiện tại: với dữ liệu 100% ảnh ngày (không có ảnh đêm), mô hình đạt 100% trên ảnh ngày và 50% trên ảnh đêm — tương đương đoán mò. Quan sát chi tiết hơn cho thấy ở các ảnh ban đêm mô hình dự đoán "có mũ bảo hiểm" cho mọi trường hợp, kể cả ảnh không có mũ. Con số 50% vì thế không phản ánh năng lực nhận diện mà chỉ là tỉ lệ ảnh đêm tình cờ có mũ trong bộ kiểm tra. Đây là hiện tượng đáng giá về mặt sư phạm và cần được trình bày đúng bản chất trong giao diện: mô hình không học sai, mô hình không học gì về ban đêm.
 
 ### 2.3. Phòng ba chiều soi mô hình
 

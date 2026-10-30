@@ -41,7 +41,7 @@
       moTa:"Nơi thu thập và chuẩn bị dữ liệu huấn luyện — ảnh, âm thanh, văn bản, số liệu.",
       vaiTro:"Mô hình chỉ học được những gì có trong dữ liệu. Dữ liệu lệch thì mô hình lệch.",
       khiHong:"AI chưa từng thấy trường hợp này trong dữ liệu → nó đoán mò và sai có HỆ THỐNG với đúng nhóm bị thiếu.",
-      viDu:"Bộ ảnh nhận diện mũ bảo hiểm có 92% là ảnh ban ngày → ban đêm AI sai gần một nửa." },
+      viDu:"Bộ ảnh nhận diện mũ bảo hiểm chỉ có ảnh ban ngày, không có ảnh đêm → ban đêm AI đoán mò 50%." },
     { id:"huanluyen", ten:"HUẤN LUYỆN", mau:0x1D4ED8, yccd:"10.D2.1",
       moTa:"Thuật toán lặp đi lặp lại — so dự đoán với nhãn đúng, đo lỗi, chỉnh trọng số.",
       vaiTro:"Đây là chỗ mô hình thật sự 'học'. Không có bước này thì chỉ là một hàm số do người viết sẵn.",
